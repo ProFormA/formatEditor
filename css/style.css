@@ -1,0 +1,139 @@
+/********************** general settings *******************/
+
+body{
+	font-family: "Trebuchet MS", "Helvetica", "Arial", "Verdana", "sans-serif";
+	font-size: 62.5%;
+	background-color: #F7F7F7;
+}
+textarea{
+	vertical-align: middle;
+	width: 99%;
+}
+.largeinput{
+	vertical-align: middle;
+	width: 80%;
+}
+.mediuminput{	width: 30%;     }
+.shortinput{	width: 10%;     }
+.tinyinput{		width: 5%;     }
+
+.rightButton{	float:right   }
+.clear{  	clear:both;   }
+.red{   	color: red;   }
+.ui-widget .ui-widget{ 	        margin-top: 0.5em;   }
+.ui-widget-content:first-child{ padding-left: 0.2em; }
+.ui-widget-header{ 	        padding-left: 0.5em; }
+p{ 	                        padding-left:0.3em;  }
+/* .full-height{   height: 100%; } */
+
+.pagecontainer{
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 960px;
+}
+/********************** left panel *******************/
+#tabs{
+	float:left;
+	width:79%;
+}
+
+/********************** right panel *******************/
+#rightPanel{
+	float:right;
+	width:20%;
+}
+#rightPanel .ui-widget-header{
+	height: 52px;
+	margin: 0.26em;
+}
+#rightPanel .ui-widget-content{
+	margin: 0.26em;
+	margin-top: 0.7em;
+}
+#rightPanel h2{
+	text-align: center;
+}
+#rightPanelButtonList{
+	background: #FFF;
+}
+#form-remarks{
+	margin-top: 2em;
+}
+
+/********************** bottom panel *******************/
+#error-message{
+/*	display: inline-block; */
+	visibility: hidden;
+}
+
+#button-list{
+	margin:0.5em 0.6em;
+/*        text-align: center;*/
+}
+#exportXMLFile, #exportProblemXML{
+	margin-top:1em;
+}
+
+#buttonExport{
+        background-color: #BFF9CA;
+} 
+
+#buttonImport{
+        background-color: #BFF9CA;
+} 
+/********************** manual and FAQ *******************/
+
+div#tabs-4 img{
+	width:100%;
+}
+li#manual.ui-state-default, li#manual.ui-widget-content .ui-state-default{
+	border: 1px solid #bbb;
+	background-color: #FFF9CA;
+	background-repeat: no-repeat;
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#FFF9CA));
+	background-image: -webkit-linear-gradient(top, #ffffff, #FFF9CA);
+	background-image: -moz-linear-gradient(top, #ffffff, #FFF9CA);
+	background-image: -ms-linear-gradient(top, #ffffff, #FFF9CA);
+	background-image: -o-linear-gradient(top, #ffffff, #FFF9CA);
+	background-image: linear-gradient(to bottom, #ffffff, #FFF9CA);
+	color: #555;
+	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75)
+}
+li#manual{
+	float: right;
+	background-color: #FFF9CA;
+}
+li#FAQ.ui-state-default, li#manual.ui-widget-content .ui-state-default{
+	border: 1px solid #bbb;
+	background-color: #FFF9CA;
+	background-repeat: no-repeat;
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#FFF9CA));
+	background-image: -webkit-linear-gradient(top, #ffffff, #FFF9CA);
+	background-image: -moz-linear-gradient(top, #ffffff, #FFF9CA);
+	background-image: -ms-linear-gradient(top, #ffffff, #FFF9CA);
+	background-image: -o-linear-gradient(top, #ffffff, #FFF9CA);
+	background-image: linear-gradient(to bottom, #ffffff, #FFF9CA);
+	color: #555;
+	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75)
+}
+li#FAQ{
+	float: right;
+	background-color: #FFF9CA;
+}
+
+/********************** HTML5 upload and download elements *******************/
+
+.likebutton{
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+    font-weight: normal;
+    border: 1px solid #bbb;
+    background-color:  #F7F7F7;
+    padding: 1;
+}
+
+input[type=file]{ 
+    width: 220px;
+}
+

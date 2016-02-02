@@ -1,0 +1,89 @@
+<html lang="en">
+<!-- See the file js/editor.js for the version number of this software, its license etc -->
+
+<head>
+    <meta charset="utf-8">
+    <title>ProFormA-Editor</title>
+</head>
+<body>
+
+<h4>Documentation for downloading and configuring the ProFormA Format Editor</h4>
+
+This editor is maintained by members of the ProFormA group within the
+<a href="http://www.ecult-niedersachsen.de">eCULT project</a>. The
+purpose of the editor is to provide a stand-alone interface for the XML
+exchange format for programming exercises (ProFormA) which is
+available on <a href="https://github.com/ProFormA/taskxml">GitHub</a>.
+A <a href="http://nbn-resolving.de/urn:nbn:de:0009-5-41389">research
+paper</a> which provides further explanations about this project
+has been written by Strickroth et al.
+
+<h4>Installation</h4>
+
+The editor can be downloaded
+from <a href="https://github.com/ProFormA/formatEditor">Github</a>. It
+is written in Javascript and does not require compilation.
+
+<h4>Documentation</h4>
+
+A user manual (in German) and an FAQ (in English) are available from
+within the editor.
+
+<h4>Configuration</h4>
+
+Although the purpose of the ProFormA format is to exchange programming
+exercises, not all features are supported by all tools. The editor can therefore be
+configured for specific tools.
+
+<ul>
+<li>Several variables (such as version094, xsdSchemaFile,
+codemirrorOnOrOff and loncapaOnOrOff) can be set within the HTML file
+that invokes the editor in order to turn such features on or off.
+<li>If new tool-specific features are added to the code, further
+variables should be added to turn these features on or off.
+<li>Larger tool-specific code should be placed in separate files (such
+as loncapa.js).
+<li>The main data structure of the editor are arrays of objects which
+map the HTML form elements onto the XML elements of the ProFormA
+format. In order to add a new HTML and form element, this needs to be
+placed in 3 places:
+<ul>
+<li>Within the <font color="blue">createMapping</font> function, a ValMap
+object needs to be created. This should be placed inside the array
+that describes how this element occurs in the XML file: whether it occurs once, as a
+list, as an attribute, etc.
+<li>Within the <font color="blue">createXMLTemplate</font> function, an
+XML template for this new element needs to be created.
+<li>An HTML form element needs to be created in the HTML file or in
+the relevant section "#filesection", "#modelsolutionsection",
+"#testsection".
+</ul>
+</ul>
+
+<h4>Known Bugs and Missing Features</h4>
+
+<ul>
+<li>The processing of filerefs is not compliant with the exchange
+format standard: At the moment only two filerefs can be recorded of
+which the second one is not used for anything.
+<li>Grading hints are not currently used and not tested.
+<li>The processing of namespaces could be improved. But jquery (and its
+functions such as parseXML) seems to be not namespace-aware and 
+there are browser differences for namespaces. Therefore the
+current approach is to set/delete/rename namespace prefixes in some places.
+<li>XML validation is currently only conducted for the main schema,
+not for the other namespaces.
+</ul>
+
+Further information is available in the user manual and in the
+comments in the code.
+
+<h4>Testing</h4>
+
+A rudimentary Selenium script is
+provided: <font color="blue">tests/testInsertion.py</font>.  It is not
+complete and only works for some settings. It is mostly a suggestion
+for future testing development.
+
+</body>
+</html>
