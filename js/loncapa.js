@@ -65,7 +65,7 @@ function checkForTemplate(cmhash) {
   return returnvalue;
 };
 
-createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimetype,cmhash) {
+createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimetype,cmhash,versionchck) {
   var template = checkForTemplate(cmhash);
   var downloadable = checkForLibOrInstr(cmhash);
   if (typeof template == "undefined") { template = ""; }
@@ -85,7 +85,11 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
   lc_return += '# LON-CAPA partID, redundant taskID, submissiontype, filename of submitted file,';
   lc_return += 'Mime type, zip location\n';
   lc_return += "$externalurl = &proforma_url(0,'0', 'textfield', '" + lc_filename;
-  lc_return += "','" + lc_mimetype + "','" + lc_user_path +lc_problemname+ ".zip');\n";
+  if(versionchck == "101") {
+    lc_return += "','" + lc_mimetype + "','" + lc_user_path +lc_problemname+ ".zip','v1.0.1');\n";
+  } else {
+    lc_return += "','" + lc_mimetype + "','" + lc_user_path +lc_problemname+ ".zip');\n";
+  }
   lc_return += "$ausgabe = &proforma_output(0,1); # LON-CAPA partID, LON-CAPA responseID \n";
   lc_return += "</" + "script>\n";
   lc_return += "<startouttext />\n" +lc_descr+ "\n" + downloadable + "<endouttext />\n\n<startouttext />\n";
@@ -98,7 +102,7 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
   return lc_return;
 };
 
-createLONCAPAOutput = function (prgrlang,cmhash) {
+createLONCAPAOutput = function (prgrlang,cmhash,versionchck) {
   loncapa_filename = "input.txt";
   $.each($(".xml_file_id"),function(idx4,itm4) {
    if (itm4.value == $(".xml_model-solution_fileref")[0].value ) {
@@ -106,5 +110,5 @@ createLONCAPAOutput = function (prgrlang,cmhash) {
    }
   });
   $("#output2").val(createLONCAPAproblemFile($("#xml_description").val(),loncapa_filename,
-                                            $("#xml_meta-data_title").val(),prgrlang,cmhash));
+					     $("#xml_meta-data_title").val(),prgrlang,cmhash,versionchck));
 };

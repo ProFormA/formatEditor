@@ -19,7 +19,7 @@
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
 
-var codeversion   = '1.0';                             // contains the current version of this code
+var codeversion   = '1.0.1';                           // contains the current version of this code
                                                        // these variables can be set in the calling HTML file  
 var version094;                                        // names of the xsd schema files
 var version101;
@@ -748,7 +748,13 @@ $(function() {
         setErrorMessage("XSD-Schema not found.");
       });
     } catch(err) { setErrorMessage("Problem with the XML serialisation.");}
-    if (loncapaOnOrOff == 1) { createLONCAPAOutput(tempvals[0],codemirror); }  // only if LON-CAPA is being used
+    if (loncapaOnOrOff == 1) {                                      // only if LON-CAPA is being used
+      if (xsdSchemaFile == version101) {
+        createLONCAPAOutput(tempvals[0],codemirror,"101"); 
+      } else { 
+	createLONCAPAOutput(tempvals[0],codemirror,"old"); 
+      }  
+    }
   };
 
 ///////////////////////////////////////////////////////// function: readXML
