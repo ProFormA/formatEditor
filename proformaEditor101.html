@@ -15,7 +15,7 @@
     // The values of these variables can be changed as needed. 
     var version094    = 'taskxml0.9.4.xsd';                // name of schema files
     var version101    = 'taskxml1.0.1.xsd';
-    var xsdSchemaFile = version094;                        // choose version
+    var xsdSchemaFile = version101;                        // choose version
     var codemirrorOnOrOff = 1;                             // setting this to 0 turns Codemirror off
     var loncapaOnOrOff = 1;                                // setting this to 0 turns LON-CAPA elements off
     var praktomatOnOrOff = 1;
@@ -115,7 +115,7 @@
             <div id="form-remarks">
                <p>(All elements marked with <span class='red'>*</span> are required.)</p>
                <p>&nbsp;</p>
-               <p><button onclick='var makesure =
+               <p><button onclick='var makesure = 
                   window.confirm("All content will be deleted. Do you want to continue?");
                   if(makesure){location.reload();}' type='button'>Update Editor</button>
 	       <div id="codeversion"></div></p>
