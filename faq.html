@@ -1,5 +1,5 @@
 <!-- See the file js/editor.js for the version number of this software, its license etc -->
-<h4>What is the background for this editor?</h4>
+<h4>What is the purpose of this editor?</h4>
 
 This is an editor for an exchange format for programming exercises which is
 supported by a variety of tools from different universities. The format is documented at this
@@ -26,7 +26,7 @@ In some browsers it is sufficient to reload the page of the editor. In Firefox o
 
 See the explanation for file/class below.
 
-<h4>How do I specify a path for a file?</h4>
+<h4>How do I specify a path for a file to be uploaded?</h4>
 
 The filename can contain a path (in Unix notation using backslashes). <br />
 If a file is needed as a library in a subdirecty, it is important that this
@@ -36,7 +36,8 @@ will be created as needed by the system.
 <h4>How do I check static details about the code? How do I prohibit students from using 
 (or require them to use) a construct?</h4>
 
-Checkstyle can be used. It is quite powerful. It supports regular expressions.
+Checkstyle can be used. It is quite powerful and supports regular expressions. 
+Examples can be found <a href="beispiel.html" target="new">here</a>.
 
 <h4>I have a question about model solutions:</h4>
 
@@ -63,16 +64,22 @@ been failed, the whole task might be failed even though the students cannot see 
 other hand, if a test is set to be "not required", a task can be passed without passing
 this test.
 
-<h4>Does the order of the tests matter? Why does my JUnit test not work?</h4>
+<h4>Does the order of the tests matter? Why does my JUnit test/SetlX syntax test not work?</h4>
 
-The order of the tests does matter. The compile test should be selected before any JUnit tests.
+The order of the tests does matter. The order can be changed by clicking on a test and moving it up or
+down. A compile test/syntax test should come before any other tests, i.e. be moved to the top of the list.
 
-<h4>There appears to be a crash when I try to test a task.</h4>
+<h4>There appears to be a crash when I try to test a task.
+("The Checker caused an unexpected internal error.")</h4>
 
 Please check whether all required fields of the editor have been filled in. If there
 is an error message showing underneath the 'Export XML file'-button, the error needs
 to be fixed. A 'Schemas validity error' usually means that some required fields
-have not been filled in. If it still crashes even though everything seems fine, please 
+have not been filled in. It is recommended to run and test all tests in an IDE before
+using them in the editor. German umlauts can pose a problem (even in comments) because
+of incompatible encodings. The characters &lt;, &gt;, &amp; may need to be presented as
+&amp;lt;, &amp;gt;, &amp;amp;.
+If it still crashes even though everything seems fine, please 
 contact us at the address at the bottom of this page. Please send us a copy of the
 task zip file that causes the problem.
 
@@ -82,7 +89,7 @@ The select menus show which software versions are supported by the backend softw
 The exchange format itself is versioned as well. The editor reads xml files in different versions (version 0.9.4 and 1.0.1).
 The version of the editor's output format can be set via the internal xsdSchemaFile variable.
 
-<h4>What does the following form element mean?</h4>
+<h4>What do these form elements mean?</h4>
 
 <ul>
 <li><b>Description</b>: what the students will see.
@@ -130,7 +137,7 @@ not actually needed. Only the Filerefs are used.
 change the fileref.
 <li><b>Special characters (such as German umlauts)</b> may not work properly in all fields.
 It may depend on the encoding of the characters that is used.
-For example, they might not work in JUnit tests.
+For example, they might not work in JUnit tests, not even in comments.
 <li>Not all fields are always used by the grading tool. For example, currently the title of a 
 compile test is not displayed in LON-CAPA.
 <li>This version of the editor is not yet complete with respect to all tools and the exchange format. 
