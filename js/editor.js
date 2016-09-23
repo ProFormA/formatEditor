@@ -19,7 +19,7 @@
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
 
-var codeversion   = '1.0.1';                           // contains the current version of this code
+var codeversion   = '1.0.2';                           // contains the current version of this code
                                                        // these variables can be set in the calling HTML file  
 var version094;                                        // names of the xsd schema files
 var version101;
@@ -533,7 +533,17 @@ $(function() {
     newTest(setcounter(testIDs),"Java JUnit Test", TextJavaJunit, "unittest");
     $("#tabs").tabs("option", "active", 2); });
   $("#addSetlX").click(function() {
-    newTest(setcounter(testIDs),"setlX Test", TextSetlX, "jartest");
+    newTest(setcounter(testIDs),"SetlX Test", TextSetlX, "jartest");
+    $("#tabs").tabs("option", "active", 2); });
+  $("#addSetlXSynt").click(function() {
+    var tempnumber1 = setcounter(fileIDs);    // adding a file for the test
+    newFile(tempnumber1);                     // filename: setlxsyntaxtest.stlx, content: print()
+    $(".xml_file_id[value='"+tempnumber1+"']").parent().find(".xml_file_filename").first().val('setlxsyntaxtest.stlx');
+    codemirror[tempnumber1].setValue('print("");');
+    var tempnumber2 = setcounter(testIDs);    // sets the corresponding fileref and title "SetlX-Syntax-Test"
+    newTest(tempnumber2,"SetlX Test", TextSetlX, "jartest");
+    $(".xml_test_id[value='"+tempnumber2+"']").parent().find(".xml_test_fileref").first().val(tempnumber1);
+    $(".xml_test_id[value='"+tempnumber2+"']").parent().parent().find(".xml_test_title").first().val("SetlX-Syntax-Test");
     $("#tabs").tabs("option", "active", 2); });
   $("#addCheckStyle").click(function() {
     newTest(setcounter(testIDs),"CheckStyle Test", TextJavaCheckst, "java-checkstyle");
@@ -863,7 +873,7 @@ $(function() {
                } else if ($(itm1).find('test-type')[0].textContent == 'unittest') {
                   newTest($(itm1).attr("id"),"Java JUnit Test", TextJavaJunit, "unittest");
                } else if ($(itm1).find('test-type')[0].textContent == 'jartest') {
-                  newTest($(itm1).attr("id"),"setlX Test", TextSetlX, "jartest");
+                  newTest($(itm1).attr("id"),"SetlX Test", TextSetlX, "jartest");
                } else if ($(itm1).find('test-type')[0].textContent == 'java-checkstyle') {
                   newTest($(itm1).attr("id"),"CheckStyle Test", TextJavaCheckst, "java-checkstyle");
                } else if ($(itm1).find('test-type')[0].textContent == 'dejagnu-setup') {

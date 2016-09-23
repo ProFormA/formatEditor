@@ -68,6 +68,7 @@ function checkForTemplate(cmhash) {
 createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimetype,cmhash,versionchck) {
   var template = checkForTemplate(cmhash);
   var downloadable = checkForLibOrInstr(cmhash);
+  if ($("#lczip").val().slice(-1) != "/") { $("#lczip").val($("#lczip").val()+ "/"); }  // add / to path if missing
   if (typeof template == "undefined") { template = ""; }
   if (typeof downloadable == "undefined") { downloadable = ""; }
 //  lc_path = "/res/fhwf/ecult/Java/zip/";
