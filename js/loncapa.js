@@ -45,7 +45,7 @@ function checkForLibOrInstr(cmhash) {
         tempbase64 = window.btoa(codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue());
       } catch(err) { alert("Files which are to be downloaded by students (i.e. 'library'" +
                             " or 'instruction') cannot contain raw unicode characters, " +
-                            "for example, certain encodings of Umlaute and ??. Please change" +
+                            "for example, certain encodings of Umlaute and ß. Please change" +
 			    "the file to 'internal' or remove or change the encoding of such characters.");}
        returnvalue = returnvalue + "<a href='data:text/text;base64,"+ tempbase64 +
          "' download='" + item.value + "'>Download: " + item.value +"</a>\n";
