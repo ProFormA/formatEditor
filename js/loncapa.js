@@ -45,7 +45,7 @@ function checkForLibOrInstr(cmhash) {
         tempbase64 = window.btoa(codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue());
       } catch(err) { alert("Files which are to be downloaded by students (i.e. 'library'" +
                             " or 'instruction') cannot contain raw unicode characters, " +
-                            "for example, certain encodings of Umlaute and ß. Please change" +
+                            "for example, certain encodings of Umlaute and ??. Please change" +
 			    "the file to 'internal' or remove or change the encoding of such characters.");}
        returnvalue = returnvalue + "<a href='data:text/text;base64,"+ tempbase64 +
          "' download='" + item.value + "'>Download: " + item.value +"</a>\n";
@@ -59,6 +59,16 @@ function checkForTemplate(cmhash) {
   var returnvalue;
   $.each($(".xml_file_filename"), function(index, item) {
      if ($(item).first().parent().find(".xml_file_class").val() == "template") {
+       returnvalue = codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue();
+     }
+   });
+  return returnvalue;
+};
+
+function getModelSolution(cmhash) {
+  var returnvalue;
+  $.each($(".xml_file_id"), function(index, item) {
+	  if (item.value == $(".xml_model-solution_fileref").first().val()) {
        returnvalue = codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue();
      }
    });
@@ -79,6 +89,7 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
   if (lc_mimetype == "java") {lc_mimetype = "x-java";}
   else if (lc_mimetype == "python") {lc_mimetype = "x-python";}
   lc_problemname = lc_problemname.replace(/[^a-z0-9]/gi, "");      // title without special characters
+
   lc_return = '<problem>\n\n';
   lc_return += '<import id="11">' +lc_path+ '/lib/proforma_v2.library</import>\n';
   lc_return += '<import id="91">' +lc_path + lc_codeMHeader+ '</import>\n\n';
@@ -92,11 +103,12 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
     lc_return += "','" + lc_mimetype + "','" + lc_user_path +lc_problemname+ ".zip');\n";
   }
   lc_return += "$ausgabe = &proforma_output(0,1); # LON-CAPA partID, LON-CAPA responseID \n";
+  lc_return += "$modelsolution = '<pre>" + getModelSolution(cmhash) + "</pre>';\n";
   lc_return += "</" + "script>\n";
   lc_return += "<startouttext />\n" +lc_descr+ "\n" + downloadable + "<endouttext />\n\n<startouttext />\n";
   lc_return += "$error\n$ausgabe\n";
   lc_return += '<div id="codemirror-textfield">\n<endouttext />\n\n';
-  lc_return += '<externalresponse answerdisplay="" answer="" url="$externalurl" form="%args" id="1">\n';
+  lc_return += '<externalresponse answerdisplay="$modelsolution" answer="" url="$externalurl" form="%args" id="1">\n';
   lc_return += '<textfield>\n'+template+'\n</textfield>\n</externalresponse>\n\n';
   lc_return += '<startouttext />\n</div>\n<endouttext />\n';
   lc_return += '<import id="92">' +lc_path+lc_codeMFooter+ '</import>\n</problem>\n';
