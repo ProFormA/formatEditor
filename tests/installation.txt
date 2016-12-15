@@ -1,0 +1,10 @@
+Installation 
+
+- Python 2.x installieren
+
+- selenium für python installieren: 
+  cmd -> c:\....\Python..\pip install selenium
+
+- geckodriver installieren und in die PATH-Variable eintragen
+  (https://github.com/mozilla/geckodriver/releases)
+  (z.B. in python-Verzeichnis kopieren, das ist vermutlich im PATH, so dass das Ändern der PATH-Variable entfällt)

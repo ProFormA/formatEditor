@@ -1,3 +1,6 @@
+import os
+
+
 def Test1(elemOutput):
    try:
       assert '<description><![CDATA[input111]]></description>' in elemOutput.get_attribute('value')
@@ -63,28 +66,43 @@ def Test1(elemOutput):
       assert '<praktomat:public>False</praktomat:public>' in elemOutput.get_attribute('value')
    except AssertionError:
       print '<praktomat:public>False<'
+   print 'Test1 finished'
 
 def Test1a(elemOutput):
    try:
        assert '/res/fhwf/input4444/input222.zip' in elemOutput.get_attribute('value')
    except AssertionError:
        print 'Not found: /res/fhwf/input4444/input222.zip'
+   print 'Test1a finished'
+       
 
 def Test2():
    try:
       assert '<title>Field erased</title>' in elemOutput.get_attribute('value')
    except AssertionError:
       print 'Not found: Field erased'
+   print 'Test2 finished'
+      
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.support.ui import Select
-binary = FirefoxBinary(firefox_path='/usr/bin/firefox')
+
 d = DesiredCapabilities.FIREFOX
-driver = webdriver.Firefox(firefox_binary=binary,capabilities=d)
-driver.get("proformaEditor.html")
+driver = webdriver.Firefox(capabilities=d)
+#binary = FirefoxBinary(firefox_path='/usr/bin/firefox')
+#driver = webdriver.Firefox(firefox_binary=binary,capabilities=d)
+
+the_path = os.path.dirname(os.path.abspath(__file__))
+#print the_path
+editor_path = the_path + "/../proformaEditor101.html"
+#print editor_path
+
+#driver.get("proformaEditor.html")
+driver.get("file:///" + editor_path)
+
 
 elem = driver.find_element_by_id("xml_description")
 elem.send_keys("input111")
@@ -126,9 +144,14 @@ elem[0].send_keys("input6666")
 elem = driver.find_element_by_id("addModelsol").click()
 elem = driver.find_elements_by_class_name("xml_model-solution_filename")
 elem[0].send_keys(Keys.NULL)                    # so that the filename options get created
-driver.execute_script('window.alert("Hi")')
+
+try:
+   driver.execute_script('window.alert("Hi")')
+except:
+   pass
 alert = driver.switch_to.alert
 alert.accept()
+
 select = Select(elem[0])
 select.select_by_index(1)
 
@@ -143,9 +166,14 @@ elem[0].send_keys("input8888")
 
 elem = driver.find_elements_by_class_name("xml_test_filename")
 elem[1].send_keys(Keys.NULL)                    # so that the filename options get created
-driver.execute_script('window.alert("Hi")')
+
+try:
+   driver.execute_script('window.alert("Hi")')
+except:
+   pass
 alert = driver.switch_to.alert
 alert.accept()
+
 select = Select(elem[1])
 select.select_by_index(1)
 
@@ -156,7 +184,12 @@ elem[2].send_keys("input9999")
 
 elem = driver.find_elements_by_class_name("xml_test_filename")
 elem[2].send_keys(Keys.NULL)                    # so that the filename options get created
-driver.execute_script('window.alert("Hi")')
+
+try:
+   driver.execute_script('window.alert("Hi")')
+except:
+   pass
+   
 alert = driver.switch_to.alert
 alert.accept()
 select = Select(elem[2])
@@ -195,4 +228,5 @@ if (outputvalue2 != outputvalue2new):
    print '2 Different after import'
 
 driver.close()
+print "test finished"
 
