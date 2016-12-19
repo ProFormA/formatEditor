@@ -62,7 +62,7 @@ var codemirror = {};
  * Currently codemirror is only used for xml_file_text.
  * The global codemirror hash above uses the fileID to identify the codemirror element.
  */
-function codemirrorElement(cmID) {                     // cmID is determined by setcounter(), starts at 1
+function addCodemirrorElement(cmID) {                     // cmID is determined by setcounter(), starts at 1
   codemirror[cmID] = CodeMirror.fromTextArea(
     $(".xml_file_id[value='"+ cmID +"']").parent().parent().find(".xml_file_text")[0],{
     mode : "text/x-java", indentUnit: 4, lineNumbers: true, matchBrackets: true, tabMode : "shift",
@@ -375,7 +375,7 @@ $(function() {
     "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea></p></div>");
     $(".xml_file_id[value='"+ tempcounter +"']").parent().find(".xml_file_type").hide();
     $(".xml_file_id[value='"+ tempcounter +"']").parent().find("label[for='xml_file_type']").hide();
-    if (codemirrorOnOrOff == 1) { codemirrorElement(tempcounter); }
+    if (codemirrorOnOrOff == 1) { addCodemirrorElement(tempcounter); }
   };
   switchFileref = function(tempSelElem) {              // changing a filename in the drop-down changes the id
     $.each($(".xml_file_filename"), function(index, item) {
@@ -511,6 +511,14 @@ $(function() {
       $("#end-container").show();
       $("#xml-output-input").show();
       $("#otherSoftware2").show();
+      
+      // refresh codemirror editors  - 
+      // otherwise content is visible only after first click in window
+      setTimeout(function () {
+          Object.keys(codemirror).forEach(function(item) {codemirror[item].refresh();});
+      }, 10);
+
+                
     }
   });
 //   $("#filesection").sortable();

@@ -10,7 +10,7 @@
     font-family: Menlo,Monaco,"Andale Mono","lucida console","Courier New",monospace !important;
   border: 1px solid;
   height: 200px;
-  font-size: 1.3em;
+  /*font-size: 1.3em;*/
 }
 .CodeMirror-scroll {
   /* Set scrolling behaviour here */
