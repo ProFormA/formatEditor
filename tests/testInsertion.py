@@ -89,16 +89,45 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.support.ui import Select
+import os.path
 
-d = DesiredCapabilities.FIREFOX
-driver = webdriver.Firefox(capabilities=d)
-#binary = FirefoxBinary(firefox_path='/usr/bin/firefox')
-#driver = webdriver.Firefox(firefox_binary=binary,capabilities=d)
+import testconfig
+
+
+def openBrowser():
+    d = DesiredCapabilities.FIREFOX
+
+    
+    usr_bin_firefox = "/usr/bin/firefox"
+    c_program_x86_firefox = r"C:\Program Files (x86)\Mozilla Firefox\firefox.exe"
+    
+    if len(testconfig.firefox_executable) <= 0:
+       if os.path.isfile(usr_bin_firefox):
+           testconfig.firefox_executable = usr_bin_firefox
+           print usr_bin_firefox+ " exists"
+       elif os.path.isfile(c_program_x86_firefox):
+           testconfig.firefox_executable = c_program_x86_firefox
+           print c_program_x86_firefox + " exists"
+               
+    if len(testconfig.firefox_executable) > 0:
+        driver = webdriver.Firefox(firefox_binary=testconfig.firefox_executable,capabilities=d)
+    else:
+        # try default 
+        driver = webdriver.Firefox(capabilities=d)
+        
+    return driver
+
+
+driver = openBrowser()
+#d = DesiredCapabilities.FIREFOX
+#driver = webdriver.Firefox(capabilities=d)
+##binary = FirefoxBinary(firefox_path='/usr/bin/firefox')
+##driver = webdriver.Firefox(firefox_binary=binary,capabilities=d)
 
 the_path = os.path.dirname(os.path.abspath(__file__))
-#print the_path
+print the_path
 editor_path = the_path + "/../proformaEditor101.html"
-#print editor_path
+print editor_path
 
 #driver.get("proformaEditor.html")
 driver.get("file:///" + editor_path)
