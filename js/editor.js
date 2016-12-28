@@ -19,7 +19,7 @@
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
 
-var codeversion   = '1.0.2';                           // contains the current version of this code
+var codeversion   = '1.0.3';                           // contains the current version of this code
                                                        // these variables can be set in the calling HTML file  
 var version094;                                        // names of the xsd schema files
 var version101;
@@ -125,8 +125,13 @@ function uploadFile(inputbutton) {                     // upload button for text
 function downloadFile(downloadLink) {                  // download link for textareas: output, output2
   var tempbase64 = "";
   try {
-    tempbase64 = window.btoa($(downloadLink).parent().parent().parent().find("textarea").val());
-    $(downloadLink).attr("href",'data:text/text;base64,'+tempbase64);
+      /*  tempbase64 = window.btoa($(downloadLink).parent().parent().parent().find("textarea").val());
+      $(downloadLink).attr("href",'data:text/text;base64,'+tempbase64);
+      */
+      var text = $(downloadLink).parent().parent().parent().find("textarea").val();
+      var text1 = encodeURIComponent(text);
+      // var tempbase64 = window.btoa(text); // unused
+      $(downloadLink).attr("href",'data:text/text;charset=utf-8,' + text1); // encodeURIComponent(text));
   } catch(err) { setErrorMessage("File cannot be downloaded because it contains an invalid character.");}
 }
 
