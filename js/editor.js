@@ -74,14 +74,9 @@ function addCodemirrorElement(cmID) {                     // cmID is determined 
         handles: 'n, s', // only resize in north-south-direction
         resize: function() {
             editor.setSize($(this).width(), $(this).height());
-            editor.refresh();
+            editor.refresh(); // is this really needed?
         }
     });
-
-    // TODO?
-    //var lazyLayout = _.debounce(resize, 300);
-    //$(window).resize(lazyLayout);
-
 }
 
 //////////////////////////////////////////////////////////////////////////////
