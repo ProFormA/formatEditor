@@ -68,6 +68,20 @@ function addCodemirrorElement(cmID) {                     // cmID is determined 
     mode : "text/x-java", indentUnit: 4, lineNumbers: true, matchBrackets: true, tabMode : "shift",
     styleActiveLine: true, viewportMargin: Infinity, autoCloseBrackets: true, theme: "eclipse"
   });
+
+    var editor = codemirror[cmID];
+    $(editor.getWrapperElement()).resizable({
+        handles: 'n, s', // only resize in north-south-direction
+        resize: function() {
+            editor.setSize($(this).width(), $(this).height());
+            editor.refresh();
+        }
+    });
+
+    // TODO?
+    //var lazyLayout = _.debounce(resize, 300);
+    //$(window).resize(lazyLayout);
+
 }
 
 //////////////////////////////////////////////////////////////////////////////
