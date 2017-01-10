@@ -33,9 +33,9 @@ def Test1(elemOutput):
       print 'Not found: proglang version="1.8">java</proglang'
 
    try:
-      assert 'input5555' in elemOutput.get_attribute('value')
+      assert 'filename5555.java' in elemOutput.get_attribute('value')
    except AssertionError:
-      print 'Not found: input5555'
+      print 'Not found: filename5555.java'
 
    try:
       assert 'id="2" type="embedded"' in elemOutput.get_attribute('value')
@@ -89,119 +89,106 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.support.ui import Select
-import os.path
-
-import testconfig
 
 
-def openBrowser():
-    d = DesiredCapabilities.FIREFOX
+import editor
 
-    
-    usr_bin_firefox = "/usr/bin/firefox"
-    c_program_x86_firefox = r"C:\Program Files (x86)\Mozilla Firefox\firefox.exe"
-    
-    if len(testconfig.firefox_executable) <= 0:
-       if os.path.isfile(usr_bin_firefox):
-           testconfig.firefox_executable = usr_bin_firefox
-           print usr_bin_firefox+ " exists"
-       elif os.path.isfile(c_program_x86_firefox):
-           testconfig.firefox_executable = c_program_x86_firefox
-           print c_program_x86_firefox + " exists"
-               
-    if len(testconfig.firefox_executable) > 0:
-        driver = webdriver.Firefox(firefox_binary=testconfig.firefox_executable,capabilities=d)
-    else:
-        # try default 
-        driver = webdriver.Firefox(capabilities=d)
-        
-    return driver
+# open browser
+driver = editor.openBrowser()
+editor.init(driver)
+# with editor page
+editor.openEditorPage()
 
 
-driver = openBrowser()
-#d = DesiredCapabilities.FIREFOX
-#driver = webdriver.Firefox(capabilities=d)
-##binary = FirefoxBinary(firefox_path='/usr/bin/firefox')
-##driver = webdriver.Firefox(firefox_binary=binary,capabilities=d)
 
-the_path = os.path.dirname(os.path.abspath(__file__))
-print the_path
-editor_path = the_path + "/../proformaEditor101.html"
-print editor_path
+####################################################################
+## fill MAIN page
+####################################################################
 
-#driver.get("proformaEditor.html")
-driver.get("file:///" + editor_path)
+# fill Task decription
+editor.set_task_description("input111")
+# fill title
+editor.set_task_title("input222")
+#fill filesize
+editor.set_filesize("3333")
+# fill MimeType
+editor.set_mimetype("text/TEST")
+# LON-CAPA path
+editor.set_LON_CAPA_path("input4444/")
+# fill language
+editor.set_language("en")
+# fill programming language
+editor.set_prog_language("java/1.8")
 
+####################################################################
+# fill FILE page
+####################################################################
 
-elem = driver.find_element_by_id("xml_description")
-elem.send_keys("input111")
-
-elem = driver.find_element_by_id("xml_meta-data_title")
-elem.send_keys("input222")
-
-elem = driver.find_element_by_id("xml_subm_max-size")
-elem.clear()
-elem.send_keys("3333")
-
-elem = driver.find_element_by_id("xml_upload-mime-type")
-elem.clear()
-elem.send_keys("text/TEST")
-
-elem = driver.find_element_by_id("lczip")
-elem.clear()
-elem.send_keys("input4444/")
-
-select = Select(driver.find_element_by_id("xml_lang"))
-select.select_by_value("en")
-
-select = Select(driver.find_element_by_id("xml_programming-language"))
-select.select_by_value("java/1.8")
-
+# add new file
 elem = driver.find_element_by_id("addFile").click()
+# add new file
 elem = driver.find_element_by_id("addFile").click()
 
+# remove first file
 elem = driver.find_element_by_class_name('xml_file')
 elem.find_element_by_tag_name('button').click()
 alert = driver.switch_to.alert
 alert.accept()
 
+# fill filename
 elem = driver.find_elements_by_class_name('xml_file_filename')
-elem[0].send_keys("input5555")
+elem[0].send_keys("filename5555.java")
+# fill file comment
 elem = driver.find_elements_by_class_name('xml_file_comment')
 elem[0].send_keys("input6666")
+# fill file text
+# does not work, raises exception (element not visible)
+# elem = driver.find_elements_by_class_name('xml_file_text')
+# elem[0].send_keys("//dummy file text")
 
+
+
+# add model solution
 elem = driver.find_element_by_id("addModelsol").click()
+
+# does not work:
 elem = driver.find_elements_by_class_name("xml_model-solution_filename")
+
+# geht alles nicht!!!
+##select = Select(driver.find_elements_by_class_name('xml_model-solution_filename'))
+## select by visible text
+##select.select_by_visible_text('Banana')
+## select by value
+##select.select_by_value('1')
+
+
+
 elem[0].send_keys(Keys.NULL)                    # so that the filename options get created
 
-try:
-   driver.execute_script('window.alert("Hi")')
-except:
-   pass
-alert = driver.switch_to.alert
-alert.accept()
+
+editor.showModalWindow()
 
 select = Select(elem[0])
 select.select_by_index(1)
 
+# add Java compiler test
 elem = driver.find_element_by_id("addJavaComp").click()
 elem = driver.find_elements_by_class_name('xml_test_title')
+# fill title
 elem[0].clear()
 elem[0].send_keys("input7777")
 
+# add Java JUnit test
 elem = driver.find_element_by_id("addJavaJunit").click()
+# fill description
 elem = driver.find_elements_by_class_name('xml_pr_configDescription')
 elem[0].send_keys("input8888")
 
+# fill test file name
 elem = driver.find_elements_by_class_name("xml_test_filename")
 elem[1].send_keys(Keys.NULL)                    # so that the filename options get created
 
-try:
-   driver.execute_script('window.alert("Hi")')
-except:
-   pass
-alert = driver.switch_to.alert
-alert.accept()
+editor.showModalWindow()
 
 select = Select(elem[1])
 select.select_by_index(1)
@@ -214,13 +201,8 @@ elem[2].send_keys("input9999")
 elem = driver.find_elements_by_class_name("xml_test_filename")
 elem[2].send_keys(Keys.NULL)                    # so that the filename options get created
 
-try:
-   driver.execute_script('window.alert("Hi")')
-except:
-   pass
-   
-alert = driver.switch_to.alert
-alert.accept()
+editor.showModalWindow()
+
 select = Select(elem[2])
 select.select_by_index(1)
 
