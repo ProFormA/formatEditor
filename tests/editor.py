@@ -6,8 +6,10 @@ from selenium.webdriver.support.ui import Select
 import os.path
 
 import testconfig
+import time
 
 driver = 0
+codemirror = True
 
 
 def openBrowser():
@@ -71,6 +73,10 @@ def showModalWindow():
 ####################################################################
 # editor input helpers
 ####################################################################
+
+####################################################################
+# MAIN
+####################################################################
 def set_task_description(text):
     set_input_field("xml_description", text)
 
@@ -91,3 +97,116 @@ def set_language(text):
 
 def set_prog_language(text):
     select_option("xml_programming-language", text)
+
+####################################################################
+# FILE
+####################################################################
+def add_file():
+    elem = driver.find_element_by_id("addFile").click()
+
+def remove_first_file():
+    elem = driver.find_element_by_class_name('xml_file')
+    elem.find_element_by_tag_name('button').click()
+    alert = driver.switch_to.alert
+    alert.accept()
+
+def set_filename(file_index, filename): # 0-based
+    elem = driver.find_elements_by_class_name('xml_file_filename')
+    elem[file_index].send_keys(filename)
+
+def set_file_comment(file_index, text): # 0-based
+    elem = driver.find_elements_by_class_name('xml_file_comment')
+    elem[file_index].send_keys(text)
+
+def set_file_class(file_index, option_index):  # 0-based
+    elem = driver.find_elements_by_class_name('xml_file_class')
+    select = Select(elem[file_index])
+    #select.select_by_value(value) # unfortunately does not work
+    select.select_by_index(option_index)
+
+def set_file_text(file_index, text): # 0-based
+    elem = driver.find_elements_by_class_name('xml_file_text')
+    if codemirror:
+        elem = driver.find_elements_by_class_name('CodeMirror')
+#    else:
+#        elem = driver.find_elements_by_class_name('xml_file_text')
+    elem[file_index].send_keys(text)
+
+####################################################################
+# MODEL SOLUTION
+####################################################################
+
+def add_model_solution():
+    elem = driver.find_element_by_id("addModelsol").click()
+
+
+def set_model_solution_comment(ms_index, text): # 0-based
+    elem = driver.find_elements_by_class_name('xml_model-solution_comment')
+    elem[ms_index].send_keys(text)
+
+def add_file_to_model_solution(ms_index, file_index):  # 0-based
+    print "sorry, add_file_to_model_solution does not yet work"
+    return
+    elem = driver.find_elements_by_class_name('xml_model-solution_filename')
+    # the option has to be focused on in order to fill the list!
+
+    (elem[ms_index]).send_keys(Keys.NULL)
+    (elem[ms_index]).click()
+    time.sleep(1);
+
+    # elem = driver.find_elements_by_class_name('mediuminput xml_model-solution_filename')
+    select = Select(elem[ms_index])
+
+    select.select_by_index(0)
+
+    #select.select_by_value(value) # unfortunately does not work
+    select.select_by_index(file_index)
+
+
+####################################################################
+# TEST
+####################################################################
+def set_test_title(jct_index, text): # 0-based
+    elem = driver.find_elements_by_class_name('xml_test_title')
+    elem[jct_index].clear()
+    elem[jct_index].send_keys(text)
+
+####################################################################
+# JAVA COMPILER TEST
+####################################################################
+def add_java_compiler_test():
+    elem = driver.find_element_by_id("addJavaComp").click()
+
+def set_jct_public(jct_index, public):
+    elem = driver.find_elements_by_class_name('xml_pr_public')
+    select = Select(elem[jct_index])
+    #select.select_by_value(value) # unfortunately does not work
+    select.select_by_visible_text(public)
+
+
+#    select = Select(driver.find_element_by_class_name("xml_pr_public"))
+#    select.select_by_visible_text("False")
+
+
+
+####################################################################
+# JUNIT TEST
+####################################################################
+def add_junit_test():
+    elem = driver.find_element_by_id("addJavaJunit").click()
+
+
+def set_junit_description(junit_index, text): # 0-based
+    elem = driver.find_elements_by_class_name('xml_pr_configDescription')
+    elem[junit_index].clear()
+    elem[junit_index].send_keys(text)
+
+def set_junit_test_class(junit_index, classtext):
+    elem = driver.find_elements_by_class_name('xml_ju_mainclass')
+    elem[junit_index].send_keys(classtext)
+
+####################################################################
+# CHECKSTYLE TEST
+####################################################################
+def add_checkstyle():
+    elem = driver.find_element_by_id("addCheckStyle").click()

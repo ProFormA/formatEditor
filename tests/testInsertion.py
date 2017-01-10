@@ -1,3 +1,5 @@
+# coding=utf-8
+
 import os
 
 
@@ -121,38 +123,65 @@ editor.set_language("en")
 editor.set_prog_language("java/1.8")
 
 ####################################################################
-# fill FILE page
+# fill FILES
 ####################################################################
 
-# add new file
-elem = driver.find_element_by_id("addFile").click()
-# add new file
-elem = driver.find_element_by_id("addFile").click()
-
-# remove first file
-elem = driver.find_element_by_class_name('xml_file')
-elem.find_element_by_tag_name('button').click()
-alert = driver.switch_to.alert
-alert.accept()
+# add 5 new files
+editor.add_file()
+editor.add_file()
+editor.add_file()
+editor.add_file()
+editor.add_file()
 
 # fill filename
-elem = driver.find_elements_by_class_name('xml_file_filename')
-elem[0].send_keys("filename5555.java")
+editor.set_filename(0, "filename5555.java")
+editor.set_filename(1, "filename6666.java")
+editor.set_filename(2, "filename7.java")
+editor.set_filename(3, "filename8.java")
+editor.set_filename(4, "filename9.java")
+
 # fill file comment
-elem = driver.find_elements_by_class_name('xml_file_comment')
-elem[0].send_keys("input6666")
+editor.set_file_comment(0, "comment for file filename5555.java")
+editor.set_file_comment(1, "comment for file filename6666.java")
+
+# set file class
+editor.set_file_class(0, 0)
+editor.set_file_class(1, 1)
+editor.set_file_class(2, 2)
+editor.set_file_class(3, 3)
+editor.set_file_class(4, 4)
+
 # fill file text
 # does not work, raises exception (element not visible)
 # elem = driver.find_elements_by_class_name('xml_file_text')
 # elem[0].send_keys("//dummy file text")
+#editor.set_file_text(0, "// dummy file text")
+#editor.set_file_text(1, "// dummy file text #2")
+###editor.set_file_text(1, "// deutsche Umlaute öäüß")
+###editor.set_file_text(2, "int i = 0;\\nint j = 1;")
 
 
+# remove first file
+editor.remove_first_file()
+
+
+
+####################################################################
+# fill MODEL SOLUTION
+####################################################################
 
 # add model solution
-elem = driver.find_element_by_id("addModelsol").click()
+editor.add_model_solution()
+editor.add_model_solution()
+
+editor.set_model_solution_comment(0, "model solution #0")
+editor.set_model_solution_comment(1, "model solution #1")
+
+editor.add_file_to_model_solution(0, 2)
+editor.add_file_to_model_solution(1, 1)
 
 # does not work:
-elem = driver.find_elements_by_class_name("xml_model-solution_filename")
+#elem = driver.find_elements_by_class_name("xml_model-solution_filename")
 
 # geht alles nicht!!!
 ##select = Select(driver.find_elements_by_class_name('xml_model-solution_filename'))
@@ -162,55 +191,56 @@ elem = driver.find_elements_by_class_name("xml_model-solution_filename")
 ##select.select_by_value('1')
 
 
+#elem[0].send_keys(Keys.NULL)                    # so that the filename options get created
 
-elem[0].send_keys(Keys.NULL)                    # so that the filename options get created
 
+#editor.showModalWindow()
 
-editor.showModalWindow()
+#select = Select(elem[0])
+#select.select_by_index(1)
 
-select = Select(elem[0])
-select.select_by_index(1)
-
+####################################################################
 # add Java compiler test
-elem = driver.find_element_by_id("addJavaComp").click()
-elem = driver.find_elements_by_class_name('xml_test_title')
+####################################################################
+editor.add_java_compiler_test()
 # fill title
-elem[0].clear()
-elem[0].send_keys("input7777")
+editor.set_test_title(0, "input7777")
+editor.set_jct_public(0, "False")
 
+
+####################################################################
 # add Java JUnit test
-elem = driver.find_element_by_id("addJavaJunit").click()
-# fill description
-elem = driver.find_elements_by_class_name('xml_pr_configDescription')
-elem[0].send_keys("input8888")
+####################################################################
+# add Java JUnit test
+editor.add_junit_test()
+editor.set_junit_description(0,"input8888" )
+editor.set_test_title(1, "JUnit Test #0")
+
+editor.set_junit_test_class(0, "inputAAAA")
 
 # fill test file name
-elem = driver.find_elements_by_class_name("xml_test_filename")
-elem[1].send_keys(Keys.NULL)                    # so that the filename options get created
+#elem = driver.find_elements_by_class_name("xml_test_filename")
+#elem[1].send_keys(Keys.NULL)                    # so that the filename options get created
+#editor.showModalWindow()
+#select = Select(elem[1])
+#select.select_by_index(1)
 
-editor.showModalWindow()
+####################################################################
+# add CHECKSTYLE test
+####################################################################
+editor.add_checkstyle()
+editor.set_test_title(2, "input9999")
 
-select = Select(elem[1])
-select.select_by_index(1)
+#elem = driver.find_elements_by_class_name("xml_test_filename")
+#elem[2].send_keys(Keys.NULL)                    # so that the filename options get created
 
-elem = driver.find_element_by_id("addCheckStyle").click()
-elem = driver.find_elements_by_class_name('xml_test_title')
-elem[2].clear()
-elem[2].send_keys("input9999")
+#editor.showModalWindow()
 
-elem = driver.find_elements_by_class_name("xml_test_filename")
-elem[2].send_keys(Keys.NULL)                    # so that the filename options get created
+#select = Select(elem[2])
+#select.select_by_index(1)
 
-editor.showModalWindow()
 
-select = Select(elem[2])
-select.select_by_index(1)
-
-elem = driver.find_elements_by_class_name('xml_ju_mainclass')
-elem[0].send_keys("inputAAAA")
-
-select = Select(driver.find_element_by_class_name("xml_pr_public"))
-select.select_by_visible_text("False")
+####################################################################
 
 elem = driver.find_element_by_id("buttonExport").click()
 
