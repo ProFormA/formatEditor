@@ -3,6 +3,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.action_chains import ActionChains
+
 import os.path
 
 import testconfig
@@ -144,15 +146,39 @@ def set_model_solution_comment(ms_index, text): # 0-based
     elem = driver.find_elements_by_class_name('xml_model-solution_comment')
     elem[ms_index].send_keys(text)
 
+
 def add_file_to_model_solution(ms_index, file_index):  # 0-based
     print "sorry, add_file_to_model_solution does not yet work"
     return
-    elem = driver.find_elements_by_class_name('xml_model-solution_filename')
-    # the option has to be focused on in order to fill the list!
 
+    # There seems to be a bug in the geckodriver. It does not support
+    # builder.move_to_element which we probably need here.
+    # Maybe other functions do not work either.
+
+
+    elem = driver.find_elements_by_class_name('xml_model-solution_filename')
+    # the option has to get the focus in order to fill the list!
+
+
+    # Actions(driver).moveToElement(elem[ms_index]).click().perform();
+
+
+    action = webdriver.ActionChains(driver)
+    action.move_to_element(elem[ms_index])
+    action.perform()
+    action.click()
+    action.perform()
+
+    builder = ActionChains(driver)
+    builder.move_to_element(elem[ms_index]).perform()
+    builder.click().perform()
+
+#    (elem[ms_index]).send_keys("")
     (elem[ms_index]).send_keys(Keys.NULL)
-    (elem[ms_index]).click()
+
+#    (elem[ms_index]).click()
     time.sleep(1);
+    showModalWindow()
 
     # elem = driver.find_elements_by_class_name('mediuminput xml_model-solution_filename')
     select = Select(elem[ms_index])
