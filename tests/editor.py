@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -21,6 +23,7 @@ def openChrome():
     driver = webdriver.Chrome()
     return driver
 
+
 def openFirefox():
     d = DesiredCapabilities.FIREFOX
 
@@ -42,6 +45,7 @@ def openFirefox():
         driver = webdriver.Firefox(capabilities=d)
 
     return driver
+
 
 def openEditorPage():
     the_path = os.path.dirname(os.path.abspath(__file__))
@@ -113,6 +117,14 @@ def set_prog_language(text):
 def add_file():
     elem = driver.find_element_by_id("addFile").click()
 
+# does not work! only first element is found :-(
+#def remove_file(index): # 0-based
+#    elem = driver.find_element_by_class_name('xml_file')
+#    elem[index].find_element_by_tag_name('button').click()
+#    alert = driver.switch_to.alert
+#    alert.accept()
+
+
 def remove_first_file():
     elem = driver.find_element_by_class_name('xml_file')
     elem.find_element_by_tag_name('button').click()
@@ -134,12 +146,17 @@ def set_file_class(file_index, option_index):  # 0-based
     select.select_by_index(option_index)
 
 def set_file_text(file_index, text): # 0-based
+    # DOES NOT WORK!!
     elem = driver.find_elements_by_class_name('xml_file_text')
     if codemirror:
         elem = driver.find_elements_by_class_name('CodeMirror')
 #    else:
 #        elem = driver.find_elements_by_class_name('xml_file_text')
-    elem[file_index].send_keys(text)
+
+    #elem[file_index].send_keys(text)
+    # driver.execute_script('codemirror["+ file_index +"].setValue(" + text + ")');
+
+    # driver.execute_script('setErrorMessage("hallo")') # works
 
 ####################################################################
 # MODEL SOLUTION
@@ -265,3 +282,27 @@ def add_file_to_checkstyle(cs_index, file_index):  # 0-based
 
     #select.select_by_value(value) # unfortunately does not work
     select.select_by_index(file_index)
+
+
+####################################################################
+# EXPORT/IMPORT
+####################################################################
+def export():
+    elem = driver.find_element_by_id("buttonExport").click()
+
+def import_task_xml():
+    elem = driver.find_element_by_id("buttonImport").click()
+    alert = driver.switch_to.alert
+    alert.accept()
+
+
+def get_task_xml():
+    outputarea1 = driver.find_element_by_id("output")
+    task_xml_field_value_1 = outputarea1.get_attribute('value')
+    return task_xml_field_value_1
+
+def get_lon_capa_problem():
+    outputarea2 = driver.find_element_by_id("output2")
+    lon_capa_problem_field_value_1 = outputarea2.get_attribute('value')
+    return lon_capa_problem_field_value_1
+
