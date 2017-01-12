@@ -306,3 +306,51 @@ def get_lon_capa_problem():
     lon_capa_problem_field_value_1 = outputarea2.get_attribute('value')
     return lon_capa_problem_field_value_1
 
+import difflib
+import pprint
+
+
+from xml.dom.minidom import parse, parseString
+
+def compare_without_uuid(file1, file2):
+    # convert files to pretty printed files
+    dom1 = parse(file1)  # parse an XML file by name
+
+    # replace uuid by 'unknown'
+    for subelement in dom1.getElementsByTagName("task"):
+        if subelement.hasAttribute("uuid"):
+            subelement.setAttribute('uuid', 'unknown')
+
+
+    f = open(file1 + ".tmp", 'w')
+    f.write(dom1.toprettyxml(indent=" "))
+    f.close()
+
+    dom2 = parse(file2)  # parse an XML file by name
+
+    # replace uuid by 'unknown'
+    for subelement in dom2.getElementsByTagName("task"):
+        if subelement.hasAttribute("uuid"):
+            subelement.setAttribute('uuid', 'unknown')
+
+    f = open(file2 + ".tmp", 'w')
+    f.write(dom2.toprettyxml(indent=" "))
+    f.close()
+
+    # write diff with pretty printed files to new file
+    f1 = open(file1 + ".tmp", 'r')
+    f2 = open(file2 + ".tmp", 'r')
+
+    f = open("diff.tmp", 'w')
+    for line in difflib.ndiff(f1.readlines(), f2.readlines()):
+        if line.startswith('+ ') or line.startswith('- ') or line.startswith('? '):
+            f.write(line)
+    f.close()
+
+    statinfo = os.stat("diff.tmp")
+    if statinfo.st_size > 0:
+        return False
+
+    return True
+
+
