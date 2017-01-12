@@ -96,7 +96,8 @@ from selenium.webdriver.support.ui import Select
 import editor
 
 # open browser
-driver = editor.openBrowser()
+#driver = editor.openFirefox()
+driver = editor.openChrome()
 editor.init(driver)
 # with editor page
 editor.openEditorPage()
@@ -180,25 +181,6 @@ editor.set_model_solution_comment(1, "model solution #1")
 editor.add_file_to_model_solution(0, 2)
 editor.add_file_to_model_solution(1, 1)
 
-# does not work:
-#elem = driver.find_elements_by_class_name("xml_model-solution_filename")
-
-# geht alles nicht!!!
-##select = Select(driver.find_elements_by_class_name('xml_model-solution_filename'))
-## select by visible text
-##select.select_by_visible_text('Banana')
-## select by value
-##select.select_by_value('1')
-
-
-#elem[0].send_keys(Keys.NULL)                    # so that the filename options get created
-
-
-#editor.showModalWindow()
-
-#select = Select(elem[0])
-#select.select_by_index(1)
-
 ####################################################################
 # add Java compiler test
 ####################################################################
@@ -211,34 +193,29 @@ editor.set_jct_public(0, "False")
 ####################################################################
 # add Java JUnit test
 ####################################################################
-# add Java JUnit test
 editor.add_junit_test()
 editor.set_junit_description(0,"input8888" )
 editor.set_test_title(1, "JUnit Test #0")
 
 editor.set_junit_test_class(0, "inputAAAA")
 
-# fill test file name
-#elem = driver.find_elements_by_class_name("xml_test_filename")
-#elem[1].send_keys(Keys.NULL)                    # so that the filename options get created
-#editor.showModalWindow()
-#select = Select(elem[1])
-#select.select_by_index(1)
+# Achtung! Index!
+# Alle Tests haben ein Fileref-Feld. Der Index muss entsprechend angepasst werden.
+# Compiler test hat auch ein solches Feld, was
+# aber nicht sichtbar ist. Es zählt aber mit!!
+editor.add_file_to_junit(1, 1)
+
 
 ####################################################################
 # add CHECKSTYLE test
 ####################################################################
 editor.add_checkstyle()
 editor.set_test_title(2, "input9999")
-
-#elem = driver.find_elements_by_class_name("xml_test_filename")
-#elem[2].send_keys(Keys.NULL)                    # so that the filename options get created
-
-#editor.showModalWindow()
-
-#select = Select(elem[2])
-#select.select_by_index(1)
-
+# Achtung! Index!
+# Alle Tests haben ein Fileref-Feld. Der Index muss entsprechend angepasst werden.
+# Compiler test hat auch ein solches Feld, was
+# aber nicht sichtbar ist. Es zählt aber mit!!
+editor.add_file_to_checkstyle(2, 1)
 
 ####################################################################
 

@@ -11,8 +11,9 @@ Installation
   cmd -> cd c:\....\Python..\scripts
          pip install selenium
 
-- install geckodriver (https://github.com/mozilla/geckodriver/releases) and add path to PATH variable
+- for FIREFOX: install geckodriver (https://github.com/mozilla/geckodriver/releases) and add path to PATH variable
   (you can also copy the geckodriver into the python directory without modifying PATH variable)
 
-- configuration of geckodriver: 
-  TBD
+- for CHROME: install chromedriver (https://chromedriver.storage.googleapis.com/index.html?path=2.27/) and add path to PATH variable
+  (you can also copy the chromedriver into the python directory without modifying PATH variable)
+

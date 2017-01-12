@@ -14,7 +14,14 @@ driver = 0
 codemirror = True
 
 
-def openBrowser():
+def openChrome():
+    # chromedriver = "/Users/adam/Downloads/chromedriver"
+    # os.environ["webdriver.chrome.driver"] = chromedriver
+    # driver = webdriver.Chrome(chromedriver)
+    driver = webdriver.Chrome()
+    return driver
+
+def openFirefox():
     d = DesiredCapabilities.FIREFOX
 
     usr_bin_firefox = "/usr/bin/firefox"
@@ -148,35 +155,13 @@ def set_model_solution_comment(ms_index, text): # 0-based
 
 
 def add_file_to_model_solution(ms_index, file_index):  # 0-based
-    print "sorry, add_file_to_model_solution does not yet work"
-    return
-
-    # There seems to be a bug in the geckodriver. It does not support
-    # builder.move_to_element which we probably need here.
-    # Maybe other functions do not work either.
-
+    # There seems to be a bug in the geckodriver:
+    # The following code does not run with Firefox!
 
     elem = driver.find_elements_by_class_name('xml_model-solution_filename')
+
     # the option has to get the focus in order to fill the list!
-
-
-    # Actions(driver).moveToElement(elem[ms_index]).click().perform();
-
-
-    action = webdriver.ActionChains(driver)
-    action.move_to_element(elem[ms_index])
-    action.perform()
-    action.click()
-    action.perform()
-
-    builder = ActionChains(driver)
-    builder.move_to_element(elem[ms_index]).perform()
-    builder.click().perform()
-
-#    (elem[ms_index]).send_keys("")
     (elem[ms_index]).send_keys(Keys.NULL)
-
-#    (elem[ms_index]).click()
     time.sleep(1);
     showModalWindow()
 
@@ -231,8 +216,52 @@ def set_junit_test_class(junit_index, classtext):
     elem = driver.find_elements_by_class_name('xml_ju_mainclass')
     elem[junit_index].send_keys(classtext)
 
+# Achtung! Index!
+# Alle Tests haben ein Fileref-Feld. Der Index muss entsprechend angepasst werden.
+# Compiler test hat auch ein solches Feld, was
+# aber nicht sichtbar ist. Es zählt aber mit!!
+def add_file_to_junit(junit_index, file_index):  # 0-based
+    # There seems to be a bug in the geckodriver:
+    # The following code does not run with Firefox!
+    elem = driver.find_elements_by_class_name('xml_test_filename')
+
+    # the option has to get the focus in order to fill the list!
+    (elem[junit_index]).send_keys(Keys.NULL)
+    time.sleep(1);
+    showModalWindow()
+
+    # elem = driver.find_elements_by_class_name('mediuminput xml_model-solution_filename')
+    select = Select(elem[junit_index])
+
+    select.select_by_index(0)
+
+    #select.select_by_value(value) # unfortunately does not work
+    select.select_by_index(file_index)
+
 ####################################################################
 # CHECKSTYLE TEST
 ####################################################################
 def add_checkstyle():
     elem = driver.find_element_by_id("addCheckStyle").click()
+
+# Achtung! Index!
+# Alle Tests haben ein Fileref-Feld. Der Index muss entsprechend angepasst werden.
+# Compiler test hat auch ein solches Feld, was
+# aber nicht sichtbar ist. Es zählt aber mit!!
+def add_file_to_checkstyle(cs_index, file_index):  # 0-based
+    # There seems to be a bug in the geckodriver:
+    # The following code does not run with Firefox!
+    elem = driver.find_elements_by_class_name('xml_test_filename')
+
+    # the option has to get the focus in order to fill the list!
+    (elem[cs_index]).send_keys(Keys.NULL)
+    time.sleep(1);
+    showModalWindow()
+
+    # elem = driver.find_elements_by_class_name('mediuminput xml_model-solution_filename')
+    select = Select(elem[cs_index])
+
+    select.select_by_index(0)
+
+    #select.select_by_value(value) # unfortunately does not work
+    select.select_by_index(file_index)
