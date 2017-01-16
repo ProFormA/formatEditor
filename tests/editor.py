@@ -206,17 +206,24 @@ def set_test_title(jct_index, text): # 0-based
     elem[jct_index].clear()
     elem[jct_index].send_keys(text)
 
+def set_test_public(test_index, public):
+    elem = driver.find_elements_by_class_name('xml_pr_public')
+    select = Select(elem[test_index])
+    #select.select_by_value(value) # unfortunately does not work
+    select.select_by_visible_text(public)
+
+
+def set_test_required(test_index, required):
+    elem = driver.find_elements_by_class_name('xml_pr_required')
+    select = Select(elem[test_index])
+    #select.select_by_value(value) # unfortunately does not work
+    select.select_by_visible_text(required)
+
 ####################################################################
 # JAVA COMPILER TEST
 ####################################################################
 def add_java_compiler_test():
     elem = driver.find_element_by_id("addJavaComp").click()
-
-def set_jct_public(jct_index, public):
-    elem = driver.find_elements_by_class_name('xml_pr_public')
-    select = Select(elem[jct_index])
-    #select.select_by_value(value) # unfortunately does not work
-    select.select_by_visible_text(public)
 
 
 #    select = Select(driver.find_element_by_class_name("xml_pr_public"))
@@ -289,11 +296,6 @@ def add_file_to_junit(junit_index, file_index):  # 0-based
     select.select_by_index(file_index)
 
 
-def set_junit_public(junit_index, public):
-    elem = driver.find_elements_by_class_name('xml_pr_public')
-    select = Select(elem[junit_index])
-    select.select_by_visible_text(public)
-
 def set_junit_required(junit_index, required):
     elem = driver.find_elements_by_class_name('xml_pr_required')
     select = Select(elem[junit_index])
@@ -355,18 +357,7 @@ def set_cs_max_warnings(cs_index, max_warnings):
 
 
 
-def set_test_public(test_index, public):
-    elem = driver.find_elements_by_class_name('xml_pr_public')
-    select = Select(elem[test_index])
-    #select.select_by_value(value) # unfortunately does not work
-    select.select_by_visible_text(public)
 
-
-def set_test_required(test_index, required):
-    elem = driver.find_elements_by_class_name('xml_pr_required')
-    select = Select(elem[test_index])
-    #select.select_by_value(value) # unfortunately does not work
-    select.select_by_visible_text(required)
 
 
 ####################################################################
