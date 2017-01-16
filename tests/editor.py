@@ -305,6 +305,8 @@ def set_junit_version(junit_index, version):
     select.select_by_index(version)
 
 
+# Attention! The input field is read-only! So you cannot
+# set this value via test!
 def set_junit_fileref2(junit_index, fileref_number):
     fileref_index = 1 # fileref 1 and fileref2 use the same class!
     elem = driver.find_elements_by_class_name('xml_test_fileref')
@@ -338,6 +340,33 @@ def add_file_to_checkstyle(cs_index, file_index):  # 0-based
 
     #select.select_by_value(value) # unfortunately does not work
     select.select_by_index(file_index)
+
+
+# only one version can be selected (=> no test needed)
+def set_cs_version(cs_index, version):
+    elem = driver.find_elements_by_class_name('xml_pr_CS_version')
+    select = Select(elem[cs_index])
+    select.select_by_index(version)
+
+def set_cs_max_warnings(cs_index, max_warnings):
+    elem = driver.find_elements_by_class_name('xml_pr_CS_warnings')
+    (elem[cs_index]).clear()
+    (elem[cs_index]).send_keys(max_warnings)
+
+
+
+def set_test_public(test_index, public):
+    elem = driver.find_elements_by_class_name('xml_pr_public')
+    select = Select(elem[test_index])
+    #select.select_by_value(value) # unfortunately does not work
+    select.select_by_visible_text(public)
+
+
+def set_test_required(test_index, required):
+    elem = driver.find_elements_by_class_name('xml_pr_required')
+    select = Select(elem[test_index])
+    #select.select_by_value(value) # unfortunately does not work
+    select.select_by_visible_text(required)
 
 
 ####################################################################

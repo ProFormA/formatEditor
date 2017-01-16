@@ -69,9 +69,9 @@ def check_task_xml(elemOutput):
       print 'Not found: junit description # 0'
 
    try:
-      assert 'title>input9999</title>' in elemOutput
+      assert 'title>checkstyle test title #0</title>' in elemOutput
    except AssertionError:
-      print 'Not found: input9999'
+      print 'Not found: checkstyle test title #0'
 
    try:
       assert '<praktomat:public>False</praktomat:public>' in elemOutput
@@ -236,45 +236,49 @@ editor.add_junit_test()
 editor.set_junit_description(0,"junit description # 0" )
 editor.add_file_to_junit(counter_test_index, 1)
 editor.set_test_title(counter_test_index, "JUnit Test #0")
-editor.set_junit_test_class(0, "inputAAAA")
+editor.set_junit_test_class(0, "JUNIT test class #0")
 editor.set_junit_public(counter_test_index, "False")
 editor.set_junit_required(counter_test_index, "False")
 editor.set_junit_version(0, 1)
-editor.set_junit_fileref2(counter_test_index, "1")
+# editor.set_junit_fileref2(counter_test_index, "1")
 
 counter_test_index = counter_test_index + 1
 
 # fill JUnit test #1
 editor.set_junit_description(1,"junit description # 1" )
-# Achtung! Index!
-# Alle Tests haben ein Fileref-Feld. Der Index muss entsprechend angepasst werden.
-# Compiler test hat auch ein solches Feld, was
-# aber nicht sichtbar ist. Es zählt aber mit!!
 editor.add_file_to_junit(counter_test_index, 3)
+editor.set_test_title(counter_test_index, "JUnit Test #1")
+editor.set_junit_test_class(1, "JUNIT test class #1")
 editor.set_junit_public(counter_test_index, "True")
 editor.set_junit_required(counter_test_index, "True")
 editor.set_junit_version(1, 0)
-editor.set_junit_fileref2(counter_test_index, "2")
+# editor.set_junit_fileref2(counter_test_index, "2")
 
 
 counter_test_index = counter_test_index + 1
-
-
 
 
 ####################################################################
 # add CHECKSTYLE test
 ####################################################################
 editor.add_checkstyle()
+editor.add_checkstyle()
 
-editor.set_test_title(counter_test_index, "input9999")
-
-# Achtung! Index!
-# Alle Tests haben ein Fileref-Feld. Der Index muss entsprechend angepasst werden.
-# Compiler test hat auch ein solches Feld, was
-# aber nicht sichtbar ist. Es zählt aber mit!!
+editor.set_test_title(counter_test_index, "checkstyle test title #0")
+editor.set_test_public(counter_test_index, "False")
+editor.set_test_required(counter_test_index, "False")
+editor.set_cs_version(0, 0)
+editor.set_cs_max_warnings(0, "2")
 editor.add_file_to_checkstyle(counter_test_index, 4)
+counter_test_index = counter_test_index + 1
 
+
+editor.set_test_title(counter_test_index, "checkstyle test title #1")
+editor.set_test_public(counter_test_index, "True")
+editor.set_test_required(counter_test_index, "True")
+editor.set_cs_version(1, 0)
+editor.set_cs_max_warnings(1, "0")
+editor.add_file_to_checkstyle(counter_test_index, 4)
 counter_test_index = counter_test_index + 1
 
 
