@@ -373,6 +373,28 @@ import pprint
 
 from xml.dom.minidom import parse, parseString
 
+# comparison for problem file
+def is_file1_equal_to_file2(file1, file2):
+    f1 = open(file1, 'r')
+    f2 = open(file2, 'r')
+
+    diff_file = "diff_" + file1 + ".tmp"
+    f = open(diff_file, 'w')
+    for line in difflib.ndiff(f1.readlines(), f2.readlines()):
+        if line.startswith('+ ') or line.startswith('- ') or line.startswith('? '):
+            f.write(line)
+    f.close()
+
+    statinfo = os.stat(diff_file)
+    if statinfo.st_size > 0:
+        return False
+
+    return True
+
+
+
+# comparison for task.xml file
+# does not yet work properly because pretty printing is not working!
 def compare_without_uuid(file1, file2):
     # convert files to pretty printed files
     dom1 = parse(file1)  # parse an XML file by name

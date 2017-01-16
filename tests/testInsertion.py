@@ -307,7 +307,7 @@ text_file.write(task_xml_field_value_1)
 text_file.close()
 
 
-text_file = open("problem_1.xml", "w")
+text_file = open("problem_1.txt", "w")
 text_file.write(lon_capa_problem_field_value_1)
 text_file.close()
 
@@ -331,15 +331,20 @@ text_file = open("task_2.xml", "w")
 text_file.write(task_xml_field_value_2)
 text_file.close()
 
-text_file = open("problem_2.xml", "w")
+text_file = open("problem_2.txt", "w")
 text_file.write(lon_capa_problem_field_value_2)
 text_file.close()
 
 
-if editor.compare_without_uuid("task_1.xml", "task_2.xml"):
-   print "task_1.xml equals task_2.xml (uiid is not relevant)"
+if editor.is_file1_equal_to_file2("reference.problem", "problem_1.txt"):
+   print "PASSED: problem file output"
 else:
-   print "task_1.xml does not match task_2.xml"
+   print "FAILED: problem file is not ok!"
+
+if editor.compare_without_uuid("task_1.xml", "task_2.xml"):
+   print "PASSED: task.xml file output"
+else:
+   print "FAILED: task_1.xml does not match task_2.xml"
 
 driver.close()
 print "test finished"
