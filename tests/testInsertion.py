@@ -44,9 +44,9 @@ def check_task_xml(elemOutput):
       print 'Not found: proglang version="1.8">java</proglang'
 
    try:
-      assert 'filename6666.java' in elemOutput
+      assert 'file1.java' in elemOutput
    except AssertionError:
-      print 'Not found: filename6666.java'
+      print 'Not found: file1.java'
 
    try:
       assert 'id="2" type="embedded"' in elemOutput
@@ -145,16 +145,20 @@ editor.add_file()
 editor.add_file()
 
 # fill filename
-editor.set_filename(0, "filename5555.java")
-editor.set_filename(1, "filename6666.java")
-editor.set_filename(2, "filename7.java")
-editor.set_filename(3, "filename8.java")
-editor.set_filename(4, "filename9.java")
-editor.set_filename(5, "filename10.java")
+editor.set_filename(0, "file0.java")
+editor.set_filename(1, "file1.java")
+editor.set_filename(2, "file2.java")
+editor.set_filename(3, "file2.java")
+editor.set_filename(4, "file4.java")
+editor.set_filename(5, "file5.java")
 
 # fill file comment
-editor.set_file_comment(0, "comment for file filename5555.java")
-editor.set_file_comment(1, "comment for file filename6666.java")
+editor.set_file_comment(0, "comment for file file0.java")
+editor.set_file_comment(1, "comment for file file1.java")
+editor.set_file_comment(2, "comment for file file2.java")
+editor.set_file_comment(3, "comment for file file3.java")
+editor.set_file_comment(4, "comment for file file4.java")
+editor.set_file_comment(5, "comment for file file5.java")
 
 # set file class
 editor.set_file_class(0, 0)
