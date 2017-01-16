@@ -166,11 +166,15 @@ editor.set_file_class(5, 0)
 
 # fill file text
 # does not work yet
-editor.set_file_text(1, "hallo")
+editor.set_file_text(1, "// dummy file text 1")
+editor.set_file_text(2, "// dummy file text #2")
+# does not work with export!!
+#editor.set_file_text(3, "// deutsche Umlaute öäüß in File 3")
+editor.set_file_text(3, "// TODO: deutsche Umlautein File 3")
+editor.set_file_text(4, "int i = 0; // in File 4")
+editor.set_file_text(5, "some text in file #5")
 
-#editor.set_file_text(0, "// dummy file text")
-#editor.set_file_text(1, "// dummy file text #2")
-###editor.set_file_text(1, "// deutsche Umlaute öäüß")
+# what shall I do with newline?
 ###editor.set_file_text(2, "int i = 0;\\nint j = 1;")
 
 

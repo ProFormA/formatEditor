@@ -146,17 +146,16 @@ def set_file_class(file_index, option_index):  # 0-based
     select.select_by_index(option_index)
 
 def set_file_text(file_index, text): # 0-based
-    # DOES NOT WORK!!
     elem = driver.find_elements_by_class_name('xml_file_text')
     if codemirror:
-        elem = driver.find_elements_by_class_name('CodeMirror')
-#    else:
-#        elem = driver.find_elements_by_class_name('xml_file_text')
+        command = 'codemirror['+ str(file_index) +'].setValue("' + text + '")'
+        print command
+        driver.execute_script(command);
+    else:
+        # never ever tested!!
+        elem = driver.find_elements_by_class_name('xml_file_text')
+        elem[file_index].send_keys(text)
 
-    #elem[file_index].send_keys(text)
-    # driver.execute_script('codemirror["+ file_index +"].setValue(" + text + ")');
-
-    # driver.execute_script('setErrorMessage("hallo")') # works
 
 ####################################################################
 # MODEL SOLUTION
