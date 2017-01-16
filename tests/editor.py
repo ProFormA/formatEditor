@@ -191,6 +191,13 @@ def add_file_to_model_solution(ms_index, file_index):  # 0-based
     select.select_by_index(file_index)
 
 
+
+def set_model_solution_fileref2(ms_index, filefer_number):
+    fileref_index = 1 # fileref 1 and fileref2 use the same class!
+    elem = driver.find_elements_by_class_name('xml_model-solution_fileref')
+    elem[(ms_index * 2) + fileref_index].send_keys(filefer_number)
+
+
 ####################################################################
 # TEST
 ####################################################################

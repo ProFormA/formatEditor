@@ -136,7 +136,8 @@ editor.set_prog_language(prog_lang)
 # fill FILES
 ####################################################################
 
-# add 5 new files
+# add 6 new files
+editor.add_file()
 editor.add_file()
 editor.add_file()
 editor.add_file()
@@ -149,6 +150,7 @@ editor.set_filename(1, "filename6666.java")
 editor.set_filename(2, "filename7.java")
 editor.set_filename(3, "filename8.java")
 editor.set_filename(4, "filename9.java")
+editor.set_filename(5, "filename10.java")
 
 # fill file comment
 editor.set_file_comment(0, "comment for file filename5555.java")
@@ -160,13 +162,12 @@ editor.set_file_class(1, 1)
 editor.set_file_class(2, 2)
 editor.set_file_class(3, 3)
 editor.set_file_class(4, 4)
-
-editor.set_file_text(1, "hallo")
+editor.set_file_class(5, 0)
 
 # fill file text
-# does not work, raises exception (element not visible)
-# elem = driver.find_elements_by_class_name('xml_file_text')
-# elem[0].send_keys("//dummy file text")
+# does not work yet
+editor.set_file_text(1, "hallo")
+
 #editor.set_file_text(0, "// dummy file text")
 #editor.set_file_text(1, "// dummy file text #2")
 ###editor.set_file_text(1, "// deutsche Umlaute öäüß")
@@ -196,6 +197,8 @@ editor.set_model_solution_comment(1, "model solution #1")
 
 editor.add_file_to_model_solution(0, 2)
 editor.add_file_to_model_solution(1, 1)
+
+editor.set_model_solution_fileref2(1, "4")
 
 ####################################################################
 # add Java compiler test
