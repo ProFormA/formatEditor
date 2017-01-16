@@ -222,6 +222,32 @@ def set_jct_public(jct_index, public):
 #    select = Select(driver.find_element_by_class_name("xml_pr_public"))
 #    select.select_by_visible_text("False")
 
+def set_jct_required(jct_index, required):
+    elem = driver.find_elements_by_class_name('xml_pr_required')
+    select = Select(elem[jct_index])
+    #select.select_by_value(value) # unfortunately does not work
+    select.select_by_visible_text(required)
+
+
+def set_jct_flags(jct_index, flags): # 0-based
+    elem = driver.find_elements_by_class_name('xml_pr_CompilerFlags')
+    elem[jct_index].clear()
+    elem[jct_index].send_keys(flags)
+
+def set_jct_output_flags(jct_index, flags): # 0-based
+    elem = driver.find_elements_by_class_name('xml_pr_CompilerOutputFlags')
+    elem[jct_index].clear()
+    elem[jct_index].send_keys(flags)
+
+def set_jct_libs(jct_index, libs): # 0-based
+    elem = driver.find_elements_by_class_name('xml_pr_CompilerLibs')
+    elem[jct_index].clear()
+    elem[jct_index].send_keys(libs)
+
+def set_jct_file_pattern(jct_index, pattern): # 0-based
+    elem = driver.find_elements_by_class_name('xml_pr_CompilerFPatt')
+    elem[jct_index].clear()
+    elem[jct_index].send_keys(pattern)
 
 
 ####################################################################

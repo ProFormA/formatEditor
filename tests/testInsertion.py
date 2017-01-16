@@ -59,14 +59,14 @@ def check_task_xml(elemOutput):
       print 'Not found: model solution #0'
 
    try:
-      assert '<title>input7777</title>' in elemOutput
+      assert '<title>java compiler test title #0</title>' in elemOutput
    except AssertionError:
-      print 'Not found: <title>input7777</title>'
+      print 'Not found: <title>java compiler test title #0</title>'
 
    try:
-      assert 'Description>input8888</praktomat:config-testDescription>' in elemOutput
+      assert 'Description>junit description # 0</praktomat:config-testDescription>' in elemOutput
    except AssertionError:
-      print 'Not found: input8888'
+      print 'Not found: junit description # 0'
 
    try:
       assert 'title>input9999</title>' in elemOutput
@@ -203,18 +203,34 @@ editor.set_model_solution_fileref2(1, "4")
 ####################################################################
 # add Java compiler test
 ####################################################################
+# test titles use common class name :-(
+counter_test_title_index = 0
+
+editor.add_java_compiler_test()
 editor.add_java_compiler_test()
 # fill title
-editor.set_test_title(0, "input7777")
+editor.set_test_title(counter_test_title_index, "java compiler test title #0")
+counter_test_title_index = counter_test_title_index + 1
+editor.set_test_title(counter_test_title_index, "compiler test 1")
+counter_test_title_index = counter_test_title_index + 1
+
 editor.set_jct_public(0, "False")
+
+editor.set_jct_required(0, "False")
+editor.set_jct_flags(0, "flags")
+editor.set_jct_output_flags(0, "no_output_flags")
+editor.set_jct_libs(0, "selenium")
+editor.set_jct_file_pattern(0, "*.java")
+
 
 
 ####################################################################
 # add Java JUnit test
 ####################################################################
 editor.add_junit_test()
-editor.set_junit_description(0,"input8888" )
-editor.set_test_title(1, "JUnit Test #0")
+editor.set_junit_description(0,"junit description # 0" )
+editor.set_test_title(counter_test_title_index, "JUnit Test #0")
+counter_test_title_index = counter_test_title_index + 1
 
 editor.set_junit_test_class(0, "inputAAAA")
 
@@ -222,19 +238,21 @@ editor.set_junit_test_class(0, "inputAAAA")
 # Alle Tests haben ein Fileref-Feld. Der Index muss entsprechend angepasst werden.
 # Compiler test hat auch ein solches Feld, was
 # aber nicht sichtbar ist. Es zählt aber mit!!
-editor.add_file_to_junit(1, 3)
+editor.add_file_to_junit(2, 3)
 
 
 ####################################################################
 # add CHECKSTYLE test
 ####################################################################
 editor.add_checkstyle()
-editor.set_test_title(2, "input9999")
+editor.set_test_title(counter_test_title_index, "input9999")
+counter_test_title_index = counter_test_title_index + 1
+
 # Achtung! Index!
 # Alle Tests haben ein Fileref-Feld. Der Index muss entsprechend angepasst werden.
 # Compiler test hat auch ein solches Feld, was
 # aber nicht sichtbar ist. Es zählt aber mit!!
-editor.add_file_to_checkstyle(2, 4)
+editor.add_file_to_checkstyle(3, 4)
 
 ####################################################################
 ####################################################################
