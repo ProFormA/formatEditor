@@ -149,7 +149,7 @@ def set_file_text(file_index, text): # 0-based
     elem = driver.find_elements_by_class_name('xml_file_text')
     if codemirror:
         command = 'codemirror['+ str(file_index) +'].setValue("' + text + '")'
-        print command
+        # print command
         driver.execute_script(command);
     else:
         # never ever tested!!
@@ -383,6 +383,9 @@ def compare_without_uuid(file1, file2):
             subelement.setAttribute('uuid', 'unknown')
 
 
+    # attention! The pretty printer changes the content of the file :-(
+    # So the .tmp file is wrong!
+    # TODO: search better solution!
     f = open(file1 + ".tmp", 'w')
     f.write(dom1.toprettyxml(indent=" "))
     f.close()
