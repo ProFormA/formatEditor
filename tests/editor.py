@@ -199,7 +199,7 @@ def set_model_solution_fileref2(ms_index, filefer_number):
 
 
 ####################################################################
-# TEST
+# common TEST functions
 ####################################################################
 def set_test_title(jct_index, text): # 0-based
     elem = driver.find_elements_by_class_name('xml_test_title')
@@ -224,16 +224,6 @@ def set_test_required(test_index, required):
 ####################################################################
 def add_java_compiler_test():
     elem = driver.find_element_by_id("addJavaComp").click()
-
-
-#    select = Select(driver.find_element_by_class_name("xml_pr_public"))
-#    select.select_by_visible_text("False")
-
-def set_jct_required(jct_index, required):
-    elem = driver.find_elements_by_class_name('xml_pr_required')
-    select = Select(elem[jct_index])
-    #select.select_by_value(value) # unfortunately does not work
-    select.select_by_visible_text(required)
 
 
 def set_jct_flags(jct_index, flags): # 0-based
@@ -296,10 +286,6 @@ def add_file_to_junit(junit_index, file_index):  # 0-based
     select.select_by_index(file_index)
 
 
-def set_junit_required(junit_index, required):
-    elem = driver.find_elements_by_class_name('xml_pr_required')
-    select = Select(elem[junit_index])
-    select.select_by_visible_text(required)
 
 def set_junit_version(junit_index, version):
     elem = driver.find_elements_by_class_name('xml_ju_version')
