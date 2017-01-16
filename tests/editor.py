@@ -288,6 +288,29 @@ def add_file_to_junit(junit_index, file_index):  # 0-based
     #select.select_by_value(value) # unfortunately does not work
     select.select_by_index(file_index)
 
+
+def set_junit_public(junit_index, public):
+    elem = driver.find_elements_by_class_name('xml_pr_public')
+    select = Select(elem[junit_index])
+    select.select_by_visible_text(public)
+
+def set_junit_required(junit_index, required):
+    elem = driver.find_elements_by_class_name('xml_pr_required')
+    select = Select(elem[junit_index])
+    select.select_by_visible_text(required)
+
+def set_junit_version(junit_index, version):
+    elem = driver.find_elements_by_class_name('xml_ju_version')
+    select = Select(elem[junit_index])
+    select.select_by_index(version)
+
+
+def set_junit_fileref2(junit_index, fileref_number):
+    fileref_index = 1 # fileref 1 and fileref2 use the same class!
+    elem = driver.find_elements_by_class_name('xml_test_fileref')
+    elem[(junit_index * 2) + fileref_index].send_keys(fileref_number)
+
+
 ####################################################################
 # CHECKSTYLE TEST
 ####################################################################

@@ -203,56 +203,80 @@ editor.set_model_solution_fileref2(1, "4")
 ####################################################################
 # add Java compiler test
 ####################################################################
-# test titles use common class name :-(
-counter_test_title_index = 0
+# test titles and filerefs use common class name :-(
+counter_test_index = 0
 
+# add 2 compiler tests
 editor.add_java_compiler_test()
 editor.add_java_compiler_test()
-# fill title
-editor.set_test_title(counter_test_title_index, "java compiler test title #0")
-counter_test_title_index = counter_test_title_index + 1
-editor.set_test_title(counter_test_title_index, "compiler test 1")
-counter_test_title_index = counter_test_title_index + 1
 
+# fill compiler test #0
+editor.set_test_title(counter_test_index, "java compiler test title #0")
 editor.set_jct_public(0, "False")
-
 editor.set_jct_required(0, "False")
 editor.set_jct_flags(0, "flags")
 editor.set_jct_output_flags(0, "no_output_flags")
 editor.set_jct_libs(0, "selenium")
 editor.set_jct_file_pattern(0, "*.java")
+counter_test_index = counter_test_index + 1
 
+
+# fill compiler test #1
+editor.set_test_title(counter_test_index, "compiler test 1")
+counter_test_index = counter_test_index + 1
 
 
 ####################################################################
 # add Java JUnit test
 ####################################################################
 editor.add_junit_test()
+editor.add_junit_test()
+
+# fill JUnit test #0
 editor.set_junit_description(0,"junit description # 0" )
-editor.set_test_title(counter_test_title_index, "JUnit Test #0")
-counter_test_title_index = counter_test_title_index + 1
-
+editor.add_file_to_junit(counter_test_index, 1)
+editor.set_test_title(counter_test_index, "JUnit Test #0")
 editor.set_junit_test_class(0, "inputAAAA")
+editor.set_junit_public(counter_test_index, "False")
+editor.set_junit_required(counter_test_index, "False")
+editor.set_junit_version(0, 1)
+editor.set_junit_fileref2(counter_test_index, "1")
 
+counter_test_index = counter_test_index + 1
+
+# fill JUnit test #1
+editor.set_junit_description(1,"junit description # 1" )
 # Achtung! Index!
 # Alle Tests haben ein Fileref-Feld. Der Index muss entsprechend angepasst werden.
 # Compiler test hat auch ein solches Feld, was
 # aber nicht sichtbar ist. Es zählt aber mit!!
-editor.add_file_to_junit(2, 3)
+editor.add_file_to_junit(counter_test_index, 3)
+editor.set_junit_public(counter_test_index, "True")
+editor.set_junit_required(counter_test_index, "True")
+editor.set_junit_version(1, 0)
+editor.set_junit_fileref2(counter_test_index, "2")
+
+
+counter_test_index = counter_test_index + 1
+
+
 
 
 ####################################################################
 # add CHECKSTYLE test
 ####################################################################
 editor.add_checkstyle()
-editor.set_test_title(counter_test_title_index, "input9999")
-counter_test_title_index = counter_test_title_index + 1
+
+editor.set_test_title(counter_test_index, "input9999")
 
 # Achtung! Index!
 # Alle Tests haben ein Fileref-Feld. Der Index muss entsprechend angepasst werden.
 # Compiler test hat auch ein solches Feld, was
 # aber nicht sichtbar ist. Es zählt aber mit!!
-editor.add_file_to_checkstyle(3, 4)
+editor.add_file_to_checkstyle(counter_test_index, 4)
+
+counter_test_index = counter_test_index + 1
+
 
 ####################################################################
 ####################################################################
