@@ -24,6 +24,7 @@ def check_lon_capa_problem(elemOutput):
 # clean up
 ####################################################################
 
+
 filename_task_xml_1         = "task_1.xml"
 filename_task_xml_2         = "task_2.xml"
 filename_task_xml_reference = "task_reference.xml"
@@ -31,6 +32,8 @@ filename_task_xml_reference = "task_reference.xml"
 filename_problem_1          = "problem_1.txt"
 filename_problem_2          = "problem_2.txt"
 filename_problem_reference  = "reference.problem"
+
+
 
 editor.delete_file(filename_task_xml_1)
 editor.delete_file(filename_task_xml_2)
@@ -263,6 +266,9 @@ if editor.is_file1_equal_to_file2_except_for_uuid(filename_task_xml_reference, f
    print "PASSED: task.xml output"
 else:
    print "FAILED: task.xml is not ok"
+
+# todo: XSD validation
+editor.perform_xml_lint_check(filename_task_xml_1);
 
 # reimport
 editor.import_task_xml()

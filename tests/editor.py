@@ -468,4 +468,10 @@ def is_file1_equal_to_file2_except_for_uuid(file1, file2):
 
     return True
 
+def perform_xml_lint_check(task_xml):
+    filename = "xmllint.exe"
+    if os.path.isfile(filename):
+        os.system("xmllint --noout --schema ../taskxml1.0.1.xsd " + task_xml);
 
+    pass
+    # xmllint --noout --schema schema.xsd file.xml
