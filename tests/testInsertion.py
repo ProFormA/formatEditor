@@ -10,95 +10,38 @@ lon_capa_path = "input4444/"
 language = "en"
 prog_lang = "java/1.8"
 
-# does it make sense to check the output that way?
-# better check whole task.xml manually and then recheck by file compare!
-def check_task_xml(elemOutput):
-   try:
-      assert '<description><![CDATA[' +description + ']]></description>' in elemOutput
-   except AssertionError:
-      print 'Not found: <description><![CDATA[' +description + ']]></description>'
-
-   try:
-      assert '<title>' + title + '</title>' in elemOutput
-   except AssertionError:
-      print 'Not found: <title>' + title + '</title>'
-
-   try:
-      assert 'max-size="' + filesize + '"' in elemOutput
-   except AssertionError:
-      print 'Not found: submission-restrictions max-size="' + filesize + '"'
-
-   try:
-      assert 'mime-type-regexp="' + mimetype + '"' in elemOutput
-   except AssertionError:
-      print 'Not found: mime-type-regexp=' + mimetype
-
-   try:
-      assert 'lang="' + language + '"' in elemOutput
-   except AssertionError:
-      print 'Not found: lang="' + language + '"'
-
-   try:
-      assert 'proglang version="1.8">java</proglang' in elemOutput
-   except AssertionError:
-      print 'Not found: proglang version="1.8">java</proglang'
-
-   try:
-      assert 'file1.java' in elemOutput
-   except AssertionError:
-      print 'Not found: file1.java'
-
-   try:
-      assert 'id="2" type="embedded"' in elemOutput
-   except AssertionError:
-      print 'Not found: id="2"'
-
-   try:
-      assert 'model solution #0' in elemOutput
-   except AssertionError:
-      print 'Not found: model solution #0'
-
-   try:
-      assert '<title>java compiler test title #0</title>' in elemOutput
-   except AssertionError:
-      print 'Not found: <title>java compiler test title #0</title>'
-
-   try:
-      assert 'Description>junit description # 0</praktomat:config-testDescription>' in elemOutput
-   except AssertionError:
-      print 'Not found: junit description # 0'
-
-   try:
-      assert 'title>checkstyle test title #0</title>' in elemOutput
-   except AssertionError:
-      print 'Not found: checkstyle test title #0'
-
-   try:
-      assert '<praktomat:public>False</praktomat:public>' in elemOutput
-   except AssertionError:
-      print '<praktomat:public>False<'
-   print 'check_task_xml finished'
 
 
 def check_lon_capa_problem(elemOutput):
    try:
        assert '/res/fhwf/input4444/input222.zip' in elemOutput
+       print 'PASSED: /res/fhwf/input4444/input222.zip found in LON CAPA problem file'
    except AssertionError:
-       print 'Not found: /res/fhwf/input4444/input222.zip'
-   print 'check_lon_capa_problem finished'
-       
-
-def Test2(elemOutput):
-   try:
-      assert '<title>Field erased</title>' in elemOutput.get_attribute('value')
-   except AssertionError:
-      print 'Not found: Field erased'
-   print 'Test2 finished'
-      
+       print 'FAILED: Not found: /res/fhwf/input4444/input222.zip'
 
 
+####################################################################
+# clean up
+####################################################################
+
+filename_task_xml_1         = "task_1.xml"
+filename_task_xml_2         = "task_2.xml"
+filename_task_xml_reference = "task_reference.xml"
+
+filename_problem_1          = "problem_1.txt"
+filename_problem_2          = "problem_2.txt"
+filename_problem_reference  = "reference.problem"
+
+editor.delete_file(filename_task_xml_1)
+editor.delete_file(filename_task_xml_2)
+editor.delete_file(filename_problem_1)
+editor.delete_file(filename_problem_2)
+editor.delete_temporary_files()
 
 
+####################################################################
+# start browser
+####################################################################
 
 # open browser
 #driver = editor.openFirefox()
@@ -294,57 +237,43 @@ counter_test_index = counter_test_index + 1
 ####################################################################
 ####################################################################
 
-# create field value for task.xml and LON-CAPA-problem
-editor.export()
-task_xml_field_value_1 = editor.get_task_xml()
-lon_capa_problem_field_value_1 = editor.get_lon_capa_problem()
+# C H E C K S
 
-check_task_xml(task_xml_field_value_1)
+####################################################################
+####################################################################
+####################################################################
+
+
+
+
+
+editor.export_to(filename_task_xml_1, filename_problem_1)
+
+lon_capa_problem_field_value_1 = editor.get_lon_capa_problem()
 check_lon_capa_problem(lon_capa_problem_field_value_1)
 
-text_file = open("task_1.xml", "w")
-text_file.write(task_xml_field_value_1)
-text_file.close()
 
-
-text_file = open("problem_1.txt", "w")
-text_file.write(lon_capa_problem_field_value_1)
-text_file.close()
-
-
-# reimport
-editor.import_task_xml()
-
-# reexport
-editor.export()
-
-task_xml_field_value_2 = editor.get_task_xml()
-lon_capa_problem_field_value_2 = editor.get_lon_capa_problem()
-
-if (task_xml_field_value_1 != task_xml_field_value_2):
-   print 'Task XML different after import'
-if (lon_capa_problem_field_value_1 != lon_capa_problem_field_value_2):
-   print 'LON Capa problem file different after import'
-
-
-text_file = open("task_2.xml", "w")
-text_file.write(task_xml_field_value_2)
-text_file.close()
-
-text_file = open("problem_2.txt", "w")
-text_file.write(lon_capa_problem_field_value_2)
-text_file.close()
-
-
-if editor.is_file1_equal_to_file2("reference.problem", "problem_1.txt"):
+if editor.is_file1_equal_to_file2(filename_problem_reference, filename_problem_1):
    print "PASSED: problem file output"
 else:
    print "FAILED: problem file is not ok!"
 
-if editor.compare_without_uuid("task_1.xml", "task_2.xml"):
-   print "PASSED: task.xml file output"
+
+if editor.is_file1_equal_to_file2_except_for_uuid(filename_task_xml_reference, filename_task_xml_1):
+   print "PASSED: task.xml output"
 else:
-   print "FAILED: task_1.xml does not match task_2.xml"
+   print "FAILED: task.xml is not ok"
+
+# reimport
+editor.import_task_xml()
+# reexport
+editor.export_to(filename_task_xml_2, filename_problem_2)
+
+# expect task.xml to be unchanged except for uuid
+if editor.is_file1_equal_to_file2_except_for_uuid(filename_task_xml_1, filename_task_xml_2):
+   print "PASSED: task.xml export/import test"
+else:
+   print "FAILED: task_1.xml does not match task_2.xml after reimport"
 
 driver.close()
 print "test finished"

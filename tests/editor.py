@@ -49,9 +49,9 @@ def openFirefox():
 
 def openEditorPage():
     the_path = os.path.dirname(os.path.abspath(__file__))
-    print the_path
+    # print the_path
     editor_path = the_path + "/../proformaEditor101.html"
-    print editor_path
+    # print editor_path
 
     # driver.get("proformaEditor.html")
     driver.get("file:///" + editor_path)
@@ -348,6 +348,20 @@ def set_cs_max_warnings(cs_index, max_warnings):
 ####################################################################
 # EXPORT/IMPORT
 ####################################################################
+def export_to(task_xml, lon_capa_problem):
+    export()
+    task_xml_field_value_1 = get_task_xml()
+    lon_capa_problem_field_value_1 = get_lon_capa_problem()
+
+    text_file = open(task_xml, "w")
+    text_file.write(task_xml_field_value_1)
+    text_file.close()
+
+    text_file = open(lon_capa_problem, "w")
+    text_file.write(lon_capa_problem_field_value_1)
+    text_file.close()
+
+
 def export():
     elem = driver.find_element_by_id("buttonExport").click()
 
@@ -368,12 +382,21 @@ def get_lon_capa_problem():
     return lon_capa_problem_field_value_1
 
 import difflib
-import pprint
+import glob
 
 
-from xml.dom.minidom import parse, parseString
 
-# comparison for problem file
+
+def delete_file(filename):
+    if os.path.isfile(filename):
+        os.remove(filename)
+
+def delete_temporary_files():
+    for fl in glob.glob("*.tmp"):
+        os.remove(fl)
+
+
+# compares two files
 def is_file1_equal_to_file2(file1, file2):
     f1 = open(file1, 'r')
     f2 = open(file2, 'r')
@@ -391,11 +414,17 @@ def is_file1_equal_to_file2(file1, file2):
 
     return True
 
-
+from xml.dom.minidom import parse, parseString
+#from lxml import etree
 
 # comparison for task.xml file
 # does not yet work properly because pretty printing is not working!
-def compare_without_uuid(file1, file2):
+def is_file1_equal_to_file2_except_for_uuid(file1, file2):
+
+    #x = lxml.etree.parse("filename")
+    #print lxml.etree.tostring(x, pretty_print=True)
+
+
     # convert files to pretty printed files
     dom1 = parse(file1)  # parse an XML file by name
 
