@@ -365,6 +365,11 @@ def export_to(task_xml, lon_capa_problem):
 def export():
     elem = driver.find_element_by_id("buttonExport").click()
 
+# 'download' of task.xml
+# needs more interaction...
+def export_1():
+    elem = driver.find_element_by_id("downloadOutput").click()
+
 def import_task_xml():
     elem = driver.find_element_by_id("buttonImport").click()
     alert = driver.switch_to.alert

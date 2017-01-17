@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<task xmlns:unit="urn:proforma:tests:unittest:v1" xmlns:praktomat="urn:proforma:praktomat:v0.2" xmlns="urn:proforma:task:v1.0.1" xmlns:jartest="urn:proforma:tests:jartest:v1" uuid="9d4bc45a-d862-4a65-b783-37b0a80f07c3" lang="en">
+<task xmlns:unit="urn:proforma:tests:unittest:v1" xmlns:praktomat="urn:proforma:praktomat:v0.2" xmlns="urn:proforma:task:v1.0.1" xmlns:jartest="urn:proforma:tests:jartest:v1" uuid="69c216c2-8c29-42c4-bb9f-ae5098f411df" lang="en">
     <description>
         <![CDATA[input111]]>
     </description>
@@ -14,7 +14,7 @@
         <file class="library" filename="file2.java" id="3" type="embedded" comment="comment for file file2.java">
             <![CDATA[// TODO: deutsche Umlautein File 3]]>
         </file>
-        <file class="internal-library" filename="file2.java" id="4" type="embedded" comment="comment for file file3.java">
+        <file class="internal-library" filename="file3.java" id="4" type="embedded" comment="comment for file file3.java">
             <![CDATA[int i = 0; // in File 4]]>
         </file>
         <file class="instruction" filename="file4.java" id="5" type="embedded" comment="comment for file file4.java">
@@ -25,7 +25,7 @@
     <model-solutions>
         <model-solution id="1" comment="model solution #0">
             <filerefs>
-                <fileref refid="4"/>
+                <fileref refid="3"/>
             </filerefs>
         </model-solution>
         <model-solution id="2" comment="model solution #1">

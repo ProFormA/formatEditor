@@ -94,7 +94,7 @@ editor.add_file()
 editor.set_filename(0, "file0.java")
 editor.set_filename(1, "file1.java")
 editor.set_filename(2, "file2.java")
-editor.set_filename(3, "file2.java")
+editor.set_filename(3, "file3.java")
 editor.set_filename(4, "file4.java")
 editor.set_filename(5, "file5.java")
 
@@ -248,7 +248,7 @@ counter_test_index = counter_test_index + 1
 
 
 
-
+# editor.export_1()
 
 editor.export_to(filename_task_xml_1, filename_problem_1)
 
