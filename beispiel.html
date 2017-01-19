@@ -16,6 +16,9 @@ public class HelloWorld {
 }
 </textarea>
 
+<p />
+Note that a Java file should not contain any package information which may be added by an IDE (e.g. eclipse).
+
 
 <h3>JUnit Test</h3>
 
@@ -33,6 +36,12 @@ public class HelloWorldTest extends TestCase {
     }
 }
 </textarea>
+
+<p />
+Note that the JUnit test case file <b> must not </b> contain any package information which may be added by an IDE (e.g. eclipse).  Otherwise the testcase will not compile.
+<p />
+
+The file name of the JUnit java file must match the class name of the class within the file! In the example above the file name must be 'HelloWorldTest.java'. Otherwise the testcase will not compile.
 
 <h3>Checkstyle: checking that some string does not occur</h3>
 
