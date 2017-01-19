@@ -25,13 +25,13 @@ def check_lon_capa_problem(elemOutput):
 ####################################################################
 
 
-filename_task_xml_1         = "task_1.xml"
-filename_task_xml_2         = "task_2.xml"
-filename_task_xml_reference = "task_reference.xml"
+filename_task_xml_1         = "output/task_java_1.xml"
+filename_task_xml_2         = "output/task_java_2.xml"
+filename_task_xml_reference = "output/task_java_reference.xml"
 
-filename_problem_1          = "problem_1.txt"
-filename_problem_2          = "problem_2.txt"
-filename_problem_reference  = "reference.problem"
+filename_problem_1          = "output/problem_java_1.txt"
+filename_problem_2          = "output/problem_java_2.txt"
+filename_problem_reference  = "output/problem_java_reference.txt"
 
 
 
@@ -188,7 +188,7 @@ editor.add_junit_test()
 
 # fill JUnit test #0
 editor.set_junit_description(0,"junit description # 0" )
-editor.add_file_to_junit(counter_test_index, 1)
+editor.set_test_file(counter_test_index, 1)
 editor.set_test_title(counter_test_index, "JUnit Test #0")
 editor.set_junit_test_class(0, "JUNIT test class #0")
 editor.set_test_public(counter_test_index, "False")
@@ -200,7 +200,7 @@ counter_test_index = counter_test_index + 1
 
 # fill JUnit test #1
 editor.set_junit_description(1,"junit description # 1" )
-editor.add_file_to_junit(counter_test_index, 3)
+editor.set_test_file(counter_test_index, 3)
 editor.set_test_title(counter_test_index, "JUnit Test #1")
 editor.set_junit_test_class(1, "JUNIT test class #1")
 editor.set_test_public(counter_test_index, "True")
@@ -223,7 +223,7 @@ editor.set_test_public(counter_test_index, "False")
 editor.set_test_required(counter_test_index, "False")
 editor.set_cs_version(0, 0)
 editor.set_cs_max_warnings(0, "2")
-editor.add_file_to_checkstyle(counter_test_index, 4)
+editor.set_test_file(counter_test_index, 4)
 counter_test_index = counter_test_index + 1
 
 
@@ -232,7 +232,7 @@ editor.set_test_public(counter_test_index, "True")
 editor.set_test_required(counter_test_index, "True")
 editor.set_cs_version(1, 0)
 editor.set_cs_max_warnings(1, "0")
-editor.add_file_to_checkstyle(counter_test_index, 4)
+editor.set_test_file(counter_test_index, 4)
 counter_test_index = counter_test_index + 1
 
 

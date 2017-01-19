@@ -218,6 +218,29 @@ def set_test_required(test_index, required):
     #select.select_by_value(value) # unfortunately does not work
     select.select_by_visible_text(required)
 
+
+# Achtung! Index!
+# Alle Tests haben ein Fileref-Feld. Der Index muss entsprechend angepasst werden.
+# Compiler test hat auch ein solches Feld, was
+# aber nicht sichtbar ist. Es zählt aber mit!!
+def set_test_file(test_index, file_index):  # 0-based
+    # There seems to be a bug in the geckodriver:
+    # The following code does not run with Firefox!
+    elem = driver.find_elements_by_class_name('xml_test_filename')
+
+    # the option has to get the focus in order to fill the list!
+    (elem[test_index]).send_keys(Keys.NULL)
+    time.sleep(1);
+    showModalWindow()
+
+    # elem = driver.find_elements_by_class_name('mediuminput xml_model-solution_filename')
+    select = Select(elem[test_index])
+
+    select.select_by_index(0)
+
+    #select.select_by_value(value) # unfortunately does not work
+    select.select_by_index(file_index)
+
 ####################################################################
 # JAVA COMPILER TEST
 ####################################################################
@@ -262,27 +285,7 @@ def set_junit_test_class(junit_index, classtext):
     elem = driver.find_elements_by_class_name('xml_ju_mainclass')
     elem[junit_index].send_keys(classtext)
 
-# Achtung! Index!
-# Alle Tests haben ein Fileref-Feld. Der Index muss entsprechend angepasst werden.
-# Compiler test hat auch ein solches Feld, was
-# aber nicht sichtbar ist. Es zählt aber mit!!
-def add_file_to_junit(junit_index, file_index):  # 0-based
-    # There seems to be a bug in the geckodriver:
-    # The following code does not run with Firefox!
-    elem = driver.find_elements_by_class_name('xml_test_filename')
 
-    # the option has to get the focus in order to fill the list!
-    (elem[junit_index]).send_keys(Keys.NULL)
-    time.sleep(1);
-    showModalWindow()
-
-    # elem = driver.find_elements_by_class_name('mediuminput xml_model-solution_filename')
-    select = Select(elem[junit_index])
-
-    select.select_by_index(0)
-
-    #select.select_by_value(value) # unfortunately does not work
-    select.select_by_index(file_index)
 
 
 
@@ -306,29 +309,6 @@ def set_junit_fileref2(junit_index, fileref_number):
 def add_checkstyle():
     elem = driver.find_element_by_id("addCheckStyle").click()
 
-# Achtung! Index!
-# Alle Tests haben ein Fileref-Feld. Der Index muss entsprechend angepasst werden.
-# Compiler test hat auch ein solches Feld, was
-# aber nicht sichtbar ist. Es zählt aber mit!!
-def add_file_to_checkstyle(cs_index, file_index):  # 0-based
-    # There seems to be a bug in the geckodriver:
-    # The following code does not run with Firefox!
-    elem = driver.find_elements_by_class_name('xml_test_filename')
-
-    # the option has to get the focus in order to fill the list!
-    (elem[cs_index]).send_keys(Keys.NULL)
-    time.sleep(1);
-    showModalWindow()
-
-    # elem = driver.find_elements_by_class_name('mediuminput xml_model-solution_filename')
-    select = Select(elem[cs_index])
-
-    select.select_by_index(0)
-
-    #select.select_by_value(value) # unfortunately does not work
-    select.select_by_index(file_index)
-
-
 # only one version can be selected (=> no test needed)
 def set_cs_version(cs_index, version):
     elem = driver.find_elements_by_class_name('xml_pr_CS_version')
@@ -342,7 +322,11 @@ def set_cs_max_warnings(cs_index, max_warnings):
 
 
 
-
+####################################################################
+# PYTHON TEST
+####################################################################
+def add_python_test():
+    elem = driver.find_element_by_id("addPythonTest").click()
 
 
 ####################################################################
@@ -406,7 +390,7 @@ def is_file1_equal_to_file2(file1, file2):
     f1 = open(file1, 'r')
     f2 = open(file2, 'r')
 
-    diff_file = "diff_" + file1 + ".tmp"
+    diff_file = file1 + "_diff.tmp"
     f = open(diff_file, 'w')
     for line in difflib.ndiff(f1.readlines(), f2.readlines()):
         if line.startswith('+ ') or line.startswith('- ') or line.startswith('? '):
