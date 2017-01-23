@@ -103,9 +103,10 @@ function deletecounter(temphash,tempelement) {         // for fileIDs, modelSolI
  * all catch(err) statements should use this function (instead of console.log)
  */
 function setErrorMessage(errormess) {                  // setting the error console
-  $("#error-message").append("\n* " + errormess);
-  $("#error-message").css('visibility', 'visible');
-  $("#error-message").scrollTop($("#error-message")[0].scrollHeight);
+    var error_output = $("#error-message")
+    error_output.append("\n* " + errormess);
+    error_output.css('visibility', 'visible');
+    error_output.scrollTop($("#error-message")[0].scrollHeight);
 }
 function clearErrorMessage() {                         // clearing the error console
   $("#error-message").text("");
@@ -167,10 +168,10 @@ function generateUUID(){
  */
 function createMapping(schemaversion) {                // note: the maps are global variables
   function ValMap(fname,xname,pname,cdata,fcont,lelem,lattr) {
-    this.formname = fname;
-    this.xmlname = xname;
-    this.xmlpath = pname;
-    this.cdata = cdata;
+    this.formname = fname; // name in formular
+    this.xmlname = xname;  // element or attribute name in task.xml
+    this.xmlpath = pname;  // parent element in task.xml
+    this.cdata = cdata;    // create as CDATA in task.xml (bool)
     this.formcontainer = fcont;                        // ToDo: use this more ?
     this.listelem = lelem;                             // only for mapSubElemListArray,  mapAttrOfTestElems
     this.listattr = lattr;                             // only for mapSubElemListArray
@@ -365,7 +366,7 @@ $(function() {
     "class='ui-widget ui-widget-content ui-corner-all xml_file'>"+
     "<h3 class='ui-widget-header'>File<span "+
     "class='rightButton'><button onclick='remP3Check($(this));deletecounter(fileIDs,$(this));'>x</button></span></h3>"+
-    "<p><label for='xml_file_id'>ID<span class='red'>*</span>: </label>"+
+    "<p><label for='xml_file_id'>ID: </label>"+
     "<input class='tinyinput xml_file_id' value='"+tempcounter+"' readonly/>"+
     " <label for='xml_file_filename'>Filename (with extension)<span class='red'>*</span>: </label>"+
     "<input class='mediuminput xml_file_filename'/>"+
