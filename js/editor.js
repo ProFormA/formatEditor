@@ -16,6 +16,18 @@
  * Known bugs: search the code for the string "ToDo" below and check faq.html and installationFAQ.html
  */
 
+
+// constants
+var tab_page = {
+  MAIN: 0,
+  FILES: 1, // and model solution
+  TESTS: 2,
+  MANUAL: 3,
+  FAQ: 4
+};
+
+
+
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
 
@@ -554,22 +566,22 @@ $(function() {
 
   $("#addGH").click(function() {                       // the code for the buttons for adding new elements
     if (gradingHintCounter == 1) {newGH();}            // only one grading hint allowed
-    $("#tabs").tabs("option", "active", 0); });        // where this will be added
+    $("#tabs").tabs("option", "active", tab_page.MAIN); });        // where this will be added
   $("#addFile").click(function() {
     newFile(setcounter(fileIDs));
-    $("#tabs").tabs("option", "active", 1); });
+    $("#tabs").tabs("option", "active", tab_page.FILES); });
   $("#addModelsol").click(function() {
     newModelsol(setcounter(modelSolIDs));
-    $("#tabs").tabs("option", "active", 1); });
+    $("#tabs").tabs("option", "active", tab_page.FILES); });
   $("#addJavaComp").click(function() {
     newTest(setcounter(testIDs),"Java Compiler Test", TextJavaComp, "java-compilation");
-    $("#tabs").tabs("option", "active", 2); });
+    $("#tabs").tabs("option", "active", tab_page.TESTS); });
   $("#addJavaJunit").click(function() {
     newTest(setcounter(testIDs),"Java JUnit Test", TextJavaJunit, "unittest");
-    $("#tabs").tabs("option", "active", 2); });
+    $("#tabs").tabs("option", "active", tab_page.TESTS); });
   $("#addSetlX").click(function() {
     newTest(setcounter(testIDs),"SetlX Test", TextSetlX, "jartest");
-    $("#tabs").tabs("option", "active", 2); });
+    $("#tabs").tabs("option", "active", tab_page.TESTS); });
   $("#addSetlXSynt").click(function() {
     var tempnumber1 = setcounter(fileIDs);    // adding a file for the test
     newFile(tempnumber1);                     // filename: setlxsyntaxtest.stlx, content: print()
@@ -579,19 +591,19 @@ $(function() {
     newTest(tempnumber2,"SetlX Test", TextSetlX, "jartest");
     $(".xml_test_id[value='"+tempnumber2+"']").parent().find(".xml_test_fileref").first().val(tempnumber1);
     $(".xml_test_id[value='"+tempnumber2+"']").parent().parent().find(".xml_test_title").first().val("SetlX-Syntax-Test");
-    $("#tabs").tabs("option", "active", 2); });
+    $("#tabs").tabs("option", "active", tab_page.TESTS); });
   $("#addCheckStyle").click(function() {
     newTest(setcounter(testIDs),"CheckStyle Test", TextJavaCheckst, "java-checkstyle");
-    $("#tabs").tabs("option", "active", 2); });
+    $("#tabs").tabs("option", "active", tab_page.TESTS); });
   $("#addDGSetup").click(function() {
     newTest(setcounter(testIDs),"DejaGnu Setup","", "dejagnu-setup");
-    $("#tabs").tabs("option", "active", 2); });
+    $("#tabs").tabs("option", "active", tab_page.TESTS); });
   $("#addDGTester").click(function() {
     newTest(setcounter(testIDs),"DejaGnu Tester","", "dejagnu-tester");
-    $("#tabs").tabs("option", "active", 2); });
+    $("#tabs").tabs("option", "active", tab_page.TESTS); });
   $("#addPythonTest").click(function() {
     newTest(setcounter(testIDs),"Python Test","","python");
-    $("#tabs").tabs("option", "active", 2); });
+    $("#tabs").tabs("option", "active", tab_page.TESTS); });
 
 ///////////////////////////////////////////////////////// function: convertToXML
 /* This converts the form elements into the XML file.
@@ -602,7 +614,8 @@ $(function() {
  * An XML file is created and placed in the textarea. 
  * The XML file is validated against the schema.
  */
-  convertToXML = function() {
+  convertToXML = function(success) {
+    success = false;
     convertFormToXML = function(one,two,cdataBool) {
       var xmlDoc = $.parseXML('<task></task>');
       one.textContent = "";                              // delete previous content
@@ -622,30 +635,55 @@ $(function() {
     var tempdata;
     var tempvar;
     var tempXmlDoc = $.parseXML('<task></task>');
+
+    var inputField = $("#xml_description");
+    if (inputField.val() == "") {
+        setErrorMessage("Task description is empty.");
+        // switch to appropriate tab and set focus
+        $("#tabs").tabs("option", "active",  tab_page.MAIN);
+        inputField.focus();
+        return;
+    }
+
+    inputField = $("#xml_meta-data_title");
+    if (inputField.val() == "") {
+        setErrorMessage("Task title is empty.");
+        // switch to appropriate tab and set focus
+        $("#tabs").tabs("option", "active",  tab_page.MAIN);
+        inputField.focus();
+        return;
+    }
+
     if ((typeof $(".xml_file_id")[0] == "undefined") ||      //  check for missing form values
-        (typeof $(".xml_model-solution_fileref")[0] == "undefined") ||
-        ($("#xml_description").val() == "") ||
-        ($("#xml_meta-data_title").val() == "")) {
-          setErrorMessage("Error: required elements are missing. " +
+        (typeof $(".xml_model-solution_fileref")[0] == "undefined")) {
+          setErrorMessage("Required elements are missing. " +
                            "At least one model solution element and its " +
-                           "corresponding file element must be provided. " +
-                           "There must be a task description and title.");
+                           "corresponding file element must be provided. ");
          return;
     }
-    var returnvalue = 0;
+
+    var returnFromFunction = false;
     $.each($(".xml_file_filename"), function(index, item) {  // check whether filenames are provided
       if (item.value == "") {
-        setErrorMessage("All files must have names.");
-        returnvalue = 1;
+        setErrorMessage("Filename is empty.");
+        $("#tabs").tabs("option", "active",  tab_page.FILES);
+        item.focus();
+        returnFromFunction = true;
+        return;
       }
     });
+    if (returnFromFunction) return;
     $.each($(".xml_ju_mainclass"), function(index, item) {   // check whether main-class exists
       if (item.value == "") {
-        setErrorMessage("All unittest must have a designated test class.");
-        returnvalue = 1;
+          $("#tabs").tabs("option", "active",  tab_page.TESTS);
+        setErrorMessage("Name of test class is missing.");
+        item.focus();
+        returnFromFunction = true;
+        return;
       }
     });
-    if (returnvalue) { return;}
+    if (returnFromFunction)
+      return;
 
     $.each(mapSingleElements, function(index, item) {
       try {
@@ -797,9 +835,11 @@ $(function() {
       if (xsdSchemaFile == version101) {
         createLONCAPAOutput(tempvals[0],codemirror,"101"); 
       } else { 
-	createLONCAPAOutput(tempvals[0],codemirror,"old"); 
+	    createLONCAPAOutput(tempvals[0],codemirror,"old");
       }  
     }
+
+      success = true;
   };
 
 ///////////////////////////////////////////////////////// function: readXML
