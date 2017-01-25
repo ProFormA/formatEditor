@@ -439,10 +439,10 @@ $(function() {
     "class='rightButton'><button onclick='remP3($(this));deletecounter(modelSolIDs,$(this));'>x</button></span></h3>"+
     "<p><label for='xml_model-solution_id'>ID<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_model-solution_id' value='"+tempcounter+"' readonly/>"+
-    " <label for='xml_model-solution_filename'>Filename: </label>"+
+    " <label for='xml_model-solution_filename'>Filename<span class='red'>*</span>: </label>"+
     "<select class='mediuminput xml_model-solution_filename' onfocus = 'setFilenameList(this)' "+
     "onchange = 'switchFileref(this)'></select>"+
-    " <label for='xml_model-solution_fileref'>Fileref1<span class='red'>*</span>: </label>"+
+    " <label for='xml_model-solution_fileref'>Fileref1: </label>"+
     "<input class='tinyinput xml_model-solution_fileref' readonly/>"+
     " <label for='xml_model-solution_fileref'>Fileref2: </label>"+
     "<input class='tinyinput xml_model-solution_fileref'/>"+
@@ -488,7 +488,7 @@ $(function() {
     "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
     " <label for='xml_test_filename'>Filename: </label>"+
-    "<select class='shortinput xml_test_filename' onfocus = 'setFilenameList(this)' "+
+    "<select class='mediuminput xml_test_filename' onfocus = 'setFilenameList(this)' "+
     "onchange = 'switchFileref(this)'></select>"+
     " <label for='xml_test_fileref'>Fileref1<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_test_fileref' readonly/>"+
@@ -672,7 +672,21 @@ $(function() {
         return;
       }
     });
-    if (returnFromFunction) return;
+    if (returnFromFunction)
+      return;
+
+    $.each($(".xml_model-solution_filename"), function(index, item) {   // check whether referenced filenames exists
+      if (item.value == "") {
+        $("#tabs").tabs("option", "active",  tab_page.FILES);
+        setErrorMessage("Filename in model solution is missing.");
+        item.focus();
+        returnFromFunction = true;
+        return;
+      }
+    });
+    if (returnFromFunction)
+        return;
+
     $.each($(".xml_ju_mainclass"), function(index, item) {   // check whether main-class exists
       if (item.value == "") {
           $("#tabs").tabs("option", "active",  tab_page.TESTS);
