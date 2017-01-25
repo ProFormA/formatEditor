@@ -19,7 +19,7 @@
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
 
-var codeversion   = '1.0.3';                           // contains the current version of this code
+var codeversion   = '2.0.0 alpha';                     // contains the current version of this code
                                                        // these variables can be set in the calling HTML file  
 var version094;                                        // names of the xsd schema files
 var version101;
@@ -364,7 +364,7 @@ $(function() {
   newFile = function(tempcounter) {                    // create a new file HTML form element
     $("#filesection").append("<div "+
     "class='ui-widget ui-widget-content ui-corner-all xml_file'>"+
-    "<h3 class='ui-widget-header'>File<span "+
+    "<h3 class='ui-widget-header'>File #"+tempcounter+"<span "+
     "class='rightButton'><button onclick='remP3Check($(this));deletecounter(fileIDs,$(this));'>x</button></span></h3>"+
     "<p><label for='xml_file_id'>ID: </label>"+
     "<input class='tinyinput xml_file_id' value='"+tempcounter+"' readonly/>"+
@@ -388,8 +388,12 @@ $(function() {
     "<input type='file' class='file_input' onchange='readSingleFile(this)'/>" +
     "<textarea rows='3' cols='80' class='xml_file_text'"+
     "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea></p></div>");
-    $(".xml_file_id[value='"+ tempcounter +"']").parent().find(".xml_file_type").hide();
-    $(".xml_file_id[value='"+ tempcounter +"']").parent().find("label[for='xml_file_type']").hide();
+    // hide fields that exist only for technical reasons
+    var fileroot = $(".xml_file_id[value='"+ tempcounter +"']").parent();
+    fileroot.find(".xml_file_type").hide();
+    fileroot.find("label[for='xml_file_type']").hide();
+    fileroot.find(".xml_file_id").hide();
+    fileroot.find("label[for='xml_file_id']").hide();
     if (codemirrorOnOrOff == 1) { addCodemirrorElement(tempcounter); }
   };
   switchFileref = function(tempSelElem) {              // changing a filename in the drop-down changes the id
@@ -419,7 +423,7 @@ $(function() {
   newModelsol = function(tempcounter) {                // create a new model solution HTML form element
     $("#modelsolutionsection").append("<div "+
     "class='ui-widget ui-widget-content ui-corner-all xml_model-solution'>"+
-    "<h3 class='ui-widget-header'>Model solution<span "+
+    "<h3 class='ui-widget-header'>Model solution #"+tempcounter+"<span "+
     "class='rightButton'><button onclick='remP3($(this));deletecounter(modelSolIDs,$(this));'>x</button></span></h3>"+
     "<p><label for='xml_model-solution_id'>ID<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_model-solution_id' value='"+tempcounter+"' readonly/>"+
@@ -432,6 +436,10 @@ $(function() {
     "<input class='tinyinput xml_model-solution_fileref'/>"+
     "<p><label for='xml_model-solution_comment'>Comment: </label>"+
     "<input class='largeinput xml_model-solution_comment'/></p></div>");
+    // hide fields that exist only for technical reasons
+    var msroot = $(".xml_model-solution_id[value='"+ tempcounter +"']").parent().parent();
+    msroot.find(".xml_model-solution_id").hide();
+    msroot.find("label[for='xml_model-solution_id']").hide();
   };
                                                        // HTML building blocks for the tests
   var TextJavaComp = "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
@@ -463,7 +471,7 @@ $(function() {
   newTest = function(tempcounter,TestName, MoreText, TestType) { // create a new test HTML form element
     $("#testsection").append("<div "+
     "class='ui-widget ui-widget-content ui-corner-all xml_test'>"+
-    "<h3 class='ui-widget-header'>" + TestName + "<span "+
+    "<h3 class='ui-widget-header'>" + TestName + " (Test #"+tempcounter+")<span "+
     "class='rightButton'><button onclick='remP3($(this));deletecounter(testIDs,$(this));'>x</button></span></h3>"+
     "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
@@ -497,16 +505,20 @@ $(function() {
     "<option selected='selected'>True</option><option>False</option></select></p>"+
     "<p><label for='xml_test_title'>Title<span class='red'>*</span>: </label>"+
     "<input class='largeinput xml_test_title' value='"+ TestName +"'/></p>"+ MoreText + "</div>");
-    $(".xml_test_id[value='"+ tempcounter +"']").parent().find(".xml_test_type").val(TestType);
-    $(".xml_test_id[value='"+ tempcounter +"']").parent().find(".xml_test_type").hide();
-    $(".xml_test_id[value='"+ tempcounter +"']").parent().find("label[for='xml_test_type']").hide();
-    $(".xml_test_id[value='"+ tempcounter +"']").parent().find(".xml_pr_always").hide();
-    $(".xml_test_id[value='"+ tempcounter +"']").parent().find("label[for='xml_pr_always']").hide();
+      // hide fields that exist only for technical reasons
+    var testroot = $(".xml_test_id[value='"+ tempcounter +"']").parent();
+    testroot.find(".xml_test_type").val(TestType);
+    testroot.find(".xml_test_type").hide();
+    testroot.find("label[for='xml_test_type']").hide();
+    testroot.find(".xml_pr_always").hide();
+    testroot.find("label[for='xml_pr_always']").hide();
+    testroot.find(".xml_test_id").hide();
+    testroot.find("label[for='xml_test_id']").hide();
     if (TestType == "java-compilation") {
-       $(".xml_test_id[value='"+ tempcounter +"']").parent().find(".xml_test_fileref").hide();
-       $(".xml_test_id[value='"+ tempcounter +"']").parent().find("label[for='xml_test_fileref']").hide();
-       $(".xml_test_id[value='"+ tempcounter +"']").parent().find(".xml_test_filename").hide();
-       $(".xml_test_id[value='"+ tempcounter +"']").parent().find("label[for='xml_test_filename']").hide();
+        testroot.find(".xml_test_fileref").hide();
+        testroot.find("label[for='xml_test_fileref']").hide();
+        testroot.find(".xml_test_filename").hide();
+        testroot.find("label[for='xml_test_filename']").hide();
     }
   };
 
