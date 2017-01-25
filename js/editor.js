@@ -452,6 +452,8 @@ $(function() {
     var msroot = $(".xml_model-solution_id[value='"+ tempcounter +"']").parent().parent();
     msroot.find(".xml_model-solution_id").hide();
     msroot.find("label[for='xml_model-solution_id']").hide();
+    msroot.find(".xml_model-solution_fileref").first().hide();
+    msroot.find("label[for='xml_model-solution_fileref']").first().hide();
   };
                                                        // HTML building blocks for the tests
   var TextJavaComp = "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
@@ -487,10 +489,10 @@ $(function() {
     "class='rightButton'><button onclick='remP3($(this));deletecounter(testIDs,$(this));'>x</button></span></h3>"+
     "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
-    " <label for='xml_test_filename'>Filename: </label>"+
+    " <label for='xml_test_filename'>Filename<span class='red'>*</span>: </label>"+
     "<select class='mediuminput xml_test_filename' onfocus = 'setFilenameList(this)' "+
     "onchange = 'switchFileref(this)'></select>"+
-    " <label for='xml_test_fileref'>Fileref1<span class='red'>*</span>: </label>"+
+    " <label for='xml_test_fileref'>Fileref1: </label>"+
     "<input class='tinyinput xml_test_fileref' readonly/>"+
     " <label for='xml_test_fileref'>Fileref2: </label>"+
     "<input class='tinyinput xml_test_fileref' readonly/>"+
@@ -526,6 +528,8 @@ $(function() {
     testroot.find("label[for='xml_pr_always']").hide();
     testroot.find(".xml_test_id").hide();
     testroot.find("label[for='xml_test_id']").hide();
+    testroot.find(".xml_test_fileref").first().hide();
+    testroot.find("label[for='xml_test_fileref']").first().hide();
     if (TestType == "java-compilation") {
         testroot.find(".xml_test_fileref").hide();
         testroot.find("label[for='xml_test_fileref']").hide();
@@ -1027,20 +1031,24 @@ $(function() {
                    var fileid = $(itm1).find(itm2.xmlname)[0].getAttribute(itm2.listattr);
                    var fileid_obj = $("#filesection").find(".xml_file_id[value='"+ fileid +"']");
                    var filename = fileid_obj.parent().find(".xml_file_filename").val();
-
-                   $($(item.formname)[idx1cnt]).find(itm2.formname)[0].value = fileid;
+                   // set filename in item
+                   var object = $($(item.formname)[idx1cnt]);
+                   object.find(itm2.formname)[0].value = fileid;
                    if (item.formname == ".xml_test") {
                      // set filename in test
-                       var element = $($(item.formname)[idx1cnt]).find(".xml_test_filename");
+                       var element = object.find(".xml_test_filename");
                        setFilenameList(element);
                        element.val(filename).change();
 
                    } else if (item.formname == ".xml_model-solution") {
                      // set filename in model solution
-                       var element =$($(item.formname)[idx1cnt]).find(".xml_model-solution_filename");
+                       var element = object.find(".xml_model-solution_filename");
                        setFilenameList(element);
                        element.val(filename).change();
                    }
+                   // set fileref2
+                     object.find(itm2.formname)[1].value = "??";
+
 
                  } catch(err) {setErrorMessage( "problem with reading filerefs");}
                }
