@@ -1026,9 +1026,14 @@ $(function() {
             });
             $.each(mapListOfChildElems, function(idx2, itm2) {        // loop: fileref
                if ($(itm1).find(itm2.xmlname).length > 0 && item.formname == itm2.formcontainer) {
-                 try {                                                // ToDo: reads only 1. fileref
+                 try {                                                // ToDo: reads only 1. and 2. fileref
                    // retrieve filename from fileid
-                   var fileid = $(itm1).find(itm2.xmlname)[0].getAttribute(itm2.listattr);
+                   var itm1_itm2_xmlname = $(itm1).find(itm2.xmlname);
+                   var fileid = itm1_itm2_xmlname[0].getAttribute(itm2.listattr);
+                   var fileid2 = "";
+                   // read 2. fileref if available
+                   if (itm1_itm2_xmlname.size() > 1)
+                     fileid2 = itm1_itm2_xmlname[1].getAttribute(itm2.listattr);
                    var fileid_obj = $("#filesection").find(".xml_file_id[value='"+ fileid +"']");
                    var filename = fileid_obj.parent().find(".xml_file_filename").val();
                    // set filename in item
@@ -1047,7 +1052,7 @@ $(function() {
                        element.val(filename).change();
                    }
                    // set fileref2
-                     object.find(itm2.formname)[1].value = "??";
+                   object.find(itm2.formname)[1].value = fileid2;
 
 
                  } catch(err) {setErrorMessage( "problem with reading filerefs");}
