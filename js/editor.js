@@ -1023,14 +1023,37 @@ $(function() {
             $.each(mapListOfChildElems, function(idx2, itm2) {        // loop: fileref
                if ($(itm1).find(itm2.xmlname).length > 0 && item.formname == itm2.formcontainer) {
                  try {                                                // ToDo: reads only 1. fileref
-                   $($(item.formname)[idx1cnt]).find(itm2.formname)[0].value =
-                     $(itm1).find(itm2.xmlname)[0].getAttribute(itm2.listattr);
+                   // retrieve filename from fileid
+                   var fileid = $(itm1).find(itm2.xmlname)[0].getAttribute(itm2.listattr);
+                   var fileid_obj = $("#filesection").find(".xml_file_id[value='"+ fileid +"']");
+                   var filename = fileid_obj.parent().find(".xml_file_filename").val();
+
+                   $($(item.formname)[idx1cnt]).find(itm2.formname)[0].value = fileid;
+                   if (item.formname == ".xml_test") {
+                     // set filename in test
+                       var element = $($(item.formname)[idx1cnt]).find(".xml_test_filename");
+                       setFilenameList(element);
+                       element.val(filename).change();
+
+                   } else if (item.formname == ".xml_model-solution") {
+                     // set filename in model solution
+                       var element =$($(item.formname)[idx1cnt]).find(".xml_model-solution_filename");
+                       setFilenameList(element);
+                       element.val(filename).change();
+                   }
+
                  } catch(err) {setErrorMessage( "problem with reading filerefs");}
                }
             });
             idx1cnt++;
          });
       });
+
+      // Nacharbeit:
+      // zu den Filerefs die Dateinamen ergänzen!!
+        // for each fileref (1) in model solution -> suche filename
+
+
       if (xmlObject.find("proglang")[0]) {              // deal with proglang
         var tempvals1, tempvals0;
         tempvals1 = xmlObject.find("proglang")[0].getAttribute("version");
