@@ -82,13 +82,13 @@ editor.set_prog_language(prog_lang)
 # fill FILES
 ####################################################################
 
-# add 6 new files
+# add 5 new files (1 is already added by editor)
 editor.add_file()
 editor.add_file()
 editor.add_file()
 editor.add_file()
 editor.add_file()
-editor.add_file()
+# editor.add_file()
 
 # fill filename
 editor.set_filename(0, "file0.py")
@@ -143,7 +143,7 @@ editor.remove_first_file()
 ####################################################################
 
 # add model solution
-editor.add_model_solution()
+# editor.add_model_solution() # first model solution ist added by editor
 editor.add_model_solution()
 
 editor.set_model_solution_comment(0, "model solution #0")

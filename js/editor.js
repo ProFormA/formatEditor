@@ -110,6 +110,7 @@ function setcounter(temphash) {
   return tempcnter;
 }
 function deletecounter(temphash,tempelement) {         // for fileIDs, modelSolIDs, testIDs
+  //console.log('deletecounter called');
   var tempcnter;
   delete temphash[tempelement.parent().parent().parent().find('.tinyinput')[0].value];
 }
@@ -345,11 +346,23 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
 $(function() {
   $('#codeversion').text("Version "+codeversion);
   gradingHintCounter = 1;
+
   remP3 = function(bt) {bt.parent().parent().parent().remove();};   // for removing files, etc
-  remP3Check = function(bt) {                                       // ask before removing
+
+/*  remP3Check = function(bt) {                                       // ask before removing
      var remtemp = window.confirm("Do you really want to delete this?");
      if (remtemp) { bt.parent().parent().parent().remove(); }
   };
+*/
+  removeFile = function(bt) {                                       // ask before removing
+    // TODO: check if file is referenced somewhere
+    var remtemp = window.confirm("Do you really want to delete this file?");
+    if (remtemp) {
+      bt.parent().parent().parent().remove();
+      deletecounter(fileIDs,bt);
+    }
+  };
+
 
 ///////////////////////////////////////////////////////// creating new HTML form elements
   newGH = function() {                                 // create a new grading hint HTML form element
@@ -378,11 +391,12 @@ $(function() {
       readfi.readAsText(filenew);
     }
   }
+
   newFile = function(tempcounter) {                    // create a new file HTML form element
     $("#filesection").append("<div "+
     "class='ui-widget ui-widget-content ui-corner-all xml_file'>"+
     "<h3 class='ui-widget-header'>File #"+tempcounter+"<span "+
-    "class='rightButton'><button onclick='remP3Check($(this));deletecounter(fileIDs,$(this));'>x</button></span></h3>"+
+    "class='rightButton'><button onclick='removeFile($(this));'>x</button></span></h3>"+
     "<p><label for='xml_file_id'>ID: </label>"+
     "<input class='tinyinput xml_file_id' value='"+tempcounter+"' readonly/>"+
     " <label for='xml_file_filename'>Filename (with extension)<span class='red'>*</span>: </label>"+
@@ -1125,6 +1139,10 @@ $(function() {
 
 ///////////////////////////////////////////////////////// if LON-CAPA is used insert relevant form elements
   if (loncapaOnOrOff == 1) { insertLCformelements();}
+
+  // There must be at least one model solution and one file.
+  newFile(setcounter(fileIDs));
+  newModelsol(setcounter(modelSolIDs));
 });
 
 ///////////////////////////////////////////////////////// end of document ready function

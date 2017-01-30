@@ -76,7 +76,7 @@ editor.set_prog_language("java/1.8")
 # fill FILES
 ####################################################################
 
-# add 5 new files
+# add 5 new files (1 is already added by editor)
 editor.add_file()
 editor.remove_first_file()
 
@@ -84,7 +84,7 @@ editor.add_file()
 editor.add_file()
 editor.add_file()
 editor.add_file()
-editor.add_file()
+# editor.add_file()
 
 # fill filename
 editor.set_filename(0, "file0.stlx")
@@ -139,7 +139,7 @@ editor.set_file_text(5, "int i = 0; # in File 4")
 ####################################################################
 
 # add model solution
-editor.add_model_solution()
+# editor.add_model_solution() # first model solution ist added by editor
 
 editor.set_model_solution_comment(0, "model solution #0")
 editor.add_file_to_model_solution(0, 1)
