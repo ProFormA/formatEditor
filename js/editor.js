@@ -356,6 +356,7 @@ $(function() {
 */
   removeFile = function(bt) {                                       // ask before removing
     // TODO: check if file is referenced somewhere
+    // if true: cancel or remove all filenames/filerefs from model solution and test
     var remtemp = window.confirm("Do you really want to delete this file?");
     if (remtemp) {
       bt.parent().parent().parent().remove();
