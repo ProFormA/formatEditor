@@ -18,6 +18,8 @@
 
 
 // constants
+
+// TAB pages
 var tab_page = {
   MAIN: 0,
   FILES: 1, // and model solution
@@ -25,6 +27,8 @@ var tab_page = {
   MANUAL: 3,
   FAQ: 4
 };
+
+var DEBUG = false;
 
 
 
@@ -115,10 +119,11 @@ function deletecounter(temphash,tempelement) {         // for fileIDs, modelSolI
  * all catch(err) statements should use this function (instead of console.log)
  */
 function setErrorMessage(errormess) {                  // setting the error console
-    var error_output = $("#error-message")
+    var error_output = $("#error-message");
     error_output.append("\n* " + errormess);
     error_output.css('visibility', 'visible');
-    error_output.scrollTop($("#error-message")[0].scrollHeight);
+    error_output.scrollTop(error_output[0].scrollHeight);
+//    error_output.scrollTop($("#error-message")[0].scrollHeight);
 }
 function clearErrorMessage() {                         // clearing the error console
   $("#error-message").text("");
@@ -528,8 +533,12 @@ $(function() {
     testroot.find("label[for='xml_pr_always']").hide();
     testroot.find(".xml_test_id").hide();
     testroot.find("label[for='xml_test_id']").hide();
-    testroot.find(".xml_test_fileref").first().hide();
-    testroot.find("label[for='xml_test_fileref']").first().hide();
+    // hide first fileref since we have a filename instead
+    // testroot.find(".xml_test_fileref").first().hide();
+    // testroot.find("label[for='xml_test_fileref']").first().hide();
+    // hide all filerefs (first has filename instead, second is not supported)
+    testroot.find(".xml_test_fileref").hide();
+    testroot.find("label[for='xml_test_fileref']").hide();
     if (TestType == "java-compilation") {
         testroot.find(".xml_test_fileref").hide();
         testroot.find("label[for='xml_test_fileref']").hide();
@@ -589,12 +598,17 @@ $(function() {
   $("#addSetlXSynt").click(function() {
     var tempnumber1 = setcounter(fileIDs);    // adding a file for the test
     newFile(tempnumber1);                     // filename: setlxsyntaxtest.stlx, content: print()
-    $(".xml_file_id[value='"+tempnumber1+"']").parent().find(".xml_file_filename").first().val('setlxsyntaxtest.stlx');
+    const filename = 'setlxsyntaxtest.stlx';
+    $(".xml_file_id[value='"+tempnumber1+"']").parent().find(".xml_file_filename").first().val(filename);
     codemirror[tempnumber1].setValue('print("");');
-    var tempnumber2 = setcounter(testIDs);    // sets the corresponding fileref and title "SetlX-Syntax-Test"
+    var tempnumber2 = setcounter(testIDs);    // sets the corresponding fileref, filename and title "SetlX-Syntax-Test"
     newTest(tempnumber2,"SetlX Test", TextSetlX, "jartest");
-    $(".xml_test_id[value='"+tempnumber2+"']").parent().find(".xml_test_fileref").first().val(tempnumber1);
-    $(".xml_test_id[value='"+tempnumber2+"']").parent().parent().find(".xml_test_title").first().val("SetlX-Syntax-Test");
+    var xml_test_root = $(".xml_test_id[value='"+tempnumber2+"']").parent();
+    xml_test_root.find(".xml_test_fileref").first().val(tempnumber1);
+    var element = xml_test_root.find(".xml_test_filename");
+    setFilenameList(element);
+    element.val(filename).change();
+    xml_test_root.parent().find(".xml_test_title").first().val("SetlX-Syntax-Test");
     $("#tabs").tabs("option", "active", tab_page.TESTS); });
   $("#addCheckStyle").click(function() {
     newTest(setcounter(testIDs),"CheckStyle Test", TextJavaCheckst, "java-checkstyle");
