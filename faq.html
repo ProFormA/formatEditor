@@ -99,8 +99,6 @@ could be used.
 <li><b>LON-CAPA/path to zip file</b>: should be "/res/fhwf/..." and not "/priv/..." because that is where 
 it will be after publication. The filename of the zip file is not part of the path. When uploading the
 zip file to LON-CAPA its default name is the task title minus any non-alphanumeric characters.
-<li><b>Filerefs</b>: Fileref1 in a test must match the ID of a file. This is automatically adjusted
-when a filename is selected in a test or model solution. Fileref2 does nothing at this point.
 <li><b>File/class</b>: An <b>internal</b> file is not visible to the students. <br />
 A <b>template</b> file
 should be a piece of code which the students can use as a starting point for their program. It is shown
@@ -129,10 +127,6 @@ before. Refreshing the browser solves this problem.
 <li>There must be <b>at least one file, one model solution and one test</b>. (Without a test there is
 no reason to use this editor. The existence of a model solution is required by the exchange
 format which is implemented by this editor.)
-<li><b>Filenames are missing</b> in tests after import. This is not a problem because they are
-not actually needed. Only the Filerefs are used.
-<li>I cannot <b>change a fileref</b>. Select the filename from the drop-down menu. That will
-change the fileref.
 <li><b>Special characters (such as German umlauts)</b> may not work properly in all fields.
 It may depend on the encoding of the characters that is used.
 For example, they might not work in JUnit tests, not even in comments.
