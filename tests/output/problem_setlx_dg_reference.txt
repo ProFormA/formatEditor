@@ -7,7 +7,7 @@
 # LON-CAPA partID, redundant taskID, submissiontype, filename of submitted file,Mime type, zip location
 $externalurl = &proforma_url(0,'0', 'textfield', 'file0.stlx','x-java','/res/fhwf/input4444/input222.zip','v1.0.1');
 $ausgabe = &proforma_output(0,1); # LON-CAPA partID, LON-CAPA responseID 
-$modelsolution = '<pre>some text in file #0</pre>';
+$modelsolution = '<pre>/* dummy file text 1 */</pre>';
 </script>
 <startouttext />
 input111
@@ -23,7 +23,7 @@ $ausgabe
 
 <externalresponse answerdisplay="$modelsolution" answer="" url="$externalurl" form="%args" id="1">
 <textfield>
-/* dummy file text 1 */
+some text in file #0
 </textfield>
 </externalresponse>
 

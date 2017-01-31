@@ -22,8 +22,8 @@
 // TAB pages
 var tab_page = {
   MAIN:   0,
-  FILES:  1, // and model solution
-  TESTS:  2,
+  FILES:  1,
+  TESTS:  2, // and model solution
   MANUAL: 3,
   FAQ:    4,
   DEBUG:  5
@@ -636,7 +636,7 @@ $(function() {
     $("#tabs").tabs("option", "active", tab_page.FILES); });
   $("#addModelsol").click(function() {
     newModelsol(setcounter(modelSolIDs));
-    $("#tabs").tabs("option", "active", tab_page.FILES); });
+    $("#tabs").tabs("option", "active", tab_page.TESTS); });
   $("#addJavaComp").click(function() {
     newTest(setcounter(testIDs),"Java Compiler Test", TextJavaComp, "java-compilation");
     $("#tabs").tabs("option", "active", tab_page.TESTS); });
@@ -756,7 +756,7 @@ $(function() {
 
     $.each($(".xml_model-solution_filename"), function(index, item) {   // check whether referenced filenames exists
       if (item.value == "") {
-        $("#tabs").tabs("option", "active",  tab_page.FILES);
+        $("#tabs").tabs("option", "active",  tab_page.TESTS);
         setErrorMessage("Filename in model solution is missing.");
         item.focus();
         returnFromFunction = true;

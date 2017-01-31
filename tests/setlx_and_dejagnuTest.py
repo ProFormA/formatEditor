@@ -140,7 +140,7 @@ editor.set_file_text(5, "int i = 0; # in File 4")
 
 # add model solution
 # editor.add_model_solution() # first model solution ist added by editor
-
+editor.change_tab("test_tab")
 editor.set_model_solution_comment(0, "model solution #0")
 editor.add_file_to_model_solution(0, 1)
 editor.set_model_solution_fileref2(0, "4")
