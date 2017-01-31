@@ -115,6 +115,7 @@ def set_prog_language(text):
 # FILE
 ####################################################################
 def add_file():
+    change_tab("file_tab")   
     elem = driver.find_element_by_id("addFile").click()
 
 # does not work! only first element is found :-(
@@ -162,6 +163,7 @@ def set_file_text(file_index, text): # 0-based
 ####################################################################
 
 def add_model_solution():
+    change_tab("test_tab")       
     elem = driver.find_element_by_id("addModelsol").click()
 
 
@@ -245,6 +247,7 @@ def set_test_file(test_index, file_index):  # 0-based
 # JAVA COMPILER TEST
 ####################################################################
 def add_java_compiler_test():
+    change_tab("test_tab")          
     elem = driver.find_element_by_id("addJavaComp").click()
 
 
@@ -273,6 +276,7 @@ def set_jct_file_pattern(jct_index, pattern): # 0-based
 # JUNIT TEST
 ####################################################################
 def add_junit_test():
+    change_tab("test_tab")              
     elem = driver.find_element_by_id("addJavaJunit").click()
 
 
@@ -307,6 +311,7 @@ def set_junit_fileref2(junit_index, fileref_number):
 # CHECKSTYLE TEST
 ####################################################################
 def add_checkstyle():
+    change_tab("test_tab")                  
     elem = driver.find_element_by_id("addCheckStyle").click()
 
 # only one version can be selected (=> no test needed)
@@ -326,6 +331,7 @@ def set_cs_max_warnings(cs_index, max_warnings):
 # PYTHON TEST
 ####################################################################
 def add_python_test():
+    change_tab("test_tab")                  
     elem = driver.find_element_by_id("addPythonTest").click()
 
 
@@ -333,24 +339,28 @@ def add_python_test():
 # SETLX TEST
 ####################################################################
 def add_setlx_test():
+    change_tab("test_tab")                  
     elem = driver.find_element_by_id("addSetlX").click()
 
 ####################################################################
 # SETLX SYNTAX CHECK
 ####################################################################
 def add_setlx_syntax():
+    change_tab("test_tab")                     
     elem = driver.find_element_by_id("addSetlXSynt").click()
 
 ####################################################################
 # DEJAGNU SETUP
 ####################################################################
 def add_dejagnu_setup():
+    change_tab("test_tab")                      
     elem = driver.find_element_by_id("addDGSetup").click()
 
 ####################################################################
 # DEJAGNU TESTER
 ####################################################################
 def add_dejagnu_tester():
+    change_tab("test_tab")                     
     elem = driver.find_element_by_id("addDGTester").click()
 
 
@@ -378,7 +388,7 @@ def export_to(task_xml, lon_capa_problem):
 
 
 def export():
-    change_tab("debug_output");
+    change_tab("debug_output")
     elem = driver.find_element_by_id("buttonExport").click()
 
 # 'download' of task.xml
