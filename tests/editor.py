@@ -358,6 +358,11 @@ def add_dejagnu_tester():
 ####################################################################
 # EXPORT/IMPORT
 ####################################################################
+def change_tab(name):
+    element = driver.find_element_by_id(name)
+    element.click()
+
+
 def export_to(task_xml, lon_capa_problem):
     export()
     task_xml_field_value_1 = get_task_xml()
@@ -373,6 +378,7 @@ def export_to(task_xml, lon_capa_problem):
 
 
 def export():
+    change_tab("debug_output");
     elem = driver.find_element_by_id("buttonExport").click()
 
 # 'download' of task.xml
@@ -381,6 +387,7 @@ def export_1():
     elem = driver.find_element_by_id("downloadOutput").click()
 
 def import_task_xml():
+    change_tab("debug_output");
     elem = driver.find_element_by_id("buttonImport").click()
     alert = driver.switch_to.alert
     alert.accept()

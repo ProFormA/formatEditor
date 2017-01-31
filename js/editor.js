@@ -21,11 +21,12 @@
 
 // TAB pages
 var tab_page = {
-  MAIN: 0,
-  FILES: 1, // and model solution
-  TESTS: 2,
+  MAIN:   0,
+  FILES:  1, // and model solution
+  TESTS:  2,
   MANUAL: 3,
-  FAQ: 4
+  FAQ:    4,
+  DEBUG:  5
 };
 
 var DEBUG = false;
@@ -119,9 +120,12 @@ function deletecounter(temphash,tempelement) {         // for fileIDs, modelSolI
 /* The HTML div-element "error-message" displays error messages if required.
  * all catch(err) statements should use this function (instead of console.log)
  */
-function setErrorMessage(errormess) {                  // setting the error console
+function setErrorMessage(errormess, exception) {                  // setting the error console
     var error_output = $("#error-message");
     error_output.append("\n* " + errormess);
+    if (exception != undefined)
+        error_output.append("\n  " + exception.message);
+
     error_output.css('visibility', 'visible');
     error_output.scrollTop(error_output[0].scrollHeight);
 //    error_output.scrollTop($("#error-message")[0].scrollHeight);
@@ -138,17 +142,48 @@ function clearErrorMessage() {                         // clearing the error con
  */
 function uploadFile(inputbutton) {                     // upload button for textareas: output, output2
   var filenew = inputbutton.files[0];
+  switch (filenew.type) {
+      case 'application/zip':
+      case 'application/x-zip-compressed':
+        /// unzipme(filenew,$(inputbutton).parent().parent().parent().find("textarea"));
+        var text = unzipme(filenew,$("#output"), readXML);
+        // readXML(text); // avoid racing by setting the text
+          // (when the text is set in the text area and later on read by readXml
+          // it could be empty because of racing condition)
+        break;
+      case "text/xml":
+        if (filenew) {
+            var readfi = new FileReader();
+            readfi.onload = function(e) {
+                var text = e.target.result;
+                $("#output").val(text);
+                /// $(inputbutton).parent().parent().parent().find("textarea").val(e.target.result);
+                readXML(text);
+            }
+            readfi.readAsText(filenew);
+        }
+        break;
+      default:
+        setErrorMessage("Unsupported file format: " + filenew.type);
+        break;
+  }
+
+  /*
   if (filenew.type == 'application/zip') {
-    unzipme(filenew,$(inputbutton).parent().parent().parent().find("textarea"));
+    /// unzipme(filenew,$(inputbutton).parent().parent().parent().find("textarea"));
+      unzipme(filenew,$("#output"));
   } else {
     if (filenew) {
       var readfi = new FileReader();
       readfi.onload = function(e) {
-        $(inputbutton).parent().parent().parent().find("textarea").val(e.target.result);
+        $("#output").val(e.target.result);
+        /// $(inputbutton).parent().parent().parent().find("textarea").val(e.target.result);
+        readXML();
       }
       readfi.readAsText(filenew);
     }
   }
+  */
 }
 function downloadFile(downloadLink) {                  // download link for textareas: output, output2
   var tempbase64 = "";
@@ -156,7 +191,8 @@ function downloadFile(downloadLink) {                  // download link for text
       /*  tempbase64 = window.btoa($(downloadLink).parent().parent().parent().find("textarea").val());
       $(downloadLink).attr("href",'data:text/text;base64,'+tempbase64);
       */
-      var text = $(downloadLink).parent().parent().parent().find("textarea").val();
+      var text = $("#output").val();
+      /// var text = $(downloadLink).parent().parent().parent().find("textarea").val();
       var text1 = encodeURIComponent(text);
       // var tempbase64 = window.btoa(text); // unused
       $(downloadLink).attr("href",'data:text/text;charset=utf-8,' + text1); // encodeURIComponent(text));
@@ -566,7 +602,7 @@ $(function() {
   $("#tabs").tabs();                                   // hide HTML elements when the manual or FAQ are selected
   $('#tabs').click(function(e) {
     var curTab = $('.ui-tabs-active');
-    if (curTab.index() =="3" || curTab.index() =="4"){ // if manual or FAQ selected
+    if (curTab.index() == tab_page.MANUAL || curTab.index() == tab_page.FAQ){ // if manual or FAQ selected
       $("#rightPanel").hide();
       $("#button-list").hide();
       $("#end-container").hide();
@@ -637,6 +673,16 @@ $(function() {
   $("#addPythonTest").click(function() {
     newTest(setcounter(testIDs),"Python Test","","python");
     $("#tabs").tabs("option", "active", tab_page.TESTS); });
+
+    $("#load_xml_file").click(function() {
+      console.log("load_xml_file called");
+    });
+    $("#save_xml_file").click(function() {
+        console.log("save_xml_file called");
+    });
+    $("#save_zip_file").click(function() {
+        console.log("save_zip_file called");
+    });
 
 ///////////////////////////////////////////////////////// function: convertToXML
 /* This converts the form elements into the XML file.
@@ -897,7 +943,8 @@ $(function() {
  * Proglang is dealt with separately.
  */
 
-  readXML = function() {
+  readXML = function(xmlText) {
+    console.log("readXML called");
     changeNamespaces = function(somexml) {
       replaceNamespace = function(smxml,tempstr,tempnsprefix,tempcl) {
         if (tempstr) { tempstr = tempstr[1] }
@@ -926,12 +973,21 @@ $(function() {
       return somexml;
     }
 
-    var checktemp = window.confirm("All form content will be deleted and replaced.");
-    if (!checktemp) { return }                         // proceed only after confirmation
+    var outputValue = $("#output").val();
+    if (outputValue.length > 0) {
+        var checktemp = window.confirm("All form content will be deleted and replaced.");
+        if (!checktemp) {
+            return;
+        }                         // proceed only after confirmation
+    }
     gradingHintCounter = 1;                            // variable initialisation
     codemirror = {};
     clearErrorMessage();
-    var xmlTemplate = $("#output").val();              // read textarea
+
+    var xmlTemplate = xmlText; // copy text from variable if available
+    if (xmlTemplate == undefined)
+      xmlTemplate = outputValue;              // read textarea
+
     if (xmlTemplate !== "") {
       xmlTemplate = changeNamespaces(xmlTemplate);     // rename namespaces if necessary
       try {
@@ -1134,6 +1190,8 @@ $(function() {
     request1.open("GET","faq.html",true);
     request1.send(null);
   }
+
+  // MAIN
   try {
       insertmanual();
   } catch(err) { setErrorMessage("file 'manual.html' cannot be found");}

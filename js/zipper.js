@@ -16,7 +16,8 @@
 
 zip.workerScriptsPath = "./js/";
 
-unzipme = function (blob,location) {
+unzipme = function (blob,location, readyCallback) {
+  var unzipped_text = "???";
   function unzipBlob(blob, callback) {
     try{
       zip.createReader(new zip.BlobReader(blob), function (zipReader) {
@@ -29,13 +30,17 @@ unzipme = function (blob,location) {
 	}, onerror);
     } catch(e) { console.log(e); }
   }
+
   unzipBlob(blob, function (unzippedBlob) {
       var readfi = new FileReader();
       readfi.onload = function(e) {
-	location.val(e.target.result);
+        unzipped_text = e.target.result;
+        if (readyCallback) readyCallback(unzipped_text);
+	    location.val(unzipped_text);
       }
       readfi.readAsText(unzippedBlob);
   });
+  return unzipped_text;
 };
 
 zipme = function() {
@@ -65,9 +70,18 @@ zipme = function() {
         a.download = zipname;
         a.href = url;
         // a.dataset.downloadurl = ['application/zip', a.download, a.href].join(':');
-	if (navigator.userAgent.indexOf('Safari') <= 0) {
-	  a.click();
-	} else { alert("zip does not work on this browser") }
+
+        var isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
+            navigator.userAgent && !navigator.userAgent.match('CriOS');
+
+        // var userAgent = navigator.userAgent;
+        // alert(userAgent);
+
+	    if (!isSafari) {// navigator.userAgent.indexOf('Safari') <= 0) {
+	      a.click();
+	    } else {
+	      alert("zip does not work on this browser");
+	    }
         // window.URL.revokeObjectURL(url);
         // window.navigator.msSaveBlob(zippedBlob, "task.zip");
     });

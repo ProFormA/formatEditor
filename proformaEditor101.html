@@ -40,6 +40,7 @@
                 <li><a href="#tabs-3">Tests</a></li>
                 <li id="FAQ"><a href="#tabs-5">FAQ</a></li>
                 <li id="manual"><a href="#tabs-4">Manual</a></li>
+                <li id="debug_output"><a href="#tabs-Debug">Debug</a></li>
             </ul>
             <div id="tabs-1">
                 <div class='ui-widget ui-widget-content ui-corner-all'>
@@ -97,12 +98,43 @@
             </div>
             <div id="tabs-5">
             </div>
+            <div id="tabs-Debug">
+                <div id="button-list">
+                    Create an XML file from the form data and vice versa:
+                    <button onclick='convertToXML()' type='button' id='buttonExport'>Create XML file</button>
+                    <button onclick='readXML()' type='button' id='buttonImport'>Read XML file</button>
+                </div>
+
+
+                <div id="xml-output-input">
+                    <div id="exportXMLFile" class="ui-widget-header ui-corner-all">
+                        <h3>XML file: &nbsp;&nbsp;
+<!--
+                            <input id="upload_xml_file" type="file" onchange="uploadFile(this)"/>
+                            <a onclick='convertToXML(); downloadFile(this)' id='downloadOutput' class='likebutton'
+                               download='task.xml'>Download XML file</a>
+
+                            <button onclick='convertToXML(); zipme()' type='button' id='buttonZip'>Download as zip
+                                (if supported)</button>
+-->
+                            <button title = 'For clearing the whole form, reload the browser or press "shift reload" on Firefox.'
+                                    onclick='$("#output").val("");' type='button' id='buttonClear'>Clear textarea</button>
+                        </h3>
+                    </div>
+                    <textarea class="ui-corner-all" id='output' rows='20' cols='80'></textarea>
+                </div>
+                <div id="otherSoftware2"></div>
+
+            </div>
+
         </div> <!-- tabs -->
         <div id='rightPanel' class="ui-corner-all">
             <div class="ui-widget-header ui-corner-all"><h2>Add Element</h2></div>
             <div id='rightPanelButtonList' class="ui-widget-content ui-corner-all">
                 <p><button id='addFile'>Add file</button></p>
                 <p><button id='addModelsol'>Add model solution</button></p>
+                <br>
+                <!--    <p><button id='addGH'>Add grading hint</button></p>
                 <!--    <p><button id='addGH'>Add grading hint</button></p>  --> <!-- not needed for Praktomat -->
                 <p><button id='addJavaComp'>Java compilation test</button></p>
                 <p><button id='addJavaJunit'>Java JUnit test</button></p>
@@ -112,6 +144,21 @@
                 <p><button id='addPythonTest'>Python test</button></p>
                 <p><button id='addSetlX'>SetlX test</button></p>
                 <p><button id='addSetlXSynt'>SetlX syntax test</button></p>
+
+                <br>
+                <p>Load TASK.XML from file or zip
+                <input id="upload_xml_file" type="file"  onchange="uploadFile(this); "/>
+                <!-- todo: pattern="task.xml|*.zip" accept = "" -->
+                </p>
+                <!-- <br><br><a onclick='convertToXML(); downloadFile(this)' id='downloadOutput1'
+                   download='task.xml'>Download TASK.XML</a> -->
+
+                <p><a onclick='convertToXML(); downloadFile(this)' id='downloadOutput2' class='likebutton'
+                          download='task.xml'>Download TASK.XML</a></p>
+
+
+                <p><button onclick='convertToXML(); zipme()' type='button' id='buttonZip'>Download zip file</button></p>
+
             </div>
             <div id="form-remarks">
                <p>(All elements marked with <span class='red'>*</span> are required.)</p>
@@ -125,28 +172,34 @@
     </div>  <!-- task container -->
 
     <div id="end-container" class='clear'></div>  <!-- because of float -->
-    
-    <div id="button-list">
-      Create an XML file from the form data and vice versa:
-      <button onclick='convertToXML()' type='button' id='buttonExport'>Create XML file</button>
-      <button onclick='readXML()' type='button' id='buttonImport'>Read XML file</button>
-      <textarea id="error-message" class="ui-state-error" readonly>Error Console:</textarea>
-    </div>
-    <div id="xml-output-input">
-      <div id="exportXMLFile" class="ui-widget-header ui-corner-all">
-        <h3>XML file: &nbsp;&nbsp;
-          <input id="upload_xml_file" type="file" onchange="uploadFile(this)"/>
-          <a onclick='convertToXML(); downloadFile(this)' id='downloadOutput' class='likebutton' 
-               download='task.xml'>Download XML file</a>
-          <button onclick='convertToXML(); zipme()' type='button' id='buttonZip'>Download as zip 
-          (if supported)</button>
-          <button title = 'For clearing the whole form, reload the browser or press "shift reload" on Firefox.'
-          onclick='$("#output").val("");' type='button' id='buttonClear'>Clear textarea</button>
-        </h3>
-      </div>
-      <textarea class="ui-corner-all" id='output' rows='20' cols='80'></textarea>
-    </div>
-    <div id="otherSoftware2"></div>
+
+    <textarea id="error-message" class="ui-state-error" readonly>Error Console:</textarea>
+
+    <!--
+        <div id="button-list">
+          Create an XML file from the form data and vice versa:
+          <button onclick='convertToXML()' type='button' id='buttonExport'>Create XML file</button>
+          <button onclick='readXML()' type='button' id='buttonImport'>Read XML file</button>
+          <textarea id="error-message" class="ui-state-error" readonly>Error Console:</textarea>
+        </div>
+
+
+        <div id="xml-output-input">
+          <div id="exportXMLFile" class="ui-widget-header ui-corner-all">
+            <h3>XML file: &nbsp;&nbsp;
+              <input id="upload_xml_file" type="file" onchange="uploadFile(this)"/>
+              <a onclick='convertToXML(); downloadFile(this)' id='downloadOutput' class='likebutton'
+                   download='task.xml'>Download XML file</a>
+              <button onclick='convertToXML(); zipme()' type='button' id='buttonZip'>Download as zip
+              (if supported)</button>
+              <button title = 'For clearing the whole form, reload the browser or press "shift reload" on Firefox.'
+              onclick='$("#output").val("");' type='button' id='buttonClear'>Clear textarea</button>
+            </h3>
+          </div>
+          <textarea class="ui-corner-all" id='output' rows='20' cols='80'></textarea>
+        </div>
+        <div id="otherSoftware2"></div>
+    -->
 
 </div>  <!-- pagecontainer -->
 </body>

@@ -17,8 +17,11 @@
 function insertLCformelements () {
   var loncapaTextarea = " <div id='exportProblemXML' class='ui-widget-header ui-corner-all'>" +
     "<h3>LON-CAPA problem file (export only): " +
-    "<a onclick='convertToXML(); downloadFile(this)' id='downloadLCProblem' class='likebutton'" +
-    " download='task.problem'>Download LON-CAPA problem file</a></h3></div>" +
+
+//    "<a onclick='convertToXML(); downloadFile(this)' id='downloadLCProblem' class='likebutton'" +
+//    " download='task.problem'>Download LON-CAPA problem file</a>" +
+      "</h3></div>" +
+
     "<textarea class='ui-corner-all' id='output2' rows='20' cols='80' readonly></textarea>";
     //"<textarea id='output2' rows='6' cols='80' onfocus='this.rows=12;' onblur='this.rows=6;'></textarea>";
   $('#otherSoftware2').html(loncapaTextarea);
@@ -30,7 +33,13 @@ function insertLCformelements () {
   var loncapaZipLocation = "<div class='ui-widget ui-widget-content ui-corner-all'>" +
   "<h3 class='ui-widget-header'>LON-CAPA</h3>" +
   "<label for='lczip'>Path to zip-file in LON-CAPA: /res/fhwf/ </label>" +
-  "<input title ='" + inputinfo + "' class='mediuminput' id='lczip' value='ecult/Java/zip/'/></div>";
+  "<input title ='" + inputinfo + "' class='mediuminput' id='lczip' value='ecult/Java/zip/'/>" +
+
+      "<a onclick='convertToXML(); downloadFile(this)' id='downloadLCProblem' class='likebutton'" +
+      " download='task.problem'>Download LON-CAPA problem file</a></h3></div>" +
+
+      "</div>";
+
   $('#otherSoftware1').html(loncapaZipLocation);
 }
 
