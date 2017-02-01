@@ -8,7 +8,7 @@ filesize = "3333"
 mimetype = "text/TEST"
 lon_capa_path = "input4444/"
 language = "en"
-prog_lang = "java/1.8"
+prog_lang = "python/2"
 
 
 

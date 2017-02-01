@@ -5,7 +5,7 @@
 
 <script type="loncapa/perl">
 # LON-CAPA partID, redundant taskID, submissiontype, filename of submitted file,Mime type, zip location
-$externalurl = &proforma_url(0,'0', 'textfield', 'file2.py','x-java','/res/fhwf/input4444/input222.zip','v1.0.1');
+$externalurl = &proforma_url(0,'0', 'textfield', 'file2.py','x-python','/res/fhwf/input4444/input222.zip','v1.0.1');
 $ausgabe = &proforma_output(0,1); # LON-CAPA partID, LON-CAPA responseID 
 $modelsolution = '<pre># TODO: deutsche Umlautein File 3</pre>';
 </script>

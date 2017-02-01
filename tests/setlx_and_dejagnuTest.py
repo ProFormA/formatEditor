@@ -70,7 +70,7 @@ editor.set_LON_CAPA_path("input4444/")
 # fill language
 editor.set_language("en")
 # fill programming language
-editor.set_prog_language("java/1.8")
+editor.set_prog_language("setlX/2.40")
 
 ####################################################################
 # fill FILES

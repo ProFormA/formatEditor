@@ -29,7 +29,8 @@ var tab_page = {
   DEBUG:  5
 };
 
-var DEBUG = false;
+var DEBUG_SWITCH = false;
+var TEST_ENABLED = false;
 
 
 
@@ -131,8 +132,9 @@ function setErrorMessage(errormess, exception) {                  // setting the
 //    error_output.scrollTop($("#error-message")[0].scrollHeight);
 }
 function clearErrorMessage() {                         // clearing the error console
-  $("#error-message").text("");
-  $("#error-message").css('visibility', 'hidden');
+  var error_output = $("#error-message");
+  error_output.text("");
+  error_output.css('visibility', 'hidden');
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -168,22 +170,7 @@ function uploadFile(inputbutton) {                     // upload button for text
         break;
   }
 
-  /*
-  if (filenew.type == 'application/zip') {
-    /// unzipme(filenew,$(inputbutton).parent().parent().parent().find("textarea"));
-      unzipme(filenew,$("#output"));
-  } else {
-    if (filenew) {
-      var readfi = new FileReader();
-      readfi.onload = function(e) {
-        $("#output").val(e.target.result);
-        /// $(inputbutton).parent().parent().parent().find("textarea").val(e.target.result);
-        readXML();
-      }
-      readfi.readAsText(filenew);
-    }
-  }
-  */
+
 }
 function downloadFile(downloadLink) {                  // download link for textareas: output, output2
   var tempbase64 = "";
@@ -944,7 +931,6 @@ $(function() {
  */
 
   readXML = function(xmlText) {
-    console.log("readXML called");
     changeNamespaces = function(somexml) {
       replaceNamespace = function(smxml,tempstr,tempnsprefix,tempcl) {
         if (tempstr) { tempstr = tempstr[1] }
@@ -1191,10 +1177,42 @@ $(function() {
     request1.send(null);
   }
 
+  function switchProgLang() {
+//        var progLang = this.val();
+    var progLang = $("#xml_programming-language").val();
+    console.log("change programming language to " + progLang);
+    //$("#addCheckStyle").hide();
+    $("#addJavaComp").hide();
+    $("#addJavaJunit").hide();
+    //$("#addDGSetup").hide();
+    //$("#addDGTester").hide();
+    $("#addPythonTest").hide();
+    $("#addSetlX").hide();
+    $("#addSetlXSynt").hide();
+
+    switch(progLang) {
+        case "java/1.6":
+        case "java/1.8":
+            $("#addJavaComp").show();
+            $("#addJavaJunit").show();
+            break;
+        case "python/2":
+            $("#addPythonTest").show();
+            break;
+        case "setlX/2.40":
+            $("#addSetlX").show();
+            $("#addSetlXSynt").show();
+            break;
+        default:
+            window.confirm("Unsupported Programming Language: " + progLang);
+            break;
+    };
+  }
   // MAIN
   try {
       insertmanual();
   } catch(err) { setErrorMessage("file 'manual.html' cannot be found");}
+
 
 ///////////////////////////////////////////////////////// if LON-CAPA is used insert relevant form elements
   if (loncapaOnOrOff == 1) { insertLCformelements();}
@@ -1202,6 +1220,20 @@ $(function() {
   // There must be at least one model solution and one file.
   newFile(setcounter(fileIDs));
   newModelsol(setcounter(modelSolIDs));
+  // show/hide buttons according to programming language
+  switchProgLang();
+
+  // register callback
+  $("#xml_programming-language").on("change", switchProgLang )
+
+  // TODO: hide debug_tab
+  //if (!TEST_ENABLED) {
+/*    $("#tabs-Debug").tabs("option", "hide", { effect: "explode", duration: 1000 });
+    $("#debug_output").tabs("option", "hide", { effect: "explode", duration: 1000 });
+    $("#tabs").tabs("option", "hide", { effect: "explode", duration: 1000 });
+    */
+  //  $("debug_output").style.display = "none";
+  //}
 });
 
 ///////////////////////////////////////////////////////// end of document ready function
