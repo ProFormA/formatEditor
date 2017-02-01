@@ -160,16 +160,17 @@
                 <p><button id='addSetlXSynt'>SetlX syntax test</button></p>
                 -->
                 <br>
-                <p>Load TASK.XML from file or zip
-                <input id="upload_xml_file" type="file"  onchange="uploadFile(this); "/>
+                <p><button id="button_load">Load Task...</button></p>
+                <p><!-- Load TASK.XML from file or zip-->
+                <input id="upload_xml_file" type="file"  onchange="uploadFile(this);" />
                 <!-- todo: pattern="task.xml|*.zip" accept = "" -->
                 </p>
                 <!-- <br><br><a onclick='convertToXML(); downloadFile(this)' id='downloadOutput1'
                    download='task.xml'>Download TASK.XML</a> -->
 
+                <!-- <p><button id="button_save_xml">Save Xml File</button></p>-->
                 <p><a onclick='convertToXML(); downloadFile(this)' id='downloadOutput2' class='likebutton'
                           download='task.xml'>Download TASK.XML</a></p>
-
 
                 <p><button onclick='convertToXML(); zipme()' type='button' id='buttonZip'>Download zip file</button></p>
 

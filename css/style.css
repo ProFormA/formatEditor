@@ -81,6 +81,16 @@ p{ 	                        padding-left:0.3em;  }
 #buttonImport{
         background-color: #BFF9CA;
 } 
+
+#upload_xml_file {
+    display:none;
+}
+
+/*
+#downloadOutput2 {
+    display:none;
+}
+*/
 /********************** manual and FAQ *******************/
 
 div#tabs-4 img{

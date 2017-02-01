@@ -173,6 +173,8 @@ function uploadFile(inputbutton) {                     // upload button for text
 
 }
 function downloadFile(downloadLink) {                  // download link for textareas: output, output2
+  console.log("downloadFile called");
+
   var tempbase64 = "";
   try {
       /*  tempbase64 = window.btoa($(downloadLink).parent().parent().parent().find("textarea").val());
@@ -185,6 +187,9 @@ function downloadFile(downloadLink) {                  // download link for text
       $(downloadLink).attr("href",'data:text/text;charset=utf-8,' + text1); // encodeURIComponent(text));
   } catch(err) { setErrorMessage("File cannot be downloaded because it contains an invalid character.");}
 }
+
+
+
 
 //////////////////////////////////////////////////////////////////////////////
 /* Each newly exported task needs its own UUID.
@@ -1225,7 +1230,18 @@ $(function() {
 
   // register callback
   $("#xml_programming-language").on("change", switchProgLang )
+  $("#button_load").click(function(){
+    $("#upload_xml_file").click();
+  })
 
+/*  $("#button_save_xml").click(function(){
+    console.log("button_save_xml clicked");
+      convertToXML();
+      downloadFile($("#downloadOutput2"));
+      $("#downloadOutput2.a.download_file").trigger( "click" );
+      //$('a.download_file > img').trigger( "click" );
+  })
+*/
   // TODO: hide debug_tab
   //if (!TEST_ENABLED) {
 /*    $("#tabs-Debug").tabs("option", "hide", { effect: "explode", duration: 1000 });
