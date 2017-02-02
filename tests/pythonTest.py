@@ -15,9 +15,9 @@ prog_lang = "python/2"
 def check_lon_capa_problem(elemOutput):
    try:
        assert '/res/fhwf/input4444/input222.zip' in elemOutput
-       print 'PASSED: /res/fhwf/input4444/input222.zip found in LON CAPA problem file'
+       editor.PASS("/res/fhwf/input4444/input222.zip found in LON CAPA problem file")
    except AssertionError:
-       print 'FAILED: Not found: /res/fhwf/input4444/input222.zip'
+       editor.FAILED("Not found: /res/fhwf/input4444/input222.zip")
 
 
 ####################################################################
@@ -226,15 +226,15 @@ check_lon_capa_problem(lon_capa_problem_field_value_1)
 
 
 if editor.is_file1_equal_to_file2(filename_problem_reference, filename_problem_1):
-   print "PASSED: problem file output"
+   editor.PASS("problem file output")
 else:
-   print "FAILED: problem file is not ok!"
+   editor.FAILED("problem file is not ok!")
 
 
 if editor.is_file1_equal_to_file2_except_for_uuid(filename_task_xml_reference, filename_task_xml_1):
-   print "PASSED: task.xml output"
+   editor.PASS("task.xml output")
 else:
-   print "FAILED: task.xml is not ok"
+   editor.FAILED("task.xml is not ok")
 
 # todo: XSD validation
 editor.perform_xml_lint_check(filename_task_xml_1);
@@ -246,9 +246,9 @@ editor.export_to(filename_task_xml_2, filename_problem_2)
 
 # expect task.xml to be unchanged except for uuid
 if editor.is_file1_equal_to_file2_except_for_uuid(filename_task_xml_1, filename_task_xml_2):
-   print "PASSED: task.xml export/import test"
+   editor.PASS("task.xml export/import test")
 else:
-   print "FAILED: task_1.xml does not match task_2.xml after reimport"
+   editor.FAILED("task_1.xml does not match task_2.xml after reimport")
 
 driver.close()
 print "test finished"

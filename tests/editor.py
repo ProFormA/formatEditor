@@ -11,6 +11,7 @@ import os.path
 
 import testconfig
 import time
+import sys
 
 driver = 0
 codemirror = True
@@ -59,6 +60,32 @@ def openEditorPage():
 def init(the_driver):
     global driver
     driver = the_driver
+
+####################################################################
+# test support    
+####################################################################
+pass_counter = 0
+failed_counter = 0
+def PASS(message):
+    global pass_counter
+    print "PASSED: " + message
+    pass_counter = pass_counter + 1
+    
+
+def FAILED(message):
+    global failed_counter
+    sys.stderr.write("FAILED: " + message)
+    failed_counter = failed_counter + 1
+
+def TEST_SUMMARY():
+    global pass_counter
+    global failed_counter
+    print str(pass_counter) + " tests passed"
+    if failed_counter > 0:
+        sys.stderr.write (str(failed_counter) + " tests failed")
+    else:
+        print str(failed_counter) + " tests failed"
+        
 
 ####################################################################
 # generic input helpers
