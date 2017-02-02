@@ -190,7 +190,7 @@ def set_file_text(file_index, text): # 0-based
 ####################################################################
 
 def add_model_solution():
-    change_tab("test_tab")       
+    change_tab("ms_tab")       
     elem = driver.find_element_by_id("addModelsol").click()
 
 

@@ -252,4 +252,5 @@ else:
 
 driver.close()
 print "test finished"
+editor.TEST_SUMMARY()
 

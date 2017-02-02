@@ -23,10 +23,11 @@
 var tab_page = {
   MAIN:   0,
   FILES:  1,
-  TESTS:  2, // and model solution
-  MANUAL: 3,
-  FAQ:    4,
-  DEBUG:  5
+  MODEL_SOLUTION:  2,
+  TESTS:  3,
+  MANUAL: 4,
+  FAQ:    5,
+  DEBUG:  6
 };
 
 var DEBUG_SWITCH = false;
@@ -642,7 +643,7 @@ $(function() {
     $("#tabs").tabs("option", "active", tab_page.FILES); });
   $("#addModelsol").click(function() {
     newModelsol(setcounter(modelSolIDs));
-    $("#tabs").tabs("option", "active", tab_page.TESTS); });
+    $("#tabs").tabs("option", "active", tab_page.MODEL_SOLUTION); });
   $("#addJavaComp").click(function() {
     newTest(setcounter(testIDs),"Java Compiler Test", TextJavaComp, "java-compilation");
     $("#tabs").tabs("option", "active", tab_page.TESTS); });
@@ -762,7 +763,7 @@ $(function() {
 
     $.each($(".xml_model-solution_filename"), function(index, item) {   // check whether referenced filenames exists
       if (item.value == "") {
-        $("#tabs").tabs("option", "active",  tab_page.TESTS);
+        $("#tabs").tabs("option", "active",  tab_page.MODEL_SOLUTION);
         setErrorMessage("Filename in model solution is missing.");
         item.focus();
         returnFromFunction = true;
@@ -1180,7 +1181,7 @@ $(function() {
     request.onreadystatechange = function() {
        if (request.readyState==4) {
            var text = request.responseText;
-           $("#tabs-4").html(text);
+           $("#tabs-5").html(text);
        }
     };
     request.open("GET","manual.html",true);
@@ -1189,7 +1190,7 @@ $(function() {
     request1.onreadystatechange = function() {
       if (request1.readyState==4) {
         var text = request1.responseText;
-        $("#tabs-5").html(text);
+        $("#tabs-6").html(text);
       }
     };
     request1.open("GET","faq.html",true);
