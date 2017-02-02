@@ -188,6 +188,20 @@ function downloadFile(downloadLink) {                  // download link for text
   } catch(err) { setErrorMessage("File cannot be downloaded because it contains an invalid character.");}
 }
 
+function downloadTextFile2(textarea, filename) {
+    var text = textarea.val();
+    var text1 = encodeURIComponent(text);
+
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.download = filename;
+
+    a.href = "data:text/text;charset=utf-8," + text1;
+    a.click();
+
+    try {document.removeChild(a); } catch (err) {/* ignore error */}
+}
 
 
 
@@ -445,7 +459,7 @@ $(function() {
     "<p><label for='xml_file_comment'>Comment: </label>"+
     "<input class='largeinput xml_file_comment'/></p>"+
     "<p><label>File content<span class='red'>*</span>: </label>"+
-    "<input type='file' class='file_input' onchange='readSingleFile(this)'/>" +
+    "<input type='file' class='largeinput file_input' onchange='readSingleFile(this)'/>" +
     "<textarea rows='3' cols='80' class='xml_file_text'"+
     "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea></p></div>");
     // hide fields that exist only for technical reasons
@@ -1213,6 +1227,12 @@ $(function() {
             break;
     };
   }
+
+  function performDownload()
+  {
+
+  }
+
   // MAIN
   try {
       insertmanual();
@@ -1234,14 +1254,11 @@ $(function() {
     $("#upload_xml_file").click();
   })
 
-/*  $("#button_save_xml").click(function(){
-    console.log("button_save_xml clicked");
+  $("#button_save_xml").click(function(){
       convertToXML();
-      downloadFile($("#downloadOutput2"));
-      $("#downloadOutput2.a.download_file").trigger( "click" );
-      //$('a.download_file > img').trigger( "click" );
+      downloadTextFile2($("#output"), "task.xml");
   })
-*/
+
   // TODO: hide debug_tab
   //if (!TEST_ENABLED) {
 /*    $("#tabs-Debug").tabs("option", "hide", { effect: "explode", duration: 1000 });
