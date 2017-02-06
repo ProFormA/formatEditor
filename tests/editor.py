@@ -56,6 +56,9 @@ def openEditorPage():
 
     # driver.get("proformaEditor.html")
     driver.get("file:///" + editor_path)
+    #driver.execute_script('TEST_MODE=true')
+
+    
 
 def init(the_driver):
     global driver

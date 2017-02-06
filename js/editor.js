@@ -30,8 +30,8 @@ var tab_page = {
   DEBUG:  6
 };
 
-var DEBUG_SWITCH = false;
-var TEST_ENABLED = false;
+var DEBUG_MODE = false;
+var TEST_MODE = true;
 
 
 
@@ -465,11 +465,13 @@ $(function() {
     "<textarea rows='3' cols='80' class='xml_file_text'"+
     "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea></p></div>");
     // hide fields that exist only for technical reasons
-    var fileroot = $(".xml_file_id[value='"+ tempcounter +"']").parent();
-    fileroot.find(".xml_file_type").hide();
-    fileroot.find("label[for='xml_file_type']").hide();
-    fileroot.find(".xml_file_id").hide();
-    fileroot.find("label[for='xml_file_id']").hide();
+    if (!DEBUG_MODE) {
+      var fileroot = $(".xml_file_id[value='" + tempcounter + "']").parent();
+      fileroot.find(".xml_file_type").hide();
+      fileroot.find("label[for='xml_file_type']").hide();
+      fileroot.find(".xml_file_id").hide();
+      fileroot.find("label[for='xml_file_id']").hide();
+    }
     if (codemirrorOnOrOff == 1) { addCodemirrorElement(tempcounter); }
   };
   switchFileref = function(tempSelElem) {              // changing a filename in the drop-down changes the id
@@ -513,11 +515,13 @@ $(function() {
     "<p><label for='xml_model-solution_comment'>Comment: </label>"+
     "<input class='largeinput xml_model-solution_comment'/></p></div>");
     // hide fields that exist only for technical reasons
-    var msroot = $(".xml_model-solution_id[value='"+ tempcounter +"']").parent().parent();
-    msroot.find(".xml_model-solution_id").hide();
-    msroot.find("label[for='xml_model-solution_id']").hide();
-    msroot.find(".xml_model-solution_fileref").first().hide();
-    msroot.find("label[for='xml_model-solution_fileref']").first().hide();
+    if (!DEBUG_MODE) {
+      var msroot = $(".xml_model-solution_id[value='" + tempcounter + "']").parent().parent();
+      msroot.find(".xml_model-solution_id").hide();
+      msroot.find("label[for='xml_model-solution_id']").hide();
+      msroot.find(".xml_model-solution_fileref").first().hide();
+      msroot.find("label[for='xml_model-solution_fileref']").first().hide();
+    }
   };
                                                        // HTML building blocks for the tests
   var TextJavaComp = "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
@@ -584,20 +588,22 @@ $(function() {
     "<p><label for='xml_test_title'>Title<span class='red'>*</span>: </label>"+
     "<input class='largeinput xml_test_title' value='"+ TestName +"'/></p>"+ MoreText + "</div>");
       // hide fields that exist only for technical reasons
-    var testroot = $(".xml_test_id[value='"+ tempcounter +"']").parent();
-    testroot.find(".xml_test_type").val(TestType);
-    testroot.find(".xml_test_type").hide();
-    testroot.find("label[for='xml_test_type']").hide();
-    testroot.find(".xml_pr_always").hide();
-    testroot.find("label[for='xml_pr_always']").hide();
-    testroot.find(".xml_test_id").hide();
-    testroot.find("label[for='xml_test_id']").hide();
-    // hide first fileref since we have a filename instead
-    // testroot.find(".xml_test_fileref").first().hide();
-    // testroot.find("label[for='xml_test_fileref']").first().hide();
-    // hide all filerefs (first has filename instead, second is not supported)
-    testroot.find(".xml_test_fileref").hide();
-    testroot.find("label[for='xml_test_fileref']").hide();
+    var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent();
+    if (!DEBUG_MODE) {
+      testroot.find(".xml_test_type").val(TestType);
+      testroot.find(".xml_test_type").hide();
+      testroot.find("label[for='xml_test_type']").hide();
+      testroot.find(".xml_pr_always").hide();
+      testroot.find("label[for='xml_pr_always']").hide();
+      testroot.find(".xml_test_id").hide();
+      testroot.find("label[for='xml_test_id']").hide();
+      // hide first fileref since we have a filename instead
+      // testroot.find(".xml_test_fileref").first().hide();
+      // testroot.find("label[for='xml_test_fileref']").first().hide();
+      // hide all filerefs (first has filename instead, second is not supported)
+      testroot.find(".xml_test_fileref").hide();
+      testroot.find("label[for='xml_test_fileref']").hide();
+    }
     if (TestType == "java-compilation") {
         testroot.find(".xml_test_fileref").hide();
         testroot.find("label[for='xml_test_fileref']").hide();
@@ -1264,7 +1270,19 @@ $(function() {
     //downloadTextFile2($("#output"), "task.xml", $("#dummy_save_xml_button")[0]);
   })
 
+  if (!DEBUG_MODE) {
+    $("#buttonClear").hide();
+    $("#output").attr("readonly", true);
 
+    $("#button_text").hide();
+    $("#buttonExport").hide();
+    $("#buttonImport").hide();
+  }
+
+  if (TEST_MODE) {
+      $("#buttonExport").show();
+      $("#buttonImport").show();
+  }
     // TODO: try
     // $('a').on('click', function(e){e.preventDefault();alert("clicked");});
 
