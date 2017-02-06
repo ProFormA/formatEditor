@@ -1242,7 +1242,7 @@ $(function() {
   // create dummy button for saving task.xml
   var anchor = document.createElement("a");
   anchor.style = "display: none";
-  anchor.id = "button_save_xml";
+  //anchor.id = "dummy_save_xml_button";
   document.body.appendChild(anchor);
 
   // There must be at least one model solution and one file.
@@ -1264,7 +1264,11 @@ $(function() {
     //downloadTextFile2($("#output"), "task.xml", $("#dummy_save_xml_button")[0]);
   })
 
-  // TODO: hide debug_tab
+
+    // TODO: try
+    // $('a').on('click', function(e){e.preventDefault();alert("clicked");});
+
+    // TODO: hide debug_tab
   //if (!TEST_ENABLED) {
 /*    $("#tabs-Debug").tabs("option", "hide", { effect: "explode", duration: 1000 });
     $("#debug_output").tabs("option", "hide", { effect: "explode", duration: 1000 });
