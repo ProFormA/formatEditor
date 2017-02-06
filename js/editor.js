@@ -492,9 +492,11 @@ $(function() {
      var tempOption = $("<option></option>");
      $(tempSelElem).append(tempOption);
      $.each($(".xml_file_filename"), function(index, item) {
-         tempOption = $("<option></option>");
-         tempOption[0].textContent = item.value;
-         $(tempSelElem).append(tempOption);
+        if (item.value.length > 0) {
+            tempOption = $("<option></option>");
+            tempOption[0].textContent = item.value;
+            $(tempSelElem).append(tempOption);
+        }
      });
   };
 
