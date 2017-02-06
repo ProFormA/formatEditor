@@ -35,23 +35,29 @@ function insertLCformelements () {
   "<label for='lczip'>Path to zip-file in LON-CAPA: /res/fhwf/ </label>" +
   "<input title ='" + inputinfo + "' class='mediuminput' id='lczip' value='ecult/Java/zip/'/> " +
 
-      "<button id='button_save_lon_capa'>Save LON-CAPA problem File</button></p>" +
-
+      "<button id='button_save_lon_capa'>Save LON-CAPA problem File</button></p>"
+      // +"<a id='dummy_lon_capa_button' style='visibility: hidden'>Dummy Save Lon-capa problem file</a>"
+      ;
 
 
       //"<a onclick='convertToXML(); downloadFile(this)' id='downloadLCProblem' class='likebutton'" +
       //" download='task.problem'>Download LON-CAPA problem file</a>" +
 
-      "</h3></div>" +
-      "</div>";
+//      "</div>" +
+//      "</div>";
 
 
+    // create dummy button for saving task.xml
+    var anchorLC = document.createElement("a");
+    anchorLC.style = "display: none";
+    anchorLC.id = "dummy_lon_capa_button";
+    document.body.appendChild(anchorLC);
 
   $('#otherSoftware1').html(loncapaZipLocation);
 
   $("#button_save_lon_capa").click(function(){
       convertToXML();
-      downloadTextFile2($("#output2"), "task.problem");
+      downloadTextFile2($("#output2"), "task.problem", anchorLC);
   })
 
 }

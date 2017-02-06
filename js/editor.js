@@ -189,19 +189,20 @@ function downloadFile(downloadLink) {                  // download link for text
   } catch(err) { setErrorMessage("File cannot be downloaded because it contains an invalid character.");}
 }
 
-function downloadTextFile2(textarea, filename) {
+function downloadTextFile2(textarea, filename, dummybutton) {
+    console.log("downloadTextFile2 called");
     var text = textarea.val();
     var text1 = encodeURIComponent(text);
 
-    var a = document.createElement("a");
-    document.body.appendChild(a);
-    a.style = "display: none";
-    a.download = filename;
+  /*var a = document.createElement("a");
+   document.body.appendChild(a);
+   a.style = "display: none";
+   */
+    dummybutton.download = filename;
+    dummybutton.href = "data:text/text;charset=utf-8," + text1;
+    dummybutton.click();
 
-    a.href = "data:text/text;charset=utf-8," + text1;
-    a.click();
-
-    try {document.removeChild(a); } catch (err) {/* ignore error */}
+    // try {document.removeChild(a); } catch (err) {/* ignore error */}
 }
 
 
@@ -1229,11 +1230,6 @@ $(function() {
     };
   }
 
-  function performDownload()
-  {
-
-  }
-
   // MAIN
   try {
       insertmanual();
@@ -1242,6 +1238,12 @@ $(function() {
 
 ///////////////////////////////////////////////////////// if LON-CAPA is used insert relevant form elements
   if (loncapaOnOrOff == 1) { insertLCformelements();}
+
+  // create dummy button for saving task.xml
+  var anchor = document.createElement("a");
+  anchor.style = "display: none";
+  anchor.id = "button_save_xml";
+  document.body.appendChild(anchor);
 
   // There must be at least one model solution and one file.
   newFile(setcounter(fileIDs));
@@ -1256,8 +1258,10 @@ $(function() {
   })
 
   $("#button_save_xml").click(function(){
-      convertToXML();
-      downloadTextFile2($("#output"), "task.xml");
+    console.log("button_save_xml clicked");
+    convertToXML();
+    downloadTextFile2($("#output"), "task.xml", anchor);
+    //downloadTextFile2($("#output"), "task.xml", $("#dummy_save_xml_button")[0]);
   })
 
   // TODO: hide debug_tab
