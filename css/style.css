@@ -36,6 +36,9 @@ p{ 	                        padding-left:0.3em;  }
 
 .xml_model-solution_filename{	width: 300px;     }
 .xml_model-solution_fileref{	width: 50px;     }
+.xml_test_filename{	width: 300px;     }
+.xml_test_fileref{	width: 50px;     }
+
 
 table, th, td {
 /*    border: 1px solid black;

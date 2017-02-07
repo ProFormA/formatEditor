@@ -30,7 +30,7 @@ var tab_page = {
   DEBUG:  6
 };
 
-var DEBUG_MODE = false;
+var DEBUG_MODE = true;
 var TEST_MODE = true;
 
 
@@ -479,13 +479,15 @@ $(function() {
     $.each($(".xml_file_filename"), function(index, item) {
        if ($(tempSelElem).val() == item.value ) {
           if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
-            $(tempSelElem).parent().find('.xml_test_fileref')[0].value=
-              $(item).first().parent().find(".xml_file_id").val();
+              var fileid = $(item).first().parent().find(".xml_file_id").val();
+              var nextTd = $(tempSelElem).parent().next('td');
+              nextTd.find('.xml_test_fileref')[0].value=fileid;
+
+//            $(tempSelElem).parent().find('.xml_test_fileref')[0].value=
+//              $(item).first().parent().find(".xml_file_id").val();
           } else {
               var fileid = $(item).first().parent().find(".xml_file_id").val();
-            //$(tempSelElem).parent().find('.xml_model-solution_fileref')[0].value=
               var nextTd = $(tempSelElem).parent().next('td');
-              //var next1 = $(tempSelElem).parent().nextAll($('.xml_model-solution_fileref'));
               nextTd.find('.xml_model-solution_fileref')[0].value=fileid;
           }
           found = true;
@@ -495,7 +497,10 @@ $(function() {
     // file id not found
     if (!found) {
         if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
-            $(tempSelElem).parent().find('.xml_test_fileref')[0].value="";
+            var nextTd = $(tempSelElem).parent().next('td');
+            nextTd.find('.xml_model-solution_fileref')[0].value="";
+            //$(tempSelElem).parent().find('.xml_test_fileref')[0].value="";
+
         } else {
             var nextTd = $(tempSelElem).parent().next('td');
             nextTd.find('.xml_model-solution_fileref')[0].value="";
@@ -535,16 +540,12 @@ $(function() {
         "<td><label for='xml_model-solution_fileref'>Fileref: </label>"+ // fileref
           "<input class='tinyinput xml_model-solution_fileref' readonly/></td>" +
         "<td></td>"+ // x-button
-
         addFileRefInMs + //"<td><button class='add_file_ref' title='add another filename' onclick='addMsFileRef($(this))'>+</button><br></td>" + // +-button
         "</tr>"+
-
     "</table>" +
-//    " <label for='xml_model-solution_fileref'>Fileref2: </label>"+
-//    "<input class='tinyinput xml_model-solution_fileref'/>"+
-
     "<p><label for='xml_model-solution_comment'>Comment: </label>"+
     "<input class='largeinput xml_model-solution_comment'/></p></div>");
+
     // hide fields that exist only for technical reasons
     if (!DEBUG_MODE) {
       var msroot = $(".xml_model-solution_id[value='" + tempcounter + "']").parent().parent();
@@ -585,6 +586,7 @@ $(function() {
     " <label for='xml_pr_CS_warnings'>Maximum warnings allowed<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_pr_CS_warnings' value='0'/></p>";
 
+  const addFileRefInTest = "<td><button class='add_file_ref_test' title='add another filename' onclick='addTestFileRef($(this))'>+</button><br></td>";
   newTest = function(tempcounter,TestName, MoreText, TestType) { // create a new test HTML form element
     $("#testsection").append("<div "+
     "class='ui-widget ui-widget-content ui-corner-all xml_test'>"+
@@ -592,13 +594,26 @@ $(function() {
     "class='rightButton'><button onclick='remP3($(this));deletecounter(testIDs,$(this));'>x</button></span></h3>"+
     "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
-    " <label for='xml_test_filename'>Filename<span class='red'>*</span>: </label>"+
+
+    "<table>" +
+        "<tr>" +
+        "<td><label for='xml_test_filename'>Filename<span class='red'>*</span>: </label></td>"+ // label
+
+        "<td><select class='mediuminput xml_test_filename' onfocus = 'setFilenameList(this)' "+
+            "onchange = 'switchFileref(this)'></select></td>"+
+        "<td><label for='xml_test_fileref'>Fileref1: </label>"+ // fileref
+            "<input class='tinyinput xml_test_fileref' readonly/></td>" +
+        "<td></td>"+ // x-button
+        addFileRefInTest +
+        "</tr>"+
+    "</table>" +
+    /*" <label for='xml_test_filename'>Filename<span class='red'>*</span>: </label>"+
     "<select class='mediuminput xml_test_filename' onfocus = 'setFilenameList(this)' "+
     "onchange = 'switchFileref(this)'></select>"+
     " <label for='xml_test_fileref'>Fileref1: </label>"+
     "<input class='tinyinput xml_test_fileref' readonly/>"+
     " <label for='xml_test_fileref'>Fileref2: </label>"+
-    "<input class='tinyinput xml_test_fileref' readonly/>"+
+    "<input class='tinyinput xml_test_fileref' readonly/>"+*/
 //    " <label for='xml_test_validity'>Validity: </label>"+
 //    "<input class='shortinput xml_test_validity'/>"+
     " <label for='xml_test_type'>Type: </label>"+
@@ -624,8 +639,8 @@ $(function() {
     "<input class='largeinput xml_test_title' value='"+ TestName +"'/></p>"+ MoreText + "</div>");
       // hide fields that exist only for technical reasons
     var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent();
+    testroot.find(".xml_test_type").val(TestType);
     if (!DEBUG_MODE) {
-      testroot.find(".xml_test_type").val(TestType);
       testroot.find(".xml_test_type").hide();
       testroot.find("label[for='xml_test_type']").hide();
       testroot.find(".xml_pr_always").hide();
@@ -640,10 +655,11 @@ $(function() {
       testroot.find("label[for='xml_test_fileref']").hide();
     }
     if (TestType == "java-compilation") {
-        testroot.find(".xml_test_fileref").hide();
+        testroot.find("table").hide();
+        /*testroot.find(".xml_test_fileref").hide();
         testroot.find("label[for='xml_test_fileref']").hide();
         testroot.find(".xml_test_filename").hide();
-        testroot.find("label[for='xml_test_filename']").hide();
+        testroot.find("label[for='xml_test_filename']").hide();*/
     }
   };
 
@@ -1173,10 +1189,17 @@ $(function() {
                        var object = $($(item.formname)[idx1cnt]);
                        if (item.formname == ".xml_test") {
                            // set filename in test
+                           if (index > 0) {
+                               addTestFileRef(object.find(".add_file_ref_test").first());
+                           }
                            var element = object.find(".xml_test_filename");
+                           setFilenameList(element.eq(index));
+                           element.eq(index).val(filename).change();
+                           object.find(itm2.formname)[index].value = fileid;
+                           /*var element = object.find(".xml_test_filename");
                            setFilenameList(element);
                            element.val(filename).change();
-                           object.find(itm2.formname)[index].value = fileid;
+                           object.find(itm2.formname)[index].value = fileid;*/
 
                        } else if (item.formname == ".xml_model-solution") {
                            // set filename in model solution
@@ -1353,23 +1376,61 @@ $(function() {
         }
     };
 
-    remMsFileRef = function(element) {
-      var td = element.parent();
-      var tr = td.parent();
-      var table_body = tr.parent();
-      var previousRow = tr.prev("tr");
-      var hasTr = tr.nextAll("tr");
-      tr.remove(); // remove row
-      if (hasTr.length == 0) {
-        // if row is last row then add +-button to last row
-          //hasTr[0].
-          console.log("add + button");
-          var cells = previousRow.find("td");
-          var lastCell = cells[cells.length - 1];
-          previousRow.append(addFileRefInMs); //"<td><button class='add_file_ref' title='add another filename' onclick='addMsFileRef($(this))'>+</button></td>");
-      }
+    addTestFileRef = function(element) {
+        var td = element.parent();
+        var tr = td.parent();
+        var table_body = tr.parent();
+        table_body.append(
+            "<tr><td></td>" + // label
+            "<td><select class='mediuminput xml_test_filename' onfocus = 'setFilenameList(this)' "+
+            "onchange = 'switchFileref(this)'></select></td>"+
+            "<td><label for='xml_test_fileref'>Fileref1: </label>"+ // fileref
+            "<input class='tinyinput xml_test_fileref' readonly/></td>" +
+            "<td><button class='rem_file_ref_test' onclick='remTestFileRef($(this))'>x</button></td>" +
+            addFileRefInTest +
+            "</tr>");
+        td.remove(); // remove current +-button
 
-//      element.parent().remove();
+        if (!DEBUG_MODE) {
+            // hide new fileref fields
+            //var msroot = element.parent().parent();
+            table_body.find(".xml_test_fileref").hide();
+            table_body.find("label[for='xml_test_fileref']").hide();
+        }
+    };
+
+    remMsFileRef = function(element) {
+        var td = element.parent();
+        var tr = td.parent();
+        var table_body = tr.parent();
+        var previousRow = tr.prev("tr");
+        var hasTr = tr.nextAll("tr");
+        tr.remove(); // remove row
+        if (hasTr.length == 0) {
+            // if row is last row then add +-button to last row
+            //hasTr[0].
+            console.log("add + button");
+            var cells = previousRow.find("td");
+            var lastCell = cells[cells.length - 1];
+            previousRow.append(addFileRefInMs); //"<td><button class='add_file_ref' title='add another filename' onclick='addMsFileRef($(this))'>+</button></td>");
+        }
+    }
+
+    remTestFileRef = function(element) {
+        var td = element.parent();
+        var tr = td.parent();
+        var table_body = tr.parent();
+        var previousRow = tr.prev("tr");
+        var hasTr = tr.nextAll("tr");
+        tr.remove(); // remove row
+        if (hasTr.length == 0) {
+            // if row is last row then add +-button to last row
+            //hasTr[0].
+            console.log("add + button");
+            var cells = previousRow.find("td");
+            var lastCell = cells[cells.length - 1];
+            previousRow.append(addFileRefInTest);
+        }
     }
 });
 
