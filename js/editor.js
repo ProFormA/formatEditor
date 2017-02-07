@@ -475,18 +475,35 @@ $(function() {
     if (codemirrorOnOrOff == 1) { addCodemirrorElement(tempcounter); }
   };
   switchFileref = function(tempSelElem) {              // changing a filename in the drop-down changes the id
+    var found = false;
     $.each($(".xml_file_filename"), function(index, item) {
        if ($(tempSelElem).val() == item.value ) {
           if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
             $(tempSelElem).parent().find('.xml_test_fileref')[0].value=
-            $(item).first().parent().find(".xml_file_id").val();
+              $(item).first().parent().find(".xml_file_id").val();
           } else {
-            $(tempSelElem).parent().find('.xml_model-solution_fileref')[0].value=
-            $(item).first().parent().find(".xml_file_id").val();
+              var fileid = $(item).first().parent().find(".xml_file_id").val();
+            //$(tempSelElem).parent().find('.xml_model-solution_fileref')[0].value=
+              var nextTd = $(tempSelElem).parent().next('td');
+              //var next1 = $(tempSelElem).parent().nextAll($('.xml_model-solution_fileref'));
+              nextTd.find('.xml_model-solution_fileref')[0].value=fileid;
           }
+          found = true;
+          return false;
        }
     });
+    // file id not found
+    if (!found) {
+        if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
+            $(tempSelElem).parent().find('.xml_test_fileref')[0].value="";
+        } else {
+            var nextTd = $(tempSelElem).parent().next('td');
+            nextTd.find('.xml_model-solution_fileref')[0].value="";
+        }
+    }
   };
+
+
   setFilenameList = function(tempSelElem) {            // create the drop-down with all possible filenames
      $(tempSelElem).empty();
      var tempOption = $("<option></option>");
@@ -507,13 +524,24 @@ $(function() {
     "class='rightButton'><button onclick='remP3($(this));deletecounter(modelSolIDs,$(this));'>x</button></span></h3>"+
     "<p><label for='xml_model-solution_id'>ID<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_model-solution_id' value='"+tempcounter+"' readonly/>"+
-    " <label for='xml_model-solution_filename'>Filename<span class='red'>*</span>: </label>"+
-    "<select class='mediuminput xml_model-solution_filename' onfocus = 'setFilenameList(this)' "+
-    "onchange = 'switchFileref(this)'></select>"+
-    " <label for='xml_model-solution_fileref'>Fileref1: </label>"+
-    "<input class='tinyinput xml_model-solution_fileref' readonly/>"+
-    " <label for='xml_model-solution_fileref'>Fileref2: </label>"+
-    "<input class='tinyinput xml_model-solution_fileref'/>"+
+
+    "<table>" +
+        "<tr>" +
+        "<td><label for='xml_model-solution_filename'>Filename<span class='red'>*</span>: </label></td>"+ // label
+
+        "<td><select class='mediuminput xml_model-solution_filename' onfocus = 'setFilenameList(this)' "+ // select
+          "onchange = 'switchFileref(this)'></select></td>"+
+        "<td><label for='xml_model-solution_fileref'>Fileref: </label>"+ // fileref
+          "<input class='tinyinput xml_model-solution_fileref' readonly/></td>" +
+        "<td></td>"+ // x-button
+
+        "<td><button class='add_file_ref' title='add another filename' onclick='addMsFileRef($(this))'>+</button><br></td>" + // +-button
+        "</tr>"+
+
+    "</table>" +
+//    " <label for='xml_model-solution_fileref'>Fileref2: </label>"+
+//    "<input class='tinyinput xml_model-solution_fileref'/>"+
+
     "<p><label for='xml_model-solution_comment'>Comment: </label>"+
     "<input class='largeinput xml_model-solution_comment'/></p></div>");
     // hide fields that exist only for technical reasons
@@ -521,8 +549,12 @@ $(function() {
       var msroot = $(".xml_model-solution_id[value='" + tempcounter + "']").parent().parent();
       msroot.find(".xml_model-solution_id").hide();
       msroot.find("label[for='xml_model-solution_id']").hide();
-      msroot.find(".xml_model-solution_fileref").first().hide();
-      msroot.find("label[for='xml_model-solution_fileref']").first().hide();
+
+        msroot.find(".xml_model-solution_fileref").hide();
+        msroot.find("label[for='xml_model-solution_fileref']").hide();
+
+//      msroot.find(".xml_model-solution_fileref").first().hide();
+//      msroot.find("label[for='xml_model-solution_fileref']").first().hide();
     }
   };
                                                        // HTML building blocks for the tests
@@ -1124,48 +1156,45 @@ $(function() {
                  } catch(err) {setErrorMessage( "problem with "+itm2.formname+idx1);}
                }
             });
-            $.each(mapListOfChildElems, function(idx2, itm2) {        // loop: fileref
+
+            $.each(mapListOfChildElems, function(idx2, itm2) {        // loop: fileref (and filenames)
                if ($(itm1).find(itm2.xmlname).length > 0 && item.formname == itm2.formcontainer) {
-                 try {                                                // ToDo: reads only 1. and 2. fileref
+                 try {
                    // retrieve filename from fileid
                    var itm1_itm2_xmlname = $(itm1).find(itm2.xmlname);
-                   var fileid = itm1_itm2_xmlname[0].getAttribute(itm2.listattr);
-                   var fileid2 = "";
-                   // read 2. fileref if available
-                   if (itm1_itm2_xmlname.size() > 1)
-                     fileid2 = itm1_itm2_xmlname[1].getAttribute(itm2.listattr);
-                   var fileid_obj = $("#filesection").find(".xml_file_id[value='"+ fileid +"']");
-                   var filename = fileid_obj.parent().find(".xml_file_filename").val();
-                   // set filename in item
-                   var object = $($(item.formname)[idx1cnt]);
-                   object.find(itm2.formname)[0].value = fileid;
-                   if (item.formname == ".xml_test") {
-                     // set filename in test
-                       var element = object.find(".xml_test_filename");
-                       setFilenameList(element);
-                       element.val(filename).change();
 
-                   } else if (item.formname == ".xml_model-solution") {
-                     // set filename in model solution
-                       var element = object.find(".xml_model-solution_filename");
-                       setFilenameList(element);
-                       element.val(filename).change();
-                   }
-                   // set fileref2
-                   object.find(itm2.formname)[1].value = fileid2;
+                   $.each(itm1_itm2_xmlname, function(index, refid_tag) {
+                       var fileid = refid_tag.getAttribute(itm2.listattr);
+                       var fileid_obj = $("#filesection").find(".xml_file_id[value='"+ fileid +"']");
+                       var filename = fileid_obj.parent().find(".xml_file_filename").val();
 
+                       // set filename in item
+                       var object = $($(item.formname)[idx1cnt]);
+                       if (item.formname == ".xml_test") {
+                           // set filename in test
+                           var element = object.find(".xml_test_filename");
+                           setFilenameList(element);
+                           element.val(filename).change();
+                           object.find(itm2.formname)[index].value = fileid;
 
-                 } catch(err) {setErrorMessage( "problem with reading filerefs");}
+                       } else if (item.formname == ".xml_model-solution") {
+                           // set filename in model solution
+                           if (index > 0) {
+                               addMsFileRef(object.find(".add_file_ref").first());
+                           }
+                           var element = object.find(".xml_model-solution_filename");
+                           setFilenameList(element.eq(index));
+                           element.eq(index).val(filename).change();
+                           object.find(itm2.formname)[index].value = fileid;
+                       }
+                   });
+                 } catch(err) {setErrorMessage( "problem with reading filerefs", err);}
                }
             });
+
             idx1cnt++;
          });
       });
-
-      // Nacharbeit:
-      // zu den Filerefs die Dateinamen ergänzen!!
-        // for each fileref (1) in model solution -> suche filename
-
 
       if (xmlObject.find("proglang")[0]) {              // deal with proglang
         var tempvals1, tempvals0;
@@ -1296,6 +1325,58 @@ $(function() {
     */
   //  $("debug_output").style.display = "none";
   //}
+    addMsFileRef = function(element) {
+        // var root = element.parentsUntil(".xml_model-solution");
+        //element.parent().append(
+        // element.parent().append(
+        var td = element.parent();
+        var tr = td.parent();
+        var table_body = tr.parent();
+        table_body.append(/*
+             before("<span><br><label for='xml_model-solution_filename'>Filename: </label>"+
+             "<select class='mediuminput xml_model-solution_filename' onfocus = 'setFilenameList(this)' "+
+             "onchange = 'switchFileref(this)'></select>"+
+             " <label for='xml_model-solution_fileref'>Fileref: </label>"+
+             "<input class='tinyinput xml_model-solution_fileref' readonly/>" +
+             "<button class='rem_file_ref' onclick='remMsFileRef($(this))'>x</button></span>"*/
+
+
+            "<tr><td></td>" + // label
+            "<td><select class='mediuminput xml_model-solution_filename' onfocus = 'setFilenameList(this)' " +
+            "onchange = 'switchFileref(this)'></select></td>" +
+            "<td><label for='xml_model-solution_fileref'>Fileref: </label>" +
+            "<input class='tinyinput xml_model-solution_fileref' readonly/></td>" +
+            "<td><button class='rem_file_ref' onclick='remMsFileRef($(this))'>x</button></td>" +
+            "<td><button class='add_file_ref' title='add another filename' onclick='addMsFileRef($(this))'>+</button></td>" + // +-button
+            "</tr>");
+        td.remove(); // remove current +-button
+
+        if (!DEBUG_MODE) {
+            // hide new fileref fields
+            //var msroot = element.parent().parent();
+            table_body.find(".xml_model-solution_fileref").hide();
+            table_body.find("label[for='xml_model-solution_fileref']").hide();
+        }
+    };
+
+    remMsFileRef = function(element) {
+      var td = element.parent();
+      var tr = td.parent();
+      var table_body = tr.parent();
+      var previousRow = tr.prev("tr");
+      var hasTr = tr.nextAll("tr");
+      tr.remove(); // remove row
+      if (hasTr.length == 0) {
+        // if row is last row then add +-button to last row
+          //hasTr[0].
+          console.log("add + button");
+          var cells = previousRow.find("td");
+          var lastCell = cells[cells.length - 1];
+          previousRow.append("<td><button class='add_file_ref' title='add another filename' onclick='addMsFileRef($(this))'>+</button></td>");
+      }
+
+//      element.parent().remove();
+    }
 });
 
 ///////////////////////////////////////////////////////// end of document ready function

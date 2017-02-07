@@ -221,6 +221,10 @@ def add_file_to_model_solution(ms_index, file_index):  # 0-based
     #select.select_by_value(value) # unfortunately does not work
     select.select_by_index(file_index)
 
+def append_file_to_model_solution(ms_index):
+    change_tab("ms_tab")
+    elem = driver.find_elements_by_class_name("add_file_ref")
+    elem[ms_index].click()
 
 
 def set_model_solution_fileref2(ms_index, filefer_number):

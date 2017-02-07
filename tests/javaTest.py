@@ -152,7 +152,9 @@ editor.set_model_solution_comment(1, "model solution #1")
 editor.add_file_to_model_solution(0, 2)
 editor.add_file_to_model_solution(1, 1)
 
-editor.set_model_solution_fileref2(1, "4")
+editor.append_file_to_model_solution(1)
+editor.add_file_to_model_solution(2, 3) # attention: new file has (absolute) index 2!
+# editor.set_model_solution_fileref2(1, "4")
 
 ####################################################################
 # add Java compiler test
