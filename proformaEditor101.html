@@ -195,8 +195,10 @@
     </div>  <!-- task container -->
 
     <div id="end-container" class='clear'></div>  <!-- because of float -->
-
-    <textarea id="error-message" class="ui-state-error" readonly>Error Console:</textarea>
+    <p></p><p></p> <!-- Leerzeilen verhindern, dass die fixierte error-message-Zeile
+    Inhalt verdeckt. (workaround)
+    -->
+    <textarea id="error-message" class="ui-state-error enclose problem" readonly>Error Console:</textarea>
 
     <!--
         <div id="button-list">

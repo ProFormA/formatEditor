@@ -81,6 +81,17 @@ table, th, td {
 	visibility: hidden;
 }
 
+#error-message {
+  position: fixed;
+  bottom: 0px;
+  margin-right: auto;
+  margin-left: auto;
+  width:100%;
+}
+
+/*.problem {text-align:center} */
+/*.enclose {position:fixed;bottom:0px;width:100%;}*/
+
 #button-list{
 	margin:0.5em 0.6em;
 /*        text-align: center;*/
