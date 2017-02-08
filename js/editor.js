@@ -600,12 +600,12 @@ $(function() {
     "<p><label for='xml_model-solution_comment'>Comment: </label>"+
     "<input class='largeinput xml_model-solution_comment'/></p></div>");
 
-    // hide fields that exist only for technical reasons
     var msroot = $(".xml_model-solution_id[value='" + tempcounter + "']").parent().parent();
     msroot.find(".rem_file_ref_ms").hide(); // hide remove file button
     if (!DEBUG_MODE) {
-      msroot.find(".xml_model-solution_id").hide();
-      msroot.find("label[for='xml_model-solution_id']").hide();
+        // hide fields that exist only for technical reasons
+        msroot.find(".xml_model-solution_id").hide();
+        msroot.find("label[for='xml_model-solution_id']").hide();
 
         msroot.find(".xml_model-solution_fileref").hide();
         msroot.find("label[for='xml_model-solution_fileref']").hide();
@@ -641,7 +641,71 @@ $(function() {
     " <label for='xml_pr_CS_warnings'>Maximum warnings allowed<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_pr_CS_warnings' value='0'/></p>";
 
-  const addFileRefInTest = "<td><button class='add_file_ref_test' title='add another filename' onclick='addTestFileRef($(this))'>+</button><br></td>";
+
+
+    addTestFileRef = function(element) {
+        // add new line for selecting a file for a test
+        var td = element.parent();
+        var tr = td.parent();
+        var table_body = tr.parent();
+        table_body.append(
+            "<tr><td></td>" + // label
+            tdFilenameInTest +
+            tdFileRemoveButtonInTest +
+            /*"<td><select class='mediuminput xml_test_filename' onfocus = 'setFilenameList(this)' "+
+             "onchange = 'switchFileref(this)'></select></td>"+
+             "<td><label for='xml_test_fileref'>Fileref1: </label>"+ // fileref
+             "<input class='tinyinput xml_test_fileref' readonly/></td>" +
+             "<td><button class='rem_file_ref_test' onclick='remTestFileRef($(this))'>x</button></td>" + */
+            tdFileAddButtonInTest +
+            "</tr>");
+        td.remove(); // remove current +-button
+        table_body.find(".rem_file_ref_test").show(); // show all remove file buttons
+
+        if (!DEBUG_MODE) {
+            // hide new fileref fields
+            table_body.find(".xml_test_fileref").hide();
+            table_body.find("label[for='xml_test_fileref']").hide();
+        }
+    };
+
+
+    remTestFileRef = function(element) {
+        // remove line in file table for test
+        var td = element.parent();
+        var tr = td.parent();
+        var table_body = tr.parent();
+        var previousRow = tr.prev("tr");
+        var hasNextTr = tr.nextAll("tr");
+        var hasPrevTr = tr.prevAll("tr");
+        tr.remove(); // remove row
+        if (hasNextTr.length == 0) {
+            // if row to be deleted is last row then add +-button to last row
+            previousRow.append(tdFileAddButtonInTest);
+        }
+        if (hasPrevTr.length == 0) {
+            // row to be deleted is first row
+            // => add filename label to first column
+            var firstCell =table_body.find("td").first();
+            firstCell.append(filenameLabelInTest); // without td
+        }
+        if (table_body.find("tr").length == 1) {
+            // table has exactly one row left
+            // => hide all remove file buttons
+            table_body.find(".rem_file_ref_test").hide();
+        }
+    }
+
+  const filenameLabelInTest = "<label for='xml_test_filename'>Filename<span class='red'>*</span>: </label>";
+  const tdFilenameLabelInTest ="<td>" + filenameLabelInTest + "</td>";
+  const tdFilenameInTest = "<td><select class='mediuminput xml_test_filename' onfocus = 'setFilenameList(this)' "+
+      "onchange = 'switchFileref(this)'></select></td>"+
+      "<td><label for='xml_test_fileref'>Fileref1: </label>"+ // fileref
+      "<input class='tinyinput xml_test_fileref' readonly/></td>";
+  const tdFileAddButtonInTest = "<td><button class='add_file_ref_test' title='add another filename' onclick='addTestFileRef($(this))'>+</button><br></td>";
+  const tdFileRemoveButtonInTest = "<td><button class='rem_file_ref_test' onclick='remTestFileRef($(this))'>x</button></td>";
+
+
   newTest = function(tempcounter,TestName, MoreText, TestType) { // create a new test HTML form element
     $("#testsection").append("<div "+
     "class='ui-widget ui-widget-content ui-corner-all xml_test'>"+
@@ -649,26 +713,14 @@ $(function() {
     "class='rightButton'><button onclick='remP3($(this));deletecounter(testIDs,$(this));'>x</button></span></h3>"+
     "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
-
     "<table>" +
         "<tr>" +
-        "<td><label for='xml_test_filename'>Filename<span class='red'>*</span>: </label></td>"+ // label
-
-        "<td><select class='mediuminput xml_test_filename' onfocus = 'setFilenameList(this)' "+
-            "onchange = 'switchFileref(this)'></select></td>"+
-        "<td><label for='xml_test_fileref'>Fileref1: </label>"+ // fileref
-            "<input class='tinyinput xml_test_fileref' readonly/></td>" +
-        "<td></td>"+ // x-button
-        addFileRefInTest +
+        tdFilenameLabelInTest + // label
+        tdFilenameInTest +
+        tdFileRemoveButtonInTest + // x-button
+        tdFileAddButtonInTest +
         "</tr>"+
     "</table>" +
-    /*" <label for='xml_test_filename'>Filename<span class='red'>*</span>: </label>"+
-    "<select class='mediuminput xml_test_filename' onfocus = 'setFilenameList(this)' "+
-    "onchange = 'switchFileref(this)'></select>"+
-    " <label for='xml_test_fileref'>Fileref1: </label>"+
-    "<input class='tinyinput xml_test_fileref' readonly/>"+
-    " <label for='xml_test_fileref'>Fileref2: </label>"+
-    "<input class='tinyinput xml_test_fileref' readonly/>"+*/
 //    " <label for='xml_test_validity'>Validity: </label>"+
 //    "<input class='shortinput xml_test_validity'/>"+
     " <label for='xml_test_type'>Type: </label>"+
@@ -695,6 +747,7 @@ $(function() {
       // hide fields that exist only for technical reasons
     var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent();
     testroot.find(".xml_test_type").val(TestType);
+    testroot.find(".rem_file_ref_test").hide(); // hide remove file button
     if (!DEBUG_MODE) {
       testroot.find(".xml_test_type").hide();
       testroot.find("label[for='xml_test_type']").hide();
@@ -868,7 +921,6 @@ $(function() {
         $("#tabs").tabs("option", "active",  tab_page.FILES);
         item.focus();
         returnFromFunction = true;
-        return;
       }
     });
     if (returnFromFunction)
@@ -880,7 +932,6 @@ $(function() {
         setErrorMessage("Filename in model solution is missing.");
         item.focus();
         returnFromFunction = true;
-        return;
       }
     });
     if (returnFromFunction)
@@ -892,7 +943,6 @@ $(function() {
         setErrorMessage("Name of test class is missing.");
         item.focus();
         returnFromFunction = true;
-        return;
       }
     });
     if (returnFromFunction)
@@ -1405,45 +1455,7 @@ $(function() {
   //  $("debug_output").style.display = "none";
   //}
 
-    addTestFileRef = function(element) {
-        var td = element.parent();
-        var tr = td.parent();
-        var table_body = tr.parent();
-        table_body.append(
-            "<tr><td></td>" + // label
-            "<td><select class='mediuminput xml_test_filename' onfocus = 'setFilenameList(this)' "+
-                "onchange = 'switchFileref(this)'></select></td>"+
-            "<td><label for='xml_test_fileref'>Fileref1: </label>"+ // fileref
-                "<input class='tinyinput xml_test_fileref' readonly/></td>" +
-            "<td><button class='rem_file_ref_test' onclick='remTestFileRef($(this))'>x</button></td>" +
-            addFileRefInTest +
-            "</tr>");
-        td.remove(); // remove current +-button
 
-        if (!DEBUG_MODE) {
-            // hide new fileref fields
-            table_body.find(".xml_test_fileref").hide();
-            table_body.find("label[for='xml_test_fileref']").hide();
-        }
-    };
-
-
-    remTestFileRef = function(element) {
-        var td = element.parent();
-        var tr = td.parent();
-        var table_body = tr.parent();
-        var previousRow = tr.prev("tr");
-        var hasTr = tr.nextAll("tr");
-        tr.remove(); // remove row
-        if (hasTr.length == 0) {
-            // if row is last row then add +-button to last row
-            //hasTr[0].
-            console.log("add + button");
-            var cells = previousRow.find("td");
-            var lastCell = cells[cells.length - 1];
-            previousRow.append(addFileRefInTest);
-        }
-    }
 });
 
 ///////////////////////////////////////////////////////// end of document ready function
