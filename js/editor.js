@@ -409,6 +409,7 @@ $(function() {
     if (remtemp) {
       bt.parent().parent().parent().remove();
       deletecounter(fileIDs,bt);
+      onFilenameChanged(); // update filenames
     }
   };
 
@@ -441,6 +442,30 @@ $(function() {
     }
   }
 
+  onFilenameChanged = function() {
+      // after change of filename update all filelists
+      //console.log("onFilenameChanged");
+      $.each($(".xml_test_filename, .xml_model-solution_filename"), function(index, item) {
+          //console.log("update filelist in test ");
+          var text = $("option:selected", item).text(); // selected text
+          //console.log("selected is " + text);
+          setFilenameList(item); // update filenames
+          // check if previously selected filename is still in list
+          // (ich weiß im Moment nicht, wie man die Einträge aus
+          // der Liste rauszieht...TODO)
+          var indexFound = -1;
+          $.each($(".xml_file_filename"), function(indexOpt, item) {
+              if (item.value.length > 0 && item.value == text) {
+                  indexFound = indexOpt;
+              }
+          });
+          if (indexFound >= 0) {
+              console.log("selektiere " + indexFound);
+              item.selectedIndex = indexFound+1; // +1:weil am Anfang noch ein Leerstring ist
+          }
+      });
+  }
+
   newFile = function(tempcounter) {                    // create a new file HTML form element
     $("#filesection").append("<div "+
     "class='ui-widget ui-widget-content ui-corner-all xml_file'>"+
@@ -449,7 +474,7 @@ $(function() {
     "<p><label for='xml_file_id'>ID: </label>"+
     "<input class='tinyinput xml_file_id' value='"+tempcounter+"' readonly/>"+
     " <label for='xml_file_filename'>Filename (with extension)<span class='red'>*</span>: </label>"+
-    "<input class='mediuminput xml_file_filename'/>"+
+    "<input class='mediuminput xml_file_filename' onchange='onFilenameChanged(this)'/>"+
     " <label for='xml_file_type'>Type: </label>"+
     "<select class='xml_file_type'>"+
     "<option selected='selected'>embedded</option>"+
@@ -540,6 +565,8 @@ $(function() {
             "</tr>");
         td.remove(); // remove current +-button
         table_body.find(".rem_file_ref_ms").show(); // show all remove file buttons
+        // add filelist to new file option
+        setFilenameList(table_body.find(".xml_model-solution_filename").last());
 
         if (!DEBUG_MODE) {
             // hide new fileref fields
@@ -578,7 +605,7 @@ $(function() {
 
   const filenameLabelInMs ="<label for='xml_model-solution_filename'>Filename<span class='red'>*</span>: </label>"; // label
   const tdFilenameLabelInMs ="<td>" + filenameLabelInMs + "</td>"; // label
-  const tdFilenameInMs =  "<td><select class='mediuminput xml_model-solution_filename' onfocus = 'setFilenameList(this)' "+ // select
+  const tdFilenameInMs =  "<td><select class='mediuminput xml_model-solution_filename' " + // onfocus = 'setFilenameList(this)' "+ // select
     "onchange = 'switchFileref(this)'></select></td>"+
     "<td><label for='xml_model-solution_fileref'>Fileref: </label>"+ // fileref
     "<input class='tinyinput xml_model-solution_fileref' readonly/></td>";
@@ -606,6 +633,8 @@ $(function() {
 
     var msroot = $(".xml_model-solution_id[value='" + tempcounter + "']").parent().parent();
     msroot.find(".rem_file_ref_ms").hide(); // hide remove file button
+    setFilenameList(msroot.find(".xml_model-solution_filename").last());
+
     if (!DEBUG_MODE) {
         // hide fields that exist only for technical reasons
         msroot.find(".xml_model-solution_id").hide();
@@ -656,15 +685,13 @@ $(function() {
             "<tr><td></td>" + // label
             tdFilenameInTest +
             tdFileRemoveButtonInTest +
-            /*"<td><select class='mediuminput xml_test_filename' onfocus = 'setFilenameList(this)' "+
-             "onchange = 'switchFileref(this)'></select></td>"+
-             "<td><label for='xml_test_fileref'>Fileref1: </label>"+ // fileref
-             "<input class='tinyinput xml_test_fileref' readonly/></td>" +
-             "<td><button class='rem_file_ref_test' onclick='remTestFileRef($(this))'>x</button></td>" + */
             tdFileAddButtonInTest +
             "</tr>");
         td.remove(); // remove current +-button
         table_body.find(".rem_file_ref_test").show(); // show all remove file buttons
+
+        // add filelist to new file option
+        setFilenameList(table_body.find(".xml_test_filename").last());
 
         if (!DEBUG_MODE) {
             // hide new fileref fields
@@ -702,7 +729,7 @@ $(function() {
 
   const filenameLabelInTest = "<label for='xml_test_filename'>Filename<span class='red'>*</span>: </label>";
   const tdFilenameLabelInTest ="<td>" + filenameLabelInTest + "</td>";
-  const tdFilenameInTest = "<td><select class='mediuminput xml_test_filename' onfocus = 'setFilenameList(this)' "+
+  const tdFilenameInTest = "<td><select class='mediuminput xml_test_filename' " + // onfocus = 'setFilenameList(this)' "+
       "onchange = 'switchFileref(this)'></select></td>"+
       "<td><label for='xml_test_fileref'>Fileref1: </label>"+ // fileref
       "<input class='tinyinput xml_test_fileref' readonly/></td>";
@@ -752,6 +779,8 @@ $(function() {
     var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent();
     testroot.find(".xml_test_type").val(TestType);
     testroot.find(".rem_file_ref_test").hide(); // hide remove file button
+    setFilenameList(testroot.find(".xml_test_filename").last());
+
     if (!DEBUG_MODE) {
       testroot.find(".xml_test_type").hide();
       testroot.find("label[for='xml_test_type']").hide();
@@ -1305,11 +1334,6 @@ $(function() {
                            setFilenameList(element.eq(index));
                            element.eq(index).val(filename).change();
                            object.find(itm2.formname)[index].value = fileid;
-                           /*var element = object.find(".xml_test_filename");
-                           setFilenameList(element);
-                           element.val(filename).change();
-                           object.find(itm2.formname)[index].value = fileid;*/
-
                        } else if (item.formname == ".xml_model-solution") {
                            // set filename in model solution
                            if (index > 0) {
