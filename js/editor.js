@@ -541,7 +541,7 @@ $(function() {
   setFilenameList = function(tempSelElem) {            // create the drop-down with all possible filenames
      $(tempSelElem).empty();
      var tempOption = $("<option></option>");
-     $(tempSelElem).append(tempOption);
+     $(tempSelElem).append(tempOption); // empty string
      $.each($(".xml_file_filename"), function(index, item) {
         if (item.value.length > 0) {
             tempOption = $("<option></option>");
@@ -549,6 +549,7 @@ $(function() {
             $(tempSelElem).append(tempOption);
         }
      });
+      //tempSelElem.val(""); // preset no filename
   };
 
 
@@ -600,7 +601,7 @@ $(function() {
             // => hide all remove file buttons
             table_body.find(".rem_file_ref_ms").hide();
         }
-    }
+    };
 
 
   const filenameLabelInMs ="<label for='xml_model-solution_filename'>Filename<span class='red'>*</span>: </label>"; // label
@@ -725,7 +726,7 @@ $(function() {
             // => hide all remove file buttons
             table_body.find(".rem_file_ref_test").hide();
         }
-    }
+    };
 
   const filenameLabelInTest = "<label for='xml_test_filename'>Filename<span class='red'>*</span>: </label>";
   const tdFilenameLabelInTest ="<td>" + filenameLabelInTest + "</td>";
@@ -751,7 +752,7 @@ $(function() {
         tdFileRemoveButtonInTest + // x-button
         tdFileAddButtonInTest +
         "</tr>"+
-    "</table>" +
+    "</table><br>" +
 //    " <label for='xml_test_validity'>Validity: </label>"+
 //    "<input class='shortinput xml_test_validity'/>"+
     " <label for='xml_test_type'>Type: </label>"+
@@ -764,6 +765,7 @@ $(function() {
     "<option>dejagnu-tester</option>"+
 //    "<option>dejagnu</option>"+
     "<option>python</option></select>"+
+
     " <label for='xml_pr_public'>Public<span class='red'>*</span>: </label>"+
     "<select class='xml_pr_public'>"+
     "<option selected='selected'>True</option><option>False</option></select>"+
@@ -775,6 +777,7 @@ $(function() {
     "<option selected='selected'>True</option><option>False</option></select></p>"+
     "<p><label for='xml_test_title'>Title<span class='red'>*</span>: </label>"+
     "<input class='largeinput xml_test_title' value='"+ TestName +"'/></p>"+ MoreText + "</div>");
+
       // hide fields that exist only for technical reasons
     var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent();
     testroot.find(".xml_test_type").val(TestType);
