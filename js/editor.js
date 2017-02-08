@@ -20,7 +20,7 @@
 // constants
 
 // TAB pages
-var tab_page = {
+const tab_page = {
   MAIN:   0,
   FILES:  1,
   MODEL_SOLUTION:  2,
@@ -30,7 +30,7 @@ var tab_page = {
   DEBUG:  6
 };
 
-var DEBUG_MODE = false;
+const DEBUG_MODE = false;
 var TEST_MODE = true;
 
 
@@ -192,6 +192,10 @@ function downloadFile(downloadLink) {                  // download link for text
 function downloadTextFile2(textarea, filename, dummybutton) {
     console.log("downloadTextFile2 called");
     var text = textarea.val();
+    if (text.length == 0) {
+        console.log("downloadTextFile2 called with empty output");
+        return;
+    }
     var text1 = encodeURIComponent(text);
 
   /*var a = document.createElement("a");
@@ -866,8 +870,8 @@ $(function() {
  * An XML file is created and placed in the textarea. 
  * The XML file is validated against the schema.
  */
-  convertToXML = function(success) {
-    success = false;
+  convertToXML = function() {
+    $("#output").val(""); // empty output so that the old output will not be used in future
     convertFormToXML = function(one,two,cdataBool) {
       var xmlDoc = $.parseXML('<task></task>');
       one.textContent = "";                              // delete previous content

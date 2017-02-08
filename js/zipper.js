@@ -45,6 +45,11 @@ unzipme = function (blob,location, readyCallback) {
 
 zipme = function() {
     var TEXT_CONTENT = $("#output").val();
+    if (TEXT_CONTENT.length == 0) {
+        console.log("zipme called with empty output");
+        return;
+    }
+
     var FILENAME = "task.xml";
     var blob;
     var zipname = $("#xml_meta-data_title").val();
