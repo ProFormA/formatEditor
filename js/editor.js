@@ -805,6 +805,51 @@ $(function() {
         testroot.find(".xml_test_filename").hide();
         testroot.find("label[for='xml_test_filename']").hide();*/
     }
+
+      $('.xml_test').on({
+          dragover: function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              e.dataTransfer.dropEffect = 'copy';
+          },
+          dragenter: function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+          },
+          drop: function(e){
+              if(e.originalEvent.dataTransfer){
+                  if(e.originalEvent.dataTransfer.files.length) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      /*UPLOAD FILES HERE*/
+                      upload(e.originalEvent.dataTransfer.files);
+                  }
+              }
+          }
+
+      });
+      function upload(files){
+          alert('Upload '+files.length+' File(s).');
+          $.each(files, function(index, file) {
+              // prüfen, ob Filename schon existiert.
+              // ja => Hinweis geben, cancel
+              // nein => neues File erzeugen mit filename, text reinkopieren, filename an Test anhängen
+              var filename = file.name;
+              var path = file.webkitRelativePath;
+              var type = file.type;
+              alert('Upload '+filename+' with ' + type + ' on ' + path + ' TODO');
+
+              if (file.type.indexOf("text") == 0) {
+                  var reader = new FileReader();
+                  reader.onload = function(e) {
+                      // get file content
+                      var text = e.target.result;
+                      alert(text);
+                  }
+                  reader.readAsText(file);
+              }
+          });
+      }
   };
 
 ///////////////////////////////////////////////////////// jQuery UI settings
@@ -1465,7 +1510,11 @@ $(function() {
     //downloadTextFile2($("#output"), "task.xml", $("#dummy_save_xml_button")[0]);
   })
 
-  if (!DEBUG_MODE) {
+
+
+
+
+    if (!DEBUG_MODE) {
     $("#buttonClear").hide();
     $("#output").attr("readonly", true);
 
