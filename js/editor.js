@@ -25,9 +25,9 @@ const tab_page = {
   FILES:  1,
   MODEL_SOLUTION:  2,
   TESTS:  3,
-  MANUAL: 4,
-  FAQ:    5,
-  DEBUG:  6
+  DEBUG:  4,
+  MANUAL: 5,
+  FAQ:    6
 };
 
 const DEBUG_MODE = false;

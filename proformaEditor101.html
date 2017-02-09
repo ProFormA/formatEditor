@@ -39,9 +39,9 @@
                 <li id="file_tab"><a href="#tabs-2">Files</a></li>
                 <li id="ms_tab"><a href="#tabs-3">Model Solutions</a></li>
                 <li id="test_tab"><a href="#tabs-4">Tests</a></li>
-                <li id="FAQ"><a href="#tabs-6">FAQ</a></li>
-                <li id="manual"><a href="#tabs-5">Manual</a></li>
                 <li id="debug_output"><a href="#tabs-Debug">Output</a></li>
+                <!-- <li id="FAQ"><a href="#tabs-6">FAQ</a></li>
+                <li id="manual"><a href="#tabs-5">Manual</a></li> -->
             </ul>
             <div id="tabs-1">
                 <div class='ui-widget ui-widget-content ui-corner-all'>
@@ -108,10 +108,11 @@
                 <button id='addSetlX'>Add SetlX test</button>
                 <button id='addSetlXSynt'>Add SetlX syntax test</button></p>
             </div>
+            <!--
             <div id="tabs-5">
             </div>
             <div id="tabs-6">
-            </div>
+            </div> -->
             <div id="tabs-Debug">
                 <div id="button-list">
                     <div id="button_text">Create an XML file from the form data and vice versa:</div>
@@ -163,18 +164,26 @@
 
                 <p><button onclick='convertToXML(); zipme()' type='button' id='buttonZip'>Save zip file</button></p>
 
-                <!-- <p><a href="#tabs-6">Manual</a></p>
-                <p><a href="#tabs-6">Editor</a></p> -->
-
+                <br>
+                <p><a href="manual.html">Manual</a>
+                <a href="faq.html">FAQ</a>
+                <a href="beispiel.html">File Samples</a></p>
+                <p><a href="contact.html">Contact</a></p>
+                <br>
+                <p><button id=reload_editor onclick='var makesure =
+                  window.confirm("All content will be deleted. Do you want to continue?");
+                  if(makesure){location.reload();}' type='button'>Reload Editor</button>
+                </p>
+                <p>
+                    <br>
+                    <div id="codeversion"></div>
+                </p>
 
             </div>
             <div id="form-remarks">
                <p>(All elements marked with <span class='red'>*</span> are required.)</p>
                <p>&nbsp;</p>
-               <p><button onclick='var makesure = 
-                  window.confirm("All content will be deleted. Do you want to continue?");
-                  if(makesure){location.reload();}' type='button'>Update Editor</button>
-	       <div id="codeversion"></div></p>
+                </p>
             </div>
         </div>  <!-- right panel -->
     </div>  <!-- task container -->
