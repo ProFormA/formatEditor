@@ -1326,6 +1326,10 @@ $(function() {
                        var fileid_obj = $("#filesection").find(".xml_file_id[value='"+ fileid +"']");
                        var filename = fileid_obj.parent().find(".xml_file_filename").val();
 
+                       if ("" == fileid && !filename && version094 == tempschema ) {
+                           // accept empty fileids in version 0.9.4 and ignore
+                           return false;
+                       }
                        // set filename in item
                        var object = $($(item.formname)[idx1cnt]);
                        if (item.formname == ".xml_test") {
