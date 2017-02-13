@@ -76,7 +76,6 @@ editor.set_prog_language("setlX/2.40")
 # fill FILES
 ####################################################################
 
-# add 5 new files (1 is already added by editor)
 editor.add_file()
 editor.remove_first_file()
 
@@ -84,7 +83,7 @@ editor.add_file()
 editor.add_file()
 editor.add_file()
 editor.add_file()
-# editor.add_file()
+editor.add_file()
 
 # fill filename
 editor.set_filename(0, "file0.stlx")

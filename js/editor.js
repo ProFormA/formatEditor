@@ -935,11 +935,15 @@ $(function() {
       $.each(files, function(index, file) {
           readAndSetFileData(file, function() {
               // select new filename in first empty filename
+              console.log("uploadFiles: select " + file.name + " in option list");
               var done = false;
 
               $.each($(testBox).find(".xml_test_filename"), function(index, element) {
+                  console.log("-> loop");
+
                   if (done) return false;
                   var currentFilename = $(element).val();
+                  console.log("-> " + currentFilename);
                   if (currentFilename == "") {
                       $(element).val(file.name).change();
                       done = true;
@@ -950,7 +954,7 @@ $(function() {
                   // append filename
                   addTestFileRef($(testBox).find('.add_file_ref_test').last());
                   // select filename
-                  $(testBox).find(".xml_test_filename").last().val(file.name);
+                  $(testBox).find(".xml_test_filename").last().val(file.name).change();
               }
           });
       });

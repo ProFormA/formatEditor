@@ -82,13 +82,12 @@ editor.set_prog_language(prog_lang)
 # fill FILES
 ####################################################################
 
-# add 5 new files (1 is already added by editor)
 editor.add_file()
 editor.add_file()
 editor.add_file()
 editor.add_file()
 editor.add_file()
-# editor.add_file()
+editor.add_file()
 
 # fill filename
 editor.set_filename(0, "file0.py")
