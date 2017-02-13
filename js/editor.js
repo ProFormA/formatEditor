@@ -413,6 +413,16 @@ $(function() {
     }
   };
 
+  doesFilenameExist = function(filename) {
+      var found = false;
+      $.each($(".xml_file_filename"), function(index, item) {
+              if (item.value == filename) {
+                  found = true;
+              }
+      });
+
+      return found;
+  }
 
 ///////////////////////////////////////////////////////// creating new HTML form elements
   newGH = function() {                                 // create a new grading hint HTML form element
@@ -810,7 +820,7 @@ $(function() {
           dragover: function(e) {
               e.preventDefault();
               e.stopPropagation();
-              e.dataTransfer.dropEffect = 'copy';
+              //e.dataTransfer.dropEffect = 'copy';
           },
           dragenter: function(e) {
               e.preventDefault();
@@ -822,32 +832,64 @@ $(function() {
                       e.preventDefault();
                       e.stopPropagation();
                       /*UPLOAD FILES HERE*/
-                      upload(e.originalEvent.dataTransfer.files);
+                      upload(e.originalEvent.dataTransfer.files, e.currentTarget);
                   }
               }
           }
 
       });
-      function upload(files){
-          alert('Upload '+files.length+' File(s).');
+      function upload(files, testBox){
+          if (files.length > 1) {
+              alert('You have dragged more than one file. You must drop exactly one file!');
+              return;
+          }
           $.each(files, function(index, file) {
-              // prüfen, ob Filename schon existiert.
-              // ja => Hinweis geben, cancel
-              // nein => neues File erzeugen mit filename, text reinkopieren, filename an Test anhängen
               var filename = file.name;
-              var path = file.webkitRelativePath;
-              var type = file.type;
-              alert('Upload '+filename+' with ' + type + ' on ' + path + ' TODO');
-
-              if (file.type.indexOf("text") == 0) {
-                  var reader = new FileReader();
-                  reader.onload = function(e) {
-                      // get file content
-                      var text = e.target.result;
-                      alert(text);
-                  }
-                  reader.readAsText(file);
+              // check if a file with that filename already is stored
+              if (doesFilenameExist(filename)) {
+                  alert("A file named '" + filename + "' already exists.");
+                  return;
               }
+
+              var type = file.type;
+              //alert('Loading '+filename);
+              var reader = new FileReader();
+
+              reader.onload = function(e) {
+
+                  // get file content
+                  var text = e.target.result;
+                  var fileIdDrop = setcounter(fileIDs);
+                  newFile(fileIdDrop); // add file
+                  // set filename in test
+                  $(".xml_file_id[value='"+fileIdDrop+"']").parent().find(".xml_file_filename").first().val(filename);
+                  // set file text
+                  codemirror[fileIdDrop].setValue(text);
+                  // update filenames in all filename options
+                  onFilenameChanged();
+                  // select new filename in first empty filename
+                  var done = false;
+
+                  $.each($(testBox).find(".xml_test_filename"), function(index, element) {
+                      if (done) return false;
+                      var currentFilename = $(element).val();
+                      if (currentFilename == "") {
+                          $(element).val(filename).change();
+                          done = true;
+                      }
+                  });
+
+                  if (!done) {
+                      // append filename
+                      addTestFileRef($(testBox).find('.add_file_ref_test').last());
+                      // select filename
+                      $(testBox).find(".xml_test_filename").last().val(filename);
+                  }
+
+              }
+
+              reader.readAsText(file);
+
           });
       }
   };
@@ -1491,8 +1533,8 @@ $(function() {
   //anchor.id = "dummy_save_xml_button";
   document.body.appendChild(anchor);
 
-  // There must be at least one model solution and one file.
-  newFile(setcounter(fileIDs));
+  // There must be at least one model solution
+  // newFile(setcounter(fileIDs));
   newModelsol(setcounter(modelSolIDs));
   // show/hide buttons according to programming language
   switchProgLang();
