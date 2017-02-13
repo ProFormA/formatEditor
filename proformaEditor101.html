@@ -83,7 +83,9 @@
                          <label for='xml_subm_uploadNameRegexp' style="display: none">Filetype: </label>
                          <input class='mediuminput' id='xml_subm_uploadNameRegexp' value="*" style="display: none"/>
                          <label for='xml_upload-mime-type'>MimeType: </label>
-                         <input class='mediuminput' id='xml_upload-mime-type' value='^(text/.*)$'/></p>
+                         <input class='mediuminput' id='xml_upload-mime-type' value='^(text/.*)$'/>
+                         <input type='file' id='dummy_file_upload_button' onchange="readSingleFileComplete(this)"/>
+                     </p>
                 </div>
                 <span id='otherSoftware1'></span>
                 <span id='gradinghintsection'></span>

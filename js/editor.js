@@ -66,6 +66,7 @@ if (xsdSchemaFile == version094) {
 }
 var isFirefox = typeof InstallTrigger !== 'undefined'; // Firefox 1.0+
 
+const loadFileOption = "load...";
 //////////////////////////////////////////////////////////////////////////////
 //* These global variables keep track of how many of these elements currently exist. 
 var fileIDs = {};
@@ -434,6 +435,7 @@ $(function() {
     "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea></p></div>");
     gradingHintCounter++;
   };
+
   readSingleFile = function(inputbutton) {             // read a file and its filename into the HTML form
     var filenew = inputbutton.files[0];
     if (filenew) {
@@ -450,7 +452,50 @@ $(function() {
       }
       readfi.readAsText(filenew);
     }
-  }
+  };
+
+  uploadFile = function(file) {
+      if (!file) return;
+      var filename = file.name;
+      // check if a file with that filename already is stored
+      if (doesFilenameExist(filename)) {
+          alert("A file named '" + filename + "' already exists.");
+          return;
+      }
+      var type = file.type;
+      var reader = new FileReader();
+
+      reader.onload = function(e) {
+          // get file content
+          var text = e.target.result;
+          var newFileId = setcounter(fileIDs);
+          newFile(newFileId); // add file
+          // set filename in test
+          $(".xml_file_id[value='"+newFileId+"']").parent().find(".xml_file_filename").first().val(filename);
+          // set file text
+          codemirror[newFileId].setValue(text);
+          /*
+           if (codemirrorOnOrOff == 1) {
+           codemirror[$(inputbutton).parent().parent().find(".xml_file_id").val()].setValue(e.target.result);
+           $(inputbutton).parent().parent().find(".xml_file_filename").val(filename);
+           } else {
+           $(inputbutton).parent().parent().find(".xml_file_text").val(e.target.result);
+           $(inputbutton).parent().parent().find(".xml_file_filename").val(filename);
+           }
+           */
+
+          // update filenames in all filename options
+          onFilenameChanged();
+      }
+      reader.readAsText(file);
+  };
+
+  readSingleFileComplete = function(inputbutton) {             // read a file and its filename into the HTML form
+    var filenew = inputbutton.files[0];
+    uploadFile(filenew);
+    return;
+   }
+
 
   onFilenameChanged = function() {
       // after change of filename update all filelists
@@ -513,10 +558,18 @@ $(function() {
     }
     if (codemirrorOnOrOff == 1) { addCodemirrorElement(tempcounter); }
   };
+
   switchFileref = function(tempSelElem) {              // changing a filename in the drop-down changes the id
     var found = false;
+    var selectedFilename = $(tempSelElem).val();
+    if (selectedFilename == loadFileOption) {
+        var dummybutton = $("#dummy_file_upload_button").first();
+        dummybutton.attr("");
+        dummybutton.click();
+        return;
+    }
     $.each($(".xml_file_filename"), function(index, item) {
-       if ($(tempSelElem).val() == item.value ) {
+       if (selectedFilename == item.value ) {
           if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
               var fileid = $(item).first().parent().find(".xml_file_id").val();
               var nextTd = $(tempSelElem).parent().next('td');
@@ -560,6 +613,8 @@ $(function() {
         }
      });
       //tempSelElem.val(""); // preset no filename
+      tempOption = $("<option>" + loadFileOption + "</option>");
+      $(tempSelElem).append(tempOption);
   };
 
 
@@ -852,11 +907,9 @@ $(function() {
               }
 
               var type = file.type;
-              //alert('Loading '+filename);
               var reader = new FileReader();
 
               reader.onload = function(e) {
-
                   // get file content
                   var text = e.target.result;
                   var fileIdDrop = setcounter(fileIDs);
@@ -889,7 +942,6 @@ $(function() {
               }
 
               reader.readAsText(file);
-
           });
       }
   };
