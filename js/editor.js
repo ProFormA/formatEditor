@@ -30,7 +30,7 @@ const tab_page = {
   FAQ:    6
 };
 
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 var TEST_MODE = true;
 
 
@@ -454,7 +454,7 @@ $(function() {
     }
   };
 
-  uploadFile = function(file) {
+  readAndSetFileData = function(file, callback) {
       if (!file) return;
       var filename = file.name;
       // check if a file with that filename already is stored
@@ -467,6 +467,7 @@ $(function() {
 
       reader.onload = function(e) {
           // get file content
+          console.log("create filebox");
           var text = e.target.result;
           var newFileId = setcounter(fileIDs);
           newFile(newFileId); // add file
@@ -486,20 +487,40 @@ $(function() {
 
           // update filenames in all filename options
           onFilenameChanged();
+
+          if (callback)
+            callback();
       }
+      console.log("read file");
       reader.readAsText(file);
   };
 
-  readSingleFileComplete = function(inputbutton) {             // read a file and its filename into the HTML form
-    var filenew = inputbutton.files[0];
-    uploadFile(filenew);
-    return;
-   }
+  readSingleFileAndCreateFilebox = function(inputbutton, filenameSelect) {             // read a file and its filename into the HTML form
+      console.log("select file");
+      var filenew = inputbutton.files[0];
+      if (!filenew) {
+          console.log("no file selected -> cancel");
+          return;
+      }
+
+      if (filenameSelect) {
+          // console.log("+++ readSingleFileAndCreateFilebox (1)" + JSON.stringify(filenameSelect));
+      }
+
+      readAndSetFileData(filenew, function(){
+          if (filenameSelect) {
+              var filename = filenew.name;
+              // console.log("+++ readSingleFileAndCreateFilebox (2)" + JSON.stringify(filenameSelect));
+              filenameSelect.val(filenew.name).change();
+          }
+      });
+  }
 
 
   onFilenameChanged = function() {
       // after change of filename update all filelists
-      //console.log("onFilenameChanged");
+      console.log("onFilenameChanged");
+
       $.each($(".xml_test_filename, .xml_model-solution_filename"), function(index, item) {
           //console.log("update filelist in test ");
           var text = $("option:selected", item).text(); // selected text
@@ -560,11 +581,23 @@ $(function() {
   };
 
   switchFileref = function(tempSelElem) {              // changing a filename in the drop-down changes the id
+
+    // console.log("+++ switchFileref" + JSON.stringify(tempSelElem));
+
     var found = false;
     var selectedFilename = $(tempSelElem).val();
+    console.log("-> selected is '" + selectedFilename + "'");
+
     if (selectedFilename == loadFileOption) {
+        // read new file
+        // remove old callback
         var dummybutton = $("#dummy_file_upload_button").first();
-        dummybutton.attr("");
+        dummybutton.unbind("change");
+        // change callback
+        dummybutton.change(function() {
+            readSingleFileAndCreateFilebox($("#dummy_file_upload_button")[0], $(tempSelElem));
+        });
+
         dummybutton.click();
         return;
     }
@@ -588,6 +621,7 @@ $(function() {
     });
     // file id not found
     if (!found) {
+        console.log("could not find file id for " + selectedFilename);
         if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
             var nextTd = $(tempSelElem).parent().next('td');
             nextTd.find('.xml_model-solution_fileref')[0].value="";
@@ -871,79 +905,56 @@ $(function() {
         testroot.find("label[for='xml_test_filename']").hide();*/
     }
 
-      $('.xml_test').on({
-          dragover: function(e) {
-              e.preventDefault();
-              e.stopPropagation();
-              //e.dataTransfer.dropEffect = 'copy';
-          },
-          dragenter: function(e) {
-              e.preventDefault();
-              e.stopPropagation();
-          },
-          drop: function(e){
-              if(e.originalEvent.dataTransfer){
-                  if(e.originalEvent.dataTransfer.files.length) {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      /*UPLOAD FILES HERE*/
-                      upload(e.originalEvent.dataTransfer.files, e.currentTarget);
-                  }
+    $('.xml_test').on({
+      dragover: function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          //e.dataTransfer.dropEffect = 'copy';
+      },
+      dragenter: function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+      },
+      drop: function(e){
+          if(e.originalEvent.dataTransfer){
+              if(e.originalEvent.dataTransfer.files.length) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  /*UPLOAD FILES HERE*/
+                  uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
               }
           }
-
-      });
-      function upload(files, testBox){
-          if (files.length > 1) {
-              alert('You have dragged more than one file. You must drop exactly one file!');
-              return;
-          }
-          $.each(files, function(index, file) {
-              var filename = file.name;
-              // check if a file with that filename already is stored
-              if (doesFilenameExist(filename)) {
-                  alert("A file named '" + filename + "' already exists.");
-                  return;
-              }
-
-              var type = file.type;
-              var reader = new FileReader();
-
-              reader.onload = function(e) {
-                  // get file content
-                  var text = e.target.result;
-                  var fileIdDrop = setcounter(fileIDs);
-                  newFile(fileIdDrop); // add file
-                  // set filename in test
-                  $(".xml_file_id[value='"+fileIdDrop+"']").parent().find(".xml_file_filename").first().val(filename);
-                  // set file text
-                  codemirror[fileIdDrop].setValue(text);
-                  // update filenames in all filename options
-                  onFilenameChanged();
-                  // select new filename in first empty filename
-                  var done = false;
-
-                  $.each($(testBox).find(".xml_test_filename"), function(index, element) {
-                      if (done) return false;
-                      var currentFilename = $(element).val();
-                      if (currentFilename == "") {
-                          $(element).val(filename).change();
-                          done = true;
-                      }
-                  });
-
-                  if (!done) {
-                      // append filename
-                      addTestFileRef($(testBox).find('.add_file_ref_test').last());
-                      // select filename
-                      $(testBox).find(".xml_test_filename").last().val(filename);
-                  }
-
-              }
-
-              reader.readAsText(file);
-          });
       }
+    });
+
+    function uploadFiles(files, testBox){
+      if (files.length > 1) {
+          alert('You have dragged more than one file. You must drop exactly one file!');
+          return;
+      }
+      $.each(files, function(index, file) {
+          readAndSetFileData(file, function() {
+              // select new filename in first empty filename
+              var done = false;
+
+              $.each($(testBox).find(".xml_test_filename"), function(index, element) {
+                  if (done) return false;
+                  var currentFilename = $(element).val();
+                  if (currentFilename == "") {
+                      $(element).val(file.name).change();
+                      done = true;
+                  }
+              });
+
+              if (!done) { // no empty select option is found
+                  // append filename
+                  addTestFileRef($(testBox).find('.add_file_ref_test').last());
+                  // select filename
+                  $(testBox).find(".xml_test_filename").last().val(file.name);
+              }
+          });
+      });
+    }
   };
 
 ///////////////////////////////////////////////////////// jQuery UI settings
