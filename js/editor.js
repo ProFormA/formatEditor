@@ -1181,10 +1181,22 @@ $(function() {
     if (returnFromFunction)
         return;
 
+
+      $.each($(".xml_test_filename"), function(index, item) {   // check whether referenced filenames exists
+          if ($(item).is(":visible") && item.value == "") {
+              $("#tabs").tabs("option", "active",  tab_page.TESTS);
+              setErrorMessage("Filename in test is missing.");
+              item.focus();
+              returnFromFunction = true;
+          }
+      });
+      if (returnFromFunction)
+          return;
+
     $.each($(".xml_ju_mainclass"), function(index, item) {   // check whether main-class exists
       if (item.value == "") {
           $("#tabs").tabs("option", "active",  tab_page.TESTS);
-        setErrorMessage("Name of test class is missing.");
+        setErrorMessage("Class name is missing.");
         item.focus();
         returnFromFunction = true;
       }
@@ -1195,12 +1207,12 @@ $(function() {
     $.each(mapSingleElements, function(index, item) {
       try {
          convertFormToXML(xmlObject.find(item.xmlname)[0],$(item.formname).val(),item.cdata);
-      } catch(err) { setErrorMessage("missing: "+ item.xmlname);}
+      } catch(err) { setErrorMessage("missing: "+ item.xmlname, err);}
     });
     $.each(mapSingleAttrs, function(index, item) {
       try {
         xmlObject.find(item.xmlpath)[0].setAttribute(item.xmlname,$(item.formname).val());
-      } catch(err) { setErrorMessage("missing: "+item.xmlpath);}
+      } catch(err) { setErrorMessage("missing: "+item.xmlpath, err);}
     });
 
     $.each(mapElemSequence, function(index, item) {                 // loop: files, model-sols, ...
@@ -1236,7 +1248,7 @@ $(function() {
               }
              }
           }
-        } catch(err) { setErrorMessage("missing: "+item.xmlpath+" or "+item.xmlname);}
+        } catch(err) { setErrorMessage("missing: "+item.xmlpath+" or "+item.xmlname, err);}
 
         $(item.formname).each(function (idx1, itm1) {               // loop: xml_file existing in the form
            $.each(mapTextInElemSequence, function(idx2, itm2) {
@@ -1248,7 +1260,7 @@ $(function() {
                  } else {
                     convertFormToXML(xmlObject.find(item.xmlname)[idx1],$(itm1).find(itm2.formname).val(),itm2.cdata);
                  }
-               } catch(err) { setErrorMessage("missing: "+item.xmlname);}
+               } catch(err) { setErrorMessage("missing: "+item.xmlname, err);}
              }
            });
 
@@ -1257,7 +1269,7 @@ $(function() {
                try {
                  xmlObject.find(itm2.xmlpath)[idx1].setAttribute(itm2.xmlname,
                          $(itm1).find(itm2.formname).val());
-               } catch(err) { setErrorMessage("missing: "+item.xmlname);}
+               } catch(err) { setErrorMessage("missing: "+item.xmlname, err);}
              }
            });
 
@@ -1266,7 +1278,7 @@ $(function() {
                try {
                   $(xmlObject.find(itm2.listelem)[idx1]).find(itm2.xmlpath).attr(itm2.xmlname,
                          $(itm1).find(itm2.formname).val());
-               } catch(err) { setErrorMessage("missing: "+item.xmlname);}
+               } catch(err) { setErrorMessage("missing: "+item.xmlname, err);}
              }
            });
 
@@ -1276,7 +1288,7 @@ $(function() {
                try {
                  convertFormToXML($(xmlObject.find(itm2.xmlpath)[idx1]).find(itm2.xmlname)[0],
                                  $(itm1).find(itm2.formname).val(),itm2.cdata);
-               } catch(err) { setErrorMessage("missing: "+itm2.xmlpath+idx1+itm2.xmlname);}
+               } catch(err) { setErrorMessage("missing: "+itm2.xmlpath+idx1+itm2.xmlname, err);}
               }
             }
            });
@@ -1296,7 +1308,7 @@ $(function() {
                   $.each($(tempvar).find(itm2.xmlname), function(idx3,itm3) {  // loop fileref
                       itm3.setAttribute(itm2.listattr,$(itm1).find(itm2.formname)[idx3].value,itm2.cdata);
                   });
-               } catch(err) { setErrorMessage("missing: "+itm2.xmlpath+idx1+itm2.xmlname);}
+               } catch(err) { setErrorMessage("missing: "+itm2.xmlpath+idx1+itm2.xmlname, err);}
               }
             }
            });
