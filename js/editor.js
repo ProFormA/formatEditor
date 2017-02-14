@@ -438,7 +438,7 @@ $(function() {
     gradingHintCounter++;
   };
 
-  function readSingleFile(inputbutton) {             // read a file and its filename into the HTML form
+  readSingleFile = function(inputbutton) {             // read a file and its filename into the HTML form
     var filenew = inputbutton.files[0];
     if (filenew) {
       var filename = filenew.name;
@@ -513,7 +513,7 @@ $(function() {
   }
 
 
-  function onFilenameChanged() {
+  onFilenameChanged = function() {
       // after change of filename update all filelists
       //console.log("onFilenameChanged");
 
@@ -536,7 +536,7 @@ $(function() {
               item.selectedIndex = indexFound+1; // +1:weil am Anfang noch ein Leerstring ist
           }
       });
-  }
+  };
 
   newFile = function(tempcounter) {                    // create a new file HTML form element
     $("#filesection").append("<div "+
@@ -652,7 +652,7 @@ $(function() {
   }
 
 
-  function addMsFileRef(element) {
+    addMsFileRef = function(element) {
         // add new line for selecting a file for a model solution
         var td = element.parent();
         var tr = td.parent();
@@ -673,10 +673,10 @@ $(function() {
             table_body.find(".xml_model-solution_fileref").hide();
             table_body.find("label[for='xml_model-solution_fileref']").hide();
         }
-  }
+  };
 
 
-  function remMsFileRef(element) {
+  remMsFileRef = function(element) {
         // remove line in file table for model solution
         var td = element.parent();
         var tr = td.parent();
@@ -700,7 +700,7 @@ $(function() {
             // => hide all remove file buttons
             table_body.find(".rem_file_ref_ms").hide();
         }
-  }
+  };
 
 
   const filenameLabelInMs ="<label for='xml_model-solution_filename'>Filename<span class='red'>*</span>: </label>"; // label
