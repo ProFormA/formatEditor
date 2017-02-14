@@ -30,7 +30,7 @@ const tab_page = {
   FAQ:    6
 };
 
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 var TEST_MODE = true;
 
 
@@ -709,7 +709,7 @@ $(function() {
     "onchange = 'onFileSelectionChanged(this)'></select></td>"+
     "<td><label for='xml_model-solution_fileref'>Fileref: </label>"+ // fileref
     "<input class='tinyinput xml_model-solution_fileref' readonly/></td>";
-  const tdFileAddButtonInMs = "<td><button class='add_file_ref' title='add another filename' onclick='addMsFileRef($(this))'>+</button><br></td>";
+  const tdFileAddButtonInMs = "<td><button class='add_file_ref_ms' title='add another filename' onclick='addMsFileRef($(this))'>+</button><br></td>";
   const tdFileRemoveButtonInMs = "<td><button class='rem_file_ref_ms' onclick='remMsFileRef($(this))'>x</button></td>";
 
   newModelsol = function(tempcounter) {                // create a new model solution HTML form element
@@ -746,6 +746,28 @@ $(function() {
 //      msroot.find(".xml_model-solution_fileref").first().hide();
 //      msroot.find("label[for='xml_model-solution_fileref']").first().hide();
     }
+
+      $('.xml_model-solution').on({
+          dragover: function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              //e.dataTransfer.dropEffect = 'copy';
+          },
+          dragenter: function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+          },
+          drop: function(e){
+              if(e.originalEvent.dataTransfer){
+                  if(e.originalEvent.dataTransfer.files.length) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      /*UPLOAD FILES HERE*/
+                      uploadModelSolFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                  }
+              }
+          }
+      });
   };
                                                        // HTML building blocks for the tests
   var TextJavaComp = "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
@@ -921,45 +943,69 @@ $(function() {
                   e.preventDefault();
                   e.stopPropagation();
                   /*UPLOAD FILES HERE*/
-                  uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                  uploadTestFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
               }
           }
       }
     });
-
-    function uploadFiles(files, testBox){
-      if (files.length > 1) {
-          alert('You have dragged more than one file. You must drop exactly one file!');
-          return;
-      }
-      $.each(files, function(index, file) {
-          readAndSetFileData(file, function() {
-              // select new filename in first empty filename
-              console.log("uploadFiles: select " + file.name + " in option list");
-              var done = false;
-
-              $.each($(testBox).find(".xml_test_filename"), function(index, element) {
-                  console.log("-> loop");
-
-                  if (done) return false;
-                  var currentFilename = $(element).val();
-                  console.log("-> " + currentFilename);
-                  if (currentFilename == "") {
-                      $(element).val(file.name).change();
-                      done = true;
-                  }
-              });
-
-              if (!done) { // no empty select option is found
-                  // append filename
-                  addTestFileRef($(testBox).find('.add_file_ref_test').last());
-                  // select filename
-                  $(testBox).find(".xml_test_filename").last().val(file.name).change();
-              }
-          });
-      });
-    }
   };
+
+  function uploadTestFiles(files, testBox){
+        if (files.length > 1) {
+            alert('You have dragged more than one file. You must drop exactly one file!');
+            return;
+        }
+        $.each(files, function(index, file) {
+            readAndSetFileData(file, function() {
+                // select new filename in first empty filename
+                console.log("uploadFiles: select " + file.name + " in option list");
+                var done = false;
+                $.each($(testBox).find(".xml_test_filename"), function(index, element) {
+                    if (done) return false;
+                    var currentFilename = $(element).val();
+                    if (currentFilename == "") {
+                        $(element).val(file.name).change();
+                        done = true;
+                    }
+                });
+
+                if (!done) { // no empty select option is found
+                    // append filename
+                    addTestFileRef($(testBox).find('.add_file_ref_test').last());
+                    // select filename
+                    $(testBox).find(".xml_test_filename").last().val(file.name).change();
+                }
+            });
+        });
+    }
+  function uploadModelSolFiles(files, modelSolBox){
+        if (files.length > 1) {
+            alert('You have dragged more than one file. You must drop exactly one file!');
+            return;
+        }
+        $.each(files, function(index, file) {
+            readAndSetFileData(file, function() {
+                // select new filename in first empty filename
+                console.log("uploadFiles: select " + file.name + " in option list");
+                var done = false;
+                $.each($(modelSolBox).find(".xml_model-solution_filename"), function(index, element) {
+                    if (done) return false;
+                    var currentFilename = $(element).val();
+                    if (currentFilename == "") {
+                        $(element).val(file.name).change();
+                        done = true;
+                    }
+                });
+
+                if (!done) { // no empty select option is found
+                    // append filename
+                    addMsFileRef($(modelSolBox).find('.add_file_ref_ms').last());
+                    // select filename
+                    $(modelSolBox).find(".xml_model-solution_filename").last().val(file.name).change();
+                }
+            });
+        });
+    }
 
 ///////////////////////////////////////////////////////// jQuery UI settings
   $("#tabs").tabs();                                   // hide HTML elements when the manual or FAQ are selected
@@ -1498,7 +1544,7 @@ $(function() {
                        } else if (item.formname == ".xml_model-solution") {
                            // set filename in model solution
                            if (index > 0) {
-                               addMsFileRef(object.find(".add_file_ref").first());
+                               addMsFileRef(object.find(".add_file_ref_ms").first());
                            }
                            var element = object.find(".xml_model-solution_filename");
                            setFilenameList(element.eq(index));
