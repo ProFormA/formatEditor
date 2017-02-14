@@ -22,9 +22,9 @@
 // TAB pages
 const tab_page = {
   MAIN:   0,
-  FILES:  1,
-  MODEL_SOLUTION:  2,
-  TESTS:  3,
+  MODEL_SOLUTION:  1,
+  TESTS:  2,
+  FILES:  3,
   DEBUG:  4,
   MANUAL: 5,
   FAQ:    6
