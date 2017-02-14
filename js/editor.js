@@ -31,7 +31,7 @@ const tab_page = {
 };
 
 const DEBUG_MODE = false;
-var TEST_MODE = true;
+var TEST_MODE = false;
 
 
 
@@ -1682,18 +1682,13 @@ $(function() {
       $("#buttonExport").show();
       $("#buttonImport").show();
   }
-    // TODO: try
-    // $('a').on('click', function(e){e.preventDefault();alert("clicked");});
 
-    // TODO: hide debug_tab
-  //if (!TEST_ENABLED) {
-/*    $("#tabs-Debug").tabs("option", "hide", { effect: "explode", duration: 1000 });
-    $("#debug_output").tabs("option", "hide", { effect: "explode", duration: 1000 });
-    $("#tabs").tabs("option", "hide", { effect: "explode", duration: 1000 });
-    */
-  //  $("debug_output").style.display = "none";
-  //}
-
+  enableTestMode = function() {
+      // enable support for tests!
+      console.log("enable test mode");
+      $("#buttonExport").show();
+      $("#buttonImport").show();
+  }
 
 });
 
