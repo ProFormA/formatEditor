@@ -31,7 +31,7 @@ const tab_page = {
 };
 
 const DEBUG_MODE = false;
-var TEST_MODE = false;
+const TEST_MODE = false;
 
 
 
@@ -438,7 +438,7 @@ $(function() {
     gradingHintCounter++;
   };
 
-  readSingleFile = function(inputbutton) {             // read a file and its filename into the HTML form
+  function readSingleFile(inputbutton) {             // read a file and its filename into the HTML form
     var filenew = inputbutton.files[0];
     if (filenew) {
       var filename = filenew.name;
@@ -451,12 +451,12 @@ $(function() {
           $(inputbutton).parent().parent().find(".xml_file_text").val(e.target.result);
           $(inputbutton).parent().parent().find(".xml_file_filename").val(filename);
         }
-      }
+      };
       readfi.readAsText(filenew);
     }
-  };
+  }
 
-  readAndSetFileData = function(file, callback) {
+  function readAndSetFileData(file, callback) {
       if (!file) return;
       var filename = file.name;
       // check if a file with that filename already is stored
@@ -469,7 +469,7 @@ $(function() {
 
       reader.onload = function(e) {
           // get file content
-          console.log("create filebox");
+          //console.log("create filebox");
           var text = e.target.result;
           var newFileId = setcounter(fileIDs);
           newFile(newFileId); // add file
@@ -492,13 +492,13 @@ $(function() {
 
           if (callback)
             callback();
-      }
-      console.log("read file");
+      };
+      //console.log("read file");
       reader.readAsText(file);
-  };
+  }
 
-  readSingleFileAndCreateFilebox = function(inputbutton, filenameSelect) {             // read a file and its filename into the HTML form
-      console.log("select file");
+  function readSingleFileAndCreateFilebox(inputbutton, filenameSelect) {             // read a file and its filename into the HTML form
+      //console.log("select file");
       var filenew = inputbutton.files[0];
       if (!filenew) {
           console.log("no file selected -> cancel");
@@ -513,9 +513,9 @@ $(function() {
   }
 
 
-  onFilenameChanged = function() {
+  function onFilenameChanged() {
       // after change of filename update all filelists
-      console.log("onFilenameChanged");
+      //console.log("onFilenameChanged");
 
       $.each($(".xml_test_filename, .xml_model-solution_filename"), function(index, item) {
           //console.log("update filelist in test ");
@@ -532,7 +532,7 @@ $(function() {
               }
           });
           if (indexFound >= 0) {
-              console.log("selektiere " + indexFound);
+              //console.log("selektiere " + indexFound);
               item.selectedIndex = indexFound+1; // +1:weil am Anfang noch ein Leerstring ist
           }
       });
@@ -579,7 +579,7 @@ $(function() {
   onFileSelectionChanged = function(tempSelElem) {              // changing a filename in the drop-down changes the id
       var found = false;
       var selectedFilename = $(tempSelElem).val();
-      console.log("-> selected is '" + selectedFilename + "'");
+      //console.log("-> selected is '" + selectedFilename + "'");
 
       switch (selectedFilename) {
           case loadFileOption:
@@ -598,18 +598,18 @@ $(function() {
           case emptyFileOption:
               return; // do nothing
           default:
+              var nextTd = $(tempSelElem).parent().next('td');
               $.each($(".xml_file_filename"), function(index, item) {
                   if (selectedFilename == item.value ) {
+                      var fileid = $(item).first().parent().find(".xml_file_id").val();
                       if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
-                          var fileid = $(item).first().parent().find(".xml_file_id").val();
-                          var nextTd = $(tempSelElem).parent().next('td');
                           nextTd.find('.xml_test_fileref')[0].value=fileid;
 
                           //            $(tempSelElem).parent().find('.xml_test_fileref')[0].value=
                           //              $(item).first().parent().find(".xml_file_id").val();
                       } else {
-                          var fileid = $(item).first().parent().find(".xml_file_id").val();
-                          var nextTd = $(tempSelElem).parent().next('td');
+//                          var fileid = $(item).first().parent().find(".xml_file_id").val();
+//                          var nextTd = $(tempSelElem).parent().next('td');
                           nextTd.find('.xml_model-solution_fileref')[0].value=fileid;
                       }
                       found = true;
@@ -620,12 +620,12 @@ $(function() {
               if (!found) {
                   console.log("could not find file id for " + selectedFilename);
                   if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
-                      var nextTd = $(tempSelElem).parent().next('td');
+//                      var nextTd = $(tempSelElem).parent().next('td');
                       nextTd.find('.xml_model-solution_fileref')[0].value="";
                       //$(tempSelElem).parent().find('.xml_test_fileref')[0].value="";
 
                   } else {
-                      var nextTd = $(tempSelElem).parent().next('td');
+//                      var nextTd = $(tempSelElem).parent().next('td');
                       nextTd.find('.xml_model-solution_fileref')[0].value="";
                   }
               }
@@ -634,7 +634,7 @@ $(function() {
   };
 
 
-  setFilenameList = function(tempSelElem) {            // create the drop-down with all possible filenames
+  function setFilenameList (tempSelElem) {            // create the drop-down with all possible filenames
      $(tempSelElem).empty();
      var tempOption = $("<option>" + emptyFileOption + "</option>");
      $(tempSelElem).append(tempOption); // empty string
@@ -649,10 +649,10 @@ $(function() {
       tempOption = $("<option></option>");
       tempOption[0].textContent = loadFileOption;
       $(tempSelElem).append(tempOption);
-  };
+  }
 
 
-    addMsFileRef = function(element) {
+  function addMsFileRef(element) {
         // add new line for selecting a file for a model solution
         var td = element.parent();
         var tr = td.parent();
@@ -673,10 +673,10 @@ $(function() {
             table_body.find(".xml_model-solution_fileref").hide();
             table_body.find("label[for='xml_model-solution_fileref']").hide();
         }
-    };
+  }
 
 
-    remMsFileRef = function(element) {
+  function remMsFileRef(element) {
         // remove line in file table for model solution
         var td = element.parent();
         var tr = td.parent();
@@ -700,7 +700,7 @@ $(function() {
             // => hide all remove file buttons
             table_body.find(".rem_file_ref_ms").hide();
         }
-    };
+  }
 
 
   const filenameLabelInMs ="<label for='xml_model-solution_filename'>Filename<span class='red'>*</span>: </label>"; // label
@@ -748,7 +748,7 @@ $(function() {
 //      msroot.find("label[for='xml_model-solution_fileref']").first().hide();
     }
 
-      $('.xml_model-solution').on({
+      msroot.on({
           dragover: function(e) {
               e.preventDefault();
               e.stopPropagation();
@@ -931,7 +931,8 @@ $(function() {
         testroot.find("label[for='xml_test_filename']").hide();*/
     }
 
-    $('.xml_test').on({
+    // $('.xml_test')
+    testroot.parent().on({
       dragover: function(e) {
           e.preventDefault();
           e.stopPropagation();
@@ -955,7 +956,9 @@ $(function() {
   };
 
   function uploadTestFiles(files, testBox){
-        if (files.length > 1) {
+      //console.log("uploadTestFiles");
+
+      if (files.length > 1) {
             alert('You have dragged more than one file. You must drop exactly one file!');
             return;
         }
@@ -983,6 +986,7 @@ $(function() {
         });
     }
   function uploadModelSolFiles(files, modelSolBox){
+        //console.log("uploadModelSolFiles");
         if (files.length > 1) {
             alert('You have dragged more than one file. You must drop exactly one file!');
             return;
@@ -990,7 +994,7 @@ $(function() {
         $.each(files, function(index, file) {
             readAndSetFileData(file, function() {
                 // select new filename in first empty filename
-                console.log("uploadFiles: select " + file.name + " in option list");
+                //console.log("uploadFiles: select " + file.name + " in option list");
                 var done = false;
                 $.each($(modelSolBox).find(".xml_model-solution_filename"), function(index, element) {
                     if (done) return false;
@@ -1673,7 +1677,7 @@ $(function() {
 
 
 
-    if (!DEBUG_MODE) {
+  if (!DEBUG_MODE) {
     $("#buttonClear").hide();
     $("#output").attr("readonly", true);
 
