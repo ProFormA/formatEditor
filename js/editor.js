@@ -66,7 +66,9 @@ if (xsdSchemaFile == version094) {
 }
 var isFirefox = typeof InstallTrigger !== 'undefined'; // Firefox 1.0+
 
-const loadFileOption = "load...";
+const loadFileOption = "<load...>";
+const emptyFileOption = "";
+
 //////////////////////////////////////////////////////////////////////////////
 //* These global variables keep track of how many of these elements currently exist. 
 var fileIDs = {};
@@ -503,14 +505,8 @@ $(function() {
           return;
       }
 
-      if (filenameSelect) {
-          // console.log("+++ readSingleFileAndCreateFilebox (1)" + JSON.stringify(filenameSelect));
-      }
-
       readAndSetFileData(filenew, function(){
           if (filenameSelect) {
-              var filename = filenew.name;
-              // console.log("+++ readSingleFileAndCreateFilebox (2)" + JSON.stringify(filenameSelect));
               filenameSelect.val(filenew.name).change();
           }
       });
@@ -580,64 +576,67 @@ $(function() {
     if (codemirrorOnOrOff == 1) { addCodemirrorElement(tempcounter); }
   };
 
-  switchFileref = function(tempSelElem) {              // changing a filename in the drop-down changes the id
+  onFileSelectionChanged = function(tempSelElem) {              // changing a filename in the drop-down changes the id
+      var found = false;
+      var selectedFilename = $(tempSelElem).val();
+      console.log("-> selected is '" + selectedFilename + "'");
 
-    // console.log("+++ switchFileref" + JSON.stringify(tempSelElem));
+      switch (selectedFilename) {
+          case loadFileOption:
+              // read new file
+              // reset selection in case choosing a file fails
+              $(tempSelElem).val(emptyFileOption); // do not call change!
+              // change callback
+              var dummybutton = $("#dummy_file_upload_button").first();
+              dummybutton.unbind("change");
+              dummybutton.change(function () {
+                  readSingleFileAndCreateFilebox($("#dummy_file_upload_button")[0], $(tempSelElem));
+              });
+              // perform dummy click
+              dummybutton.click();
+              return;
+          case emptyFileOption:
+              return; // do nothing
+          default:
+              $.each($(".xml_file_filename"), function(index, item) {
+                  if (selectedFilename == item.value ) {
+                      if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
+                          var fileid = $(item).first().parent().find(".xml_file_id").val();
+                          var nextTd = $(tempSelElem).parent().next('td');
+                          nextTd.find('.xml_test_fileref')[0].value=fileid;
 
-    var found = false;
-    var selectedFilename = $(tempSelElem).val();
-    console.log("-> selected is '" + selectedFilename + "'");
+                          //            $(tempSelElem).parent().find('.xml_test_fileref')[0].value=
+                          //              $(item).first().parent().find(".xml_file_id").val();
+                      } else {
+                          var fileid = $(item).first().parent().find(".xml_file_id").val();
+                          var nextTd = $(tempSelElem).parent().next('td');
+                          nextTd.find('.xml_model-solution_fileref')[0].value=fileid;
+                      }
+                      found = true;
+                      return false;
+                  }
+              });
+              // file id not found
+              if (!found) {
+                  console.log("could not find file id for " + selectedFilename);
+                  if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
+                      var nextTd = $(tempSelElem).parent().next('td');
+                      nextTd.find('.xml_model-solution_fileref')[0].value="";
+                      //$(tempSelElem).parent().find('.xml_test_fileref')[0].value="";
 
-    if (selectedFilename == loadFileOption) {
-        // read new file
-        // remove old callback
-        var dummybutton = $("#dummy_file_upload_button").first();
-        dummybutton.unbind("change");
-        // change callback
-        dummybutton.change(function() {
-            readSingleFileAndCreateFilebox($("#dummy_file_upload_button")[0], $(tempSelElem));
-        });
+                  } else {
+                      var nextTd = $(tempSelElem).parent().next('td');
+                      nextTd.find('.xml_model-solution_fileref')[0].value="";
+                  }
+              }
+      }
 
-        dummybutton.click();
-        return;
-    }
-    $.each($(".xml_file_filename"), function(index, item) {
-       if (selectedFilename == item.value ) {
-          if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
-              var fileid = $(item).first().parent().find(".xml_file_id").val();
-              var nextTd = $(tempSelElem).parent().next('td');
-              nextTd.find('.xml_test_fileref')[0].value=fileid;
-
-//            $(tempSelElem).parent().find('.xml_test_fileref')[0].value=
-//              $(item).first().parent().find(".xml_file_id").val();
-          } else {
-              var fileid = $(item).first().parent().find(".xml_file_id").val();
-              var nextTd = $(tempSelElem).parent().next('td');
-              nextTd.find('.xml_model-solution_fileref')[0].value=fileid;
-          }
-          found = true;
-          return false;
-       }
-    });
-    // file id not found
-    if (!found) {
-        console.log("could not find file id for " + selectedFilename);
-        if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
-            var nextTd = $(tempSelElem).parent().next('td');
-            nextTd.find('.xml_model-solution_fileref')[0].value="";
-            //$(tempSelElem).parent().find('.xml_test_fileref')[0].value="";
-
-        } else {
-            var nextTd = $(tempSelElem).parent().next('td');
-            nextTd.find('.xml_model-solution_fileref')[0].value="";
-        }
-    }
   };
 
 
   setFilenameList = function(tempSelElem) {            // create the drop-down with all possible filenames
      $(tempSelElem).empty();
-     var tempOption = $("<option></option>");
+     var tempOption = $("<option>" + emptyFileOption + "</option>");
      $(tempSelElem).append(tempOption); // empty string
      $.each($(".xml_file_filename"), function(index, item) {
         if (item.value.length > 0) {
@@ -647,7 +646,8 @@ $(function() {
         }
      });
       //tempSelElem.val(""); // preset no filename
-      tempOption = $("<option>" + loadFileOption + "</option>");
+      tempOption = $("<option></option>");
+      tempOption[0].textContent = loadFileOption;
       $(tempSelElem).append(tempOption);
   };
 
@@ -706,7 +706,7 @@ $(function() {
   const filenameLabelInMs ="<label for='xml_model-solution_filename'>Filename<span class='red'>*</span>: </label>"; // label
   const tdFilenameLabelInMs ="<td>" + filenameLabelInMs + "</td>"; // label
   const tdFilenameInMs =  "<td><select class='mediuminput xml_model-solution_filename' " + // onfocus = 'setFilenameList(this)' "+ // select
-    "onchange = 'switchFileref(this)'></select></td>"+
+    "onchange = 'onFileSelectionChanged(this)'></select></td>"+
     "<td><label for='xml_model-solution_fileref'>Fileref: </label>"+ // fileref
     "<input class='tinyinput xml_model-solution_fileref' readonly/></td>";
   const tdFileAddButtonInMs = "<td><button class='add_file_ref' title='add another filename' onclick='addMsFileRef($(this))'>+</button><br></td>";
@@ -830,7 +830,7 @@ $(function() {
   const filenameLabelInTest = "<label for='xml_test_filename'>Filename<span class='red'>*</span>: </label>";
   const tdFilenameLabelInTest ="<td>" + filenameLabelInTest + "</td>";
   const tdFilenameInTest = "<td><select class='mediuminput xml_test_filename' " + // onfocus = 'setFilenameList(this)' "+
-      "onchange = 'switchFileref(this)'></select></td>"+
+      "onchange = 'onFileSelectionChanged(this)'></select></td>"+
       "<td><label for='xml_test_fileref'>Fileref1: </label>"+ // fileref
       "<input class='tinyinput xml_test_fileref' readonly/></td>";
   const tdFileAddButtonInTest = "<td><button class='add_file_ref_test' title='add another filename' onclick='addTestFileRef($(this))'>+</button><br></td>";
