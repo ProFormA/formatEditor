@@ -728,6 +728,7 @@ $(function() {
         tdFileAddButtonInMs + // +-button
         "</tr>"+
     "</table>" +
+        "<span class='drop_zone'>Drop Your Files Here!</span>" +
     "<p><label for='xml_model-solution_comment'>Comment: </label>"+
     "<input class='largeinput xml_model-solution_comment'/></p></div>");
 
@@ -873,7 +874,9 @@ $(function() {
         tdFileRemoveButtonInTest + // x-button
         tdFileAddButtonInTest +
         "</tr>"+
-    "</table><br>" +
+    "</table>" +
+        "<span class='drop_zone'>Drop Your Files Here!</span>" +
+        "<br>" +
 //    " <label for='xml_test_validity'>Validity: </label>"+
 //    "<input class='shortinput xml_test_validity'/>"+
     " <label for='xml_test_type'>Type: </label>"+
@@ -921,6 +924,7 @@ $(function() {
     }
     if (TestType == "java-compilation") {
         testroot.find("table").hide();
+        testroot.find(".drop_zone").hide();
         /*testroot.find(".xml_test_fileref").hide();
         testroot.find("label[for='xml_test_fileref']").hide();
         testroot.find(".xml_test_filename").hide();
@@ -1678,10 +1682,6 @@ $(function() {
     $("#buttonImport").hide();
   }
 
-  if (TEST_MODE) {
-      $("#buttonExport").show();
-      $("#buttonImport").show();
-  }
 
   enableTestMode = function() {
       // enable support for tests!
@@ -1689,6 +1689,8 @@ $(function() {
       $("#buttonExport").show();
       $("#buttonImport").show();
   }
+
+  if (TEST_MODE) enableTestMode();
 
 });
 

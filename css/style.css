@@ -33,7 +33,7 @@ p{ 	                        padding-left:0.3em;  }
 	/*max-width: 960px;*/
 }
 
-
+.drop_zone {float:right; 	font-size: 65%;}
 
 .xml_model-solution_filename{	width: 300px;     }
 .xml_model-solution_fileref{	width: 50px;     }
