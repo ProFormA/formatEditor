@@ -76,18 +76,18 @@ zipme = function() {
         a.href = url;
         // a.dataset.downloadurl = ['application/zip', a.download, a.href].join(':');
 
-        var isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
+/*        var isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
             navigator.userAgent && !navigator.userAgent.match('CriOS');
-
+*/
         // var userAgent = navigator.userAgent;
         // alert(userAgent);
 
-	    if (!isSafari) {// navigator.userAgent.indexOf('Safari') <= 0) {
+//	    if (!isSafari) {// navigator.userAgent.indexOf('Safari') <= 0) {
 	      a.click();
-	    } else {
+/*	    } else {
 	      alert("zip does not work on this browser");
 	    }
-        // window.URL.revokeObjectURL(url);
+*/        // window.URL.revokeObjectURL(url);
         // window.navigator.msSaveBlob(zippedBlob, "task.zip");
     });
 };

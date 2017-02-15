@@ -192,7 +192,7 @@ function downloadFile(downloadLink) {                  // download link for text
   } catch(err) { setErrorMessage("File cannot be downloaded because it contains an invalid character.");}
 }
 
-function downloadTextFile2(textarea, filename, dummybutton) {
+function downloadTextFile2(textarea, filename, dummybutton111111) {
     console.log("downloadTextFile2 called");
     var text = textarea.val();
     if (text.length == 0) {
@@ -205,9 +205,17 @@ function downloadTextFile2(textarea, filename, dummybutton) {
    document.body.appendChild(a);
    a.style = "display: none";
    */
-    dummybutton.download = filename;
+
+    // create dummy button for saving task.xml
+    var dummybutton = document.createElement("a");
+    dummybutton.style = "display: none";
+    //anchor.id = "dummy_save_xml_button";
+    document.body.appendChild(dummybutton);
+
     dummybutton.href = "data:text/text;charset=utf-8," + text1;
+    dummybutton.download = filename;
     dummybutton.click();
+    // $(dummybutton).trigger("click");
 
     // try {document.removeChild(a); } catch (err) {/* ignore error */}
 }
@@ -1737,6 +1745,40 @@ $(function() {
             e.dataTransfer.dropEffect = "none";
         }
     });
+
+
+    // saving files is realised with an anchor having the download attribute set.
+    // Unfortunately not every browser supports downloads and not every browser
+    // supports data URI as a download link.
+    // The following functions check whether this feature is supported
+    checkDataURISupport(function (checkResult) {
+        if (checkResult) {
+            console.log('Files in data URIs are supported.');
+        } else {
+            alert('Files in data URIs are probabely NOT supported in this browser. ' +
+            'Thus saving the task file will not be possible. ' +
+            'Please use another browser (Firefox, Chrome).');
+        }
+    });
+
+    function checkDataURISupport(callback) {
+        try {
+            var request = new XMLHttpRequest();
+            request.onload = function reqListener() {
+                callback(true);
+            };
+            request.onerror = function reqListener() {
+                callback(false);
+            };
+            request.open('GET', 'data:application/pdf;base64,cw==');
+            request.send();
+        } catch (ex) {
+            callback(false);
+        }
+    }
+
+    checkDataURISupport();
+
 
 });
 
