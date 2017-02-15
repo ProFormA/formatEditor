@@ -176,6 +176,8 @@ function uploadFile(inputbutton) {                     // upload button for text
 
 
 }
+
+// unused
 function downloadFile(downloadLink) {                  // download link for textareas: output, output2
   console.log("downloadFile called");
 
@@ -192,35 +194,34 @@ function downloadFile(downloadLink) {                  // download link for text
   } catch(err) { setErrorMessage("File cannot be downloaded because it contains an invalid character.");}
 }
 
-function downloadTextFile2(textarea, filename, dummybutton111111) {
+function downloadTextFile2(textarea, filename, dummybutton) {
     console.log("downloadTextFile2 called");
     var text = textarea.val();
     if (text.length == 0) {
         console.log("downloadTextFile2 called with empty output");
         return;
     }
-    var text1 = encodeURIComponent(text);
 
-  /*var a = document.createElement("a");
-   document.body.appendChild(a);
-   a.style = "display: none";
-   */
+    // kann sein, dass das auch funktioniert
+//    downloadText3(text, filename, 'text/plain');
+//    return;
 
+     var text1 = encodeURIComponent(text);
     // create dummy button for saving task.xml
-    var dummybutton = document.createElement("a");
-    dummybutton.style = "display: none";
-    //anchor.id = "dummy_save_xml_button";
-    document.body.appendChild(dummybutton);
-
     dummybutton.href = "data:text/text;charset=utf-8," + text1;
     dummybutton.download = filename;
     dummybutton.click();
-    // $(dummybutton).trigger("click");
-
-    // try {document.removeChild(a); } catch (err) {/* ignore error */}
 }
 
-
+/*
+function downloadText3(text, name, type) {
+    var dummyAnchor = document.getElementById("dummyAnchor");
+    var file = new Blob([text], {type: type});
+    dummyAnchor.href = URL.createObjectURL(file);
+    dummyAnchor.download = name;
+    dummyAnchor.click();
+}
+*/
 
 //////////////////////////////////////////////////////////////////////////////
 /* Each newly exported task needs its own UUID.
@@ -1746,6 +1747,9 @@ $(function() {
         }
     });
 
+// test
+//    var myCsv = "Col1,Col2,Col3\nval1,val2,val3";
+//    window.open('data:text/csv;charset=utf-8,' + escape(myCsv));
 
     // saving files is realised with an anchor having the download attribute set.
     // Unfortunately not every browser supports downloads and not every browser
