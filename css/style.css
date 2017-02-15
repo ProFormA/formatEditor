@@ -108,6 +108,7 @@ table, th, td {
   margin-right: auto;
   margin-left: auto;
   width:100%;
+  z-index: 10; /* higher than any z-index for codemirror */
 }
 
 /*.problem {text-align:center} */

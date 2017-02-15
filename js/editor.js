@@ -1036,7 +1036,7 @@ $(function() {
       // otherwise content is visible only after first click in window
       setTimeout(function () {
           Object.keys(codemirror).forEach(function(item) {codemirror[item].refresh();});
-      }, 10);
+      }, 5);
 
                 
     }
