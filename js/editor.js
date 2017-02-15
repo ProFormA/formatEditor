@@ -1598,6 +1598,7 @@ $(function() {
 /* This reads the user manual and the faq as HTML files (via AJAX)
  * and places them into the main page at tabs-4 and tabs-5 respectively.
  */
+/*
   function insertmanual() {
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
@@ -1618,7 +1619,7 @@ $(function() {
     request1.open("GET","faq.html",true);
     request1.send(null);
   }
-
+*/
   function switchProgLang() {
 //        var progLang = this.val();
     var progLang = $("#xml_programming-language").val();
@@ -1652,10 +1653,11 @@ $(function() {
   }
 
   // MAIN
+    /*
   try {
       insertmanual();
   } catch(err) { setErrorMessage("file 'manual.html' cannot be found");}
-
+*/
 
 ///////////////////////////////////////////////////////// if LON-CAPA is used insert relevant form elements
   if (loncapaOnOrOff == 1) { insertLCformelements();}
@@ -1698,7 +1700,7 @@ $(function() {
     $("#buttonImport").hide();
   }
 
-
+  // function is used only in test environment!!
   enableTestMode = function() {
       // enable support for tests!
       console.log("enable test mode");
@@ -1707,6 +1709,34 @@ $(function() {
   }
 
   if (TEST_MODE) enableTestMode();
+
+  // disable (drag&)drop in whole application except
+  // for the intended drop zones
+  // (otherwise dropping a file in the browser leaves the editor site)
+    const dropzoneClass = "drop_zone";
+    window.addEventListener("dragenter", function(e) {
+        if (e.target.class != dropzoneClass) {
+            e.preventDefault();
+            e.dataTransfer.effectAllowed = "none";
+            e.dataTransfer.dropEffect = "none";
+        }
+    }, false);
+
+    window.addEventListener("dragover", function(e) {
+        if (e.target.class != dropzoneClass) {
+            e.preventDefault();
+            e.dataTransfer.effectAllowed = "none";
+            e.dataTransfer.dropEffect = "none";
+        }
+    });
+
+    window.addEventListener("drop", function(e) {
+        if (e.target.class != dropzoneClass) {
+            e.preventDefault();
+            e.dataTransfer.effectAllowed = "none";
+            e.dataTransfer.dropEffect = "none";
+        }
+    });
 
 });
 
