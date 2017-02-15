@@ -29,7 +29,7 @@
     <script src="js/xmllint.js"></script>
     
 </head>
-<body ondrop="return false;">
+<body>
 <noscript><b>Javascript needs to be enabled for this website to work!</b></noscript>
 <div class="pagecontainer">
     <div id='task'>
@@ -47,8 +47,9 @@
                 <div class='ui-widget ui-widget-content ui-corner-all'>
                     <h3 class='ui-widget-header'>Task description</h3>
                     <p><label for='xml_description'>Description<span class='red'>*</span>: </label>
-                        <textarea rows='3' cols='80' id='xml_description' onfocus='this.rows=10;'
-                     onmouseout='this.rows=10;' title = 'What the students will see.'></textarea></p>
+                        <textarea rows='8' cols='80' id='xml_description'
+                      title = 'What the students will see.'></textarea></p>
+                    <!-- onfocus='this.rows=10;' onmouseout='this.rows=10;' -->
                      <p><label for='xml_meta-data_title'>Title<span class='red'>*</span>: </label>
                          <input class='largeinput' id='xml_meta-data_title'/></p>
                      <p><label for='xml_lang'>Language<span class='red'>*</span>: </label>
@@ -195,7 +196,7 @@
     <p></p><p></p> <!-- Leerzeilen verhindern, dass die fixierte error-message-Zeile
     Inhalt verdeckt. (workaround)
     -->
-    <textarea id="error-message" class="ui-state-error enclose problem" readonly>Error Console:</textarea>
+    <textarea id="error-message" class="ui-state-error enclose problem" rows='4' readonly>Error Console:</textarea>
 
     <!--
         <div id="button-list">

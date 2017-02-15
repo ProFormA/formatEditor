@@ -9,7 +9,10 @@ body{
 textarea{
 	vertical-align: middle;
 	width: 99%;
+    resize: vertical; /* user can resize vertically, but width is fixed */
 }
+
+ 
 .largeinput{
 	vertical-align: middle;
 	width: 80%;
