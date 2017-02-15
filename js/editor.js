@@ -863,7 +863,7 @@ $(function() {
   const tdFilenameLabelInTest ="<td>" + filenameLabelInTest + "</td>";
   const tdFilenameInTest = "<td><select class='mediuminput xml_test_filename' " + // onfocus = 'setFilenameList(this)' "+
       "onchange = 'onFileSelectionChanged(this)'></select></td>"+
-      "<td><label for='xml_test_fileref'>Fileref1: </label>"+ // fileref
+      "<td><label for='xml_test_fileref'>Fileref: </label>"+ // fileref
       "<input class='tinyinput xml_test_fileref' readonly/></td>";
   const tdFileAddButtonInTest = "<td><button class='add_file_ref_test' title='add another filename' onclick='addTestFileRef($(this))'>+</button><br></td>";
   const tdFileRemoveButtonInTest = "<td><button class='rem_file_ref_test' onclick='remTestFileRef($(this))'>x</button></td>";
@@ -885,7 +885,7 @@ $(function() {
         "</tr>"+
     "</table>" +
         "<span class='drop_zone'>Drop Your Files Here!</span>" +
-        "<br>" +
+        //"<br>" +
 //    " <label for='xml_test_validity'>Validity: </label>"+
 //    "<input class='shortinput xml_test_validity'/>"+
     " <label for='xml_test_type'>Type: </label>"+
@@ -899,7 +899,7 @@ $(function() {
 //    "<option>dejagnu</option>"+
     "<option>python</option></select>"+
 
-    " <label for='xml_pr_public'>Public<span class='red'>*</span>: </label>"+
+    "<p><label for='xml_pr_public'>Public<span class='red'>*</span>: </label>"+
     "<select class='xml_pr_public'>"+
     "<option selected='selected'>True</option><option>False</option></select>"+
     " <label for='xml_pr_required'>Required<span class='red'>*</span>: </label>"+
@@ -912,7 +912,7 @@ $(function() {
     "<input class='largeinput xml_test_title' value='"+ TestName +"'/></p>"+ MoreText + "</div>");
 
       // hide fields that exist only for technical reasons
-    var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent();
+    var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent().parent();
     testroot.find(".xml_test_type").val(TestType);
     testroot.find(".rem_file_ref_test").hide(); // hide remove file button
     setFilenameList(testroot.find(".xml_test_filename").last());
@@ -941,7 +941,7 @@ $(function() {
     }
 
     // $('.xml_test')
-    testroot.parent().on({
+    testroot.on({
       dragover: function(e) {
           e.preventDefault();
           e.stopPropagation();
