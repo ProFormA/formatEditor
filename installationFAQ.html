@@ -63,9 +63,6 @@ the relevant section "#filesection", "#modelsolutionsection",
 <h4>Known Bugs and Missing Features</h4>
 
 <ul>
-<li>The processing of filerefs is not compliant with the exchange
-format standard: At the moment only two filerefs can be recorded of
-which the second one is not used for anything.
 <li>Grading hints are not currently used and not tested.
 <li>The processing of namespaces could be improved. But jquery (and its
 functions such as parseXML) seems to be not namespace-aware and 
@@ -78,10 +75,13 @@ not for the other namespaces.
 Further information is available in the user manual and in the
 comments in the code.
 
+Gitlab issue tracking is available
+<a href="http://141.41.9.49/ostfalia/formatEditor/issues">here</a>.
+
 <h4>Testing</h4>
 
-A rudimentary Selenium script is
-provided: <font color="blue">tests/testInsertion.py</font>.  It is not
+A rudimentary Python/Selenium script is
+provided: <font color="blue">tests/testsuite.py</font>.  It is not
 complete and only works for some settings. It is mostly a suggestion
 for future testing development.
 

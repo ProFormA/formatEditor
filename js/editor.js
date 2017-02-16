@@ -939,29 +939,31 @@ $(function() {
         testroot.find(".xml_test_filename").hide();
         testroot.find("label[for='xml_test_filename']").hide();*/
     }
+    else
+    {
+        testroot.on({
+            dragover: function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                //e.dataTransfer.dropEffect = 'copy';
+            },
+            dragenter: function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            },
+            drop: function(e){
+                if(e.originalEvent.dataTransfer){
+                    if(e.originalEvent.dataTransfer.files.length) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        /*UPLOAD FILES HERE*/
+                        uploadTestFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                    }
+                }
+            }
+        });
+    }
 
-    // $('.xml_test')
-    testroot.on({
-      dragover: function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          //e.dataTransfer.dropEffect = 'copy';
-      },
-      dragenter: function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-      },
-      drop: function(e){
-          if(e.originalEvent.dataTransfer){
-              if(e.originalEvent.dataTransfer.files.length) {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  /*UPLOAD FILES HERE*/
-                  uploadTestFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
-              }
-          }
-      }
-    });
   };
 
   function uploadTestFiles(files, testBox){

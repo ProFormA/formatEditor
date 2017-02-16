@@ -35,7 +35,8 @@ function insertLCformelements () {
   "<label for='lczip'>Path to zip-file in LON-CAPA: /res/fhwf/ </label>" +
   "<input title ='" + inputinfo + "' class='mediuminput' id='lczip' value='ecult/Java/zip/'/> " +
 
-      "<button id='button_save_lon_capa'>Save LON-CAPA problem File</button></p>"
+      "<button id='button_save_lon_capa' style='float: right;'>Save LON-CAPA problem File</button>" +
+          "</p>"
       // +"<a id='dummy_lon_capa_button' style='visibility: hidden'>Dummy Save Lon-capa problem file</a>"
       ;
 
