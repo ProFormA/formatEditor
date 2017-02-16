@@ -16,7 +16,7 @@
 
 function insertLCformelements () {
   var loncapaTextarea = " <div id='exportProblemXML' class=' ui-corner-all'>" +
-    "<h3 class='ui-widget-header'>LON-CAPA problem file (export only): " +
+    "<h3 class='ui-widget-header'>LON-CAPA problem file: " +
 
 //    "<a onclick='convertToXML(); downloadFile(this)' id='downloadLCProblem' class='likebutton'" +
 //    " download='task.problem'>Download LON-CAPA problem file</a>" +
