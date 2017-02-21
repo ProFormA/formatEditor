@@ -1,0 +1,46 @@
+Release Notes for 2.0.1
+
+new: simple HTML preview with support for closing tags for description
+bugfix: resize handling for CodeMirror elements
+
+Release Notes for 2.0.0
+
+new:
+drag&drop for model solutions and tests
+support for loading files directly from tests and model solution
+support for any number of referenced file in tests and model solution
+layout changed
+
+warning for unsupported browser feature
+set error-message in front of CodeMirror elements (z-index)
+allow resizing of textboxes only for height
+disable drag&drop in whole application except for those areas that are implemented
+show exception for 'missing' elements message in error text
+update of manual.html
+add drop hint, change order of test buttons
+move files page
+select filename after file input from filename option
+allow loading files from model solution and tests
+enable dropping files to test boxes
+relayout of output page
+reading version 0.9.4: don't throw exception for empty fileref
+simple solution to fix error-message on bottom
+do not save output when output is not created
+bugfix #6: support any number of referenced files in model solutions and tests
+store only non-empty filenames in filename list
+show hidden input fields in debug mode
+rename menu to ProFormA editor in UI
+editor resizes with browser size
+split model solutions, files and tests
+consistent button look
+hide test buttons that are not needed in chosen programming language
+move "add element" buttons from menu to pages
+move output text areas to separate tab, move associated buttons to button area
+bugfix #4 (proper handling of cancelling of file deletion)
+update faq.html according to previous changes
+#1 bugfix: update fileref2 in model solution with readxml
+set filenames in tests and model solution when reading a task.xml file
+enlage filename field in tests, check for empty filename in model solution
+improved handling of empty mandatory input fields
+#2 file id (and other ids) are no input fields anymore
+#2 file id is not yet marked as mandatory
