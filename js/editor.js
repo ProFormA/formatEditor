@@ -38,7 +38,7 @@ const TEST_MODE = false;
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
 
-var codeversion   = '2.0.0';                           // contains the current version of this code
+var codeversion   = '2.0.1';                           // contains the current version of this code
                                                        // these variables can be set in the calling HTML file  
 var version094;                                        // names of the xsd schema files
 var version101;
@@ -93,9 +93,9 @@ function addCodemirrorElement(cmID) {                     // cmID is determined 
 
     var editor = codemirror[cmID];
     $(editor.getWrapperElement()).resizable({
-        handles: 'n, s', // only resize in north-south-direction
+        handles: 's', // only resize in north-south-direction
         resize: function() {
-            editor.setSize($(this).width(), $(this).height());
+            // editor.setSize($(this).width(), $(this).height()); // bug: editor does not size anymore
             editor.refresh(); // is this really needed?
         }
     });
@@ -1785,6 +1785,35 @@ $(function() {
 
     checkDataURISupport();
 
+
+
+    var delay;
+    // Initialize CodeMirror editor with a nice html5 canvas demo.
+    var editor = CodeMirror.fromTextArea(
+//        $("#xml_description")[0], {
+            document.getElementById('xml_description'), {
+        mode: 'text/html'
+    });
+    editor.on("change", function() {
+        clearTimeout(delay);
+        delay = setTimeout(updatePreview, 300);
+    });
+     $(editor.getWrapperElement()).resizable({
+        handles: 's', // only resize in north-south-direction
+        resize: function() {
+            editor.refresh(); // is this really needed?
+        }
+     });
+
+
+    function updatePreview() {
+        var previewFrame = document.getElementById('preview');
+        var preview =  previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+        preview.open();
+        preview.write(editor.getValue());
+        preview.close();
+    }
+    setTimeout(updatePreview, 300);
 
 });
 
