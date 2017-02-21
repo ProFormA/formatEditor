@@ -77,6 +77,10 @@ var testIDs = {};
 var gradingHintCounter;                                // only 1 grading hint is allowed
 var codemirror = {};
 
+// Codemirror description editor is made global in order to allow access
+// to test environment.
+var descriptionEditor;
+
 ///////////////////////////////////////////////////////// utility functions
 /* Codemirror is a library that provides more sophisticated editor support for textareas.
  * Once it is turned on for a textarea, this textarea can no longer be accessed
@@ -1143,6 +1147,7 @@ $(function() {
     var tempvar;
     var tempXmlDoc = $.parseXML('<task></task>');
 
+    descriptionEditor.save();
     var inputField = $("#xml_description");
     if (inputField.val() == "") {
         setErrorMessage("Task description is empty.");
@@ -1789,19 +1794,19 @@ $(function() {
 
     var delay;
     // Initialize CodeMirror editor with a nice html5 canvas demo.
-    var editor = CodeMirror.fromTextArea(
+    descriptionEditor = CodeMirror.fromTextArea(
 //        $("#xml_description")[0], {
             document.getElementById('xml_description'), {
         mode: 'text/html'
     });
-    editor.on("change", function() {
+    descriptionEditor.on("change", function() {
         clearTimeout(delay);
         delay = setTimeout(updatePreview, 300);
     });
-     $(editor.getWrapperElement()).resizable({
+     $(descriptionEditor.getWrapperElement()).resizable({
         handles: 's', // only resize in north-south-direction
         resize: function() {
-            editor.refresh(); // is this really needed?
+            descriptionEditor.refresh(); // is this really needed?
         }
      });
 
@@ -1810,7 +1815,7 @@ $(function() {
         var previewFrame = document.getElementById('preview');
         var preview =  previewFrame.contentDocument ||  previewFrame.contentWindow.document;
         preview.open();
-        preview.write(editor.getValue());
+        preview.write(descriptionEditor.getValue());
         preview.close();
     }
     setTimeout(updatePreview, 300);

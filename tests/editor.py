@@ -121,7 +121,13 @@ def showModalWindow():
 # MAIN
 ####################################################################
 def set_task_description(text):
-    set_input_field("xml_description", text)
+    elem = driver.find_elements_by_id('xml_description')
+    if codemirror:
+        command = 'descriptionEditor.setValue("' + text + '")'
+        # print command
+        driver.execute_script(command);
+    else:
+        set_input_field("xml_description", text)
 
 def set_task_title(text):
     set_input_field("xml_meta-data_title", text)
