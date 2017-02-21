@@ -1596,6 +1596,10 @@ $(function() {
          });
       });
 
+      // copy description into CodeMirror element
+      descriptionEditor.setValue($("#xml_description").val());
+
+
       if (xmlObject.find("proglang")[0]) {              // deal with proglang
         var tempvals1, tempvals0;
         tempvals1 = xmlObject.find("proglang")[0].getAttribute("version");
@@ -1605,6 +1609,7 @@ $(function() {
           setErrorMessage("This combination of programming language and version is not supported.");
         }
       }
+
     } else {                                           // end: if there is xml content provided
       setErrorMessage("The textarea is empty.");
     }
@@ -1776,10 +1781,13 @@ $(function() {
         try {
             var request = new XMLHttpRequest();
             request.onload = function reqListener() {
-                callback(true);
+                if (callback) callback(true);
             };
             request.onerror = function reqListener() {
-                callback(false);
+                if (callback)
+                    callback(false);
+                else
+                    console.log('Files in data URIs are supported.');
             };
             request.open('GET', 'data:application/pdf;base64,cw==');
             request.send();
@@ -1797,7 +1805,8 @@ $(function() {
     descriptionEditor = CodeMirror.fromTextArea(
 //        $("#xml_description")[0], {
             document.getElementById('xml_description'), {
-        mode: 'text/html'
+        mode: 'text/html',
+        autoCloseTags: true
     });
     descriptionEditor.on("change", function() {
         clearTimeout(delay);
