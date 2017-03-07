@@ -38,7 +38,7 @@ const TEST_MODE = false;
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
 
-var codeversion   = '2.0.1';                           // contains the current version of this code
+var codeversion   = '2.0.2';                           // contains the current version of this code
                                                        // these variables can be set in the calling HTML file  
 var version094;                                        // names of the xsd schema files
 var version101;

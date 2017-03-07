@@ -26,14 +26,14 @@ function insertLCformelements () {
     //"<textarea id='output2' rows='6' cols='80' onfocus='this.rows=12;' onblur='this.rows=6;'></textarea>";
   $('#otherSoftware2').html(loncapaTextarea);
 
-  var inputinfo = "It must be \"/res/fhwf/...\" and not \"/priv/...\" because that is where it will be " +
+  var inputinfo = "Can be relative or absolute. If absolute it must be \"/res/fhwf/...\" and not \"/priv/...\" because that is where it will be " +
   "after publication. The filename of the zip-file is not part of the path. When uploading the " +
   "zip-file to LON-CAPA it should be named the task title minus any non-A-z characters."; 
 
   var loncapaZipLocation = "<div class='ui-widget ui-widget-content ui-corner-all'>" +
   "<h3 class='ui-widget-header'>LON-CAPA</h3>" +
-  "<label for='lczip'>Path to zip-file in LON-CAPA: /res/fhwf/ </label>" +
-  "<input title ='" + inputinfo + "' class='mediuminput' id='lczip' value='ecult/Java/zip/'/> " +
+  "<label for='lczip'>Path to zip-file in LON-CAPA: </label>" +
+  "<input title ='" + inputinfo + "' class='mediuminput' id='lczip' value='zip/'/> " +
 
       "<button id='button_save_lon_capa' style='float: right;'>Save LON-CAPA problem File</button>" +
           "</p>"
@@ -112,7 +112,7 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
   if (typeof downloadable == "undefined") { downloadable = ""; }
 //  lc_path = "/res/fhwf/ecult/Java/zip/";
   lc_path = "/res/fhwf/ecult";
-  lc_user_path = "/res/fhwf/" + $("#lczip").val();
+  lc_user_path = $("#lczip").val();
   lc_codeMHeader = "/lib/SyntaxHighlighter/CodeMirror_Header.library";
   lc_codeMFooter = "/lib/SyntaxHighlighter/CodeMirror_Footer.library";
   if (lc_mimetype == "java") {lc_mimetype = "x-java";}
@@ -121,21 +121,23 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
 
   lc_return = '<problem>\n\n';
   lc_return += '<import id="11">' +lc_path+ '/lib/proforma_v2.library</import>\n';
-  lc_return += '<import id="91">' +lc_path + lc_codeMHeader+ '</import>\n\n';
+  lc_return += '<import id="91">' +lc_path + lc_codeMHeader+ '</import>\n';
+  lc_return += '<import id="95">' +lc_path + '/lib/pfad.library</import>\n\n'; 
   lc_return += '<script type="loncapa/perl">\n';
+  lc_return += "$zip_file = zip_path('" + lc_user_path + "') . '" + lc_problemname+ ".zip';\n";
   lc_return += '# LON-CAPA partID, redundant taskID, submissiontype, filename of submitted file,';
   lc_return += 'Mime type, zip location\n';
   lc_return += "$externalurl = &proforma_url(0,'0', 'textfield', '" + lc_filename;
   if(versionchck == "101") {
-    lc_return += "','" + lc_mimetype + "','" + lc_user_path +lc_problemname+ ".zip','v1.0.1');\n";
+    lc_return += "','" + lc_mimetype + "',$zip_file,'v1.0.1');\n";
   } else {
-    lc_return += "','" + lc_mimetype + "','" + lc_user_path +lc_problemname+ ".zip');\n";
+    lc_return += "','" + lc_mimetype + "',$zip_file);\n";
   }
   lc_return += "$ausgabe = &proforma_output(0,1); # LON-CAPA partID, LON-CAPA responseID \n";
   lc_return += "$modelsolution = '<pre>" + getModelSolution(cmhash) + "</pre>';\n";
   lc_return += "</" + "script>\n";
   lc_return += "<startouttext />\n" +lc_descr+ "\n" + downloadable + "<endouttext />\n\n<startouttext />\n";
-  lc_return += "$error\n$ausgabe\n";
+  lc_return += "$pfad_error\n$error\n$ausgabe\n";
   lc_return += '<div id="codemirror-textfield">\n<endouttext />\n\n';
   lc_return += '<externalresponse answerdisplay="$modelsolution" answer="" url="$externalurl" form="%args" id="1">\n';
   lc_return += '<textfield>\n'+template+'\n</textfield>\n</externalresponse>\n\n';
