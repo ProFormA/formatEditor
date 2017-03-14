@@ -6,6 +6,9 @@ body{
 	/*font-size: 62.5%;*/
 	background-color: #F7F7F7;
 }
+
+
+
 textarea{
 	vertical-align: middle;
 	width: 99%;
@@ -42,16 +45,16 @@ p{ 	                        padding-left:0.3em;  }
 #xml_description {
     float: left;
     width: 50%;
-    // border: 1px solid black;
-        background-color: #BFF9CA;    
+    /* border: 1px solid black; */
+    /*    background-color: #BFF9CA;    */
 }
 
 #preview {
     width: 99.99%;
-    //float: left;
-    //height: 300px;
+    /*float: left;
+    height: 300px; */
     border: 1px solid black;
-    //border-left: 0px;
+    /*border-left: 0px;*/
         background-color: #F7F7F7;
     resize: vertical; /* user can resize vertically, but width is fixed */
 
@@ -120,19 +123,25 @@ table, th, td {
 #error-message{
 /*	display: inline-block; */
 	visibility: hidden;
+    resize: vertical; /* user can resize vertically, but width is fixed */    
 }
 
 #error-message {
+  border-radius: 5px;
   position: fixed;
   bottom: 0px;
   margin-right: auto;
   margin-left: auto;
-  width:100%;
+  width:98%;
   z-index: 10; /* higher than any z-index for codemirror */
+  border-color: darkred;
+  max-height:100px  
 }
 
-/*.problem {text-align:center} */
-/*.enclose {position:fixed;bottom:0px;width:100%;}*/
+#empty {
+	background-color: #F7F7F7;    
+}
+
 
 #button-list{
 	margin:0.5em 0.6em;

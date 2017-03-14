@@ -38,7 +38,7 @@ const TEST_MODE = false;
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
 
-var codeversion   = '2.0.2';                           // contains the current version of this code
+var codeversion   = '2.0.3';                           // contains the current version of this code
                                                        // these variables can be set in the calling HTML file  
 var version094;                                        // names of the xsd schema files
 var version101;
@@ -1708,9 +1708,7 @@ $(function() {
     //downloadTextFile2($("#output"), "task.xml", $("#dummy_save_xml_button")[0]);
   })
 
-
-
-
+ 
 
   if (!DEBUG_MODE) {
     $("#buttonClear").hide();
@@ -1829,6 +1827,8 @@ $(function() {
     }
     setTimeout(updatePreview, 300);
 
+    
+    
 });
 
 ///////////////////////////////////////////////////////// end of document ready function
