@@ -121,7 +121,7 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
 
   lc_return = '<problem>\n\n';
   lc_return += '<import id="11">' +lc_path+ '/lib/proforma_v3.library</import>\n';
-  lc_return += '<import id="91">' +lc_path + lc_codeMHeader+ '</import>\n';
+  lc_return += '<import id="91">' +lc_path + lc_codeMHeader+ '</import>\n\n';
   lc_return += '<script type="loncapa/perl">\n';
   lc_return += "$zip_file = zip_path('" + lc_user_path + "') . '" + lc_problemname+ ".zip';\n";
   lc_return += '# LON-CAPA partID, redundant taskID, submissiontype, filename of submitted file,';
@@ -134,7 +134,7 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
   }
   lc_return += "$ausgabe = &proforma_output(0,1); # LON-CAPA partID, LON-CAPA responseID \n";
   lc_return += "$modelsolution = '<pre>" + getModelSolution(cmhash) + "</pre>';\n";
-  lc_return += "</" + "script>\n";
+  lc_return += "</" + "script>\n\n";
   lc_return += "<startouttext />\n" +lc_descr+ "\n" + downloadable + "<endouttext />\n\n<startouttext />\n";
   lc_return += "$pfad_error\n$error\n$ausgabe\n";
   lc_return += '<div id="codemirror-textfield">\n<endouttext />\n\n';
