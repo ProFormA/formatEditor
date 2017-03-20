@@ -77,7 +77,7 @@ def PASS(message):
 
 def FAILED(message):
     global failed_counter
-    sys.stderr.write("FAILED: " + message)
+    sys.stderr.write("FAILED: " + message + "\n")
     failed_counter = failed_counter + 1
 
 def TEST_SUMMARY():
@@ -85,7 +85,7 @@ def TEST_SUMMARY():
     global failed_counter
     print str(pass_counter) + " tests passed"
     if failed_counter > 0:
-        sys.stderr.write (str(failed_counter) + " tests failed")
+        sys.stderr.write (str(failed_counter) + " tests failed\n")
     else:
         print str(failed_counter) + " tests failed"
         

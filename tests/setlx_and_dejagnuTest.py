@@ -246,8 +246,8 @@ counter_test_index = counter_test_index + 1
 
 editor.export_to(filename_task_xml_1, filename_problem_1)
 
-lon_capa_problem_field_value_1 = editor.get_lon_capa_problem()
-check_lon_capa_problem(lon_capa_problem_field_value_1)
+# lon_capa_problem_field_value_1 = editor.get_lon_capa_problem()
+# check_lon_capa_problem(lon_capa_problem_field_value_1)
 
 
 if editor.is_file1_equal_to_file2(filename_problem_reference, filename_problem_1):
