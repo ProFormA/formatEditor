@@ -478,11 +478,13 @@ $(function() {
   function readAndSetFileData(file, callback) {
       if (!file) return;
       var filename = file.name;
+
       // check if a file with that filename already is stored
       if (doesFilenameExist(filename)) {
           alert("A file named '" + filename + "' already exists.");
           return;
       }
+
       var type = file.type;
       var reader = new FileReader();
 
@@ -490,33 +492,41 @@ $(function() {
           // get file content
           //console.log("create filebox");
           var text = e.target.result;
+
+          // special handling for JAVA: extract class name and package name and
+          // recalc filename!
+          if (filename.match(/(.java)/i)) {
+              filename = java_getFilenameWithPackage(text, filename);
+          }
+
+          // recheck if a file with that filename already is stored
+          if (doesFilenameExist(filename)) {
+              alert("A file named '" + filename + "' already exists.");
+              return;
+          }
+
           var newFileId = setcounter(fileIDs);
           newFile(newFileId); // add file
           // set filename in test
           $(".xml_file_id[value='"+newFileId+"']").parent().find(".xml_file_filename").first().val(filename);
           // set file text
-          codemirror[newFileId].setValue(text);
-          /*
-           if (codemirrorOnOrOff == 1) {
-           codemirror[$(inputbutton).parent().parent().find(".xml_file_id").val()].setValue(e.target.result);
-           $(inputbutton).parent().parent().find(".xml_file_filename").val(filename);
-           } else {
-           $(inputbutton).parent().parent().find(".xml_file_text").val(e.target.result);
-           $(inputbutton).parent().parent().find(".xml_file_filename").val(filename);
-           }
-           */
+          if (codemirrorOnOrOff == 1) {
+              codemirror[newFileId].setValue(text);
+          } else {
+              $(inputbutton).parent().parent().find(".xml_file_text").val(text);
+          }
 
           // update filenames in all filename options
           onFilenameChanged();
 
           if (callback)
-            callback();
+            callback(filename);
       };
       //console.log("read file");
       reader.readAsText(file);
   }
 
-  function readSingleFileAndCreateFilebox(inputbutton, filenameSelect) {             // read a file and its filename into the HTML form
+  function readSingleFileAndCreateFilebox(inputbutton, callback /*filenameSelect*/) {             // read a file and its filename into the HTML form
       //console.log("select file");
       var filenew = inputbutton.files[0];
       if (!filenew) {
@@ -524,11 +534,12 @@ $(function() {
           return;
       }
 
-      readAndSetFileData(filenew, function(){
+      readAndSetFileData(filenew, callback); //function(newFilename){
+          /*
           if (filenameSelect) {
-              filenameSelect.val(filenew.name).change();
+              filenameSelect.val(newFilename).change();
           }
-      });
+      });*/
   }
 
 
@@ -609,7 +620,27 @@ $(function() {
               var dummybutton = $("#dummy_file_upload_button").first();
               dummybutton.unbind("change");
               dummybutton.change(function () {
-                  readSingleFileAndCreateFilebox($("#dummy_file_upload_button")[0], $(tempSelElem));
+                  readSingleFileAndCreateFilebox($("#dummy_file_upload_button")[0],
+                      function (newFilename) {
+                          if ($(tempSelElem)) {
+                              $(tempSelElem).val(newFilename /*filenew.name*/).change();
+                          }
+
+                          // set classname if file belongs to JUNIT if exactly one file is assigned
+                          var testBox = $(tempSelElem).closest(".xml_test");
+                          var ui_classname = $(testBox).find(".xml_ju_mainclass");
+                          if (ui_classname.length == 1) {
+                              $.each(ui_classname, function(index, element) {
+                                  var currentFilename = $(element).val();
+                                  if (currentFilename == "") {
+                                      $(element).val(java_getFullClassnameFromFilename(newFilename)).change();
+                                  }
+                              });
+                          }
+
+
+                      });
+                      //$(tempSelElem));
               });
               // perform dummy click
               dummybutton.click();
@@ -747,7 +778,7 @@ $(function() {
         tdFileAddButtonInMs + // +-button
         "</tr>"+
     "</table>" +
-        "<span class='drop_zone'>Drop Your Files Here!</span>" +
+        "<span class='drop_zone'>Drop Your File(s) Here!</span>" +
     "<p><label for='xml_model-solution_comment'>Comment: </label>"+
     "<input class='largeinput xml_model-solution_comment'/></p></div>");
 
@@ -895,7 +926,7 @@ $(function() {
         tdFileAddButtonInTest +
         "</tr>"+
     "</table>" +
-        "<span class='drop_zone'>Drop Your Files Here!</span>" +
+        "<span class='drop_zone'>Drop Your File(s) Here!</span>" +
         //"<br>" +
 //    " <label for='xml_test_validity'>Validity: </label>"+
 //    "<input class='shortinput xml_test_validity'/>"+
@@ -985,25 +1016,40 @@ $(function() {
             return;
         }
         $.each(files, function(index, file) {
-            readAndSetFileData(file, function() {
+            readAndSetFileData(file, function(filename) {
                 // select new filename in first empty filename
-                console.log("uploadFiles: select " + file.name + " in option list");
+                console.log("uploadFiles: select " + filename + " in option list");
                 var done = false;
                 $.each($(testBox).find(".xml_test_filename"), function(index, element) {
                     if (done) return false;
                     var currentFilename = $(element).val();
                     if (currentFilename == "") {
-                        $(element).val(file.name).change();
+                        $(element).val(filename).change();
                         done = true;
                     }
                 });
+
+
+
 
                 if (!done) { // no empty select option is found
                     // append filename
                     addTestFileRef($(testBox).find('.add_file_ref_test').last());
                     // select filename
-                    $(testBox).find(".xml_test_filename").last().val(file.name).change();
+                    $(testBox).find(".xml_test_filename").last().val(filename).change();
                 }
+
+                // set classname if exactly one file is assigned
+                var ui_classname = $(testBox).find(".xml_ju_mainclass");
+                if (ui_classname.length == 1) {
+                    $.each(ui_classname, function(index, element) {
+                        var currentFilename = $(element).val();
+                        if (currentFilename == "") {
+                            $(element).val(java_getFullClassnameFromFilename(filename)).change();
+                        }
+                    });
+                }
+
             });
         });
     }
@@ -1014,15 +1060,15 @@ $(function() {
             return;
         }
         $.each(files, function(index, file) {
-            readAndSetFileData(file, function() {
+            readAndSetFileData(file, function(filename) {
                 // select new filename in first empty filename
-                //console.log("uploadFiles: select " + file.name + " in option list");
+                //console.log("uploadFiles: select " + filename + " in option list");
                 var done = false;
                 $.each($(modelSolBox).find(".xml_model-solution_filename"), function(index, element) {
                     if (done) return false;
                     var currentFilename = $(element).val();
                     if (currentFilename == "") {
-                        $(element).val(file.name).change();
+                        $(element).val(filename).change();
                         done = true;
                     }
                 });
@@ -1031,7 +1077,7 @@ $(function() {
                     // append filename
                     addMsFileRef($(modelSolBox).find('.add_file_ref_ms').last());
                     // select filename
-                    $(modelSolBox).find(".xml_model-solution_filename").last().val(file.name).change();
+                    $(modelSolBox).find(".xml_model-solution_filename").last().val(filename).change();
                 }
             });
         });

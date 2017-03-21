@@ -28,8 +28,7 @@
 
 function java_codeWithoutComment(code) {
     var newCode = code.replace(/\/\*[\s\S]*?\*\//gm, "COMMENT1"); // comment with /* */
-    var newCode = newCode.replace(/\/\/.*/g, "COMMENT2"); // comment with //
-    return newCode;
+    return newCode.replace(/\/\/.*/g, "COMMENT2"); // comment with //
 }
 
 
@@ -65,4 +64,21 @@ function java_getClassAndPackage(code) {
     out.class = java_getClasseName(pureCode);
     out.package = java_getPackageName(pureCode);
     return out;
+}
+
+function java_getFilenameWithPackage(code, filename) {
+    var out = java_getClassAndPackage(code);
+    const className = filename.match(/([\S]*?)(.java)/i);
+    var newFilename = "";
+
+    const package = out.package.replace(/\./g, "/");
+    if (package.length > 0)
+        newFilename = package + "/" + out.class + ".java";
+    else
+        newFilename = out.class + ".java";
+    return newFilename;
+}
+
+function java_getFullClassnameFromFilename(filename) {
+    return filename.replace("/", ".");
 }
