@@ -129,6 +129,11 @@ function deletecounter(temphash,tempelement) {         // for fileIDs, modelSolI
 /* The HTML div-element "error-message" displays error messages if required.
  * all catch(err) statements should use this function (instead of console.log)
  */
+function setErrorMessageInvalidOption(xmlpath, attribute, value) {                  // setting the error console
+    setErrorMessage("'"+value+"' is not an option for '"+xmlpath + "'/'" + attribute + "'");
+
+}
+
 function setErrorMessage(errormess, exception) {                  // setting the error console
     var error_output = $("#error-message");
     error_output.append("\n* " + errormess);
@@ -139,6 +144,7 @@ function setErrorMessage(errormess, exception) {                  // setting the
     error_output.scrollTop(error_output[0].scrollHeight);
 //    error_output.scrollTop($("#error-message")[0].scrollHeight);
 }
+
 function clearErrorMessage() {                         // clearing the error console
   var error_output = $("#error-message");
   error_output.text("");
@@ -798,6 +804,7 @@ $(function() {
     "<select class='xml_ju_framew'><option selected='selected' value='JUnit'>JUnit</option></select>"+
     " <label for='xml_ju_version'>Version<span class='red'>*</span>: </label>"+
     "<select class='xml_ju_version'><option selected='selected' value='4.10'>4.10</option>"+
+//      "<select class='xml_ju_version'><option value='4.12'>4.12</option><option selected='selected' value='4.10'>4.10</option>"+
     "<option value='3'>3</option></select></p>"+
     "<p><label for='xml_pr_configDescription'>Test description: </label>"+
     "<input class='largeinput xml_pr_configDescription'/></p>";
@@ -1531,9 +1538,16 @@ $(function() {
                  try {
                    //$($(item.formname)[idx1cnt]).find(itm2.formname)[0].value=
                    //$(itm1).find(itm2.xmlpath)[0].getAttribute(itm2.xmlname);
-                   $($($(item.formname)[idx1cnt]).find(itm2.formname)[0]).val($(itm1).find(itm2.xmlpath)[0].getAttribute(itm2.xmlname));
-                   if ($($($(item.formname)[idx1cnt]).find(itm2.formname)[0]).val() === null) { // check selected
-                     setErrorMessage("'"+$(itm1).find(itm2.xmlpath)[0].getAttribute(itm2.xmlname)+"' is not an option for "+itm2.xmlname);
+                   const ui_element = $($($(item.formname)[idx1cnt]).find(itm2.formname)[0]);
+                   const ui_value = $(itm1).find(itm2.xmlpath)[0].getAttribute(itm2.xmlname);
+                   // set value in option list
+                   //$($($(item.formname)[idx1cnt]).find(itm2.formname)[0]).val($(itm1).find(itm2.xmlpath)[0].getAttribute(itm2.xmlname));
+                   ui_element.val(ui_value);
+                   // check if value is actually set, if not it is not a valid option
+                   //if ($($($(item.formname)[idx1cnt]).find(itm2.formname)[0]).val() === null) { // check selected
+                   if (ui_element.val() === null) { // check selected
+                     setErrorMessageInvalidOption(itm2.xmlpath, itm2.xmlname, ui_value);
+                     //setErrorMessage("'"+$(itm1).find(itm2.xmlpath)[0].getAttribute(itm2.xmlname)+"' is not an option for "+itm2.xmlname);
                    }
                  } catch(err) {setErrorMessage("problem with "+itm2.formname+idx1);}
                }
@@ -1543,9 +1557,12 @@ $(function() {
                  try {
                    //$($(item.formname)[idx1cnt]).find(itm2.formname)[0].value=
                    //    $(itm1).find(itm2.xmlname)[0].textContent;
-                   $($($(item.formname)[idx1cnt]).find(itm2.formname)[0]).val($(itm1).find(itm2.xmlname)[0].textContent);
-                   if ($($($(item.formname)[idx1cnt]).find(itm2.formname)[0]).val() === null) {   // check selected
-                     setErrorMessage("'"+$(itm1).find(itm2.xmlname)[0].textContent+"' is not an option for "+itm2.xmlname);
+                   const ui_element = $($($(item.formname)[idx1cnt]).find(itm2.formname)[0]);
+                   const ui_value = $(itm1).find(itm2.xmlname)[0].textContent;
+                   ui_element.val(ui_value);
+                   if (ui_element.val() === null) {   // check selected
+                     setErrorMessageInvalidOption(itm2.xmlpath, itm2.xmlname, ui_value);
+                     //setErrorMessage("'"+ui_value+"' is not an option for "+itm2.xmlname);
                    }
                  } catch(err) {setErrorMessage( "problem with "+itm2.formname+idx1);}
                }

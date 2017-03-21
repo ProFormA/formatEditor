@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- See the file js/editor.js for the version number of this software, its license etc -->
+
+<head>
+    <meta charset="utf-8">
+    <title>Test</title>
+
+    <script src="../js/jquery-1.10.2.js"></script>
+    <script src="../js/jquery-ui.min.js"></script>
+    <script src="../js/java.js"></script>
+    <script>
+        function myFunction() {
+            var text = $("#text").val();
+            var pureCode = java_codeWithoutComment(text);
+            $("#out1").val(pureCode);
+
+            const java_data = java_getClassAndPackage(text);
+            //$("#package").val(java_getPackageName(pureCode));
+            //$("#class").val(java_getClasseName(pureCode));
+            $("#package").val(java_data.package);
+            $("#class").val(java_data.class);
+        }
+
+$(function() {    
+
+})
+    </script>
+</head>
+<body>
+<p>
+   Input
+   <textarea rows='20' cols='80' id='text'></textarea>
+</p>
+<p>
+   Output1
+   <textarea rows='20' cols='80' id='out1'></textarea>
+</p>
+
+<p>
+Package
+<textarea rows='1' cols='80' id='package'></textarea>
+</p>
+
+
+<p>
+    Class
+    <textarea rows='1' cols='80' id='class'></textarea>
+</p>
+
+ <button onclick="myFunction()">Click me</button>   
+</body>
+</html>
+  
+
