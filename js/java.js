@@ -27,8 +27,8 @@
 
 
 function java_codeWithoutComment(code) {
-    var newCode = code.replace(/\/\*[\s\S]*?\*\//gm, "COMMENT1"); // comment with /* */
-    return newCode.replace(/\/\/.*/g, "COMMENT2"); // comment with //
+    var newCode = code.replace(/\/\*[\s\S]*?\*\//gm, ""); // comment with /* */
+    return newCode.replace(/\/\/.*/g, ""); // comment with //
 }
 
 
