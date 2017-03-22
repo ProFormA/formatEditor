@@ -39,7 +39,13 @@ p{ 	                        padding-left:0.3em;  }
 	/*max-width: 960px;*/
 }
 
-.drop_zone {float:right; 	font-size: 65%;}
+.drop_zone {
+    /*background: red;*/
+}
+
+.drop_zone_text {
+    float:right; 	font-size: 65%;
+}
 
 
 #xml_description {

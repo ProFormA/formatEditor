@@ -46,6 +46,7 @@ var xsdSchemaFile;                                     // choose version
 var codemirrorOnOrOff;                                 // setting this to 0 turns Codemirror off
 var loncapaOnOrOff;                                    // setting this to 0 turns LON-CAPA elements off
 var praktomatOnOrOff;
+var readXmlActive = false;
 if (version094 === undefined || version094 === null) { version094 = 'taskxml0.9.4.xsd'; }
 if (version101 === undefined || version101 === null) { version101 = 'taskxml1.0.1.xsd'; }
 if (xsdSchemaFile === undefined || xsdSchemaFile === null) { xsdSchemaFile = version094; }
@@ -92,7 +93,8 @@ function addCodemirrorElement(cmID) {                     // cmID is determined 
     codemirror[cmID] = CodeMirror.fromTextArea(
         $(".xml_file_id[value='"+ cmID +"']").parent().parent().find(".xml_file_text")[0],{
         mode : "text/x-java", indentUnit: 4, lineNumbers: true, matchBrackets: true, tabMode : "shift",
-        styleActiveLine: true, viewportMargin: Infinity, autoCloseBrackets: true, theme: "eclipse"
+        styleActiveLine: true, viewportMargin: Infinity, autoCloseBrackets: true, theme: "eclipse",
+            dragDrop: false
     });
 
     var editor = codemirror[cmID];
@@ -160,33 +162,42 @@ function clearErrorMessage() {                         // clearing the error con
  * These functions are used in click events associated with textareas.
  */
 function uploadTaskFile(inputbutton) {                     // upload button for textareas: output, output2
-  var filenew = inputbutton.files[0];
-  switch (filenew.type) {
-      case 'application/zip':
-      case 'application/x-zip-compressed':
-        /// unzipme(filenew,$(inputbutton).parent().parent().parent().find("textarea"));
-        var text = unzipme(filenew,$("#output"), readXML);
-        // readXML(text); // avoid racing by setting the text
-          // (when the text is set in the text area and later on read by readXml
-          // it could be empty because of racing condition)
-        break;
-      case "text/xml":
-        if (filenew) {
-            var readfi = new FileReader();
-            readfi.onload = function(e) {
-                var text = e.target.result;
-                $("#output").val(text);
-                readXML(text);
-            }
-            readfi.readAsText(filenew);
+    try {
+        readXmlActive = true; // lock automatic input field update
+        var filenew = inputbutton.files[0];
+        switch (filenew.type) {
+            case 'application/zip':
+            case 'application/x-zip-compressed':
+                /// unzipme(filenew,$(inputbutton).parent().parent().parent().find("textarea"));
+                var text = unzipme(filenew, $("#output"), function (text) {
+                    readXML(text);
+                    readXmlActive = false;
+                });
+                // readXML(text); // avoid racing by setting the text
+                // (when the text is set in the text area and later on read by readXml
+                // it could be empty because of racing condition)
+                break;
+            case "text/xml":
+                if (filenew) {
+                    var readfi = new FileReader();
+                    readfi.onload = function (e) {
+                        var text = e.target.result;
+                        $("#output").val(text);
+                        readXML(text);
+                        readXmlActive = false;
+                    }
+                    readfi.readAsText(filenew);
+                }
+                break;
+            default:
+                setErrorMessage("Unsupported file format: " + filenew.type);
+                break;
         }
-        break;
-      default:
-        setErrorMessage("Unsupported file format: " + filenew.type);
-        break;
-  }
-
-
+    }
+    catch(err) {
+        setErrorMessage("uncaught exception");
+        readXmlActive = false;
+    }
 }
 
 // unused
@@ -570,7 +581,7 @@ $(function() {
 
   newFile = function(tempcounter) {                    // create a new file HTML form element
     $("#filesection").append("<div "+
-    "class='ui-widget ui-widget-content ui-corner-all xml_file'>"+
+    "class='ui-widget ui-widget-content ui-corner-all xml_file drop_zone'>"+
     "<h3 class='ui-widget-header'>File #"+tempcounter+"<span "+
     "class='rightButton'><button onclick='removeFile($(this));'>x</button></span></h3>"+
     "<p><label for='xml_file_id'>ID: </label>"+
@@ -578,7 +589,7 @@ $(function() {
     " <label for='xml_file_filename'>Filename (with extension)<span class='red'>*</span>: </label>"+
     "<input class='mediuminput xml_file_filename' onchange='onFilenameChanged(this)'/>"+
     " <label for='xml_file_type'>Type: </label>"+
-        "<span class='drop_zone'>Drop Your File(s) Here!</span>" +
+        "<span class='drop_zone_text'>Drop Your File Here!</span>" +
     "<select class='xml_file_type'>"+
     "<option selected='selected'>embedded</option>"+
     "<option>file</option></select>"+
@@ -597,7 +608,7 @@ $(function() {
     "<textarea rows='3' cols='80' class='xml_file_text'"+
     "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea></p></div>");
     // hide fields that exist only for technical reasons
-    var fileroot = $(".xml_file_id[value='" + tempcounter + "']").parent();
+    var fileroot = $(".xml_file_id[value='" + tempcounter + "']").closest(".xml_file");
     if (!DEBUG_MODE) {
       fileroot.find(".xml_file_type").hide();
       fileroot.find("label[for='xml_file_type']").hide();
@@ -638,8 +649,8 @@ $(function() {
           if (ui_classname.length == 1) {
               $.each(ui_classname, function(index, element) {
                   var currentFilename = $(element).val();
-                  // if (currentFilename == "")
-                  $(element).val(java_getFullClassnameFromFilename(newFilename)).change();
+                  if (!readXmlActive)
+                    $(element).val(java_getFullClassnameFromFilename(newFilename)).change();
               });
           }
       }
@@ -810,7 +821,7 @@ $(function() {
         tdFileAddButtonInMs + // +-button
         "</tr>"+
     "</table>" +
-        "<span class='drop_zone'>Drop Your File(s) Here!</span>" +
+        "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>" +
     "<p><label for='xml_model-solution_comment'>Comment: </label>"+
     "<input class='largeinput xml_model-solution_comment'/></p></div>");
 
@@ -958,7 +969,7 @@ $(function() {
         tdFileAddButtonInTest +
         "</tr>"+
     "</table>" +
-        "<span class='drop_zone'>Drop Your File(s) Here!</span>" +
+        "<span class='drop_zone drop_zone_text'>Drop Your File(s) Here!</span>" +
         //"<br>" +
 //    " <label for='xml_test_validity'>Validity: </label>"+
 //    "<input class='shortinput xml_test_validity'/>"+
@@ -1076,7 +1087,7 @@ $(function() {
                 if (ui_classname.length == 1) {
                     $.each(ui_classname, function(index, element) {
                         var currentFilename = $(element).val();
-                        if (currentFilename == "") {
+                        if (currentFilename == "" && !readXmlActive) {
                             $(element).val(java_getFullClassnameFromFilename(filename)).change();
                         }
                     });
@@ -1845,6 +1856,7 @@ $(function() {
   // disable (drag&)drop in whole application except
   // for the intended drop zones
   // (otherwise dropping a file in the browser leaves the editor site)
+
     const dropzoneClass = "drop_zone";
     window.addEventListener("dragenter", function(e) {
         if (e.target.class != dropzoneClass) {
@@ -1869,6 +1881,30 @@ $(function() {
             e.dataTransfer.dropEffect = "none";
         }
     });
+
+    var filesection = $("#filesection").parent(); // use parent instead of filesecion here
+    filesection.on({
+        dragover: function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            //e.dataTransfer.dropEffect = 'copy';
+        },
+        dragenter: function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        },
+        drop: function(e){
+            if(e.originalEvent.dataTransfer){
+                if(e.originalEvent.dataTransfer.files.length) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    //UPLOAD FILES HERE
+                    uploadFilesWhenDropped(e.originalEvent.dataTransfer.files, e.currentTarget);
+                }
+            }
+        }
+    });
+
 
 // test
 //    var myCsv = "Col1,Col2,Col3\nval1,val2,val3";

@@ -80,5 +80,7 @@ function java_getFilenameWithPackage(code, filename) {
 }
 
 function java_getFullClassnameFromFilename(filename) {
-    return filename.replace("/", ".");
+    var newFilename = filename.replace("/", ".");
+    newFilename = newFilename.replace(/.java/i, "");
+    return newFilename;
 }
