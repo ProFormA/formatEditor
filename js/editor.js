@@ -89,19 +89,22 @@ var descriptionEditor;
  * The global codemirror hash above uses the fileID to identify the codemirror element.
  */
 function addCodemirrorElement(cmID) {                     // cmID is determined by setcounter(), starts at 1
-  codemirror[cmID] = CodeMirror.fromTextArea(
-    $(".xml_file_id[value='"+ cmID +"']").parent().parent().find(".xml_file_text")[0],{
-    mode : "text/x-java", indentUnit: 4, lineNumbers: true, matchBrackets: true, tabMode : "shift",
-    styleActiveLine: true, viewportMargin: Infinity, autoCloseBrackets: true, theme: "eclipse"
-  });
+    codemirror[cmID] = CodeMirror.fromTextArea(
+        $(".xml_file_id[value='"+ cmID +"']").parent().parent().find(".xml_file_text")[0],{
+        mode : "text/x-java", indentUnit: 4, lineNumbers: true, matchBrackets: true, tabMode : "shift",
+        styleActiveLine: true, viewportMargin: Infinity, autoCloseBrackets: true, theme: "eclipse"
+    });
 
     var editor = codemirror[cmID];
     $(editor.getWrapperElement()).resizable({
         handles: 's', // only resize in north-south-direction
         resize: function() {
-            // editor.setSize($(this).width(), $(this).height()); // bug: editor does not size anymore
-            editor.refresh(); // is this really needed?
+            editor.refresh();
         }
+    });
+    editor.on("drop",function(editor,e){
+        //uploadFileWhenDropped(e.originalEvent.dataTransfer.files, e.currentTarget);
+        console.log('codemirror drop: ' + e);
     });
 }
 
@@ -156,7 +159,7 @@ function clearErrorMessage() {                         // clearing the error con
  * or to create a download link for text from a textarea.
  * These functions are used in click events associated with textareas.
  */
-function uploadFile(inputbutton) {                     // upload button for textareas: output, output2
+function uploadTaskFile(inputbutton) {                     // upload button for textareas: output, output2
   var filenew = inputbutton.files[0];
   switch (filenew.type) {
       case 'application/zip':
@@ -173,7 +176,6 @@ function uploadFile(inputbutton) {                     // upload button for text
             readfi.onload = function(e) {
                 var text = e.target.result;
                 $("#output").val(text);
-                /// $(inputbutton).parent().parent().parent().find("textarea").val(e.target.result);
                 readXML(text);
             }
             readfi.readAsText(filenew);
@@ -459,23 +461,12 @@ $(function() {
 
   readSingleFile = function(inputbutton) {             // read a file and its filename into the HTML form
     var filenew = inputbutton.files[0];
-    if (filenew) {
-      var filename = filenew.name;
-      var readfi = new FileReader();
-      readfi.onload = function(e) {
-        if (codemirrorOnOrOff == 1) {
-          codemirror[$(inputbutton).parent().parent().find(".xml_file_id").val()].setValue(e.target.result);
-          $(inputbutton).parent().parent().find(".xml_file_filename").val(filename);
-        } else {
-          $(inputbutton).parent().parent().find(".xml_file_text").val(e.target.result);
-          $(inputbutton).parent().parent().find(".xml_file_filename").val(filename);
-        }
-      };
-      readfi.readAsText(filenew);
-    }
+    const fileId = $(inputbutton).parent().parent().find(".xml_file_id").val();
+    readAndCreateFileData(filenew, fileId);
   }
 
-  function readAndSetFileData(file, callback) {
+
+  function readAndCreateFileData(file, fileId, callback) {
       if (!file) return;
       var filename = file.name;
 
@@ -505,13 +496,15 @@ $(function() {
               return;
           }
 
-          var newFileId = setcounter(fileIDs);
-          newFile(newFileId); // add file
+          if (fileId < 0 ) { // create file box
+              fileId = setcounter(fileIDs);
+              newFile(fileId); // add file
+          }
           // set filename in test
-          $(".xml_file_id[value='"+newFileId+"']").parent().find(".xml_file_filename").first().val(filename);
+          $(".xml_file_id[value='"+fileId+"']").parent().find(".xml_file_filename").first().val(filename);
           // set file text
           if (codemirrorOnOrOff == 1) {
-              codemirror[newFileId].setValue(text);
+              codemirror[fileId].setValue(text);
           } else {
               $(inputbutton).parent().parent().find(".xml_file_text").val(text);
           }
@@ -526,7 +519,9 @@ $(function() {
       reader.readAsText(file);
   }
 
-  function readSingleFileAndCreateFilebox(inputbutton, callback /*filenameSelect*/) {             // read a file and its filename into the HTML form
+  // OBSOLETE
+/*
+  function readSingleFileAndCreateFilebox(inputbutton, callback) {  // read a file and its filename into the HTML form
       //console.log("select file");
       var filenew = inputbutton.files[0];
       if (!filenew) {
@@ -534,36 +529,41 @@ $(function() {
           return;
       }
 
-      readAndSetFileData(filenew, callback); //function(newFilename){
-          /*
-          if (filenameSelect) {
-              filenameSelect.val(newFilename).change();
-          }
-      });*/
+      readAndSetFileData(filenew, callback);
   }
+*/
 
-
-  onFilenameChanged = function() {
+  onFilenameChanged = function(textbox) {
       // after change of filename update all filelists
       //console.log("onFilenameChanged");
 
       $.each($(".xml_test_filename, .xml_model-solution_filename"), function(index, item) {
           //console.log("update filelist in test ");
+          // store name of currently selected file
           var text = $("option:selected", item).text(); // selected text
           //console.log("selected is " + text);
-          setFilenameList(item); // update filenames
-          // check if previously selected filename is still in list
-          // (ich weiß im Moment nicht, wie man die Einträge aus
-          // der Liste rauszieht...TODO)
-          var indexFound = -1;
-          $.each($(".xml_file_filename"), function(indexOpt, item) {
-              if (item.value.length > 0 && item.value == text) {
-                  indexFound = indexOpt;
+          setFilenameList(item); // update filename list in tests and model solutions
+
+          if (text.length > 0) {
+              // check if previously selected filename is still in list
+              // (ich weiß im Moment nicht, wie man die Einträge aus
+              // der Liste rauszieht...TODO)
+              // TODO einfacher: einfach setzen und schauen, ob leer???
+              var indexFound = -1;
+              $.each($(".xml_file_filename"), function (indexOpt, item) {
+                  if (item.value.length > 0 && item.value == text) {
+                      indexFound = indexOpt;
+                  }
+              });
+              if (indexFound >= 0) {
+                  //console.log("selektiere " + indexFound);
+                  item.selectedIndex = indexFound + 1; // +1:weil am Anfang noch ein Leerstring ist
+              } else {
+                  // filename not found => remove fileid
+                  console.log("filename ref not found");
+                  $(item).closest(".xml_test,.xml_model-solution").
+                    find($(".xml_test_fileref, .xml_model-solution_fileref")).first().val("");
               }
-          });
-          if (indexFound >= 0) {
-              //console.log("selektiere " + indexFound);
-              item.selectedIndex = indexFound+1; // +1:weil am Anfang noch ein Leerstring ist
           }
       });
   };
@@ -578,6 +578,7 @@ $(function() {
     " <label for='xml_file_filename'>Filename (with extension)<span class='red'>*</span>: </label>"+
     "<input class='mediuminput xml_file_filename' onchange='onFilenameChanged(this)'/>"+
     " <label for='xml_file_type'>Type: </label>"+
+        "<span class='drop_zone'>Drop Your File(s) Here!</span>" +
     "<select class='xml_file_type'>"+
     "<option selected='selected'>embedded</option>"+
     "<option>file</option></select>"+
@@ -596,17 +597,53 @@ $(function() {
     "<textarea rows='3' cols='80' class='xml_file_text'"+
     "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea></p></div>");
     // hide fields that exist only for technical reasons
+    var fileroot = $(".xml_file_id[value='" + tempcounter + "']").parent();
     if (!DEBUG_MODE) {
-      var fileroot = $(".xml_file_id[value='" + tempcounter + "']").parent();
       fileroot.find(".xml_file_type").hide();
       fileroot.find("label[for='xml_file_type']").hide();
       fileroot.find(".xml_file_id").hide();
       fileroot.find("label[for='xml_file_id']").hide();
     }
     if (codemirrorOnOrOff == 1) { addCodemirrorElement(tempcounter); }
+
+      fileroot.on({
+          dragover: function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              //e.dataTransfer.dropEffect = 'copy';
+          },
+          dragenter: function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+          },
+          drop: function(e){
+              if(e.originalEvent.dataTransfer){
+                  if(e.originalEvent.dataTransfer.files.length) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      /*UPLOAD FILES HERE*/
+                      uploadFileWhenDropped(e.originalEvent.dataTransfer.files, e.currentTarget);
+                  }
+              }
+          }
+      });
   };
 
-  onFileSelectionChanged = function(tempSelElem) {              // changing a filename in the drop-down changes the id
+  onFileSelectionChanged = function(tempSelElem) {              // changing a filename in the drop-down
+
+      function setJavaClassname(newFilename) {
+          // set classname if file belongs to JUNIT and if exactly one file is assigned
+          var testBox = $(tempSelElem).closest(".xml_test");
+          var ui_classname = $(testBox).find(".xml_ju_mainclass");
+          if (ui_classname.length == 1) {
+              $.each(ui_classname, function(index, element) {
+                  var currentFilename = $(element).val();
+                  // if (currentFilename == "")
+                  $(element).val(java_getFullClassnameFromFilename(newFilename)).change();
+              });
+          }
+      }
+
       var found = false;
       var selectedFilename = $(tempSelElem).val();
       //console.log("-> selected is '" + selectedFilename + "'");
@@ -620,27 +657,20 @@ $(function() {
               var dummybutton = $("#dummy_file_upload_button").first();
               dummybutton.unbind("change");
               dummybutton.change(function () {
-                  readSingleFileAndCreateFilebox($("#dummy_file_upload_button")[0],
+                  var inputbutton = $("#dummy_file_upload_button")[0];
+                  var filenew = inputbutton.files[0];
+                  if (!filenew) {
+                      console.log("no file selected -> cancel");
+                      return;
+                  }
+                  readAndCreateFileData(filenew, -1,
                       function (newFilename) {
                           if ($(tempSelElem)) {
-                              $(tempSelElem).val(newFilename /*filenew.name*/).change();
+                              $(tempSelElem).val(newFilename).change();
                           }
-
-                          // set classname if file belongs to JUNIT if exactly one file is assigned
-                          var testBox = $(tempSelElem).closest(".xml_test");
-                          var ui_classname = $(testBox).find(".xml_ju_mainclass");
-                          if (ui_classname.length == 1) {
-                              $.each(ui_classname, function(index, element) {
-                                  var currentFilename = $(element).val();
-                                  if (currentFilename == "") {
-                                      $(element).val(java_getFullClassnameFromFilename(newFilename)).change();
-                                  }
-                              });
-                          }
-
-
+                          // set classname if file belongs to JUNIT
+                          setJavaClassname(newFilename);
                       });
-                      //$(tempSelElem));
               });
               // perform dummy click
               dummybutton.click();
@@ -663,6 +693,8 @@ $(function() {
                           nextTd.find('.xml_model-solution_fileref')[0].value=fileid;
                       }
                       found = true;
+                      // set classname if file belongs to JUNIT
+                      setJavaClassname(selectedFilename);
                       return false;
                   }
               });
@@ -671,7 +703,7 @@ $(function() {
                   console.log("could not find file id for " + selectedFilename);
                   if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
 //                      var nextTd = $(tempSelElem).parent().next('td');
-                      nextTd.find('.xml_model-solution_fileref')[0].value="";
+                      nextTd.find('.xml_test_fileref')[0].value="";
                       //$(tempSelElem).parent().find('.xml_test_fileref')[0].value="";
 
                   } else {
@@ -1016,7 +1048,7 @@ $(function() {
             return;
         }
         $.each(files, function(index, file) {
-            readAndSetFileData(file, function(filename) {
+            readAndCreateFileData(file, -1, function(filename) {
                 // select new filename in first empty filename
                 console.log("uploadFiles: select " + filename + " in option list");
                 var done = false;
@@ -1060,7 +1092,7 @@ $(function() {
             return;
         }
         $.each(files, function(index, file) {
-            readAndSetFileData(file, function(filename) {
+            readAndCreateFileData(file, -1, function(filename) {
                 // select new filename in first empty filename
                 //console.log("uploadFiles: select " + filename + " in option list");
                 var done = false;
@@ -1079,6 +1111,24 @@ $(function() {
                     // select filename
                     $(modelSolBox).find(".xml_model-solution_filename").last().val(filename).change();
                 }
+            });
+        });
+    }
+
+    function uploadFileWhenDropped(files, fileBox){
+        if (files.length > 1) {
+            alert('You have dragged more than one file. You must drop exactly one file!');
+            return;
+        }
+        const fileId= $(fileBox).find(".xml_file_id").val();
+        readAndCreateFileData(files[0], fileId);
+    }
+
+
+    function uploadFilesWhenDropped(files){
+        $.each(files, function(index, file) {
+            readAndCreateFileData(file, -1, function(filename) {
+                // nothing extra to be done
             });
         });
     }

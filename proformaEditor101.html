@@ -134,7 +134,7 @@
                     <div id="exportXMLFile" class="ui-corner-all">
                         <h3 class="ui-widget-header">XML file: &nbsp;&nbsp;
 <!--
-                            <input id="upload_xml_file" type="file" onchange="uploadFile(this)"/>
+                            <input id="upload_xml_file" type="file" onchange="uploadTaskFile(this)"/>
                             <a onclick='convertToXML(); downloadFile(this)' id='downloadOutput' class='likebutton'
                                download='task.xml'>Download XML file</a>
 
@@ -161,7 +161,7 @@
                 <br>
                 <p><button id="button_load">Load Task...</button></p>
                 <p><!-- Load TASK.XML from file or zip-->
-                <input id="upload_xml_file" type="file"  onchange="uploadFile(this);"/>
+                <input id="upload_xml_file" type="file"  onchange="uploadTaskFile(this);"/>
                 </p>
                 <!-- <p><a onclick='convertToXML(); downloadFile(this)' id='downloadOutput2' class='likebutton'
                           download='task.xml'>Download TASK.XML</a></p> -->
@@ -220,7 +220,7 @@
         <div id="xml-output-input">
           <div id="exportXMLFile" class="ui-widget-header ui-corner-all">
             <h3>XML file: &nbsp;&nbsp;
-              <input id="upload_xml_file" type="file" onchange="uploadFile(this)"/>
+              <input id="upload_xml_file" type="file" onchange="uploadTaskFile(this)"/>
               <a onclick='convertToXML(); downloadFile(this)' id='downloadOutput' class='likebutton'
                    download='task.xml'>Download XML file</a>
               <button onclick='convertToXML(); zipme()' type='button' id='buttonZip'>Download as zip
