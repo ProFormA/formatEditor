@@ -24,7 +24,7 @@
 /*
 
  */
-
+const java_JUnit_Default_Title = "Java JUnit Test";
 
 function java_codeWithoutComment(code) {
     var newCode = code.replace(/\/\*[\s\S]*?\*\//gm, ""); // comment with /* */
@@ -76,6 +76,15 @@ function java_getFilenameWithPackage(code/*, filename*/) {
         newFilename = package + "/" + out.class + ".java";
     else
         newFilename = out.class + ".java";
+    return newFilename;
+}
+
+function java_getPureClassnameFromFilename(filename) {
+    var newFilename = filename.replace(/.java/i, "");
+    var index =  newFilename.indexOf("/");
+    if (index > 0) {
+        newFilename = newFilename.substring(index+1);
+    }
     return newFilename;
 }
 

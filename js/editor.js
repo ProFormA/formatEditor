@@ -666,7 +666,20 @@ $(function() {
               $.each(ui_classname, function(index, element) {
                   var currentFilename = $(element).val();
                   if (!readXmlActive)
-                    $(element).val(java_getFullClassnameFromFilename(newFilename)).change();
+                      $(element).val(java_getFullClassnameFromFilename(newFilename)).change();
+              });
+          }
+      }
+
+      function setJUnitDefaultTitle(newFilename) {
+          // set decsription according to classname
+          var testBox = $(tempSelElem).closest(".xml_test");
+          var ui_title = $(testBox).find(".xml_test_title");
+          if (ui_title.length == 1) {
+              $.each(ui_title, function(index, element) {
+                  var currentTitle = $(element).val();
+                  if (!readXmlActive && currentTitle == java_JUnit_Default_Title)
+                      $(element).val("Junit Test " + java_getPureClassnameFromFilename(newFilename)).change();
               });
           }
       }
@@ -697,6 +710,7 @@ $(function() {
                           }
                           // set classname if file belongs to JUNIT
                           setJavaClassname(newFilename);
+                          setJUnitDefaultTitle(newFilename);
                       });
               });
               // perform dummy click
@@ -722,6 +736,7 @@ $(function() {
                       found = true;
                       // set classname if file belongs to JUNIT
                       setJavaClassname(selectedFilename);
+                      setJUnitDefaultTitle(selectedFilename);
                       return false;
                   }
               });
@@ -893,7 +908,6 @@ $(function() {
     " <label for='xml_ju_framew'>Framework<span class='red'>*</span>: </label>"+
     "<select class='xml_ju_framew'><option selected='selected' value='JUnit'>JUnit</option></select>"+
     " <label for='xml_ju_version'>Version<span class='red'>*</span>: </label>"+
-//    "<select class='xml_ju_version'><option selected='selected' value='4.10'>4.10</option>"+
     "<select class='xml_ju_version'><option value='4.12'>4.12</option><option selected='selected' value='4.10'>4.10</option>"+
     "<option value='3'>3</option></select></p>"+
     "<p><label for='xml_pr_configDescription'>Test description: </label>"+
@@ -1076,7 +1090,7 @@ $(function() {
         }
         $.each(files, function(index, file) {
             readAndCreateFileData(file, -1, function(filename) {
-                // select new filename in first empty filename
+                // select new filename in first empty filename select option list
                 console.log("uploadFiles: select " + filename + " in option list");
                 var done = false;
                 $.each($(testBox).find(".xml_test_filename"), function(index, element) {
@@ -1092,7 +1106,7 @@ $(function() {
 
 
                 if (!done) { // no empty select option is found
-                    // append filename
+                    // create new filename option list
                     addTestFileRef($(testBox).find('.add_file_ref_test').last());
                     // select filename
                     $(testBox).find(".xml_test_filename").last().val(filename).change();
@@ -1203,7 +1217,7 @@ $(function() {
     newTest(setcounter(testIDs),"Java Compiler Test", TextJavaComp, "java-compilation");
     $("#tabs").tabs("option", "active", tab_page.TESTS); });
   $("#addJavaJunit").click(function() {
-    newTest(setcounter(testIDs),"Java JUnit Test", TextJavaJunit, "unittest");
+    newTest(setcounter(testIDs),java_JUnit_Default_Title/*"Java JUnit Test"*/, TextJavaJunit, "unittest");
     $("#tabs").tabs("option", "active", tab_page.TESTS); });
   $("#addSetlX").click(function() {
     newTest(setcounter(testIDs),"SetlX Test", TextSetlX, "jartest");
