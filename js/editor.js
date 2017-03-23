@@ -162,20 +162,13 @@ function clearErrorMessage() {                         // clearing the error con
  * These functions are used in click events associated with textareas.
  */
 function uploadTaskFile(inputbutton) {                     // upload button for textareas: output, output2
-    try {
-        readXmlActive = true; // lock automatic input field update
         var filenew = inputbutton.files[0];
         switch (filenew.type) {
             case 'application/zip':
             case 'application/x-zip-compressed':
-                /// unzipme(filenew,$(inputbutton).parent().parent().parent().find("textarea"));
                 var text = unzipme(filenew, $("#output"), function (text) {
-                    readXML(text);
-                    readXmlActive = false;
+                    readXMLWithLock(text);
                 });
-                // readXML(text); // avoid racing by setting the text
-                // (when the text is set in the text area and later on read by readXml
-                // it could be empty because of racing condition)
                 break;
             case "text/xml":
                 if (filenew) {
@@ -183,8 +176,7 @@ function uploadTaskFile(inputbutton) {                     // upload button for 
                     readfi.onload = function (e) {
                         var text = e.target.result;
                         $("#output").val(text);
-                        readXML(text);
-                        readXmlActive = false;
+                        readXMLWithLock(text);
                     }
                     readfi.readAsText(filenew);
                 }
@@ -193,11 +185,6 @@ function uploadTaskFile(inputbutton) {                     // upload button for 
                 setErrorMessage("Unsupported file format: " + filenew.type);
                 break;
         }
-    }
-    catch(err) {
-        setErrorMessage("uncaught exception");
-        readXmlActive = false;
-    }
 }
 
 // unused
@@ -1492,6 +1479,18 @@ $(function() {
   };
 
 ///////////////////////////////////////////////////////// function: readXML
+
+   readXMLWithLock =  function(xmlText) {
+       readXmlActive = true; // lock automatic input field update
+       try {
+           readXML(xmlText);
+       }
+       catch(err) {
+           setErrorMessage("uncaught exception", err);
+       }
+       readXmlActive = false;
+   };
+
 /* This converts an XML file into form elements.
  * First, it does some initialisation and validation.
  * Then it loops through the data structure that was created for the XML file.

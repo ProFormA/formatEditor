@@ -126,7 +126,7 @@
                 <div id="button-list">
                     <div id="button_text">Create an XML file from the form data and vice versa:</div>
                     <button onclick='convertToXML()' type='button' id='buttonExport'>Create XML file</button>
-                    <button onclick='readXML()' type='button' id='buttonImport'>Read XML file</button>
+                    <button onclick='readXMLWithLock()' type='button' id='buttonImport'>Read XML file</button>
                 </div>
 
 
@@ -207,32 +207,6 @@
     <textarea id="empty" rows='4' style="border: none" readonly></textarea>
     <p></p> 
     <textarea id="error-message" class="ui-state-error" rows='4' readonly>Error Console:</textarea>
-
-    <!--
-        <div id="button-list">
-          Create an XML file from the form data and vice versa:
-          <button onclick='convertToXML()' type='button' id='buttonExport'>Create XML file</button>
-          <button onclick='readXML()' type='button' id='buttonImport'>Read XML file</button>
-          <textarea id="error-message" class="ui-state-error" readonly>Error Console:</textarea>
-        </div>
-
-
-        <div id="xml-output-input">
-          <div id="exportXMLFile" class="ui-widget-header ui-corner-all">
-            <h3>XML file: &nbsp;&nbsp;
-              <input id="upload_xml_file" type="file" onchange="uploadTaskFile(this)"/>
-              <a onclick='convertToXML(); downloadFile(this)' id='downloadOutput' class='likebutton'
-                   download='task.xml'>Download XML file</a>
-              <button onclick='convertToXML(); zipme()' type='button' id='buttonZip'>Download as zip
-              (if supported)</button>
-              <button title = 'For clearing the whole form, reload the browser or press "shift reload" on Firefox.'
-              onclick='$("#output").val("");' type='button' id='buttonClear'>Clear textarea</button>
-            </h3>
-          </div>
-          <textarea class="ui-corner-all" id='output' rows='20' cols='80'></textarea>
-        </div>
-        <div id="otherSoftware2"></div>
-    -->
 
 </div>  <!-- pagecontainer -->
 
