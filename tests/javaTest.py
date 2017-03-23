@@ -94,15 +94,17 @@ editor.set_filename(0, "file0.java")
 editor.set_filename(1, "file1.java")
 editor.set_filename(2, "file2.java")
 editor.set_filename(3, "file3.java")
-editor.set_filename(4, "file4.java")
+# set filename for file 4 later
 editor.set_filename(5, "file5.java")
+
+
 
 # fill file comment
 editor.set_file_comment(0, "comment for file file0.java")
 editor.set_file_comment(1, "comment for file file1.java")
 editor.set_file_comment(2, "comment for file file2.java")
 editor.set_file_comment(3, "comment for file file3.java")
-editor.set_file_comment(4, "comment for file file4.java")
+# set comment for file 4 later
 editor.set_file_comment(5, "comment for file file5.java")
 
 # set file class
@@ -121,7 +123,17 @@ editor.set_file_text(2, "// dummy file text #2")
 #editor.set_file_text(3, "// deutsche Umlaute öäüß in File 3")
 editor.set_file_text(3, "// TODO: deutsche Umlautein File 3")
 editor.set_file_text(4, "int i = 0; // in File 4")
-editor.set_file_text(5, "some text in file #5")
+editor.set_file_text(5, "package de.test.test1; class MyClass {}")
+
+# set filename for actual java code
+# -> expect change of filename
+editor.set_filename(4, "file4.java")
+# muss zweimal gesendet werden, weil erstmal eine MsgBox erscheint,
+# die bestätigt werden muss (die Eingabe geht daher im Test verloren)
+editor.set_file_comment(4, "comment for file file4.java")
+alert = driver.switch_to.alert
+alert.accept()
+editor.set_file_comment(4, "comment for file file4.java")
 
 # what shall I do with newline?
 ###editor.set_file_text(2, "int i = 0;\\nint j = 1;")

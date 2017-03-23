@@ -66,9 +66,9 @@ function java_getClassAndPackage(code) {
     return out;
 }
 
-function java_getFilenameWithPackage(code, filename) {
+function java_getFilenameWithPackage(code/*, filename*/) {
     var out = java_getClassAndPackage(code);
-    const className = filename.match(/([\S]*?)(.java)/i);
+    //const className = filename.match(/([\S]*?)(.java)/i);
     var newFilename = "";
 
     const package = out.package.replace(/\./g, "/");

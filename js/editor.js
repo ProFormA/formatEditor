@@ -485,7 +485,7 @@ $(function() {
           // special handling for JAVA: extract class name and package name and
           // recalc filename!
           if (filename.match(/(.java)/i)) {
-              filename = java_getFilenameWithPackage(text, filename);
+              filename = java_getFilenameWithPackage(text);
           }
 
           // recheck if a file with that filename already is stored
@@ -533,7 +533,36 @@ $(function() {
 
   onFilenameChanged = function(textbox) {
       // after change of filename update all filelists
-      //console.log("onFilenameChanged");
+
+      if (textbox) {
+          // if thew user has changed the filename and the extension is .java
+          // then the filename is recalculated on base of the source code (package class)
+          // and checked against user filename
+          var filename = $(textbox).val();
+          if (filename.match(/(.java)/i)) {
+              var filebox = $(textbox).closest(".xml_file");
+              var text = "";
+              if (codemirrorOnOrOff == 1) {
+                  const fileId = filebox.find(".xml_file_id").val();
+                  text = codemirror[fileId].getValue();
+              } else {
+                  var textarea = filebox.find(".xml_file_text");
+                  text = textarea.val();
+              }
+
+              var expectedFilename = java_getFilenameWithPackage(text);
+              if (expectedFilename != filename && expectedFilename != ".java") {
+                  if (confirm("Java filenames shall consist of the " +
+                      "package name, if any, and the class name. " +
+                      "Thus the expected filename is '" + expectedFilename + "'\n" +
+                      "Do you want to change the filename?")) {
+                        $(textbox).val(expectedFilename);
+                  }
+              }
+          }
+      }
+
+
 
       $.each($(".xml_test_filename, .xml_model-solution_filename"), function(index, item) {
           //console.log("update filelist in test ");
@@ -1488,7 +1517,9 @@ $(function() {
        catch(err) {
            setErrorMessage("uncaught exception", err);
        }
-       readXmlActive = false;
+       finally {
+           readXmlActive = false;
+       }
    };
 
 /* This converts an XML file into form elements.
@@ -1881,7 +1912,11 @@ $(function() {
         }
     });
 
-    var filesection = $("#filesection").parent(); // use parent instead of filesecion here
+    // enable dropping files in the file section
+    // with creating new file boxes
+    var filesection = $("#filesection").parent();
+    // use parent instead of filesection here because
+    // the acual file section is too small and is not what is expected
     filesection.on({
         dragover: function(e) {
             e.preventDefault();
@@ -1945,9 +1980,8 @@ $(function() {
     checkDataURISupport();
 
 
-
+    // register html preview window
     var delay;
-    // Initialize CodeMirror editor with a nice html5 canvas demo.
     descriptionEditor = CodeMirror.fromTextArea(
 //        $("#xml_description")[0], {
             document.getElementById('xml_description'), {
@@ -1961,7 +1995,7 @@ $(function() {
      $(descriptionEditor.getWrapperElement()).resizable({
         handles: 's', // only resize in north-south-direction
         resize: function() {
-            descriptionEditor.refresh(); // is this really needed?
+            descriptionEditor.refresh();
         }
      });
 
