@@ -119,7 +119,7 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
   else if (lc_mimetype == "python") {lc_mimetype = "x-python";}
   lc_problemname = lc_problemname.replace(/[^a-z0-9]/gi, "");      // title without special characters
 
-  lc_return = '<problem>\n\n';
+  lc_return = '<problem>\n\n<!-- generated with ProFormA editor version ' + codeversion + ' -->\n\n';
   lc_return += '<import id="11">' +lc_path+ '/lib/proforma_v2.library</import>\n';
   lc_return += '<import id="91">' +lc_path + lc_codeMHeader+ '</import>\n\n';
   lc_return += '<script type="loncapa/perl">\n';

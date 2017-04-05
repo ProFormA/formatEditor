@@ -1,6 +1,8 @@
 <problem>
 
-<import id="11">/res/fhwf/ecult/lib/proforma_v3.library</import>
+<!-- generated with ProFormA editor version 2.0.3 -->
+
+<import id="11">/res/fhwf/ecult/lib/proforma_v2.library</import>
 <import id="91">/res/fhwf/ecult/lib/SyntaxHighlighter/CodeMirror_Header.library</import>
 
 <script type="loncapa/perl">
