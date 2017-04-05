@@ -1,3 +1,15 @@
+Release Notes for 2.0.3
+
+LON CAPA: write editor version into problem file
+LON CAPA: use version 2 of Proforma library
+JUNIT test: set default title after file selection
+JUNIT test: automatically set filename and class name (for upload and drag&drop)
+Java: support for package name and class name when file is manually filled (when filename is updated)
+new: drag&drop for multiple files in file section (with creation of fileboxes)
+support for JUNIT 4.12
+improved layout of LON CAPA problem file
+textarea for error messages improved
+
 Release Notes for 2.0.2
 
 support for relative paths in LON CAPA
