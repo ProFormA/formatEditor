@@ -120,7 +120,7 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
   lc_problemname = lc_problemname.replace(/[^a-z0-9]/gi, "");      // title without special characters
 
   lc_return = '<problem>\n\n';
-  lc_return += '<import id="11">' +lc_path+ '/lib/proforma_v3.library</import>\n';
+  lc_return += '<import id="11">' +lc_path+ '/lib/proforma_v2.library</import>\n';
   lc_return += '<import id="91">' +lc_path + lc_codeMHeader+ '</import>\n\n';
   lc_return += '<script type="loncapa/perl">\n';
   lc_return += "$zip_file = zip_path('" + lc_user_path + "') . '" + lc_problemname+ ".zip';\n";
