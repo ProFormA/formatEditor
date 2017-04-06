@@ -89,7 +89,7 @@ function java_getPureClassnameFromFilename(filename) {
 }
 
 function java_getFullClassnameFromFilename(filename) {
-    var newFilename = filename.replace("/", ".");
+    var newFilename = filename.replace(/\//g, ".");
     newFilename = newFilename.replace(/.java/i, "");
     return newFilename;
 }
