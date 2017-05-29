@@ -38,7 +38,7 @@ const TEST_MODE = false;
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
 
-var codeversion   = '2.0.3';                           // contains the current version of this code
+var codeversion   = '2.1.0 alpha';                     // contains the current version of this code
                                                        // these variables can be set in the calling HTML file  
 var version094;                                        // names of the xsd schema files
 var version101;
@@ -894,34 +894,6 @@ $(function() {
           }
       });
   };
-                                                       // HTML building blocks for the tests
-  var TextJavaComp = "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
-    "<input class='tinyinput xml_pr_CompilerFlags'/>"+
-    " <label for='xml_pr_CompilerOutputFlags'>Compiler output flags: </label>"+
-    "<input class='tinyinput xml_pr_CompilerOutputFlags'/>"+
-    " <label for='xml_pr_CompilerLibs'>Compiler libs: </label>"+
-    "<input class='shortinput xml_pr_CompilerLibs' value='JAVA_LIBS'/>"+
-    " <label for='xml_pr_CompilerFPatt'>Compiler File Pattern: </label>"+
-    "<input class='shortinput xml_pr_CompilerFPatt' value='^.*\\.[jJ][aA][vV][aA]$'/></p>";
-  var TextJavaJunit = "<p><label for='xml_ju_mainclass'>Test class (no extension)<span class='red'>*</span>: </label>"+
-    "<input class='mediuminput xml_ju_mainclass'/>"+
-    " <label for='xml_ju_framew'>Framework<span class='red'>*</span>: </label>"+
-    "<select class='xml_ju_framew'><option selected='selected' value='JUnit'>JUnit</option></select>"+
-    " <label for='xml_ju_version'>Version<span class='red'>*</span>: </label>"+
-    "<select class='xml_ju_version'><option value='4.12'>4.12</option><option selected='selected' value='4.10'>4.10</option>"+
-    "<option value='3'>3</option></select></p>"+
-    "<p><label for='xml_pr_configDescription'>Test description: </label>"+
-    "<input class='largeinput xml_pr_configDescription'/></p>";
-  var TextSetlX =  " <label for='xml_jt_framew'>Framework<span class='red'>*</span>: </label>"+
-    "<select class='xml_jt_framew'><option selected='selected' value='setlX'>setlX</option></select>"+
-    " <label for='xml_jt_version'>Version<span class='red'>*</span>: </label>"+
-    "<select class='xml_jt_version'><option selected='selected' value='2.40'>2.40</option></select></p>";
-  var TextJavaCheckst = "<p><label for='xml_pr_CS_version'>Version<span class='red'>*</span>: </label>"+
-    "<select class='xml_pr_CS_version'><option selected='selected' value='6.2'>6.2</option></select>"+
-    " <label for='xml_pr_CS_warnings'>Maximum warnings allowed<span class='red'>*</span>: </label>"+
-    "<input class='tinyinput xml_pr_CS_warnings' value='0'/></p>";
-
-
 
     addTestFileRef = function(element) {
         // add new line for selecting a file for a test
@@ -1204,6 +1176,8 @@ $(function() {
   $("#modelsolutionsection").sortable();
   $("#testsection").sortable();
 
+  addTestButtons();
+
   $("#addGH").click(function() {                       // the code for the buttons for adding new elements
     if (gradingHintCounter == 1) {newGH();}            // only one grading hint allowed
     $("#tabs").tabs("option", "active", tab_page.MAIN); });        // where this will be added
@@ -1213,15 +1187,22 @@ $(function() {
   $("#addModelsol").click(function() {
     newModelsol(setcounter(modelSolIDs));
     $("#tabs").tabs("option", "active", tab_page.MODEL_SOLUTION); });
+
+
+  // Tests
+/*
   $("#addJavaComp").click(function() {
     newTest(setcounter(testIDs),"Java Compiler Test", TextJavaComp, "java-compilation");
     $("#tabs").tabs("option", "active", tab_page.TESTS); });
+
   $("#addJavaJunit").click(function() {
-    newTest(setcounter(testIDs),java_JUnit_Default_Title/*"Java JUnit Test"*/, TextJavaJunit, "unittest");
+    newTest(setcounter(testIDs),java_JUnit_Default_Title, TextJavaJunit, "unittest");
     $("#tabs").tabs("option", "active", tab_page.TESTS); });
+
   $("#addSetlX").click(function() {
     newTest(setcounter(testIDs),"SetlX Test", TextSetlX, "jartest");
     $("#tabs").tabs("option", "active", tab_page.TESTS); });
+*/
   $("#addSetlXSynt").click(function() {
     var tempnumber1 = setcounter(fileIDs);    // adding a file for the test
     newFile(tempnumber1);                     // filename: setlxsyntaxtest.stlx, content: print()
@@ -1237,6 +1218,7 @@ $(function() {
     element.val(filename).change();
     xml_test_root.parent().find(".xml_test_title").first().val("SetlX-Syntax-Test");
     $("#tabs").tabs("option", "active", tab_page.TESTS); });
+/*
   $("#addCheckStyle").click(function() {
     newTest(setcounter(testIDs),"CheckStyle Test", TextJavaCheckst, "java-checkstyle");
     $("#tabs").tabs("option", "active", tab_page.TESTS); });
@@ -1249,7 +1231,7 @@ $(function() {
   $("#addPythonTest").click(function() {
     newTest(setcounter(testIDs),"Python Test","","python");
     $("#tabs").tabs("option", "active", tab_page.TESTS); });
-
+*/
     $("#load_xml_file").click(function() {
       console.log("load_xml_file called");
     });
@@ -1809,37 +1791,7 @@ $(function() {
     request1.send(null);
   }
 */
-  function switchProgLang() {
-//        var progLang = this.val();
-    var progLang = $("#xml_programming-language").val();
-    console.log("change programming language to " + progLang);
-    //$("#addCheckStyle").hide();
-    $("#addJavaComp").hide();
-    $("#addJavaJunit").hide();
-    //$("#addDGSetup").hide();
-    //$("#addDGTester").hide();
-    $("#addPythonTest").hide();
-    $("#addSetlX").hide();
-    $("#addSetlXSynt").hide();
 
-    switch(progLang) {
-        case "java/1.6":
-        case "java/1.8":
-            $("#addJavaComp").show();
-            $("#addJavaJunit").show();
-            break;
-        case "python/2":
-            $("#addPythonTest").show();
-            break;
-        case "setlX/2.40":
-            $("#addSetlX").show();
-            $("#addSetlXSynt").show();
-            break;
-        default:
-            window.confirm("Unsupported Programming Language: " + progLang);
-            break;
-    };
-  }
 
   // MAIN
     /*

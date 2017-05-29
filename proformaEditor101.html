@@ -21,6 +21,8 @@
     var loncapaOnOrOff = 1;                                // setting this to 0 turns LON-CAPA elements off
     var praktomatOnOrOff = 1;
     </script>
+    <script src="js/java.js"></script> <!-- TODO: in config.js inkludieren -->
+    <script src="js/config.js"></script>
     <script src="js/editor.js"></script>
     <script src="js/zip.js"></script>
     <script src="js/zipper.js"></script>
@@ -29,7 +31,7 @@
     <script src="js/closetag.js"></script>
     <script src="js/loncapa.js"></script>
     <script src="js/xmllint.js"></script>
-    <script src="js/java.js"></script>
+
 
 </head>
 <body>
@@ -109,15 +111,18 @@
             </div>
             <div id="tabs-4">
                 <span id='testsection'></span>
-                <p><button id='addJavaComp'>Add Compilation test</button>
-                <button id='addJavaJunit'>Add JUnit test</button>
-                <button id='addPythonTest'>Add Python test</button>
-                <button id='addSetlX'>Add SetlX test</button>
-                <button id='addSetlXSynt'>Add SetlX syntax test</button>
-                <button id='addCheckStyle'>Add CheckStyle</button>
-                <button id='addDGSetup'>Add DejaGnu setup</button>
-                <button id='addDGTester'>Add DejaGnu tester</button>
-            </p>
+                <p>
+                    <span id='testbuttons'></span>
+                    <!--
+                    <button id='addJavaComp'>Add Compilation test</button>
+                    <button id='addJavaJunit'>Add JUnit test</button>
+                    <button id='addPythonTest'>Add Python test</button>
+                    <button id='addSetlX'>Add SetlX test</button>
+                    <button id='addCheckStyle'>Add CheckStyle</button>
+                    <button id='addDGSetup'>Add DejaGnu setup</button>
+                    <button id='addDGTester'>Add DejaGnu tester</button>-->
+                    <button id='addSetlXSynt'>Add SetlX syntax test</button>
+                </p>
             </div>
             <!--
             <div id="tabs-5">
