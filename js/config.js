@@ -131,20 +131,14 @@ testInfos = [
     new TestInfo("addPythonTest","Python Test", "","python"),
     new TestInfo("addSetlX","SetlX Test", TextSetlX, "jartest"),
     new TestInfo("addSetlXSynt","SetlX Syntax Test", TextSetlX, "jartest",
-        function(tempnumber2) {
+        function(testId) {
             // add file for the test
-            var tempnumber1 = setcounter(fileIDs);    // adding a file for the test
-            newFile(tempnumber1);                     // filename: setlxsyntaxtest.stlx, content: print()
             const filename = 'setlxsyntaxtest.stlx';
-            $(".xml_file_id[value='"+tempnumber1+"']").parent().find(".xml_file_filename").first().val(filename);
-            codemirror[tempnumber1].setValue('print("");');
+            const tempnumber1 = createFileWithContent(filename, 'print("");');
             // add file reference
-            var xml_test_root = $(".xml_test_id[value='"+tempnumber2+"']").parent();
-            xml_test_root.find(".xml_test_fileref").first().val(tempnumber1);
-            var element = xml_test_root.find(".xml_test_filename");
-            setFilenameList(element);
-            element.val(filename).change();
-            xml_test_root.parent().find(".xml_test_title").first().val("SetlX-Syntax-Test");
+            addFileReferenceToTest(testId, filename);
+            // set test title
+            getTestField(testId, ".xml_test_title").val("SetlX-Syntax-Test");
         }
     ),
     new TestInfo("addCheckStyle","CheckStyle Test", TextJavaCheckst, "java-checkstyle"),

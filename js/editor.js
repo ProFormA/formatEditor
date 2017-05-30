@@ -569,7 +569,7 @@ $(function() {
           // store name of currently selected file
           var text = $("option:selected", item).text(); // selected text
           //console.log("selected is " + text);
-          setFilenameList(item); // update filename list in tests and model solutions
+          updateFilenameList(item); // update filename list in tests and model solutions
 
           if (text.length > 0) {
               // check if previously selected filename is still in list
@@ -656,6 +656,29 @@ $(function() {
       });
   };
 
+  // helper function for customn test configuration
+  createFileWithContent = function(filename, content) {
+      var fileId = setcounter(fileIDs);    // adding a file for the test
+      newFile(fileId);                     // filename: setlxsyntaxtest.stlx, content: print()
+      $(".xml_file_id[value='"+fileId+"']").parent().find(".xml_file_filename").first().val(filename);
+      codemirror[fileId].setValue(content);
+      onFilenameChanged();
+      return fileId;
+  }
+
+  addFileReferenceToTest = function(testId, filename) {
+        var xml_test_root = $(".xml_test_id[value='"+testId+"']").parent().parent();
+        //xml_test_root.find(".xml_test_fileref").first().val(tempnumber1);
+        var element = xml_test_root.find(".xml_test_filename").last();
+        element.val(filename).change();
+    };
+
+  getTestField = function(testId, fieldClass) {
+      var xml_test_root = $(".xml_test_id[value='"+testId+"']").parent().parent();
+      return xml_test_root.parent().find(fieldClass).first();
+  }
+
+  // ----
   onFileSelectionChanged = function(tempSelElem) {              // changing a filename in the drop-down
 
       function setJavaClassname(newFilename) {
@@ -757,8 +780,7 @@ $(function() {
 
   };
 
-
-  function setFilenameList (tempSelElem) {            // create the drop-down with all possible filenames
+  updateFilenameList = function(tempSelElem) {            // create the drop-down with all possible filenames
      $(tempSelElem).empty();
      var tempOption = $("<option>" + emptyFileOption + "</option>");
      $(tempSelElem).append(tempOption); // empty string
@@ -776,7 +798,7 @@ $(function() {
   }
 
 
-    addMsFileRef = function(element) {
+  addMsFileRef = function(element) {
         // add new line for selecting a file for a model solution
         var td = element.parent();
         var tr = td.parent();
@@ -790,7 +812,7 @@ $(function() {
         td.remove(); // remove current +-button
         table_body.find(".rem_file_ref_ms").show(); // show all remove file buttons
         // add filelist to new file option
-        setFilenameList(table_body.find(".xml_model-solution_filename").last());
+        updateFilenameList(table_body.find(".xml_model-solution_filename").last());
 
         if (!DEBUG_MODE) {
             // hide new fileref fields
@@ -829,7 +851,7 @@ $(function() {
 
   const filenameLabelInMs ="<label for='xml_model-solution_filename'>Filename<span class='red'>*</span>: </label>"; // label
   const tdFilenameLabelInMs ="<td>" + filenameLabelInMs + "</td>"; // label
-  const tdFilenameInMs =  "<td><select class='mediuminput xml_model-solution_filename' " + // onfocus = 'setFilenameList(this)' "+ // select
+  const tdFilenameInMs =  "<td><select class='mediuminput xml_model-solution_filename' " + // onfocus = 'updateFilenameList(this)' "+ // select
     "onchange = 'onFileSelectionChanged(this)'></select></td>"+
     "<td><label for='xml_model-solution_fileref'>Fileref: </label>"+ // fileref
     "<input class='tinyinput xml_model-solution_fileref' readonly/></td>";
@@ -858,7 +880,7 @@ $(function() {
 
     var msroot = $(".xml_model-solution_id[value='" + tempcounter + "']").parent().parent();
     msroot.find(".rem_file_ref_ms").hide(); // hide remove file button
-    setFilenameList(msroot.find(".xml_model-solution_filename").last());
+    updateFilenameList(msroot.find(".xml_model-solution_filename").last());
 
     if (!DEBUG_MODE) {
         // hide fields that exist only for technical reasons
@@ -910,7 +932,7 @@ $(function() {
         table_body.find(".rem_file_ref_test").show(); // show all remove file buttons
 
         // add filelist to new file option
-        setFilenameList(table_body.find(".xml_test_filename").last());
+        updateFilenameList(table_body.find(".xml_test_filename").last());
 
         if (!DEBUG_MODE) {
             // hide new fileref fields
@@ -948,7 +970,7 @@ $(function() {
 
   const filenameLabelInTest = "<label for='xml_test_filename'>Filename<span class='red'>*</span>: </label>";
   const tdFilenameLabelInTest ="<td>" + filenameLabelInTest + "</td>";
-  const tdFilenameInTest = "<td><select class='mediuminput xml_test_filename' " + // onfocus = 'setFilenameList(this)' "+
+  const tdFilenameInTest = "<td><select class='mediuminput xml_test_filename' " + // onfocus = 'updateFilenameList(this)' "+
       "onchange = 'onFileSelectionChanged(this)'></select></td>"+
       "<td><label for='xml_test_fileref'>Fileref: </label>"+ // fileref
       "<input class='tinyinput xml_test_fileref' readonly/></td>";
@@ -1002,7 +1024,7 @@ $(function() {
     var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent().parent();
     testroot.find(".xml_test_type").val(TestType);
     testroot.find(".rem_file_ref_test").hide(); // hide remove file button
-    setFilenameList(testroot.find(".xml_test_filename").last());
+    updateFilenameList(testroot.find(".xml_test_filename").last());
 
     if (!DEBUG_MODE) {
       testroot.find(".xml_test_type").hide();
@@ -1189,51 +1211,6 @@ $(function() {
     $("#tabs").tabs("option", "active", tab_page.MODEL_SOLUTION); });
 
 
-  // Tests
-/*
-  $("#addJavaComp").click(function() {
-    newTest(setcounter(testIDs),"Java Compiler Test", TextJavaComp, "java-compilation");
-    $("#tabs").tabs("option", "active", tab_page.TESTS); });
-
-  $("#addJavaJunit").click(function() {
-    newTest(setcounter(testIDs),java_JUnit_Default_Title, TextJavaJunit, "unittest");
-    $("#tabs").tabs("option", "active", tab_page.TESTS); });
-
-  $("#addSetlX").click(function() {
-    newTest(setcounter(testIDs),"SetlX Test", TextSetlX, "jartest");
-    $("#tabs").tabs("option", "active", tab_page.TESTS); });
-*/
-/*
-  $("#addSetlXSynt").click(function() {
-    var tempnumber1 = setcounter(fileIDs);    // adding a file for the test
-    newFile(tempnumber1);                     // filename: setlxsyntaxtest.stlx, content: print()
-    const filename = 'setlxsyntaxtest.stlx';
-    $(".xml_file_id[value='"+tempnumber1+"']").parent().find(".xml_file_filename").first().val(filename);
-    codemirror[tempnumber1].setValue('print("");');
-    var tempnumber2 = setcounter(testIDs);    // sets the corresponding fileref, filename and title "SetlX-Syntax-Test"
-    newTest(tempnumber2,"SetlX Test", TextSetlX, "jartest");
-    var xml_test_root = $(".xml_test_id[value='"+tempnumber2+"']").parent();
-    xml_test_root.find(".xml_test_fileref").first().val(tempnumber1);
-    var element = xml_test_root.find(".xml_test_filename");
-    setFilenameList(element);
-    element.val(filename).change();
-    xml_test_root.parent().find(".xml_test_title").first().val("SetlX-Syntax-Test");
-    $("#tabs").tabs("option", "active", tab_page.TESTS); });
-*/
-/*
-  $("#addCheckStyle").click(function() {
-    newTest(setcounter(testIDs),"CheckStyle Test", TextJavaCheckst, "java-checkstyle");
-    $("#tabs").tabs("option", "active", tab_page.TESTS); });
-  $("#addDGSetup").click(function() {
-    newTest(setcounter(testIDs),"DejaGnu Setup","", "dejagnu-setup");
-    $("#tabs").tabs("option", "active", tab_page.TESTS); });
-  $("#addDGTester").click(function() {
-    newTest(setcounter(testIDs),"DejaGnu Tester","", "dejagnu-tester");
-    $("#tabs").tabs("option", "active", tab_page.TESTS); });
-  $("#addPythonTest").click(function() {
-    newTest(setcounter(testIDs),"Python Test","","python");
-    $("#tabs").tabs("option", "active", tab_page.TESTS); });
-*/
     $("#load_xml_file").click(function() {
       console.log("load_xml_file called");
     });
@@ -1726,7 +1703,7 @@ $(function() {
                                addTestFileRef(object.find(".add_file_ref_test").first());
                            }
                            var element = object.find(".xml_test_filename");
-                           setFilenameList(element.eq(index));
+                           updateFilenameList(element.eq(index));
                            element.eq(index).val(filename).change();
                            object.find(itm2.formname)[index].value = fileid;
                        } else if (item.formname == ".xml_model-solution") {
@@ -1735,7 +1712,7 @@ $(function() {
                                addMsFileRef(object.find(".add_file_ref_ms").first());
                            }
                            var element = object.find(".xml_model-solution_filename");
-                           setFilenameList(element.eq(index));
+                           updateFilenameList(element.eq(index));
                            element.eq(index).val(filename).change();
                            object.find(itm2.formname)[index].value = fileid;
                        }
