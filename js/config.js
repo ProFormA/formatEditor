@@ -37,7 +37,7 @@ const TextJavaJunit = "<p><label for='xml_ju_mainclass'>Test class (no extension
     "<p><label for='xml_pr_configDescription'>Test description: </label>"+
     "<input class='largeinput xml_pr_configDescription'/></p>";
 
-const TextSetlX =  " <label for='xml_jt_framew'>Framework<span class='red'>*</span>: </label>"+
+const TextSetlX =  "<p><label for='xml_jt_framew'>Framework<span class='red'>*</span>: </label>"+
     "<select class='xml_jt_framew'><option selected='selected' value='setlX'>setlX</option></select>"+
     " <label for='xml_jt_version'>Version<span class='red'>*</span>: </label>"+
     "<select class='xml_jt_version'><option selected='selected' value='2.40'>2.40</option></select></p>";
@@ -55,7 +55,7 @@ testInfos = [
     new TestInfo("addJavaComp","Java Compiler Test", TextJavaComp, "java-compilation"),
     new TestInfo("addJavaJunit",java_JUnit_Default_Title, TextJavaJunit, "unittest"),
     new TestInfo("addPythonTest","Python Test", "","python"),
-    new TestInfo("addSetlX","SetlX Test", TextSetlX, "jartest"),
+    new TestInfo("addSetlX","SetlX Test", TextSetlX, "jartest"), // zunächst den jartest, der auch beim Einlesen erzeugt werden soll
     new TestInfo("addSetlXSynt","SetlX Syntax Test", TextSetlX, "jartest",
         function(testId) {
             // add file for the test

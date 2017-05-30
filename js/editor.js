@@ -1655,6 +1655,21 @@ $(function() {
             }
             if (item.xmlpath == "tests") {
                testIDs[$(itm1).attr("id")] = 1;
+
+                found = false;
+                $.each(testInfos, function(index, item) {
+                    if (!found && $(itm1).find('test-type')[0].textContent == item.testType) {
+                        newTest($(itm1).attr("id"), item.title, item.testArea, item.testType);
+                        found = true;
+                    }
+                });
+                if (!found) {
+                    setErrorMessage("Test "+$(itm1).find('test-type')[0].textContent+" not imported");
+                    testIDs[$(itm1).attr("id")] = 0;
+                    return true;                                        // next iteration because wrong test-type
+                }
+
+/*
                if ($(itm1).find('test-type')[0].textContent == 'java-compilation') {
                   newTest($(itm1).attr("id"),"Java Compiler Test", TextJavaComp, "java-compilation");
                } else if ($(itm1).find('test-type')[0].textContent == 'unittest') {
@@ -1674,6 +1689,7 @@ $(function() {
                   testIDs[$(itm1).attr("id")] = 0;
                   return true;                                        // next iteration because wrong test-type
                }
+*/
             }
             $.each(mapTextInElemSequence, function(idx2, itm2) {
              if (item.xmlname == itm2.xmlname) {                      // relational join
