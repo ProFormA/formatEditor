@@ -3,11 +3,12 @@
  */
 
 // classes
-function TestInfo(id,title, area, testType) {
+function TestInfo(id,title, area, testType, onButtonClicked) {
     this.id   = id;
     this.title = title;
     this.testArea = area;
     this.testType = testType;
+    this.onCreated = onButtonClicked;
 }
 
 function ProglangInfo(name, tests) {
@@ -19,7 +20,13 @@ function addTestButtons() {
     $.each(testInfos, function(index, item) {
         $("#testbuttons").append("<button id='" + item.id + "'>Add " + item.title + "</button> ");
         $("#" + item.id).click(function() {
-            newTest(setcounter(testIDs),item.title, item.testArea, item.testType);
+
+            var testNo = setcounter(testIDs);    // sets the corresponding fileref, filename and title "SetlX-Syntax-Test"
+            newTest(testNo,item.title, item.testArea, item.testType);
+            if (item.onCreated) {
+                item.onCreated(testNo);
+            }
+
             // newTest(setcounter(testIDs),"Java Compiler Test", TextJavaComp, "java-compilation");
             $("#tabs").tabs("option", "active", tab_page.TESTS); });
     });
@@ -123,11 +130,26 @@ testInfos = [
     new TestInfo("addJavaJunit",java_JUnit_Default_Title, TextJavaJunit, "unittest"),
     new TestInfo("addPythonTest","Python Test", "","python"),
     new TestInfo("addSetlX","SetlX Test", TextSetlX, "jartest"),
+    new TestInfo("addSetlXSynt","SetlX Syntax Test", TextSetlX, "jartest",
+        function(tempnumber2) {
+            // add file for the test
+            var tempnumber1 = setcounter(fileIDs);    // adding a file for the test
+            newFile(tempnumber1);                     // filename: setlxsyntaxtest.stlx, content: print()
+            const filename = 'setlxsyntaxtest.stlx';
+            $(".xml_file_id[value='"+tempnumber1+"']").parent().find(".xml_file_filename").first().val(filename);
+            codemirror[tempnumber1].setValue('print("");');
+            // add file reference
+            var xml_test_root = $(".xml_test_id[value='"+tempnumber2+"']").parent();
+            xml_test_root.find(".xml_test_fileref").first().val(tempnumber1);
+            var element = xml_test_root.find(".xml_test_filename");
+            setFilenameList(element);
+            element.val(filename).change();
+            xml_test_root.parent().find(".xml_test_title").first().val("SetlX-Syntax-Test");
+        }
+    ),
     new TestInfo("addCheckStyle","CheckStyle Test", TextJavaCheckst, "java-checkstyle"),
     new TestInfo("addDGSetup","DejaGnu Setup", "", "dejagnu-setup"),
-    new TestInfo("addDGTester","DejaGnu Tester", "", "dejagnu-tester")
-// TODO!
-//    new TestInfo("addSetlXSynt","SetlX Syntax Test"),
+    new TestInfo("addDGTester","DejaGnu Tester", "", "dejagnu-tester"),
 ];
 
 

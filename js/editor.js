@@ -1203,6 +1203,7 @@ $(function() {
     newTest(setcounter(testIDs),"SetlX Test", TextSetlX, "jartest");
     $("#tabs").tabs("option", "active", tab_page.TESTS); });
 */
+/*
   $("#addSetlXSynt").click(function() {
     var tempnumber1 = setcounter(fileIDs);    // adding a file for the test
     newFile(tempnumber1);                     // filename: setlxsyntaxtest.stlx, content: print()
@@ -1218,6 +1219,7 @@ $(function() {
     element.val(filename).change();
     xml_test_root.parent().find(".xml_test_title").first().val("SetlX-Syntax-Test");
     $("#tabs").tabs("option", "active", tab_page.TESTS); });
+*/
 /*
   $("#addCheckStyle").click(function() {
     newTest(setcounter(testIDs),"CheckStyle Test", TextJavaCheckst, "java-checkstyle");
