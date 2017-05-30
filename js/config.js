@@ -2,6 +2,87 @@
  * Created by KarinBorm on 29.05.2017.
  */
 
+// classes
+function TestInfo(id,title, area, testType) {
+    this.id   = id;
+    this.title = title;
+    this.testArea = area;
+    this.testType = testType;
+}
+
+function ProglangInfo(name, tests) {
+    this.name   = name;
+    this.tests = tests;
+}
+
+function addTestButtons() {
+    $.each(testInfos, function(index, item) {
+        $("#testbuttons").append("<button id='" + item.id + "'>Add " + item.title + "</button> ");
+        $("#" + item.id).click(function() {
+            newTest(setcounter(testIDs),item.title, item.testArea, item.testType);
+            // newTest(setcounter(testIDs),"Java Compiler Test", TextJavaComp, "java-compilation");
+            $("#tabs").tabs("option", "active", tab_page.TESTS); });
+    });
+}
+
+
+
+function switchProgLang() {
+    var progLang = $("#xml_programming-language").val();
+    console.log("changing programming language to " + progLang);
+
+    // hide all test buttons
+    $.each(testInfos, function(index, test) {
+        $("#" + test.id).hide();
+    });
+
+    // show only test buttons needed for programming language
+    found = false;
+    $.each(proglangInfos, function(index, pl) {
+        if (pl.name == progLang) {
+            found = true;
+            $.each(pl.tests, function(index, test) {
+                $("#" + test).show();
+            });
+        }
+    });
+
+    if (!found) {
+        window.confirm("Unsupported Programming Language: " + progLang);
+    }
+    /*
+     //$("#addCheckStyle").hide();
+     $("#addJavaComp").hide();
+     $("#addJavaJunit").hide();
+     //$("#addDGSetup").hide();
+     //$("#addDGTester").hide();
+     $("#addPythonTest").hide();
+     $("#addSetlX").hide();
+     $("#addSetlXSynt").hide();
+
+     switch(progLang) {
+     case "java/1.6":
+     case "java/1.8":
+     $("#addJavaComp").show();
+     $("#addJavaJunit").show();
+     break;
+     case "python/2":
+     $("#addPythonTest").show();
+     break;
+     case "setlX/2.40":
+     $("#addSetlX").show();
+     $("#addSetlXSynt").show();
+     break;
+     default:
+     window.confirm("Unsupported Programming Language: " + progLang);
+     break;
+     };
+     */
+}
+
+// -------------------------------------------------------------
+
+
 // HTML building blocks for the tests
 const TextJavaComp = "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
         "<input class='tinyinput xml_pr_CompilerFlags'/>"+
@@ -34,12 +115,8 @@ const TextJavaCheckst = "<p><label for='xml_pr_CS_version'>Version<span class='r
     "<input class='tinyinput xml_pr_CS_warnings' value='0'/></p>";
 
 
-function TestInfo(id,title, area, testType) {
-    this.id   = id;
-    this.title = title;
-    this.testArea = area;
-    this.testType = testType;
-}
+
+
 
 testInfos = [
     new TestInfo("addJavaComp","Java Compiler Test", TextJavaComp, "java-compilation"),
@@ -54,46 +131,12 @@ testInfos = [
 ];
 
 
-function addTestButtons() {
-
-    $.each(testInfos, function(index, item) {
-        $("#testbuttons").append("<button id='" + item.id + "'>Add " + item.title + "</button> ");
-        $("#" + item.id).click(function() {
-            newTest(setcounter(testIDs),item.title, item.testArea, item.testType);
-            // newTest(setcounter(testIDs),"Java Compiler Test", TextJavaComp, "java-compilation");
-            $("#tabs").tabs("option", "active", tab_page.TESTS); });
-    });
-}
 
 
-function switchProgLang() {
-//        var progLang = this.val();
-    var progLang = $("#xml_programming-language").val();
-    console.log("changing programming language to " + progLang);
-    //$("#addCheckStyle").hide();
-    $("#addJavaComp").hide();
-    $("#addJavaJunit").hide();
-    //$("#addDGSetup").hide();
-    //$("#addDGTester").hide();
-    $("#addPythonTest").hide();
-    $("#addSetlX").hide();
-    $("#addSetlXSynt").hide();
+proglangInfos = [
+  new ProglangInfo("java/1.6", ["addJavaComp", "addJavaJunit", "addCheckStyle", "addDGSetup", "addDGTester"]),
+  new ProglangInfo("java/1.8", ["addJavaComp", "addJavaJunit", "addCheckStyle", "addDGSetup", "addDGTester"]),
+  new ProglangInfo("python/2", ["addPythonTest", "addCheckStyle", "addDGSetup", "addDGTester"]),
+  new ProglangInfo("setlX/2.40", ["addSetlX", "addSetlXSynt", "addCheckStyle", "addDGSetup", "addDGTester"]),
+];
 
-    switch(progLang) {
-        case "java/1.6":
-        case "java/1.8":
-            $("#addJavaComp").show();
-            $("#addJavaJunit").show();
-            break;
-        case "python/2":
-            $("#addPythonTest").show();
-            break;
-        case "setlX/2.40":
-            $("#addSetlX").show();
-            $("#addSetlXSynt").show();
-            break;
-        default:
-            window.confirm("Unsupported Programming Language: " + progLang);
-            break;
-    };
-}
