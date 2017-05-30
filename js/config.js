@@ -16,80 +16,6 @@ function ProglangInfo(name, tests) {
     this.tests = tests;
 }
 
-function addTestButtons() {
-    $.each(testInfos, function(index, item) {
-        $("#testbuttons").append("<button id='" + item.id + "'>Add " + item.title + "</button> ");
-        $("#" + item.id).click(function() {
-
-            var testNo = setcounter(testIDs);    // sets the corresponding fileref, filename and title "SetlX-Syntax-Test"
-            newTest(testNo,item.title, item.testArea, item.testType);
-            if (item.onCreated) {
-                item.onCreated(testNo);
-            }
-
-            // newTest(setcounter(testIDs),"Java Compiler Test", TextJavaComp, "java-compilation");
-            $("#tabs").tabs("option", "active", tab_page.TESTS); });
-    });
-}
-
-
-
-function switchProgLang() {
-    var progLang = $("#xml_programming-language").val();
-    console.log("changing programming language to " + progLang);
-
-    // hide all test buttons
-    $.each(testInfos, function(index, test) {
-        $("#" + test.id).hide();
-    });
-
-    // show only test buttons needed for programming language
-    found = false;
-    $.each(proglangInfos, function(index, pl) {
-        if (pl.name == progLang) {
-            found = true;
-            $.each(pl.tests, function(index, test) {
-                $("#" + test).show();
-            });
-        }
-    });
-
-    if (!found) {
-        window.confirm("Unsupported Programming Language: " + progLang);
-    }
-    /*
-     //$("#addCheckStyle").hide();
-     $("#addJavaComp").hide();
-     $("#addJavaJunit").hide();
-     //$("#addDGSetup").hide();
-     //$("#addDGTester").hide();
-     $("#addPythonTest").hide();
-     $("#addSetlX").hide();
-     $("#addSetlXSynt").hide();
-
-     switch(progLang) {
-     case "java/1.6":
-     case "java/1.8":
-     $("#addJavaComp").show();
-     $("#addJavaJunit").show();
-     break;
-     case "python/2":
-     $("#addPythonTest").show();
-     break;
-     case "setlX/2.40":
-     $("#addSetlX").show();
-     $("#addSetlXSynt").show();
-     break;
-     default:
-     window.confirm("Unsupported Programming Language: " + progLang);
-     break;
-     };
-     */
-}
-
-// -------------------------------------------------------------
-
-
 // HTML building blocks for the tests
 const TextJavaComp = "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
         "<input class='tinyinput xml_pr_CompilerFlags'/>"+
@@ -134,7 +60,7 @@ testInfos = [
         function(testId) {
             // add file for the test
             const filename = 'setlxsyntaxtest.stlx';
-            const tempnumber1 = createFileWithContent(filename, 'print("");');
+            createFileWithContent(filename, 'print("");');
             // add file reference
             addFileReferenceToTest(testId, filename);
             // set test title

@@ -656,29 +656,6 @@ $(function() {
       });
   };
 
-  // helper function for customn test configuration
-  createFileWithContent = function(filename, content) {
-      var fileId = setcounter(fileIDs);    // adding a file for the test
-      newFile(fileId);                     // filename: setlxsyntaxtest.stlx, content: print()
-      $(".xml_file_id[value='"+fileId+"']").parent().find(".xml_file_filename").first().val(filename);
-      codemirror[fileId].setValue(content);
-      onFilenameChanged();
-      return fileId;
-  }
-
-  addFileReferenceToTest = function(testId, filename) {
-        var xml_test_root = $(".xml_test_id[value='"+testId+"']").parent().parent();
-        //xml_test_root.find(".xml_test_fileref").first().val(tempnumber1);
-        var element = xml_test_root.find(".xml_test_filename").last();
-        element.val(filename).change();
-    };
-
-  getTestField = function(testId, fieldClass) {
-      var xml_test_root = $(".xml_test_id[value='"+testId+"']").parent().parent();
-      return xml_test_root.parent().find(fieldClass).first();
-  }
-
-  // ----
   onFileSelectionChanged = function(tempSelElem) {              // changing a filename in the drop-down
 
       function setJavaClassname(newFilename) {
@@ -1167,6 +1144,78 @@ $(function() {
             });
         });
     }
+
+///////////////////////////////////////////////////////// Configuration support
+
+
+    function addTestButtons() {
+        $.each(testInfos, function(index, item) {
+            $("#testbuttons").append("<button id='" + item.id + "'>Add " + item.title + "</button> ");
+            $("#" + item.id).click(function() {
+
+                var testNo = setcounter(testIDs);    // sets the corresponding fileref, filename and title "SetlX-Syntax-Test"
+                newTest(testNo,item.title, item.testArea, item.testType);
+                if (item.onCreated) {
+                    item.onCreated(testNo);
+                }
+
+                // newTest(setcounter(testIDs),"Java Compiler Test", TextJavaComp, "java-compilation");
+                $("#tabs").tabs("option", "active", tab_page.TESTS); });
+        });
+    }
+
+
+
+    function switchProgLang() {
+        var progLang = $("#xml_programming-language").val();
+        console.log("changing programming language to " + progLang);
+
+        // hide all test buttons
+        $.each(testInfos, function(index, test) {
+            $("#" + test.id).hide();
+        });
+
+        // show only test buttons needed for programming language
+        found = false;
+        $.each(proglangInfos, function(index, pl) {
+            if (pl.name == progLang) {
+                found = true;
+                $.each(pl.tests, function(index, test) {
+                    $("#" + test).show();
+                });
+            }
+        });
+
+        if (!found) {
+            window.confirm("Unsupported Programming Language: " + progLang);
+        }
+    }
+
+// -------------------------------------------------------------
+
+
+    // helper function for customn test configuration
+    createFileWithContent = function(filename, content) {
+        var fileId = setcounter(fileIDs);    // adding a file for the test
+        newFile(fileId);                     // filename: setlxsyntaxtest.stlx, content: print()
+        $(".xml_file_id[value='"+fileId+"']").parent().find(".xml_file_filename").first().val(filename);
+        codemirror[fileId].setValue(content);
+        onFilenameChanged();
+        return fileId;
+    }
+
+    addFileReferenceToTest = function(testId, filename) {
+        var xml_test_root = $(".xml_test_id[value='"+testId+"']").parent().parent();
+        //xml_test_root.find(".xml_test_fileref").first().val(tempnumber1);
+        var element = xml_test_root.find(".xml_test_filename").last();
+        element.val(filename).change();
+    };
+
+    getTestField = function(testId, fieldClass) {
+        var xml_test_root = $(".xml_test_id[value='"+testId+"']").parent().parent();
+        return xml_test_root.parent().find(fieldClass).first();
+    }
+
 
 ///////////////////////////////////////////////////////// jQuery UI settings
   $("#tabs").tabs();                                   // hide HTML elements when the manual or FAQ are selected
