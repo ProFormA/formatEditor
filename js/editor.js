@@ -1159,7 +1159,6 @@ $(function() {
                     item.onCreated(testNo);
                 }
 
-                // newTest(setcounter(testIDs),"Java Compiler Test", TextJavaComp, "java-compilation");
                 $("#tabs").tabs("option", "active", tab_page.TESTS); });
         });
     }
@@ -1401,8 +1400,20 @@ $(function() {
                xmlObject.find(item.xmlpath)[0].removeChild(xmlObject.find(item.xmlpath)[0].firstChild);
              }
              for(cnt=1;cnt<=$(item.formname).length;cnt++) {        // recreate all tests
+                 found = false;
+                 $.each(testInfos, function(index, testinfo) {
+                     if (!found && $(item.formname).find(".xml_test_type")[cnt-1].value == testinfo.testType)  {
+                         found = true;
+                         xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate[testinfo.testTemplate]).find('test')[0].cloneNode(1));
+                     }
+                 });
+                 if (!found) {
+                     setErrorMessage("Test "+$(item.formname).find(".xml_test_type")[cnt-1].value+" not found");
+                 }
+/*
               if ($(item.formname).find(".xml_test_type")[cnt-1].value == "java-compilation") {
                 xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate["JavaCompile"]).find('test')[0].cloneNode(1));
+
               } else if ($(item.formname).find(".xml_test_type")[cnt-1].value == "unittest") {
                 xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate["JavaJunit"]).find('test')[0].cloneNode(1));
               } else if ($(item.formname).find(".xml_test_type")[cnt-1].value == "jartest") {
@@ -1416,6 +1427,7 @@ $(function() {
               } else if ($(item.formname).find(".xml_test_type")[cnt-1].value == "python") {
                 xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate["Python"]).find('test')[0].cloneNode(1));
               }
+  */
              }
           }
         } catch(err) { setErrorMessage("missing: "+item.xmlpath+" or "+item.xmlname, err);}

@@ -3,11 +3,14 @@
  */
 
 // classes
-function TestInfo(id,title, area, testType, onButtonClicked) {
+function TestInfo(id,title, area, testType, testTemplate, onButtonClicked) {
     this.id   = id;
     this.title = title;
     this.testArea = area;
     this.testType = testType;
+    this.testTemplate = testTemplate;
+    if (!testTemplate)
+        throw "Configuration Error: TestInfo incomplete";
     this.onCreated = onButtonClicked;
 }
 
@@ -52,11 +55,11 @@ const TextJavaCheckst = "<p><label for='xml_pr_CS_version'>Version<span class='r
 
 
 testInfos = [
-    new TestInfo("addJavaComp","Java Compiler Test", TextJavaComp, "java-compilation"),
-    new TestInfo("addJavaJunit",java_JUnit_Default_Title, TextJavaJunit, "unittest"),
-    new TestInfo("addPythonTest","Python Test", "","python"),
-    new TestInfo("addSetlX","SetlX Test", TextSetlX, "jartest"), // zunächst den jartest, der auch beim Einlesen erzeugt werden soll
-    new TestInfo("addSetlXSynt","SetlX Syntax Test", TextSetlX, "jartest",
+    new TestInfo("addJavaComp","Java Compiler Test", TextJavaComp, "java-compilation", "JavaCompile"),
+    new TestInfo("addJavaJunit",java_JUnit_Default_Title, TextJavaJunit, "unittest", "JavaJunit"),
+    new TestInfo("addPythonTest","Python Test", "","python", "Python"),
+    new TestInfo("addSetlX","SetlX Test", TextSetlX, "jartest", "SetlX"), // zunächst den jartest, der auch beim Einlesen erzeugt werden soll
+    new TestInfo("addSetlXSynt","SetlX Syntax Test", TextSetlX, "jartest" , "SetlX",
         function(testId) {
             // add file for the test
             const filename = 'setlxsyntaxtest.stlx';
@@ -67,9 +70,9 @@ testInfos = [
             getTestField(testId, ".xml_test_title").val("SetlX-Syntax-Test");
         }
     ),
-    new TestInfo("addCheckStyle","CheckStyle Test", TextJavaCheckst, "java-checkstyle"),
-    new TestInfo("addDGSetup","DejaGnu Setup", "", "dejagnu-setup"),
-    new TestInfo("addDGTester","DejaGnu Tester", "", "dejagnu-tester"),
+    new TestInfo("addCheckStyle","CheckStyle Test", TextJavaCheckst, "java-checkstyle", "CheckStyle"),
+    new TestInfo("addDGSetup","DejaGnu Setup", "", "dejagnu-setup", "DGSetup"),
+    new TestInfo("addDGTester","DejaGnu Tester", "", "dejagnu-tester", "DGTester"),
 ];
 
 
