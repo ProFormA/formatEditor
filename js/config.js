@@ -14,8 +14,8 @@ const TT_PYTHON         = "python";
 
 
 // classes
-function TestInfo(id,title, area, testType, testTemplate, onButtonClicked) {
-    this.id   = id;
+function TestInfo(buttonJQueryId,title, area, testType, testTemplate, onButtonClicked) {
+    this.buttonJQueryId   = buttonJQueryId;
     this.title = title;
     this.testArea = area;
     this.testType = testType;

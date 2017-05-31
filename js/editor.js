@@ -1148,8 +1148,8 @@ $(function() {
 
     function addTestButtons() {
         $.each(testInfos, function(index, item) {
-            $("#testbuttons").append("<button id='" + item.id + "'>Add " + item.title + "</button> ");
-            $("#" + item.id).click(function() {
+            $("#testbuttons").append("<button id='" + item.buttonJQueryId + "'>Add " + item.title + "</button> ");
+            $("#" + item.buttonJQueryId).click(function() {
 
                 var testNo = setcounter(testIDs);    // sets the corresponding fileref, filename and title "SetlX-Syntax-Test"
                 newTest(testNo,item.title, item.testArea, item.testType);
@@ -1169,7 +1169,7 @@ $(function() {
 
         // hide all test buttons
         $.each(testInfos, function(index, test) {
-            $("#" + test.id).hide();
+            $("#" + test.buttonJQueryId).hide();
         });
 
         // show only test buttons needed for programming language
