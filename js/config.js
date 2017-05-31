@@ -2,6 +2,17 @@
  * Created by KarinBorm on 29.05.2017.
  */
 
+// testtypes used
+const TT_JAVA           = "java-compilation";
+const TT_JUNIT          = "unittest";
+const TT_JARTEST        = "jartest";
+const TT_CHECKSTYLE     = "java-checkstyle";
+const TT_DEJAGNU_SETUP  = "dejagnu-setup";
+const TT_DEJAGNU_TESTER = "dejagnu-tester";
+const TT_PYTHON         = "python";
+//    "dejagnu" ??
+
+
 // classes
 function TestInfo(id,title, area, testType, testTemplate, onButtonClicked) {
     this.id   = id;
@@ -55,11 +66,11 @@ const TextJavaCheckst = "<p><label for='xml_pr_CS_version'>Version<span class='r
 
 
 testInfos = [
-    new TestInfo("addJavaComp","Java Compiler Test", TextJavaComp, "java-compilation", "JavaCompile"),
-    new TestInfo("addJavaJunit",java_JUnit_Default_Title, TextJavaJunit, "unittest", "JavaJunit"),
-    new TestInfo("addPythonTest","Python Test", "","python", "Python"),
-    new TestInfo("addSetlX","SetlX Test", TextSetlX, "jartest", "SetlX"), // zunächst den jartest, der auch beim Einlesen erzeugt werden soll
-    new TestInfo("addSetlXSynt","SetlX Syntax Test", TextSetlX, "jartest" , "SetlX",
+    new TestInfo("addJavaComp","Java Compiler Test", TextJavaComp, TT_JAVA, "JavaCompile"),
+    new TestInfo("addJavaJunit",java_JUnit_Default_Title, TextJavaJunit, TT_JUNIT, "JavaJunit"),
+    new TestInfo("addPythonTest","Python Test", "", TT_PYTHON, "Python"),
+    new TestInfo("addSetlX","SetlX Test", TextSetlX, TT_JARTEST, "SetlX"), // zunächst den jartest, der auch beim Einlesen erzeugt werden soll
+    new TestInfo("addSetlXSynt","SetlX Syntax Test", TextSetlX, TT_JARTEST , "SetlX",
         function(testId) {
             // add file for the test
             const filename = 'setlxsyntaxtest.stlx';
@@ -70,9 +81,9 @@ testInfos = [
             getTestField(testId, ".xml_test_title").val("SetlX-Syntax-Test");
         }
     ),
-    new TestInfo("addCheckStyle","CheckStyle Test", TextJavaCheckst, "java-checkstyle", "CheckStyle"),
-    new TestInfo("addDGSetup","DejaGnu Setup", "", "dejagnu-setup", "DGSetup"),
-    new TestInfo("addDGTester","DejaGnu Tester", "", "dejagnu-tester", "DGTester"),
+    new TestInfo("addCheckStyle","CheckStyle Test", TextJavaCheckst, TT_CHECKSTYLE, "CheckStyle"),
+    new TestInfo("addDGSetup","DejaGnu Setup", "", TT_DEJAGNU_SETUP, "DGSetup"),
+    new TestInfo("addDGTester","DejaGnu Tester", "", TT_DEJAGNU_TESTER, "DGTester"),
 ];
 
 
