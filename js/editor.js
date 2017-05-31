@@ -1074,8 +1074,6 @@ $(function() {
                 });
 
 
-
-
                 if (!done) { // no empty select option is found
                     // create new filename option list
                     addTestFileRef($(testBox).find('.add_file_ref_test').last());
@@ -1093,10 +1091,10 @@ $(function() {
                         }
                     });
                 }
-
             });
         });
     }
+
   function uploadModelSolFiles(files, modelSolBox){
         //console.log("uploadModelSolFiles");
         if (files.length > 1) {
@@ -1401,33 +1399,16 @@ $(function() {
              }
              for(cnt=1;cnt<=$(item.formname).length;cnt++) {        // recreate all tests
                  found = false;
+                 const testType = $(item.formname).find(".xml_test_type")[cnt-1].value;
                  $.each(testInfos, function(index, testinfo) {
-                     if (!found && $(item.formname).find(".xml_test_type")[cnt-1].value == testinfo.testType)  {
+                     if (!found && testType == testinfo.testType)  {
                          found = true;
                          xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate[testinfo.testTemplate]).find('test')[0].cloneNode(1));
                      }
                  });
                  if (!found) {
-                     setErrorMessage("Test "+$(item.formname).find(".xml_test_type")[cnt-1].value+" not found");
+                     setErrorMessage("Test " + testType + " not found");
                  }
-/*
-              if ($(item.formname).find(".xml_test_type")[cnt-1].value == "java-compilation") {
-                xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate["JavaCompile"]).find('test')[0].cloneNode(1));
-
-              } else if ($(item.formname).find(".xml_test_type")[cnt-1].value == "unittest") {
-                xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate["JavaJunit"]).find('test')[0].cloneNode(1));
-              } else if ($(item.formname).find(".xml_test_type")[cnt-1].value == "jartest") {
-                xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate["SetlX"]).find('test')[0].cloneNode(1));
-              } else if ($(item.formname).find(".xml_test_type")[cnt-1].value == "java-checkstyle"){
-                xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate["CheckStyle"]).find('test')[0].cloneNode(1));
-              } else if ($(item.formname).find(".xml_test_type")[cnt-1].value == "dejagnu-setup"){
-                xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate["DGSetup"]).find('test')[0].cloneNode(1));
-              } else if ($(item.formname).find(".xml_test_type")[cnt-1].value == "dejagnu-tester"){
-                xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate["DGTester"]).find('test')[0].cloneNode(1));
-              } else if ($(item.formname).find(".xml_test_type")[cnt-1].value == "python") {
-                xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate["Python"]).find('test')[0].cloneNode(1));
-              }
-  */
              }
           }
         } catch(err) { setErrorMessage("missing: "+item.xmlpath+" or "+item.xmlname, err);}
@@ -1680,28 +1661,6 @@ $(function() {
                     testIDs[$(itm1).attr("id")] = 0;
                     return true;                                        // next iteration because wrong test-type
                 }
-
-/*
-               if ($(itm1).find('test-type')[0].textContent == 'java-compilation') {
-                  newTest($(itm1).attr("id"),"Java Compiler Test", TextJavaComp, "java-compilation");
-               } else if ($(itm1).find('test-type')[0].textContent == 'unittest') {
-                  newTest($(itm1).attr("id"),"Java JUnit Test", TextJavaJunit, "unittest");
-               } else if ($(itm1).find('test-type')[0].textContent == 'jartest') {
-                  newTest($(itm1).attr("id"),"SetlX Test", TextSetlX, "jartest");
-               } else if ($(itm1).find('test-type')[0].textContent == 'java-checkstyle') {
-                  newTest($(itm1).attr("id"),"CheckStyle Test", TextJavaCheckst, "java-checkstyle");
-               } else if ($(itm1).find('test-type')[0].textContent == 'dejagnu-setup') {
-                  newTest($(itm1).attr("id"),"DejaGnu Setup","", "dejagnu-setup");
-               } else if ($(itm1).find('test-type')[0].textContent == 'dejagnu-tester') {
-                  newTest($(itm1).attr("id"),"DejaGnu Tester","", "dejagnu-tester");
-               } else if ($(itm1).find('test-type')[0].textContent == 'python') {
-                  newTest($(itm1).attr("id"),"Python Test","","python");
-               } else if ($(itm1).find('test-type')[0].textContent) {
-                  setErrorMessage("Test "+$(itm1).find('test-type')[0].textContent+" not imported");
-                  testIDs[$(itm1).attr("id")] = 0;
-                  return true;                                        // next iteration because wrong test-type
-               }
-*/
             }
             $.each(mapTextInElemSequence, function(idx2, itm2) {
              if (item.xmlname == itm2.xmlname) {                      // relational join
