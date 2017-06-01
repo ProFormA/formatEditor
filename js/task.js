@@ -2,9 +2,18 @@
  * Created by karin on 01.06.2017.
  */
 
-var pfix_unit = "unit";                                // fixing namespace prefixes because of
-var pfix_jart = "jartest";                             // browser compatibility and jquery limitations
-var pfix_prak = "praktomat";
+
+var version094;                                        // names of the xsd schema files
+var version101;
+var xsdSchemaFile;                                     // choose version
+
+if (version094 === undefined || version094 === null) { version094 = 'taskxml0.9.4.xsd'; }
+if (version101 === undefined || version101 === null) { version101 = 'taskxml1.0.1.xsd'; }
+if (xsdSchemaFile === undefined || xsdSchemaFile === null) { xsdSchemaFile = version094; }
+
+const pfix_unit = "unit";                                // fixing namespace prefixes because of
+const pfix_jart = "jartest";                             // browser compatibility and jquery limitations
+const pfix_prak = "praktomat";
 
 
 if (xsdSchemaFile == version094) {
@@ -14,6 +23,7 @@ if (xsdSchemaFile == version094) {
     var namespace = 'xmlns:'+pfix_unit+'="urn:proforma:tests:unittest:v1" xmlns:'+pfix_prak+'="urn:proforma:praktomat:v0.2" '
         + 'xmlns="urn:proforma:task:v1.0.1" xmlns:'+pfix_jart+'="urn:proforma:tests:jartest:v1" ';
 }
+
 
 
 ///////////////////////////////////////////////////////// mapping HTML form names and XML names

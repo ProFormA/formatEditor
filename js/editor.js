@@ -40,17 +40,11 @@ const TEST_MODE = false;
 
 var codeversion   = '2.1.0 alpha';                     // contains the current version of this code
                                                        // these variables can be set in the calling HTML file  
-var version094;                                        // names of the xsd schema files
-var version101;
-var xsdSchemaFile;                                     // choose version
 var codemirrorOnOrOff;                                 // setting this to 0 turns Codemirror off
 var loncapaOnOrOff;                                    // setting this to 0 turns LON-CAPA elements off
 var praktomatOnOrOff;
 var readXmlActive = false;
 
-if (version094 === undefined || version094 === null) { version094 = 'taskxml0.9.4.xsd'; }
-if (version101 === undefined || version101 === null) { version101 = 'taskxml1.0.1.xsd'; }
-if (xsdSchemaFile === undefined || xsdSchemaFile === null) { xsdSchemaFile = version094; }
 if (codemirrorOnOrOff === undefined || codemirrorOnOrOff === null) { codemirrorOnOrOff = 1; }
 if (loncapaOnOrOff === undefined || loncapaOnOrOff === null) { loncapaOnOrOff = 1; }
 if (praktomatOnOrOff === undefined || praktomatOnOrOff === null) { praktomatOnOrOff = 1; }
