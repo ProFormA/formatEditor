@@ -154,41 +154,57 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
     var xstrMetaData = '<test-meta-data>';
     var xstrTestCfg = '</test-meta-data></test-configuration></test>';
 
-    var xstrPrakCF1 = "";
-    var xstrPrakMD1 = "";
-    var xstrPrakMD2 = "";
-    var xstrPrakMD3 = "";
-    var xstrPrakMD4 = "";
+    var xstrPrakVersion = "";
+    var xstrPrakPubReqAlways = "";
+    var xstrPrakCompilerFlags = "";
+    var xstrPrakConfigTestDesc = "";
+    var xstrPrakCSWarnings = "";
     if (usePraktomat) {
-        xstrPrakCF1 = '<praktomat:version/>';
-        xstrPrakMD1 = '<praktomat:public>True</praktomat:public><praktomat:required>True' +
-            '</praktomat:required><praktomat:always>True</praktomat:always>';
-        xstrPrakMD2 = '<praktomat:config-CompilerFlags/><praktomat:config-CompilerOutputFlags/>' +
+        xstrPrakVersion = '<praktomat:version/>';
+        xstrPrakPubReqAlways = '<praktomat:public>True</praktomat:public>'+
+            '<praktomat:required>True</praktomat:required>'+
+            '<praktomat:always>True</praktomat:always>';
+        xstrPrakCompilerFlags = '<praktomat:config-CompilerFlags/><praktomat:config-CompilerOutputFlags/>' +
             '<praktomat:config-CompilerLibs/><praktomat:config-CompilerFilePattern/>';
-        xstrPrakMD3 = '<praktomat:config-testDescription/>';
-        xstrPrakMD4 = '<praktomat:max-checkstyle-warnings/>';
+        xstrPrakConfigTestDesc = '<praktomat:config-testDescription/>';
+        xstrPrakCSWarnings = '<praktomat:max-checkstyle-warnings/>';
     }
 
+    // NEU
+    function createXmlTestTemplate(testtype, metaDataElements, addElement) {
+        if (!addElement)
+            addElement = "";
+        var strTemplate = xstrTestType + testtype + xstrFileRef + addElement + xstrMetaData + metaDataElements + xstrTestCfg;
+        return $.parseXML(strTemplate);
+    }
     var xmlHash = {};
-    xmlHash[T_JAVA_COMP] =
-        $.parseXML(xstrTestType + 'java-compilation' + xstrFileRef + xstrMetaData + xstrPrakMD1 + xstrPrakMD2 + xstrTestCfg);
-    xmlHash[T_JUNIT]     =
-        $.parseXML(xstrTestType + 'unittest' +         xstrFileRef +
-        '<unit:unittest framework="junit" version="4.10"><unit:main-class></unit:main-class></unit:unittest>'
-        + xstrMetaData + xstrPrakMD1 + xstrPrakMD3 + xstrTestCfg);
-    xmlHash[T_SETLX]     =
-        $.parseXML(xstrTestType + 'jartest' +          xstrFileRef +
-        '<jartest:jartest framework="setlX" version ="2.40"></jartest:jartest>' +
-        xstrMetaData + xstrPrakMD1 + xstrTestCfg);
-    xmlHash[T_CHECKSTYLE]=
-        $.parseXML(xstrTestType + 'java-checkstyle' +  xstrFileRef + xstrPrakCF1 +
-            xstrMetaData + xstrPrakMD1 + xstrPrakMD4 + xstrTestCfg);
-    xmlHash[T_DG_SETUP]  =
-        $.parseXML(xstrTestType + 'dejagnu-setup' +    xstrFileRef + xstrMetaData + xstrPrakMD1 + xstrTestCfg);
-    xmlHash[T_DG_TESTER] =
-        $.parseXML(xstrTestType + 'dejagnu-tester' +   xstrFileRef + xstrMetaData + xstrPrakMD1 + xstrTestCfg);
-    xmlHash[T_PYTHON]    =
-        $.parseXML(xstrTestType + 'python' +           xstrFileRef + xstrMetaData + xstrPrakMD1 + xstrTestCfg);
+    xmlHash[T_JAVA_COMP] = createXmlTestTemplate(TT_JAVA_COMP, xstrPrakPubReqAlways + xstrPrakCompilerFlags);
+        // $.parseXML(xstrTestType + TT_JAVA_COMP + xstrFileRef + xstrMetaData + xstrPrakPubReqAlways + xstrPrakCompilerFlags + xstrTestCfg);
+
+    xmlHash[T_JUNIT]     = createXmlTestTemplate(TT_JUNIT, xstrPrakPubReqAlways + xstrPrakConfigTestDesc,
+        '<unit:unittest framework="junit" version="4.10"><unit:main-class></unit:main-class></unit:unittest>');
+
+        //  $.parseXML(xstrTestType + TT_JUNIT +         xstrFileRef +
+        // '<unit:unittest framework="junit" version="4.10"><unit:main-class></unit:main-class></unit:unittest>'
+        // + xstrMetaData + xstrPrakPubReqAlways + xstrPrakConfigTestDesc + xstrTestCfg);
+
+    xmlHash[T_SETLX]     = createXmlTestTemplate(TT_DEJAGNU_SETUP, xstrPrakPubReqAlways,
+        '<jartest:jartest framework="setlX" version ="2.40"></jartest:jartest>');
+
+        // $.parseXML(xstrTestType + TT_JARTEST +          xstrFileRef +
+        // '<jartest:jartest framework="setlX" version ="2.40"></jartest:jartest>' +
+        // xstrMetaData + xstrPrakPubReqAlways + xstrTestCfg);
+
+    xmlHash[T_CHECKSTYLE]= createXmlTestTemplate(TT_CHECKSTYLE, xstrPrakPubReqAlways + xstrPrakCSWarnings, xstrPrakVersion);
+        // $.parseXML(xstrTestType + TT_CHECKSTYLE +  xstrFileRef + xstrPrakVersion +
+        //    xstrMetaData + xstrPrakPubReqAlways + xstrPrakCSWarnings + xstrTestCfg);
+
+    xmlHash[T_DG_SETUP]  = createXmlTestTemplate(TT_DEJAGNU_SETUP, xstrPrakPubReqAlways);
+        // $.parseXML(xstrTestType + TT_DEJAGNU_SETUP +    xstrFileRef + xstrMetaData + xstrPrakPubReqAlways + xstrTestCfg);
+    xmlHash[T_DG_TESTER] = createXmlTestTemplate(TT_DEJAGNU_TESTER, xstrPrakPubReqAlways);
+        // $.parseXML(xstrTestType + TT_DEJAGNU_TESTER +   xstrFileRef + xstrMetaData + xstrPrakPubReqAlways + xstrTestCfg);
+    xmlHash[T_PYTHON]    = createXmlTestTemplate(TT_PYTHON, xstrPrakPubReqAlways);
+        // $.parseXML(xstrTestType + TT_PYTHON +           xstrFileRef + xstrMetaData + xstrPrakPubReqAlways + xstrTestCfg);
 
     return {xmlDoc : xmlDc, testtemplate: xmlHash};
 }
@@ -427,8 +443,8 @@ convertToXML = function() {
         replacer = new RegExp('<task ',"g");                         // insert correct namespace declaration
         xmlString = xmlString.replace(replacer, "<task "+namespace);
         replacer =                                                   // ToDo: this is a hack, set filerefs properly
-            new RegExp('java-compilation</test-type><test-configuration><filerefs><fileref refid=""/></filerefs>',"g");
-        xmlString = xmlString.replace(replacer, "java-compilation</test-type><test-configuration>");
+            new RegExp(TT_JAVA_COMP + '</test-type><test-configuration><filerefs><fileref refid=""/></filerefs>',"g");
+        xmlString = xmlString.replace(replacer, TT_JAVA_COMP + "</test-type><test-configuration>");
         if ((xmlString.substring(0, 5) != "<?xml")){
             xmlString = "<?xml version='1.0' encoding='UTF-8'?>" + xmlString;
         }
@@ -442,6 +458,7 @@ convertToXML = function() {
             setErrorMessage("XSD-Schema not found.");
         });
     } catch(err) { setErrorMessage("Problem with the XML serialisation.");}
+
     if (useLoncapa) {                                      // only if LON-CAPA is being used
         if (xsdSchemaFile == version101) {
             createLONCAPAOutput(tempvals[0],codemirror,"101");

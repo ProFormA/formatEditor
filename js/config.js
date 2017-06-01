@@ -17,7 +17,7 @@ const TT_DEJAGNU_TESTER = "dejagnu-tester";
 const TT_PYTHON         = "python";
 //    "dejagnu" ??
 
-// templates for XML
+// template names for XML
 const T_JAVA_COMP   = "JavaCompile";
 const T_JUNIT       = "JavaJunit";
 const T_SETLX       = "SetlX";
