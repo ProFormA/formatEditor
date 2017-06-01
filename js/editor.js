@@ -54,6 +54,8 @@ var isFirefox = typeof InstallTrigger !== 'undefined'; // Firefox 1.0+
 
 const loadFileOption = "<load...>";
 const emptyFileOption = "";
+const testTypes = getTesttypeOptions();
+
 
 //////////////////////////////////////////////////////////////////////////////
 //* These global variables keep track of how many of these elements currently exist. 
@@ -66,6 +68,22 @@ var codemirror = {};
 // Codemirror description editor is made global in order to allow access
 // to test environment.
 var descriptionEditor;
+
+// create option list string with all test types
+function getTesttypeOptions() {
+    var list = "";
+    var first = true;
+    $.each(testInfos, function(index, item) {
+        list = list + "<option";
+        if (first) {
+            list = list + " selected='selected'";
+            first = false;
+        }
+        list = list + ">" + item.testType;
+        list = list + "</option>";
+    });
+    return list;
+}
 
 ///////////////////////////////////////////////////////// utility functions
 /* Codemirror is a library that provides more sophisticated editor support for textareas.
@@ -781,7 +799,7 @@ $(function() {
   const tdFileRemoveButtonInTest = "<td><button class='rem_file_ref_test' onclick='remTestFileRef($(this))'>x</button></td>";
 
 
-  newTest = function(tempcounter,TestName, MoreText, TestType) { // create a new test HTML form element
+  newTest = function(tempcounter,TestName, MoreText, TestType, WithFileRef) { // create a new test HTML form element
     $("#testsection").append("<div "+
     "class='ui-widget ui-widget-content ui-corner-all xml_test'>"+
     "<h3 class='ui-widget-header'>" + TestName + " (Test #"+tempcounter+")<span "+
@@ -801,15 +819,7 @@ $(function() {
 //    " <label for='xml_test_validity'>Validity: </label>"+
 //    "<input class='shortinput xml_test_validity'/>"+
     " <label for='xml_test_type'>Type: </label>"+
-    "<select class='xml_test_type'>"+
-    "<option selected='selected'>java-compilation</option>"+
-    "<option>unittest</option>"+
-    "<option>jartest</option>"+
-    "<option>java-checkstyle</option>"+
-    "<option>dejagnu-setup</option>"+
-    "<option>dejagnu-tester</option>"+
-//    "<option>dejagnu</option>"+
-    "<option>python</option></select>"+
+    "<select class='xml_test_type'>"+ testTypes + "</select>"+
 
     "<p><label for='xml_pr_public'>Public<span class='red'>*</span>: </label>"+
     "<select class='xml_pr_public'>"+
@@ -843,7 +853,7 @@ $(function() {
       testroot.find(".xml_test_fileref").hide();
       testroot.find("label[for='xml_test_fileref']").hide();
     }
-    if (TestType == "java-compilation") {
+    if (!WithFileRef) {
         testroot.find("table").hide();
         testroot.find(".drop_zone").hide();
         /*testroot.find(".xml_test_fileref").hide();
@@ -972,13 +982,16 @@ $(function() {
 ///////////////////////////////////////////////////////// Configuration support
 
 
+
+
+
     function addTestButtons() {
         $.each(testInfos, function(index, item) {
             $("#testbuttons").append("<button id='" + item.buttonJQueryId + "'>Add " + item.title + "</button> ");
             $("#" + item.buttonJQueryId).click(function() {
 
                 var testNo = setcounter(testIDs);    // sets the corresponding fileref, filename and title "SetlX-Syntax-Test"
-                newTest(testNo,item.title, item.testArea, item.testType);
+                newTest(testNo,item.title, item.testArea, item.testType, item.withFileRef);
                 if (item.onCreated) {
                     item.onCreated(testNo);
                 }

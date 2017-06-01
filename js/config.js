@@ -14,7 +14,7 @@ const TT_PYTHON         = "python";
 
 
 // classes
-function TestInfo(buttonJQueryId,title, area, testType, testTemplate, onButtonClicked) {
+function TestInfo(buttonJQueryId,title, area, testType, testTemplate, withFileRef, onButtonClicked) {
     this.buttonJQueryId   = buttonJQueryId;
     this.title = title;
     this.testArea = area;
@@ -22,6 +22,9 @@ function TestInfo(buttonJQueryId,title, area, testType, testTemplate, onButtonCl
     this.testTemplate = testTemplate;
     if (!testTemplate)
         throw "Configuration Error: TestInfo incomplete";
+    this.withFileRef = withFileRef;
+    if (withFileRef == null)
+        this.withFileRef = true; // use filerefs
     this.onCreated = onButtonClicked;
 }
 
@@ -66,11 +69,11 @@ const TextJavaCheckst = "<p><label for='xml_pr_CS_version'>Version<span class='r
 
 
 testInfos = [
-    new TestInfo("addJavaComp","Java Compiler Test", TextJavaComp, TT_JAVA, "JavaCompile"),
+    new TestInfo("addJavaComp","Java Compiler Test", TextJavaComp, TT_JAVA, "JavaCompile", false),
     new TestInfo("addJavaJunit",java_JUnit_Default_Title, TextJavaJunit, TT_JUNIT, "JavaJunit"),
     new TestInfo("addPythonTest","Python Test", "", TT_PYTHON, "Python"),
     new TestInfo("addSetlX","SetlX Test", TextSetlX, TT_JARTEST, "SetlX"), // zunächst den jartest, der auch beim Einlesen erzeugt werden soll
-    new TestInfo("addSetlXSynt","SetlX Syntax Test", TextSetlX, TT_JARTEST , "SetlX",
+    new TestInfo("addSetlXSynt","SetlX Syntax Test", TextSetlX, TT_JARTEST , "SetlX", true,
         function(testId) {
             // add file for the test
             const filename = 'setlxsyntaxtest.stlx';
