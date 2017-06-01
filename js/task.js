@@ -84,14 +84,18 @@ function createMapping(schemaversion) {                // note: the maps are glo
             new ValMap(".xml_test_title","title","test",0,".xml_test"),
             new ValMap(".xml_test_type","test-type","test",0,".xml_test"),
             new ValMap(".xml_ju_mainclass",ns_unit+"main-class","test-configuration",0,".xml_test"),
-            new ValMap(".xml_pr_CompilerFlags",ns_praktomat + "config-CompilerFlags","test test-meta-data",0,".xml_test"),
-            new ValMap(".xml_pr_CompilerOutputFlags",ns_praktomat+"config-CompilerOutputFlags","test-meta-data",0,".xml_test"),
+            // for test-meta-data
+//??            new ValMap(".xml_pr_CompilerFlags",ns_praktomat + "config-CompilerFlags","test test-meta-data",0,".xml_test"),
+
+//            new ValMap(".xml_pr_CompilerFlags",ns_praktomat + "config-CompilerFlags","test-meta-data",0,".xml_test"),
+//            new ValMap(".xml_pr_CompilerOutputFlags",ns_praktomat+"config-CompilerOutputFlags","test-meta-data",0,".xml_test"),
             new ValMap(".xml_pr_CompilerLibs",ns_praktomat+"config-CompilerLibs","test-meta-data",0,".xml_test"),
             new ValMap(".xml_pr_CompilerFPatt",ns_praktomat+"config-CompilerFilePattern","test-meta-data",0,".xml_test"),
             new ValMap(".xml_pr_configDescription",ns_praktomat+"config-testDescription","test-meta-data",0,".xml_test"),
             new ValMap(".xml_pr_public",ns_praktomat+"public","test-meta-data",0,".xml_test"),
             new ValMap(".xml_pr_required",ns_praktomat+"required","test-meta-data",0,".xml_test"),
             new ValMap(".xml_pr_always",ns_praktomat+"always","test-meta-data",0,".xml_test"),
+            // test-configuration
             new ValMap(".xml_pr_CS_version",ns_praktomat +"version","test-configuration",0,".xml_test"),
             new ValMap(".xml_pr_CS_warnings",ns_praktomat +"max-checkstyle-warnings","test-configuration",0,".xml_test")
         ];
@@ -102,6 +106,17 @@ function createMapping(schemaversion) {                // note: the maps are glo
             new ValMap(".xml_ju_mainclass",ns_unit+"main-class","test-configuration",0,".xml_test"),
         ];
     }
+
+    function createTestValMapForTestMetaData(ui_class, xml_element_name) {
+        return new ValMap(ui_class,xml_element_name,"test-meta-data",0,".xml_test");
+    }
+    if (usePraktomat) {
+        // hier evtl. "test test-meta-data"  als xmlpath???
+        mapChildElems.push(createTestValMapForTestMetaData(".xml_pr_CompilerFlags",ns_praktomat + "config-CompilerFlags"));
+        mapChildElems.push(createTestValMapForTestMetaData(".xml_pr_CompilerOutputFlags",ns_praktomat + "config-CompilerOutputFlags"));
+    }
+
+
     mapListOfChildElems = [                              // list of child elements
         new ValMap(".xml_test_fileref","fileref","test-configuration",0,".xml_test","filerefs","refid"),
         new ValMap(".xml_model-solution_fileref","fileref","model-solution",0,".xml_model-solution","filerefs","refid")
@@ -179,32 +194,14 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
     }
     var xmlHash = {};
     xmlHash[T_JAVA_COMP] = createXmlTestTemplate(TT_JAVA_COMP, xstrPrakPubReqAlways + xstrPrakCompilerFlags);
-        // $.parseXML(xstrTestType + TT_JAVA_COMP + xstrFileRef + xstrMetaData + xstrPrakPubReqAlways + xstrPrakCompilerFlags + xstrTestCfg);
-
     xmlHash[T_JUNIT]     = createXmlTestTemplate(TT_JUNIT, xstrPrakPubReqAlways + xstrPrakConfigTestDesc,
         '<unit:unittest framework="junit" version="4.10"><unit:main-class></unit:main-class></unit:unittest>');
-
-        //  $.parseXML(xstrTestType + TT_JUNIT +         xstrFileRef +
-        // '<unit:unittest framework="junit" version="4.10"><unit:main-class></unit:main-class></unit:unittest>'
-        // + xstrMetaData + xstrPrakPubReqAlways + xstrPrakConfigTestDesc + xstrTestCfg);
-
     xmlHash[T_SETLX]     = createXmlTestTemplate(TT_DEJAGNU_SETUP, xstrPrakPubReqAlways,
         '<jartest:jartest framework="setlX" version ="2.40"></jartest:jartest>');
-
-        // $.parseXML(xstrTestType + TT_JARTEST +          xstrFileRef +
-        // '<jartest:jartest framework="setlX" version ="2.40"></jartest:jartest>' +
-        // xstrMetaData + xstrPrakPubReqAlways + xstrTestCfg);
-
     xmlHash[T_CHECKSTYLE]= createXmlTestTemplate(TT_CHECKSTYLE, xstrPrakPubReqAlways + xstrPrakCSWarnings, xstrPrakVersion);
-        // $.parseXML(xstrTestType + TT_CHECKSTYLE +  xstrFileRef + xstrPrakVersion +
-        //    xstrMetaData + xstrPrakPubReqAlways + xstrPrakCSWarnings + xstrTestCfg);
-
     xmlHash[T_DG_SETUP]  = createXmlTestTemplate(TT_DEJAGNU_SETUP, xstrPrakPubReqAlways);
-        // $.parseXML(xstrTestType + TT_DEJAGNU_SETUP +    xstrFileRef + xstrMetaData + xstrPrakPubReqAlways + xstrTestCfg);
     xmlHash[T_DG_TESTER] = createXmlTestTemplate(TT_DEJAGNU_TESTER, xstrPrakPubReqAlways);
-        // $.parseXML(xstrTestType + TT_DEJAGNU_TESTER +   xstrFileRef + xstrMetaData + xstrPrakPubReqAlways + xstrTestCfg);
     xmlHash[T_PYTHON]    = createXmlTestTemplate(TT_PYTHON, xstrPrakPubReqAlways);
-        // $.parseXML(xstrTestType + TT_PYTHON +           xstrFileRef + xstrMetaData + xstrPrakPubReqAlways + xstrTestCfg);
 
     return {xmlDoc : xmlDc, testtemplate: xmlHash};
 }
