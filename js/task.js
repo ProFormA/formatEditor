@@ -142,47 +142,53 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
     var xmlTemp3 = '<files><file class="internal" filename="" id="" type="embedded"/></files>';
     var xmlTemp4 = '<model-solutions><model-solution id=""><filerefs><fileref/></filerefs></model-solution></model-solutions>';
     var xmlTemp5 = '<tests></tests><grading-hints /><meta-data><title/>';
-    var xmlTemp6 = "";
+    var xmlPrakTemp6 = "";
     if (usePraktomat) {
-        xmlTemp6 = '<praktomat:allowed-upload-filename-mimetypes>(text/.*)</praktomat:allowed-upload-filename-mimetypes>';}
+        xmlPrakTemp6 = '<praktomat:allowed-upload-filename-mimetypes>(text/.*)</praktomat:allowed-upload-filename-mimetypes>';}
     var xmlTemp7 = '</meta-data></task>';
 
-    var xmlDc = $.parseXML(xmlTemp1 + xmlTemp2 + xmlTemp3 + xmlTemp4 + xmlTemp5 + xmlTemp6 + xmlTemp7);
+    var xmlDc = $.parseXML(xmlTemp1 + xmlTemp2 + xmlTemp3 + xmlTemp4 + xmlTemp5 + xmlPrakTemp6 + xmlTemp7);
 
     var xstrTestType = '<test ' + namespace + 'id=""><title/><test-type>';
     var xstrFileRef = '</test-type><test-configuration><filerefs><fileref/></filerefs>';
     var xstrMetaData = '<test-meta-data>';
     var xstrTestCfg = '</test-meta-data></test-configuration></test>';
 
-    var xstrCF1 = "";
-    var xstrMD1 = "";
-    var xstrMD2 = "";
-    var xstrMD3 = "";
-    var xstrMD4 = "";
+    var xstrPrakCF1 = "";
+    var xstrPrakMD1 = "";
+    var xstrPrakMD2 = "";
+    var xstrPrakMD3 = "";
+    var xstrPrakMD4 = "";
     if (usePraktomat) {
-        xstrCF1 = '<praktomat:version/>';
-        xstrMD1 = '<praktomat:public>True</praktomat:public><praktomat:required>True' +
+        xstrPrakCF1 = '<praktomat:version/>';
+        xstrPrakMD1 = '<praktomat:public>True</praktomat:public><praktomat:required>True' +
             '</praktomat:required><praktomat:always>True</praktomat:always>';
-        xstrMD2 = '<praktomat:config-CompilerFlags/><praktomat:config-CompilerOutputFlags/>' +
+        xstrPrakMD2 = '<praktomat:config-CompilerFlags/><praktomat:config-CompilerOutputFlags/>' +
             '<praktomat:config-CompilerLibs/><praktomat:config-CompilerFilePattern/>';
-        xstrMD3 = '<praktomat:config-testDescription/>';
-        xstrMD4 = '<praktomat:max-checkstyle-warnings/>';
+        xstrPrakMD3 = '<praktomat:config-testDescription/>';
+        xstrPrakMD4 = '<praktomat:max-checkstyle-warnings/>';
     }
 
     var xmlHash = {};
-    xmlHash[T_JAVA_COMP] = $.parseXML(xstrTestType + 'java-compilation' + xstrFileRef + xstrMetaData + xstrMD1 +
-        xstrMD2 + xstrTestCfg);
-    xmlHash[T_JUNIT]     = $.parseXML(xstrTestType + 'unittest' + xstrFileRef +
+    xmlHash[T_JAVA_COMP] =
+        $.parseXML(xstrTestType + 'java-compilation' + xstrFileRef + xstrMetaData + xstrPrakMD1 + xstrPrakMD2 + xstrTestCfg);
+    xmlHash[T_JUNIT]     =
+        $.parseXML(xstrTestType + 'unittest' +         xstrFileRef +
         '<unit:unittest framework="junit" version="4.10"><unit:main-class></unit:main-class></unit:unittest>'
-        + xstrMetaData + xstrMD1 + xstrMD3 + xstrTestCfg);
-    xmlHash[T_SETLX]     = $.parseXML(xstrTestType + 'jartest' + xstrFileRef +
+        + xstrMetaData + xstrPrakMD1 + xstrPrakMD3 + xstrTestCfg);
+    xmlHash[T_SETLX]     =
+        $.parseXML(xstrTestType + 'jartest' +          xstrFileRef +
         '<jartest:jartest framework="setlX" version ="2.40"></jartest:jartest>' +
-        xstrMetaData + xstrMD1 + xstrTestCfg);
-    xmlHash[T_CHECKSTYLE]= $.parseXML(xstrTestType + 'java-checkstyle' +  xstrFileRef + xstrCF1 + xstrMetaData +
-        xstrMD1 + xstrMD4 + xstrTestCfg);
-    xmlHash[T_DG_SETUP]  = $.parseXML(xstrTestType + 'dejagnu-setup' +    xstrFileRef + xstrMetaData + xstrMD1 + xstrTestCfg);
-    xmlHash[T_DG_TESTER] = $.parseXML(xstrTestType + 'dejagnu-tester' +   xstrFileRef + xstrMetaData + xstrMD1 + xstrTestCfg);
-    xmlHash[T_PYTHON]    = $.parseXML(xstrTestType + 'python' +           xstrFileRef + xstrMetaData + xstrMD1 + xstrTestCfg);
+        xstrMetaData + xstrPrakMD1 + xstrTestCfg);
+    xmlHash[T_CHECKSTYLE]=
+        $.parseXML(xstrTestType + 'java-checkstyle' +  xstrFileRef + xstrPrakCF1 +
+            xstrMetaData + xstrPrakMD1 + xstrPrakMD4 + xstrTestCfg);
+    xmlHash[T_DG_SETUP]  =
+        $.parseXML(xstrTestType + 'dejagnu-setup' +    xstrFileRef + xstrMetaData + xstrPrakMD1 + xstrTestCfg);
+    xmlHash[T_DG_TESTER] =
+        $.parseXML(xstrTestType + 'dejagnu-tester' +   xstrFileRef + xstrMetaData + xstrPrakMD1 + xstrTestCfg);
+    xmlHash[T_PYTHON]    =
+        $.parseXML(xstrTestType + 'python' +           xstrFileRef + xstrMetaData + xstrPrakMD1 + xstrTestCfg);
 
     return {xmlDoc : xmlDc, testtemplate: xmlHash};
 }
