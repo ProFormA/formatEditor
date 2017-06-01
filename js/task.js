@@ -153,6 +153,7 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
     var xstrFileRef = '</test-type><test-configuration><filerefs><fileref/></filerefs>';
     var xstrMetaData = '<test-meta-data>';
     var xstrTestCfg = '</test-meta-data></test-configuration></test>';
+
     var xstrCF1 = "";
     var xstrMD1 = "";
     var xstrMD2 = "";
@@ -169,19 +170,19 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
     }
 
     var xmlHash = {};
-    xmlHash["JavaCompile"] = $.parseXML(xstrTestType + 'java-compilation' + xstrFileRef + xstrMetaData + xstrMD1 +
+    xmlHash[T_JAVA_COMP] = $.parseXML(xstrTestType + 'java-compilation' + xstrFileRef + xstrMetaData + xstrMD1 +
         xstrMD2 + xstrTestCfg);
-    xmlHash["JavaJunit"] = $.parseXML(xstrTestType + 'unittest' + xstrFileRef +
+    xmlHash[T_JUNIT]     = $.parseXML(xstrTestType + 'unittest' + xstrFileRef +
         '<unit:unittest framework="junit" version="4.10"><unit:main-class></unit:main-class></unit:unittest>'
         + xstrMetaData + xstrMD1 + xstrMD3 + xstrTestCfg);
-    xmlHash["SetlX"] = $.parseXML(xstrTestType + 'jartest' + xstrFileRef +
+    xmlHash[T_SETLX]     = $.parseXML(xstrTestType + 'jartest' + xstrFileRef +
         '<jartest:jartest framework="setlX" version ="2.40"></jartest:jartest>' +
         xstrMetaData + xstrMD1 + xstrTestCfg);
-    xmlHash["CheckStyle"] = $.parseXML(xstrTestType + 'java-checkstyle' + xstrFileRef + xstrCF1 + xstrMetaData +
+    xmlHash[T_CHECKSTYLE]= $.parseXML(xstrTestType + 'java-checkstyle' +  xstrFileRef + xstrCF1 + xstrMetaData +
         xstrMD1 + xstrMD4 + xstrTestCfg);
-    xmlHash["DGSetup"] = $.parseXML(xstrTestType + 'dejagnu-setup' + xstrFileRef + xstrMetaData + xstrMD1 + xstrTestCfg);
-    xmlHash["DGTester"] = $.parseXML(xstrTestType + 'dejagnu-tester' + xstrFileRef + xstrMetaData + xstrMD1 + xstrTestCfg);
-    xmlHash["Python"] = $.parseXML(xstrTestType + 'python' + xstrFileRef + xstrMetaData + xstrMD1 + xstrTestCfg);
+    xmlHash[T_DG_SETUP]  = $.parseXML(xstrTestType + 'dejagnu-setup' +    xstrFileRef + xstrMetaData + xstrMD1 + xstrTestCfg);
+    xmlHash[T_DG_TESTER] = $.parseXML(xstrTestType + 'dejagnu-tester' +   xstrFileRef + xstrMetaData + xstrMD1 + xstrTestCfg);
+    xmlHash[T_PYTHON]    = $.parseXML(xstrTestType + 'python' +           xstrFileRef + xstrMetaData + xstrMD1 + xstrTestCfg);
 
     return {xmlDoc : xmlDc, testtemplate: xmlHash};
 }

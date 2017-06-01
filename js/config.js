@@ -8,7 +8,7 @@ const useLoncapa = true;    // setting this to false turns LON-CAPA elements off
 
 
 // testtypes used
-const TT_JAVA           = "java-compilation";
+const TT_JAVA_COMP      = "java-compilation";
 const TT_JUNIT          = "unittest";
 const TT_JARTEST        = "jartest";
 const TT_CHECKSTYLE     = "java-checkstyle";
@@ -16,6 +16,15 @@ const TT_DEJAGNU_SETUP  = "dejagnu-setup";
 const TT_DEJAGNU_TESTER = "dejagnu-tester";
 const TT_PYTHON         = "python";
 //    "dejagnu" ??
+
+// templates for XML
+const T_JAVA_COMP   = "JavaCompile";
+const T_JUNIT       = "JavaJunit";
+const T_SETLX       = "SetlX";
+const T_CHECKSTYLE  = "CheckStyle";
+const T_DG_SETUP    = "DGSetup";
+const T_DG_TESTER   = "DGTester";
+const T_PYTHON      = "Python";
 
 
 // classes
@@ -75,11 +84,11 @@ const java_JUnit_Default_Title = "Java JUnit Test";
 
 
 testInfos = [
-    new TestInfo("addJavaComp","Java Compiler Test", TextJavaComp, TT_JAVA, "JavaCompile", false),
-    new TestInfo("addJavaJunit",java_JUnit_Default_Title, TextJavaJunit, TT_JUNIT, "JavaJunit"),
-    new TestInfo("addPythonTest","Python Test", "", TT_PYTHON, "Python"),
-    new TestInfo("addSetlX","SetlX Test", TextSetlX, TT_JARTEST, "SetlX"), // zunächst den jartest, der auch beim Einlesen erzeugt werden soll
-    new TestInfo("addSetlXSynt","SetlX Syntax Test", TextSetlX, TT_JARTEST , "SetlX", true,
+    new TestInfo("addJavaComp","Java Compiler Test", TextJavaComp, TT_JAVA_COMP, T_JAVA_COMP, false),
+    new TestInfo("addJavaJunit",java_JUnit_Default_Title, TextJavaJunit, TT_JUNIT, T_JUNIT),
+    new TestInfo("addPythonTest","Python Test", "", TT_PYTHON, T_PYTHON),
+    new TestInfo("addSetlX","SetlX Test", TextSetlX, TT_JARTEST, T_SETLX), // zunächst den jartest, der auch beim Einlesen erzeugt werden soll
+    new TestInfo("addSetlXSynt","SetlX Syntax Test", TextSetlX, TT_JARTEST , T_SETLX, true,
         function(testId) {
             // add file for the test
             const filename = 'setlxsyntaxtest.stlx';
@@ -90,9 +99,9 @@ testInfos = [
             getTestField(testId, ".xml_test_title").val("SetlX-Syntax-Test");
         }
     ),
-    new TestInfo("addCheckStyle","CheckStyle Test", TextJavaCheckst, TT_CHECKSTYLE, "CheckStyle"),
-    new TestInfo("addDGSetup","DejaGnu Setup", "", TT_DEJAGNU_SETUP, "DGSetup"),
-    new TestInfo("addDGTester","DejaGnu Tester", "", TT_DEJAGNU_TESTER, "DGTester"),
+    new TestInfo("addCheckStyle","CheckStyle Test", TextJavaCheckst, TT_CHECKSTYLE, T_CHECKSTYLE),
+    new TestInfo("addDGSetup","DejaGnu Setup", "", TT_DEJAGNU_SETUP, T_DG_SETUP),
+    new TestInfo("addDGTester","DejaGnu Tester", "", TT_DEJAGNU_TESTER, T_DG_TESTER),
 ];
 
 
