@@ -2,6 +2,11 @@
  * Created by KarinBorm on 29.05.2017.
  */
 
+const usePraktomat = true;
+const useCodemirror = true;  // setting this to false turns Codemirror off
+const useLoncapa = true;    // setting this to false turns LON-CAPA elements off
+
+
 // testtypes used
 const TT_JAVA           = "java-compilation";
 const TT_JUNIT          = "unittest";
@@ -66,6 +71,7 @@ const TextJavaCheckst = "<p><label for='xml_pr_CS_version'>Version<span class='r
 
 
 
+const java_JUnit_Default_Title = "Java JUnit Test";
 
 
 testInfos = [

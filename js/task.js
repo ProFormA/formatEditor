@@ -43,10 +43,10 @@ function createMapping(schemaversion) {                // note: the maps are glo
         this.listelem = lelem;                             // only for mapSubElemListArray,  mapAttrOfTestElems
         this.listattr = lattr;                             // only for mapSubElemListArray
     }
-    if (praktomatOnOrOff == 1) { var ns_praktomat = ""; }
+    if (usePraktomat) { var ns_praktomat = ""; }
     var ns_unit = "";
     if (isFirefox) {
-        if (praktomatOnOrOff == 1) { var ns_praktomat = pfix_prak + "\\:"; }
+        if (usePraktomat) { var ns_praktomat = pfix_prak + "\\:"; }
         var ns_unit = pfix_unit + "\\:";
         var ns_jartest = pfix_jart + "\\:";
     }
@@ -55,7 +55,7 @@ function createMapping(schemaversion) {                // note: the maps are glo
         new ValMap("#xml_meta-data_title","meta-data > title","",0),
         new ValMap("#xml_grading-hints_text","grading-hints","",0)
     ];
-    if (schemaversion == version094 && praktomatOnOrOff == 1) {
+    if (schemaversion == version094 && usePraktomat) {
         mapSingleElements[3] =  new ValMap("#xml_upload-mime-type",ns_praktomat+"allowed-upload-filename-mimetypes","",0);
     }
     mapSingleAttrs = [                                   // single XML attributes
@@ -79,7 +79,7 @@ function createMapping(schemaversion) {                // note: the maps are glo
     mapTextInElemSequence = [                            // textcontent of elements in sequence
         new ValMap(".xml_file_text","file","files",1,".xml_file")
     ];
-    if (praktomatOnOrOff == 1) {
+    if (usePraktomat) {
         mapChildElems = [                                    // child elements
             new ValMap(".xml_test_title","title","test",0,".xml_test"),
             new ValMap(".xml_test_type","test-type","test",0,".xml_test"),
@@ -143,7 +143,7 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
     var xmlTemp4 = '<model-solutions><model-solution id=""><filerefs><fileref/></filerefs></model-solution></model-solutions>';
     var xmlTemp5 = '<tests></tests><grading-hints /><meta-data><title/>';
     var xmlTemp6 = "";
-    if (praktomatOnOrOff == 1) {
+    if (usePraktomat) {
         xmlTemp6 = '<praktomat:allowed-upload-filename-mimetypes>(text/.*)</praktomat:allowed-upload-filename-mimetypes>';}
     var xmlTemp7 = '</meta-data></task>';
 
@@ -158,7 +158,7 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
     var xstrMD2 = "";
     var xstrMD3 = "";
     var xstrMD4 = "";
-    if (praktomatOnOrOff == 1) {
+    if (usePraktomat) {
         xstrCF1 = '<praktomat:version/>';
         xstrMD1 = '<praktomat:public>True</praktomat:public><praktomat:required>True' +
             '</praktomat:required><praktomat:always>True</praktomat:always>';
@@ -339,7 +339,7 @@ convertToXML = function() {
                 $.each(mapTextInElemSequence, function(idx2, itm2) {
                     if (item.xmlname == itm2.xmlname) {                    // relational join
                         try {                                                // deal with codemirror for file textarea
-                            if ((itm2.formname == '.xml_file_text') && (codemirrorOnOrOff == 1)) {
+                            if ((itm2.formname == '.xml_file_text') && (useCodemirror)) {
                                 //convertFormToXML(xmlObject.find(item.xmlname)[idx1],codemirror[idx1+1].getValue(),itm2.cdata);
                                 convertFormToXML(xmlObject.find(item.xmlname)[idx1],codemirror[$(itm1).find('.xml_file_id').val()].getValue(),itm2.cdata);
                             } else {
@@ -435,7 +435,7 @@ convertToXML = function() {
             setErrorMessage("XSD-Schema not found.");
         });
     } catch(err) { setErrorMessage("Problem with the XML serialisation.");}
-    if (loncapaOnOrOff == 1) {                                      // only if LON-CAPA is being used
+    if (useLoncapa) {                                      // only if LON-CAPA is being used
         if (xsdSchemaFile == version101) {
             createLONCAPAOutput(tempvals[0],codemirror,"101");
         } else {
@@ -560,7 +560,7 @@ readXML = function(xmlText) {
                     found = false;
                     $.each(testInfos, function(index, item) {
                         if (!found && $(itm1).find('test-type')[0].textContent == item.testType) {
-                            newTest($(itm1).attr("id"), item.title, item.testArea, item.testType);
+                            newTest($(itm1).attr("id"), item.title, item.testArea, item.testType, item.withFileRef);
                             found = true;
                         }
                     });
@@ -573,7 +573,7 @@ readXML = function(xmlText) {
                 $.each(mapTextInElemSequence, function(idx2, itm2) {
                     if (item.xmlname == itm2.xmlname) {                      // relational join
                         try {                                                  // deal with codemirror for file textarea
-                            if ((itm2.formname == '.xml_file_text') && (codemirrorOnOrOff == 1)) {
+                            if ((itm2.formname == '.xml_file_text') && (useCodemirror)) {
                                 codemirror[$(itm1).attr('id')].setValue(itm1.textContent);
                             } else {
                                 $($(item.formname)[idx1cnt]).find('textarea')[0].textContent = itm1.textContent;

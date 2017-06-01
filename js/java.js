@@ -24,7 +24,6 @@
 /*
 
  */
-const java_JUnit_Default_Title = "Java JUnit Test";
 
 function java_codeWithoutComment(code) {
     var newCode = code.replace(/\/\*[\s\S]*?\*\//gm, ""); // comment with /* */

@@ -40,18 +40,12 @@ const TEST_MODE = false;
 
 var codeversion   = '2.1.0 alpha';                     // contains the current version of this code
                                                        // these variables can be set in the calling HTML file  
-var codemirrorOnOrOff;                                 // setting this to 0 turns Codemirror off
-var loncapaOnOrOff;                                    // setting this to 0 turns LON-CAPA elements off
-var praktomatOnOrOff;
 var readXmlActive = false;
-
-if (codemirrorOnOrOff === undefined || codemirrorOnOrOff === null) { codemirrorOnOrOff = 1; }
-if (loncapaOnOrOff === undefined || loncapaOnOrOff === null) { loncapaOnOrOff = 1; }
-if (praktomatOnOrOff === undefined || praktomatOnOrOff === null) { praktomatOnOrOff = 1; }
 
 
 var isFirefox = typeof InstallTrigger !== 'undefined'; // Firefox 1.0+
 
+// string constants
 const loadFileOption = "<load...>";
 const emptyFileOption = "";
 const testTypes = getTesttypeOptions();
@@ -345,7 +339,7 @@ $(function() {
           // set filename in test
           $(".xml_file_id[value='"+fileId+"']").parent().find(".xml_file_filename").first().val(filename);
           // set file text
-          if (codemirrorOnOrOff == 1) {
+          if (useCodemirror) {
               codemirror[fileId].setValue(text);
           } else {
               $(inputbutton).parent().parent().find(".xml_file_text").val(text);
@@ -386,7 +380,7 @@ $(function() {
           if (filename.match(/(.java)/i)) {
               var filebox = $(textbox).closest(".xml_file");
               var text = "";
-              if (codemirrorOnOrOff == 1) {
+              if (useCodemirror) {
                   const fileId = filebox.find(".xml_file_id").val();
                   text = codemirror[fileId].getValue();
               } else {
@@ -475,7 +469,7 @@ $(function() {
       fileroot.find(".xml_file_id").hide();
       fileroot.find("label[for='xml_file_id']").hide();
     }
-    if (codemirrorOnOrOff == 1) { addCodemirrorElement(tempcounter); }
+    if (useCodemirror) { addCodemirrorElement(tempcounter); }
 
       fileroot.on({
           dragover: function(e) {
@@ -1159,7 +1153,7 @@ $(function() {
 */
 
 ///////////////////////////////////////////////////////// if LON-CAPA is used insert relevant form elements
-  if (loncapaOnOrOff == 1) { insertLCformelements();}
+  if (useLoncapa == 1) { insertLCformelements();}
 
   // create dummy button for saving task.xml
   var anchor = document.createElement("a");
