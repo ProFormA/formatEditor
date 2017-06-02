@@ -17,6 +17,7 @@ const pfix_jart = "jartest";                             // browser compatibilit
 const pfix_prak = "praktomat";
 */
 
+/*
 if (xsdSchemaFile == version094) {
     var namespace = 'xmlns:'+pfix_unit+'="urn:proforma:unittest" xmlns:'+pfix_prak+'="urn:proforma:praktomat:v0.1" ' +
         'xmlns="urn:proforma:task:v0.9.4" xmlns:'+pfix_jart+'="urn:proforma:tests:jartest:v1" ';
@@ -24,6 +25,7 @@ if (xsdSchemaFile == version094) {
     var namespace = 'xmlns:'+pfix_unit+'="urn:proforma:tests:unittest:v1" xmlns:'+pfix_prak+'="urn:proforma:praktomat:v0.2" '
         + 'xmlns="urn:proforma:task:v1.0.1" xmlns:'+pfix_jart+'="urn:proforma:tests:jartest:v1" ';
 }
+*/
 
 //var isFirefox = typeof InstallTrigger !== 'undefined'; // Firefox 1.0+
 
@@ -492,18 +494,34 @@ readXML = function(xmlText) {
             }
             return smxml;
         }
+        var copysomexml = somexml;
+
         var tempreg = new RegExp("<(\\S*?):task\\s+");                     // is there a global prefix
         tempmatch = somexml.match(tempreg);
         somexml = replaceNamespace(somexml,tempmatch,"","");
+
+        $.each(namespaceRE, function(index, item) {
+            tempreg = new RegExp("xmlns:(\\S*?)=[\"']" + item[0]);   // unittests
+            tempmatch = somexml.match(tempreg);
+            somexml = replaceNamespace(somexml,tempmatch,item[1],":");
+
+        })
+
+/*
         tempreg = new RegExp("xmlns:(\\S*?)=[\"']urn:proforma:(tests:)?unittest");   // unittests
         tempmatch = somexml.match(tempreg);
         somexml = replaceNamespace(somexml,tempmatch,pfix_unit,":");
+
         tempreg = new RegExp("xmlns:(\\S*?)=[\"']urn:proforma:tests:jartest");       // jartests
         tempmatch = somexml.match(tempreg);
         somexml = replaceNamespace(somexml,tempmatch,pfix_jart,":");
+
         tempreg = new RegExp("xmlns:(\\S*?)=[\"']urn:proforma:praktomat");           // praktomat
         tempmatch = somexml.match(tempreg);
         somexml = replaceNamespace(somexml,tempmatch,pfix_prak,":");
+*/
+        if (somexml != copysomexml)
+            console.log("geändert!");
         return somexml;
     }
 

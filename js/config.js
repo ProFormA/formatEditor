@@ -19,12 +19,22 @@ const pfix_prak = "praktomat";
 const isFirefox = typeof InstallTrigger !== 'undefined'; // Firefox 1.0+
 
 var ns_unit = "";
-if (usePraktomat) { var ns_praktomat = ""; }
+var ns_praktomat = "";
 if (isFirefox) {
-    if (usePraktomat) { ns_praktomat = pfix_prak + "\\:"; }
+    ns_praktomat = pfix_prak + "\\:";
     ns_unit = pfix_unit + "\\:";
     var ns_jartest = pfix_jart + "\\:";
 }
+
+// not really configuration but ....
+if (xsdSchemaFile == version094) {
+    var namespace = 'xmlns:'+pfix_unit+'="urn:proforma:unittest" xmlns:'+pfix_prak+'="urn:proforma:praktomat:v0.1" ' +
+        'xmlns="urn:proforma:task:v0.9.4" xmlns:'+pfix_jart+'="urn:proforma:tests:jartest:v1" ';
+} else {
+    var namespace = 'xmlns:'+pfix_unit+'="urn:proforma:tests:unittest:v1" xmlns:'+pfix_prak+'="urn:proforma:praktomat:v0.2" '
+        + 'xmlns="urn:proforma:task:v1.0.1" xmlns:'+pfix_jart+'="urn:proforma:tests:jartest:v1" ';
+}
+
 
 // testtypes used
 const TT_JAVA_COMP      = "java-compilation";
@@ -176,6 +186,19 @@ const tSetLxVer = '<jartest:jartest framework="setlX" version ="2.40"></jartest:
 
 // do not rename!
 const tExtraTemplateTopLevel = '<praktomat:allowed-upload-filename-mimetypes>(text/.*)</praktomat:allowed-upload-filename-mimetypes>';
+
+
+
+
+const tNsREUnittest = 'urn:proforma:(tests:)?unittest';
+const tNsREJartest  = 'urn:proforma:tests:jartest';
+const tNsREPraktomat = 'urn:proforma:praktomat';
+// nötig, um die Namespaces in den Griff zukriegen. Mehr weiß ich auch nicht...
+namespaceRE = [
+    [tNsREUnittest,  pfix_unit],
+    [tNsREJartest, pfix_jart],
+    [tNsREPraktomat, pfix_prak],
+];
 
 testInfos = [
     new TestInfo("addJavaComp","Java Compiler Test", TextJavaComp, TT_JAVA_COMP, T_JAVA_COMP, tPubReqAlways +tCompFlags, "", false),
