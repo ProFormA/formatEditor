@@ -78,6 +78,23 @@ function getTesttypeOptions() {
     return list;
 }
 
+// create option list string with all test types
+function getProgLangOptions() {
+    var list = "";
+    var first = true;
+    $.each(proglangInfos, function(index, item) {
+        list = list + "<option";
+        if (first) {
+            list = list + " selected='selected'";
+            first = false;
+        }
+        list = list + ">" + item.name;
+        list = list + "</option>";
+    });
+    return list;
+}
+
+
 ///////////////////////////////////////////////////////// utility functions
 /* Codemirror is a library that provides more sophisticated editor support for textareas.
  * Once it is turned on for a textarea, this textarea can no longer be accessed
@@ -1077,6 +1094,7 @@ $(function() {
   $("#testsection").sortable();
 
   addTestButtons();
+  $("#xml_programming-language").append(getProgLangOptions());
 
   $("#addGH").click(function() {                       // the code for the buttons for adding new elements
     if (gradingHintCounter == 1) {newGH();}            // only one grading hint allowed
