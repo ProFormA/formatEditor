@@ -2,7 +2,7 @@
  * Created by karin on 01.06.2017.
  */
 
-
+/*
 var version094;                                        // names of the xsd schema files
 var version101;
 var xsdSchemaFile;                                     // choose version
@@ -10,7 +10,7 @@ var xsdSchemaFile;                                     // choose version
 if (version094 === undefined || version094 === null) { version094 = 'taskxml0.9.4.xsd'; }
 if (version101 === undefined || version101 === null) { version101 = 'taskxml1.0.1.xsd'; }
 if (xsdSchemaFile === undefined || xsdSchemaFile === null) { xsdSchemaFile = version094; }
-
+*/
 /*
 const pfix_unit = "unit";                                // fixing namespace prefixes because of
 const pfix_jart = "jartest";                             // browser compatibility and jquery limitations
@@ -50,9 +50,13 @@ function createMapping(schemaversion) {                // note: the maps are glo
         new ValMap("#xml_meta-data_title","meta-data > title","",0),
         new ValMap("#xml_grading-hints_text","grading-hints","",0)
     ];
+
+    // moved to config.js
+    /*
     if (schemaversion == version094 && usePraktomat) {
         mapSingleElements[3] =  new ValMap("#xml_upload-mime-type",ns_praktomat+"allowed-upload-filename-mimetypes","",0);
     }
+    */
     mapSingleAttrs = [                                   // single XML attributes
         new ValMap("#xml_lang","lang","task",0)
 //    new ValMap("#xml_subm_unpackArchiveRegExp","unpack-files-from-archive-regexp","submission-restrictions",0),
@@ -77,47 +81,11 @@ function createMapping(schemaversion) {                // note: the maps are glo
 
     mapChildElems = [                                    // child elements
         new ValMap(".xml_test_title","title","test",0,".xml_test"),
-            new ValMap(".xml_test_type","test-type","test",0,".xml_test"),
-            new ValMap(".xml_ju_mainclass",ns_unit+"main-class","test-configuration",0,".xml_test"),
+        new ValMap(".xml_test_type","test-type","test",0,".xml_test"),
+        // moved to config.js
+        // new ValMap(".xml_ju_mainclass",ns_unit+"main-class","test-configuration",0,".xml_test"),
     ];
 
-
-//    if (usePraktomat) {
-            // for test-meta-data
-//??            new ValMap(".xml_pr_CompilerFlags",ns_praktomat + "config-CompilerFlags","test test-meta-data",0,".xml_test"),
-
-//            new ValMap(".xml_pr_CompilerFlags",ns_praktomat + "config-CompilerFlags","test-meta-data",0,".xml_test"),
-//            new ValMap(".xml_pr_CompilerOutputFlags",ns_praktomat+"config-CompilerOutputFlags","test-meta-data",0,".xml_test"),
-/*            new ValMap(".xml_pr_CompilerLibs",ns_praktomat+"config-CompilerLibs","test-meta-data",0,".xml_test"),
-            new ValMap(".xml_pr_CompilerFPatt",ns_praktomat+"config-CompilerFilePattern","test-meta-data",0,".xml_test"),
-            new ValMap(".xml_pr_configDescription",ns_praktomat+"config-testDescription","test-meta-data",0,".xml_test"),
-            new ValMap(".xml_pr_public",ns_praktomat+"public","test-meta-data",0,".xml_test"),
-            new ValMap(".xml_pr_required",ns_praktomat+"required","test-meta-data",0,".xml_test"),
-            new ValMap(".xml_pr_always",ns_praktomat+"always","test-meta-data",0,".xml_test"),
-            // test-configuration
-            new ValMap(".xml_pr_CS_version",ns_praktomat +"version","test-configuration",0,".xml_test"),
-            new ValMap(".xml_pr_CS_warnings",ns_praktomat +"max-checkstyle-warnings","test-configuration",0,".xml_test")
-            */
-/*
-        ];
-    } else {
-        mapChildElems = [
-            new ValMap(".xml_test_title","title","test",0,".xml_test"),
-            new ValMap(".xml_test_type","test-type","test",0,".xml_test"),
-            new ValMap(".xml_ju_mainclass",ns_unit+"main-class","test-configuration",0,".xml_test"),
-        ];
-    }
- */
-
-/*    function createTestValMapForTestMetaData(ui_class, xml_element_name) {
-        return new ValMap(ui_class,xml_element_name,"test-meta-data",0,".xml_test");
-    }
-    if (usePraktomat) {
-        // hier evtl. "test test-meta-data"  als xmlpath???
-        mapChildElems.push(createTestValMapForTestMetaData(".xml_pr_CompilerFlags",ns_praktomat + "config-CompilerFlags"));
-        mapChildElems.push(createTestValMapForTestMetaData(".xml_pr_CompilerOutputFlags",ns_praktomat + "config-CompilerOutputFlags"));
-    }
-*/
 
     mapListOfChildElems = [                              // list of child elements
         new ValMap(".xml_test_fileref","fileref","test-configuration",0,".xml_test","filerefs","refid"),
@@ -135,10 +103,13 @@ function createMapping(schemaversion) {                // note: the maps are glo
 //    new ValMap(".xml_test_validity","validity","test",0,".xml_test"),
     ];
     mapAttrOfTestElems = [                               // attributes of elements in sequences
+        // moved to config.js
+/*
         new ValMap(".xml_ju_framew","framework",ns_unit+"unittest",0,".xml_test","test"),
         new ValMap(".xml_ju_version","version",ns_unit+"unittest",0,".xml_test","test"),
         new ValMap(".xml_jt_framew","framework",ns_jartest+"jartest",0,".xml_test","test"),
         new ValMap(".xml_jt_version","version",ns_jartest+"jartest",0,".xml_test","test")
+*/
     ];
 
     // add configured extra mapping
@@ -146,6 +117,12 @@ function createMapping(schemaversion) {                // note: the maps are glo
         switch(item.mappingType) {
             case MapType.CHILD_ELEM:
                 mapChildElems.push(item.valmap);
+                break;
+            case MapType.ATTR_OF_TEST_ELEMS:
+                mapAttrOfTestElems.push(item.valmap);
+                break;
+            case MapType.SINGLE_ELEM:
+                mapSingleElements.push(item.valmap);
                 break;
             default:
                 throw "unsupported maptype: " + item.mappingType;
