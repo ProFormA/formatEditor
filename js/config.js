@@ -47,14 +47,16 @@ const T_PYTHON      = "Python";
 
 
 // classes
-function TestInfo(buttonJQueryId,title, area, testType, testTemplate, withFileRef, onButtonClicked) {
+function TestInfo(buttonJQueryId,title, area, testType, templateName, template1, template2, withFileRef, onButtonClicked) {
     this.buttonJQueryId   = buttonJQueryId;
     this.title = title;
     this.testArea = area;
     this.testType = testType;
-    this.testTemplate = testTemplate;
-    if (!testTemplate)
+    this.templateName = templateName;
+    if (!templateName)
         throw "Configuration Error: TestInfo incomplete";
+    this.template1 = template1;
+    this.template2 = template2;
     this.withFileRef = withFileRef;
     if (withFileRef == null)
         this.withFileRef = true; // use filerefs
@@ -158,12 +160,29 @@ const TextJavaCheckst = "<p><label for='xml_pr_CS_version'>Version<span class='r
 const java_JUnit_Default_Title = "Java JUnit Test";
 
 
+// XML templates for praktomat
+const tPrakVer      = '<praktomat:version/>';
+const tPubReqAlways = '<praktomat:public>True</praktomat:public>'+
+    '<praktomat:required>True</praktomat:required>'+
+    '<praktomat:always>True</praktomat:always>';
+const tCompFlags    = '<praktomat:config-CompilerFlags/><praktomat:config-CompilerOutputFlags/>' +
+    '<praktomat:config-CompilerLibs/><praktomat:config-CompilerFilePattern/>';
+const tConfTestDesc = '<praktomat:config-testDescription/>';
+const tCSWarnings   = '<praktomat:max-checkstyle-warnings/>';
+
+// other XML templates
+const tJUnitVer = '<unit:unittest framework="junit" version="4.10"><unit:main-class></unit:main-class></unit:unittest>';
+const tSetLxVer = '<jartest:jartest framework="setlX" version ="2.40"></jartest:jartest>';
+
+// do not rename!
+const tExtraTemplateTopLevel = '<praktomat:allowed-upload-filename-mimetypes>(text/.*)</praktomat:allowed-upload-filename-mimetypes>';
+
 testInfos = [
-    new TestInfo("addJavaComp","Java Compiler Test", TextJavaComp, TT_JAVA_COMP, T_JAVA_COMP, false),
-    new TestInfo("addJavaJunit",java_JUnit_Default_Title, TextJavaJunit, TT_JUNIT, T_JUNIT),
-    new TestInfo("addPythonTest","Python Test", "", TT_PYTHON, T_PYTHON),
-    new TestInfo("addSetlX","SetlX Test", TextSetlX, TT_JARTEST, T_SETLX), // zunächst den jartest, der auch beim Einlesen erzeugt werden soll
-    new TestInfo("addSetlXSynt","SetlX Syntax Test", TextSetlX, TT_JARTEST , T_SETLX, true,
+    new TestInfo("addJavaComp","Java Compiler Test", TextJavaComp, TT_JAVA_COMP, T_JAVA_COMP, tPubReqAlways +tCompFlags, "", false),
+    new TestInfo("addJavaJunit",java_JUnit_Default_Title, TextJavaJunit, TT_JUNIT, T_JUNIT, tPubReqAlways + tConfTestDesc, tJUnitVer),
+    new TestInfo("addPythonTest","Python Test", "", TT_PYTHON, T_PYTHON, tPubReqAlways, ""),
+    new TestInfo("addSetlX","SetlX Test", TextSetlX, TT_JARTEST, T_SETLX, tPubReqAlways, tSetLxVer), // zunächst den jartest, der auch beim Einlesen erzeugt werden soll
+    new TestInfo("addSetlXSynt","SetlX Syntax Test", TextSetlX, TT_JARTEST , T_SETLX, tPubReqAlways, tSetLxVer, true,
         function(testId) {
             // add file for the test
             const filename = 'setlxsyntaxtest.stlx';
@@ -174,9 +193,9 @@ testInfos = [
             getTestField(testId, ".xml_test_title").val("SetlX-Syntax-Test");
         }
     ),
-    new TestInfo("addCheckStyle","CheckStyle Test", TextJavaCheckst, TT_CHECKSTYLE, T_CHECKSTYLE),
-    new TestInfo("addDGSetup","DejaGnu Setup", "", TT_DEJAGNU_SETUP, T_DG_SETUP),
-    new TestInfo("addDGTester","DejaGnu Tester", "", TT_DEJAGNU_TESTER, T_DG_TESTER),
+    new TestInfo("addCheckStyle","CheckStyle Test", TextJavaCheckst, TT_CHECKSTYLE, T_CHECKSTYLE, tPubReqAlways + tCSWarnings, tPrakVer),
+    new TestInfo("addDGSetup","DejaGnu Setup", "", TT_DEJAGNU_SETUP, T_DG_SETUP, tPubReqAlways, ""),
+    new TestInfo("addDGTester","DejaGnu Tester", "", TT_DEJAGNU_TESTER, T_DG_TESTER, tPubReqAlways, ""),
 ];
 
 

@@ -145,21 +145,26 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
         var xmlTemp2 = '<description></description><proglang version=""></proglang><submission-restrictions>'+
             '<regexp-restriction max-size="" mime-type-regexp=""/></submission-restrictions>';
     }
-    var xmlTemp3 = '<files><file class="internal" filename="" id="" type="embedded"/></files>';
-    var xmlTemp4 = '<model-solutions><model-solution id=""><filerefs><fileref/></filerefs></model-solution></model-solutions>';
-    var xmlTemp5 = '<tests></tests><grading-hints /><meta-data><title/>';
-    var xmlPrakTemp6 = "";
+    const xmlTemp3 = '<files><file class="internal" filename="" id="" type="embedded"/></files>';
+    const xmlTemp4 = '<model-solutions><model-solution id=""><filerefs><fileref/></filerefs></model-solution></model-solutions>';
+    const xmlTemp5 = '<tests></tests><grading-hints /><meta-data><title/>';
+/*    var xmlPrakTemp6 = "";
     if (usePraktomat) {
         xmlPrakTemp6 = '<praktomat:allowed-upload-filename-mimetypes>(text/.*)</praktomat:allowed-upload-filename-mimetypes>';}
-    var xmlTemp7 = '</meta-data></task>';
+*/
+    const xmlTemp6 = '</meta-data></task>';
 
-    var xmlDc = $.parseXML(xmlTemp1 + xmlTemp2 + xmlTemp3 + xmlTemp4 + xmlTemp5 + xmlPrakTemp6 + xmlTemp7);
+    var extra = tExtraTemplateTopLevel;
+    if (!extra)
+        extra = "";
+    var xmlDc = $.parseXML(xmlTemp1 + xmlTemp2 + xmlTemp3 + xmlTemp4 + xmlTemp5 + tExtraTemplateTopLevel + xmlTemp6);
 
-    var xstrTestType = '<test ' + namespace + 'id=""><title/><test-type>';
-    var xstrFileRef = '</test-type><test-configuration><filerefs><fileref/></filerefs>';
-    var xstrMetaData = '<test-meta-data>';
-    var xstrTestCfg = '</test-meta-data></test-configuration></test>';
+    const xstrTestType = '<test ' + namespace + 'id=""><title/><test-type>';
+    const xstrFileRef = '</test-type><test-configuration><filerefs><fileref/></filerefs>';
+    const xstrMetaData = '<test-meta-data>';
+    const xstrTestCfg = '</test-meta-data></test-configuration></test>';
 
+/*
     var xstrPrakVersion = "";
     var xstrPrakPubReqAlways = "";
     var xstrPrakCompilerFlags = "";
@@ -175,15 +180,22 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
         xstrPrakConfigTestDesc = '<praktomat:config-testDescription/>';
         xstrPrakCSWarnings = '<praktomat:max-checkstyle-warnings/>';
     }
+*/
 
-    // NEU
     function createXmlTestTemplate(testtype, metaDataElements, addElement) {
         if (!addElement)
             addElement = "";
         var strTemplate = xstrTestType + testtype + xstrFileRef + addElement + xstrMetaData + metaDataElements + xstrTestCfg;
         return $.parseXML(strTemplate);
     }
+
+    // build hash from testinfos
     var xmlHash = {};
+    $.each(testInfos, function(index, testinfo) {
+        xmlHash[testinfo.templateName] = createXmlTestTemplate(testinfo.testType, testinfo.template1, testinfo.template2);
+    })
+
+/*
     xmlHash[T_JAVA_COMP] = createXmlTestTemplate(TT_JAVA_COMP, xstrPrakPubReqAlways + xstrPrakCompilerFlags);
     xmlHash[T_JUNIT]     = createXmlTestTemplate(TT_JUNIT, xstrPrakPubReqAlways + xstrPrakConfigTestDesc,
         '<unit:unittest framework="junit" version="4.10"><unit:main-class></unit:main-class></unit:unittest>');
@@ -193,7 +205,7 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
     xmlHash[T_DG_SETUP]  = createXmlTestTemplate(TT_DEJAGNU_SETUP, xstrPrakPubReqAlways);
     xmlHash[T_DG_TESTER] = createXmlTestTemplate(TT_DEJAGNU_TESTER, xstrPrakPubReqAlways);
     xmlHash[T_PYTHON]    = createXmlTestTemplate(TT_PYTHON, xstrPrakPubReqAlways);
-
+*/
     return {xmlDoc : xmlDc, testtemplate: xmlHash};
 }
 
@@ -336,7 +348,7 @@ convertToXML = function() {
                         $.each(testInfos, function(index, testinfo) {
                             if (!found && testType == testinfo.testType)  {
                                 found = true;
-                                xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate[testinfo.testTemplate]).find('test')[0].cloneNode(1));
+                                xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate[testinfo.templateName]).find('test')[0].cloneNode(1));
                             }
                         });
                         if (!found) {
