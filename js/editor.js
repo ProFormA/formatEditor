@@ -43,7 +43,6 @@ var codeversion   = '2.1.0 alpha';                     // contains the current v
 var readXmlActive = false;
 
 
-var isFirefox = typeof InstallTrigger !== 'undefined'; // Firefox 1.0+
 
 // string constants
 const loadFileOption = "<load...>";

@@ -11,10 +11,11 @@ if (version094 === undefined || version094 === null) { version094 = 'taskxml0.9.
 if (version101 === undefined || version101 === null) { version101 = 'taskxml1.0.1.xsd'; }
 if (xsdSchemaFile === undefined || xsdSchemaFile === null) { xsdSchemaFile = version094; }
 
+/*
 const pfix_unit = "unit";                                // fixing namespace prefixes because of
 const pfix_jart = "jartest";                             // browser compatibility and jquery limitations
 const pfix_prak = "praktomat";
-
+*/
 
 if (xsdSchemaFile == version094) {
     var namespace = 'xmlns:'+pfix_unit+'="urn:proforma:unittest" xmlns:'+pfix_prak+'="urn:proforma:praktomat:v0.1" ' +
@@ -24,6 +25,7 @@ if (xsdSchemaFile == version094) {
         + 'xmlns="urn:proforma:task:v1.0.1" xmlns:'+pfix_jart+'="urn:proforma:tests:jartest:v1" ';
 }
 
+//var isFirefox = typeof InstallTrigger !== 'undefined'; // Firefox 1.0+
 
 
 ///////////////////////////////////////////////////////// mapping HTML form names and XML names
@@ -34,15 +36,7 @@ if (xsdSchemaFile == version094) {
  * The arrays can be looped through in order to process the XML file.
  */
 function createMapping(schemaversion) {                // note: the maps are global variables
-    function ValMap(fname,xname,pname,cdata,fcont,lelem,lattr) {
-        this.formname = fname; // name in formular
-        this.xmlname = xname;  // element or attribute name in task.xml
-        this.xmlpath = pname;  // parent element in task.xml
-        this.cdata = cdata;    // create as CDATA in task.xml (bool)
-        this.formcontainer = fcont;                        // ToDo: use this more ?
-        this.listelem = lelem;                             // only for mapSubElemListArray,  mapAttrOfTestElems
-        this.listattr = lattr;                             // only for mapSubElemListArray
-    }
+/*
     if (usePraktomat) { var ns_praktomat = ""; }
     var ns_unit = "";
     if (isFirefox) {
@@ -50,6 +44,7 @@ function createMapping(schemaversion) {                // note: the maps are glo
         var ns_unit = pfix_unit + "\\:";
         var ns_jartest = pfix_jart + "\\:";
     }
+*/
     mapSingleElements = [                                // single XML elements
         new ValMap("#xml_description","description","",1),
         new ValMap("#xml_meta-data_title","meta-data > title","",0),
@@ -79,17 +74,21 @@ function createMapping(schemaversion) {                // note: the maps are glo
     mapTextInElemSequence = [                            // textcontent of elements in sequence
         new ValMap(".xml_file_text","file","files",1,".xml_file")
     ];
-    if (usePraktomat) {
-        mapChildElems = [                                    // child elements
-            new ValMap(".xml_test_title","title","test",0,".xml_test"),
+
+    mapChildElems = [                                    // child elements
+        new ValMap(".xml_test_title","title","test",0,".xml_test"),
             new ValMap(".xml_test_type","test-type","test",0,".xml_test"),
             new ValMap(".xml_ju_mainclass",ns_unit+"main-class","test-configuration",0,".xml_test"),
+    ];
+
+
+//    if (usePraktomat) {
             // for test-meta-data
 //??            new ValMap(".xml_pr_CompilerFlags",ns_praktomat + "config-CompilerFlags","test test-meta-data",0,".xml_test"),
 
 //            new ValMap(".xml_pr_CompilerFlags",ns_praktomat + "config-CompilerFlags","test-meta-data",0,".xml_test"),
 //            new ValMap(".xml_pr_CompilerOutputFlags",ns_praktomat+"config-CompilerOutputFlags","test-meta-data",0,".xml_test"),
-            new ValMap(".xml_pr_CompilerLibs",ns_praktomat+"config-CompilerLibs","test-meta-data",0,".xml_test"),
+/*            new ValMap(".xml_pr_CompilerLibs",ns_praktomat+"config-CompilerLibs","test-meta-data",0,".xml_test"),
             new ValMap(".xml_pr_CompilerFPatt",ns_praktomat+"config-CompilerFilePattern","test-meta-data",0,".xml_test"),
             new ValMap(".xml_pr_configDescription",ns_praktomat+"config-testDescription","test-meta-data",0,".xml_test"),
             new ValMap(".xml_pr_public",ns_praktomat+"public","test-meta-data",0,".xml_test"),
@@ -98,6 +97,8 @@ function createMapping(schemaversion) {                // note: the maps are glo
             // test-configuration
             new ValMap(".xml_pr_CS_version",ns_praktomat +"version","test-configuration",0,".xml_test"),
             new ValMap(".xml_pr_CS_warnings",ns_praktomat +"max-checkstyle-warnings","test-configuration",0,".xml_test")
+            */
+/*
         ];
     } else {
         mapChildElems = [
@@ -106,8 +107,9 @@ function createMapping(schemaversion) {                // note: the maps are glo
             new ValMap(".xml_ju_mainclass",ns_unit+"main-class","test-configuration",0,".xml_test"),
         ];
     }
+ */
 
-    function createTestValMapForTestMetaData(ui_class, xml_element_name) {
+/*    function createTestValMapForTestMetaData(ui_class, xml_element_name) {
         return new ValMap(ui_class,xml_element_name,"test-meta-data",0,".xml_test");
     }
     if (usePraktomat) {
@@ -115,7 +117,7 @@ function createMapping(schemaversion) {                // note: the maps are glo
         mapChildElems.push(createTestValMapForTestMetaData(".xml_pr_CompilerFlags",ns_praktomat + "config-CompilerFlags"));
         mapChildElems.push(createTestValMapForTestMetaData(".xml_pr_CompilerOutputFlags",ns_praktomat + "config-CompilerOutputFlags"));
     }
-
+*/
 
     mapListOfChildElems = [                              // list of child elements
         new ValMap(".xml_test_fileref","fileref","test-configuration",0,".xml_test","filerefs","refid"),
@@ -138,6 +140,17 @@ function createMapping(schemaversion) {                // note: the maps are glo
         new ValMap(".xml_jt_framew","framework",ns_jartest+"jartest",0,".xml_test","test"),
         new ValMap(".xml_jt_version","version",ns_jartest+"jartest",0,".xml_test","test")
     ];
+
+    // add configured extra mapping
+    $.each(uiXmlMapList, function(index, item) {
+        switch(item.mappingType) {
+            case MapType.CHILD_ELEM:
+                mapChildElems.push(item.valmap);
+                break;
+            default:
+                throw "unsupported maptype: " + item.mappingType;
+        }
+    });
 }
 
 ///////////////////////////////////////////////////////// Create an empty xml template

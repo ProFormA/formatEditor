@@ -7,6 +7,20 @@ const useCodemirror = true;  // setting this to false turns Codemirror off
 const useLoncapa = true;    // setting this to false turns LON-CAPA elements off
 
 
+const pfix_unit = "unit";        // fixing namespace prefixes because of
+const pfix_jart = "jartest";     // browser compatibility and jquery limitations
+const pfix_prak = "praktomat";
+
+const isFirefox = typeof InstallTrigger !== 'undefined'; // Firefox 1.0+
+
+var ns_unit = "";
+if (usePraktomat) { var ns_praktomat = ""; }
+if (isFirefox) {
+    if (usePraktomat) { ns_praktomat = pfix_prak + "\\:"; }
+    ns_unit = pfix_unit + "\\:";
+    var ns_jartest = pfix_jart + "\\:";
+}
+
 // testtypes used
 const TT_JAVA_COMP      = "java-compilation";
 const TT_JUNIT          = "unittest";
@@ -46,6 +60,57 @@ function ProglangInfo(name, tests) {
     this.name   = name;
     this.tests = tests;
 }
+
+
+function ValMap(fname,xname,pname,cdata,fcont,lelem,lattr) {
+    this.formname = fname; // name in formular
+    this.xmlname = xname;  // element or attribute name in task.xml
+    this.xmlpath = pname;  // parent element in task.xml
+    this.cdata = cdata;    // create as CDATA in task.xml (bool)
+    this.formcontainer = fcont;  // ToDo: use this more ?
+    this.listelem = lelem;       // only for mapSubElemListArray,  mapAttrOfTestElems
+    this.listattr = lattr;       // only for mapSubElemListArray
+}
+
+
+const MapType = {
+    CHILD_ELEM: 0,
+    TEST_TEST_META_DATA: 1,
+    TEST_CONFIGURATION: 2
+};
+function UiXmlMap(mappingType, valmap) {
+    this.mappingType = mappingType;
+    this.valmap = valmap;
+}
+// Praktomat mapping
+uiXmlMapList = [
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFlags",ns_praktomat + "config-CompilerFlags","test test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerOutputFlags",ns_praktomat+"config-CompilerOutputFlags","test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerLibs",ns_praktomat+"config-CompilerLibs","test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFPatt",ns_praktomat+"config-CompilerFilePattern","test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_configDescription",ns_praktomat+"config-testDescription","test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_public",ns_praktomat+"public","test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_required",ns_praktomat+"required","test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_always",ns_praktomat+"always","test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_version",ns_praktomat +"version","test-configuration",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_warnings",ns_praktomat +"max-checkstyle-warnings","test-configuration",0,".xml_test")),
+
+/*
+    new UiXmlMap(".xml_pr_CompilerFlags", ns_praktomat + "config-CompilerFlags", MapType.TEST_TEST_META_DATA),
+    new UiXmlMap(".xml_pr_CompilerOutputFlags",ns_praktomat + "config-CompilerOutputFlags", MapType.CHILD_ELEM),
+
+    new UiXmlMap(".xml_pr_CompilerLibs",ns_praktomat + "config-CompilerLibs", MapType.CHILD_ELEM),
+    new UiXmlMap(".xml_pr_CompilerFPatt",ns_praktomat + "config-CompilerFilePattern", MapType.CHILD_ELEM),
+    new UiXmlMap(".xml_pr_configDescription",ns_praktomat + "config-testDescription", MapType.CHILD_ELEM),
+
+    new UiXmlMap(".xml_pr_public",ns_praktomat + "test-meta-data", MapType.CHILD_ELEM),
+    new UiXmlMap(".xml_pr_required",ns_praktomat + "test-meta-data", MapType.CHILD_ELEM),
+    new UiXmlMap(".xml_pr_always",ns_praktomat + "test-meta-data", MapType.CHILD_ELEM),
+
+    new UiXmlMap(".xml_pr_CS_version",ns_praktomat + "version", MapType.TEST_CONFIGURATION),
+    new UiXmlMap(".xml_pr_CS_warnings",ns_praktomat + "max-checkstyle-warnings", MapType.TEST_CONFIGURATION),
+*/
+];
 
 // HTML building blocks for the tests
 const TextJavaComp = "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
