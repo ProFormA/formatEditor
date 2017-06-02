@@ -62,11 +62,11 @@ function TestInfo(buttonJQueryId,title, area, testType, templateName, template1,
     this.title = title;
     this.testArea = area;
     this.testType = testType;
-    this.templateName = templateName;
+    this.xmlTemplateName = templateName;
     if (!templateName)
         throw "Configuration Error: TestInfo incomplete";
-    this.template1 = template1;
-    this.template2 = template2;
+    this.xmlTemplate1 = template1;
+    this.xmlTemplate2 = template2;
     this.withFileRef = withFileRef;
     if (withFileRef == null)
         this.withFileRef = true; // use filerefs
@@ -135,7 +135,7 @@ if (xsdSchemaFile == version094)
 
 
 // HTML building blocks for the extra fields in tests
-const TextJavaComp = "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
+const uiTextJavaComp = "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
         "<input class='tinyinput xml_pr_CompilerFlags'/>"+
         " <label for='xml_pr_CompilerOutputFlags'>Compiler output flags: </label>"+
         "<input class='tinyinput xml_pr_CompilerOutputFlags'/>"+
@@ -145,7 +145,7 @@ const TextJavaComp = "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </lab
         "<input class='shortinput xml_pr_CompilerFPatt' value='^.*\\.[jJ][aA][vV][aA]$'/></p>";
 
 
-const TextJavaJunit = "<p><label for='xml_ju_mainclass'>Test class (no extension)<span class='red'>*</span>: </label>"+
+const uiTextJavaJunit = "<p><label for='xml_ju_mainclass'>Test class (no extension)<span class='red'>*</span>: </label>"+
     "<input class='mediuminput xml_ju_mainclass'/>"+
     " <label for='xml_ju_framew'>Framework<span class='red'>*</span>: </label>"+
     "<select class='xml_ju_framew'><option selected='selected' value='JUnit'>JUnit</option></select>"+
@@ -155,12 +155,12 @@ const TextJavaJunit = "<p><label for='xml_ju_mainclass'>Test class (no extension
     "<p><label for='xml_pr_configDescription'>Test description: </label>"+
     "<input class='largeinput xml_pr_configDescription'/></p>";
 
-const TextSetlX =  "<p><label for='xml_jt_framew'>Framework<span class='red'>*</span>: </label>"+
+const uiTextSetlX =  "<p><label for='xml_jt_framew'>Framework<span class='red'>*</span>: </label>"+
     "<select class='xml_jt_framew'><option selected='selected' value='setlX'>setlX</option></select>"+
     " <label for='xml_jt_version'>Version<span class='red'>*</span>: </label>"+
     "<select class='xml_jt_version'><option selected='selected' value='2.40'>2.40</option></select></p>";
 
-const TextJavaCheckst = "<p><label for='xml_pr_CS_version'>Version<span class='red'>*</span>: </label>"+
+const uiTextJavaCheckst = "<p><label for='xml_pr_CS_version'>Version<span class='red'>*</span>: </label>"+
     "<select class='xml_pr_CS_version'><option selected='selected' value='6.2'>6.2</option></select>"+
     " <label for='xml_pr_CS_warnings'>Maximum warnings allowed<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_pr_CS_warnings' value='0'/></p>";
@@ -201,11 +201,11 @@ namespaceRE = [
 ];
 
 testInfos = [
-    new TestInfo("addJavaComp","Java Compiler Test", TextJavaComp, TT_JAVA_COMP, T_JAVA_COMP, tPubReqAlways +tCompFlags, "", false),
-    new TestInfo("addJavaJunit",java_JUnit_Default_Title, TextJavaJunit, TT_JUNIT, T_JUNIT, tPubReqAlways + tConfTestDesc, tJUnitVer),
+    new TestInfo("addJavaComp","Java Compiler Test", uiTextJavaComp, TT_JAVA_COMP, T_JAVA_COMP, tPubReqAlways +tCompFlags, "", false),
+    new TestInfo("addJavaJunit",java_JUnit_Default_Title, uiTextJavaJunit, TT_JUNIT, T_JUNIT, tPubReqAlways + tConfTestDesc, tJUnitVer),
     new TestInfo("addPythonTest","Python Test", "", TT_PYTHON, T_PYTHON, tPubReqAlways, ""),
-    new TestInfo("addSetlX","SetlX Test", TextSetlX, TT_JARTEST, T_SETLX, tPubReqAlways, tSetLxVer), // zunächst den jartest, der auch beim Einlesen erzeugt werden soll
-    new TestInfo("addSetlXSynt","SetlX Syntax Test", TextSetlX, TT_JARTEST , T_SETLX, tPubReqAlways, tSetLxVer, true,
+    new TestInfo("addSetlX","SetlX Test", uiTextSetlX, TT_JARTEST, T_SETLX, tPubReqAlways, tSetLxVer), // zunächst den jartest, der auch beim Einlesen erzeugt werden soll
+    new TestInfo("addSetlXSynt","SetlX Syntax Test", uiTextSetlX, TT_JARTEST , T_SETLX, tPubReqAlways, tSetLxVer, true,
         function(testId) {
             // add file for the test
             const filename = 'setlxsyntaxtest.stlx';
@@ -216,7 +216,7 @@ testInfos = [
             getTestField(testId, ".xml_test_title").val("SetlX-Syntax-Test");
         }
     ),
-    new TestInfo("addCheckStyle","CheckStyle Test", TextJavaCheckst, TT_CHECKSTYLE, T_CHECKSTYLE, tPubReqAlways + tCSWarnings, tPrakVer),
+    new TestInfo("addCheckStyle","CheckStyle Test", uiTextJavaCheckst, TT_CHECKSTYLE, T_CHECKSTYLE, tPubReqAlways + tCSWarnings, tPrakVer),
     new TestInfo("addDGSetup","DejaGnu Setup", "", TT_DEJAGNU_SETUP, T_DG_SETUP, tPubReqAlways, ""),
     new TestInfo("addDGTester","DejaGnu Tester", "", TT_DEJAGNU_TESTER, T_DG_TESTER, tPubReqAlways, ""),
 ];

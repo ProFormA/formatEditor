@@ -194,7 +194,7 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
     // build hash from testinfos
     var xmlHash = {};
     $.each(testInfos, function(index, testinfo) {
-        xmlHash[testinfo.templateName] = createXmlTestTemplate(testinfo.testType, testinfo.template1, testinfo.template2);
+        xmlHash[testinfo.xmlTemplateName] = createXmlTestTemplate(testinfo.testType, testinfo.xmlTemplate1, testinfo.xmlTemplate2);
     })
 
 /*
@@ -350,7 +350,7 @@ convertToXML = function() {
                         $.each(testInfos, function(index, testinfo) {
                             if (!found && testType == testinfo.testType)  {
                                 found = true;
-                                xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate[testinfo.templateName]).find('test')[0].cloneNode(1));
+                                xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate[testinfo.xmlTemplateName]).find('test')[0].cloneNode(1));
                             }
                         });
                         if (!found) {
