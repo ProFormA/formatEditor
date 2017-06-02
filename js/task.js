@@ -125,6 +125,7 @@ function createMapping(schemaversion) {                // note: the maps are glo
                 mapSingleElements.push(item.valmap);
                 break;
             default:
+                // todo add missing maps
                 throw "unsupported maptype: " + item.mappingType;
         }
     });

@@ -79,10 +79,16 @@ function ValMap(fname,xname,pname,cdata,fcont,lelem,lattr) {
 
 
 const MapType = {
-    CHILD_ELEM: 0,
-    ATTR_OF_TEST_ELEMS: 1,
-    SINGLE_ELEM: 2
+    SINGLE_ELEM: 0,
+    SINGLE_ATTRIB: 1,
+    ELEM_SEQ: 2,
+    TEXT_ELEM_SEQ: 3,
+    CHILD_ELEM: 4,
+    LIST_CHILD_ELEM: 5,
+    ATTR_IN_SEQ: 6,
+    ATTR_OF_TEST_ELEMS: 7
 };
+
 function UiXmlMap(mappingType, valmap) {
     this.mappingType = mappingType;
     this.valmap = valmap;

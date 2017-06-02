@@ -88,9 +88,10 @@ function getProgLangOptions() {
             list = list + " selected='selected'";
             first = false;
         }
-        list = list + ">" + item.name;
+        list = list + " value='" + item.name + "'>" + item.name;
         list = list + "</option>";
     });
+    console.log(list);
     return list;
 }
 
