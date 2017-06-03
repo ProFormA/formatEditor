@@ -2,21 +2,22 @@
  * Created by KarinBorm on 29.05.2017.
  */
 
-//const usePraktomat = true;
 const useCodemirror = true;  // setting this to false turns Codemirror off
-//const useLoncapa = true;    // setting this to false turns LON-CAPA elements off
 
 // The values of these variables can be changed as needed.
 const version094    = 'taskxml0.9.4.xsd';                // name of schema files
 const version101    = 'taskxml1.0.1.xsd';
 const xsdSchemaFile = version101;                        // choose version
 
-
+// -------------------------
+// NAMESPACE HANDLING
+// -------------------------
 const pfix_unit = "unit";        // fixing namespace prefixes because of
 const pfix_jart = "jartest";     // browser compatibility and jquery limitations
 const pfix_prak = "praktomat";
 
 const isFirefox = typeof InstallTrigger !== 'undefined'; // Firefox 1.0+
+console.log("isFirefox value = " + isFirefox);
 
 var ns_unit = "";
 var ns_praktomat = "";
@@ -36,103 +37,21 @@ if (xsdSchemaFile == version094) {
 }
 
 
-// testtypes used
-const TT_JAVA_COMP      = "java-compilation";
-const TT_JUNIT          = "unittest";
-const TT_JARTEST        = "jartest";
-const TT_CHECKSTYLE     = "java-checkstyle";
-const TT_DEJAGNU_SETUP  = "dejagnu-setup";
-const TT_DEJAGNU_TESTER = "dejagnu-tester";
-const TT_PYTHON         = "python";
-//    "dejagnu" ??
-
-// template names for XML
-const T_JAVA_COMP   = "JavaCompile";
-const T_JUNIT       = "JavaJunit";
-const T_SETLX       = "SetlX";
-const T_CHECKSTYLE  = "CheckStyle";
-const T_DG_SETUP    = "DGSetup";
-const T_DG_TESTER   = "DGTester";
-const T_PYTHON      = "Python";
-
-
-// classes
-function TestInfo(buttonJQueryId,title, area, testType, templateName, template1, template2, withFileRef, onButtonClicked) {
-    this.buttonJQueryId   = buttonJQueryId;
-    this.title = title;
-    this.testArea = area;
-    this.testType = testType;
-    this.xmlTemplateName = templateName;
-    if (!templateName)
-        throw "Configuration Error: TestInfo incomplete";
-    this.xmlTemplate1 = template1;
-    this.xmlTemplate2 = template2;
-    this.withFileRef = withFileRef;
-    if (withFileRef == null)
-        this.withFileRef = true; // use filerefs
-    this.onCreated = onButtonClicked;
-}
-
-function ProglangInfo(name, tests) {
-    this.name   = name;
-    this.tests = tests;
-}
-
-
-function ValMap(fname,xname,pname,cdata,fcont,lelem,lattr) {
-    this.formname = fname; // name in formular
-    this.xmlname = xname;  // element or attribute name in task.xml
-    this.xmlpath = pname;  // parent element in task.xml
-    this.cdata = cdata;    // create as CDATA in task.xml (bool)
-    this.formcontainer = fcont;  // ToDo: use this more ?
-    this.listelem = lelem;       // only for mapSubElemListArray,  mapAttrOfTestElems
-    this.listattr = lattr;       // only for mapSubElemListArray
-}
-
-
-const MapType = {
-    SINGLE_ELEM: 0,
-    SINGLE_ATTRIB: 1,
-    ELEM_SEQ: 2,
-    TEXT_ELEM_SEQ: 3,
-    CHILD_ELEM: 4,
-    LIST_CHILD_ELEM: 5,
-    ATTR_IN_SEQ: 6,
-    ATTR_OF_TEST_ELEMS: 7
-};
-
-function UiXmlMap(mappingType, valmap) {
-    this.mappingType = mappingType;
-    this.valmap = valmap;
-}
-// UI <-> XML mapping
-uiXmlMapList = [
-    // JUnit test
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_ju_mainclass",ns_unit+"main-class","test-configuration",0,".xml_test")),
-    new UiXmlMap(MapType.ATTR_OF_TEST_ELEMS, new ValMap(".xml_ju_framew","framework",ns_unit+"unittest",0,".xml_test","test")),
-    new UiXmlMap(MapType.ATTR_OF_TEST_ELEMS, new ValMap(".xml_ju_version","version",ns_unit+"unittest",0,".xml_test","test")),
-    // Jatest
-    new UiXmlMap(MapType.ATTR_OF_TEST_ELEMS, new ValMap(".xml_jt_framew","framework",ns_jartest+"jartest",0,".xml_test","test")),
-    new UiXmlMap(MapType.ATTR_OF_TEST_ELEMS, new ValMap(".xml_jt_version","version",ns_jartest+"jartest",0,".xml_test","test")),
-
-    // Praktomat
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFlags",ns_praktomat + "config-CompilerFlags","test test-meta-data",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerOutputFlags",ns_praktomat+"config-CompilerOutputFlags","test-meta-data",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerLibs",ns_praktomat+"config-CompilerLibs","test-meta-data",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFPatt",ns_praktomat+"config-CompilerFilePattern","test-meta-data",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_configDescription",ns_praktomat+"config-testDescription","test-meta-data",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_public",ns_praktomat+"public","test-meta-data",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_required",ns_praktomat+"required","test-meta-data",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_always",ns_praktomat+"always","test-meta-data",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_version",ns_praktomat +"version","test-configuration",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_warnings",ns_praktomat +"max-checkstyle-warnings","test-configuration",0,".xml_test")),
-
-
+const tNsREUnittest = 'urn:proforma:(tests:)?unittest';
+const tNsREJartest  = 'urn:proforma:tests:jartest';
+const tNsREPraktomat = 'urn:proforma:praktomat';
+// nötig, um die Namespaces in den Griff zukriegen. Mehr weiß ich auch nicht...
+namespaceRE = [
+    [tNsREUnittest,  pfix_unit],
+    [tNsREJartest, pfix_jart],
+    [tNsREPraktomat, pfix_prak],
 ];
 
-if (xsdSchemaFile == version094)
-    uiXmlMapList.push(new UiXmlMap(MapType.SINGLE_ELEM, new ValMap("#xml_upload-mime-type",ns_praktomat+"allowed-upload-filename-mimetypes","",0)));
 
+
+// -------------------------
+// TESTS
+// -------------------------
 
 // HTML building blocks for the extra fields in tests
 const uiTextJavaComp = "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
@@ -184,21 +103,25 @@ const tCSWarnings   = '<praktomat:max-checkstyle-warnings/>';
 const tJUnitVer = '<unit:unittest framework="junit" version="4.10"><unit:main-class></unit:main-class></unit:unittest>';
 const tSetLxVer = '<jartest:jartest framework="setlX" version ="2.40"></jartest:jartest>';
 
-// do not rename!
-const tExtraTemplateTopLevel = '<praktomat:allowed-upload-filename-mimetypes>(text/.*)</praktomat:allowed-upload-filename-mimetypes>';
 
+// testtypes used
+const TT_JAVA_COMP      = "java-compilation";
+const TT_JUNIT          = "unittest";
+const TT_JARTEST        = "jartest";
+const TT_CHECKSTYLE     = "java-checkstyle";
+const TT_DEJAGNU_SETUP  = "dejagnu-setup";
+const TT_DEJAGNU_TESTER = "dejagnu-tester";
+const TT_PYTHON         = "python";
+//    "dejagnu" ??
 
-
-
-const tNsREUnittest = 'urn:proforma:(tests:)?unittest';
-const tNsREJartest  = 'urn:proforma:tests:jartest';
-const tNsREPraktomat = 'urn:proforma:praktomat';
-// nötig, um die Namespaces in den Griff zukriegen. Mehr weiß ich auch nicht...
-namespaceRE = [
-    [tNsREUnittest,  pfix_unit],
-    [tNsREJartest, pfix_jart],
-    [tNsREPraktomat, pfix_prak],
-];
+// template names for XML
+const T_JAVA_COMP   = "JavaCompile";
+const T_JUNIT       = "JavaJunit";
+const T_SETLX       = "SetlX";
+const T_CHECKSTYLE  = "CheckStyle";
+const T_DG_SETUP    = "DGSetup";
+const T_DG_TESTER   = "DGTester";
+const T_PYTHON      = "Python";
 
 testInfos = [
     new TestInfo("addJavaComp","Java Compiler Test", uiTextJavaComp, TT_JAVA_COMP, T_JAVA_COMP, tPubReqAlways +tCompFlags, "", false),
@@ -221,8 +144,42 @@ testInfos = [
     new TestInfo("addDGTester","DejaGnu Tester", "", TT_DEJAGNU_TESTER, T_DG_TESTER, tPubReqAlways, ""),
 ];
 
+// -------------------------
+// MAPPING UI ELEMENT <-> XML
+// -------------------------
+
+// UI <-> XML mapping
+uiXmlMapList = [
+    // JUnit test
+    new UiXmlMap(MapType.CHILD_ELEM,  new ValMap(".xml_ju_mainclass",ns_unit+"main-class","test-configuration",0,".xml_test")),
+    new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_ju_framew","framework",ns_unit+"unittest",0,".xml_test","test")),
+    new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_ju_version","version",ns_unit+"unittest",0,".xml_test","test")),
+    // Jatest
+    new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_jt_framew","framework",ns_jartest+"jartest",0,".xml_test","test")),
+    new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_jt_version","version",ns_jartest+"jartest",0,".xml_test","test")),
+
+    // Praktomat
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFlags",ns_praktomat+"config-CompilerFlags","test test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerOutputFlags",ns_praktomat+"config-CompilerOutputFlags","test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerLibs",ns_praktomat+"config-CompilerLibs","test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFPatt",ns_praktomat+"config-CompilerFilePattern","test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_configDescription",ns_praktomat+"config-testDescription","test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_public",ns_praktomat+"public","test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_required",ns_praktomat+"required","test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_always",ns_praktomat+"always","test-meta-data",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_version",ns_praktomat +"version","test-configuration",0,".xml_test")),
+    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_warnings",ns_praktomat +"max-checkstyle-warnings","test-configuration",0,".xml_test")),
 
 
+];
+
+if (xsdSchemaFile == version094)
+    uiXmlMapList.push(new UiXmlMap(MapType.SINGLE_ELEM, new ValMap("#xml_upload-mime-type",ns_praktomat+"allowed-upload-filename-mimetypes","",0)));
+
+
+// -------------------------------
+// SUPPORTED PROGRAMMING LANGUAGES
+// -------------------------------
 
 proglangInfos = [
   new ProglangInfo("java/1.6", ["addJavaComp", "addJavaJunit", "addCheckStyle", "addDGSetup", "addDGTester"]),
@@ -231,16 +188,25 @@ proglangInfos = [
   new ProglangInfo("setlX/2.40", ["addSetlX", "addSetlXSynt", "addCheckStyle", "addDGSetup", "addDGTester"]),
 ];
 
+// -------------------------
+// XML
+// -------------------------
+
+// do not rename!
+const tExtraTemplateTopLevel = '<praktomat:allowed-upload-filename-mimetypes>(text/.*)</praktomat:allowed-upload-filename-mimetypes>';
+
+
+// -------------------------
 // overload functions for further activities
+// -------------------------
 function createFurtherUiElements() {
     insertLCformelements();
 }
 
 function createFurtherOutput(tempvals) {
     if (xsdSchemaFile == version101) {
-        createLONCAPAOutput(tempvals,codemirror,"101");
+        createLONCAPAOutput(tempvals[0],codemirror,"101");
     } else {
-        createLONCAPAOutput(tempvals,codemirror,"old");
+        createLONCAPAOutput(tempvals[0],codemirror,"old");
     }
-
 }

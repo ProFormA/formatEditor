@@ -120,7 +120,7 @@ function createMapping(schemaversion) {                // note: the maps are glo
             case MapType.CHILD_ELEM:
                 mapChildElems.push(item.valmap);
                 break;
-            case MapType.ATTR_OF_TEST_ELEMS:
+            case MapType.ATTR_TEST_ELEMS:
                 mapAttrOfTestElems.push(item.valmap);
                 break;
             case MapType.SINGLE_ELEM:
@@ -461,7 +461,7 @@ convertToXML = function() {
         });
     } catch(err) { setErrorMessage("Problem with the XML serialisation.");}
 
-    createFurtherOutput(tempvals[0]);
+    createFurtherOutput(tempvals);
 /*
     if (useLoncapa) {                                      // only if LON-CAPA is being used
         if (xsdSchemaFile == version101) {
