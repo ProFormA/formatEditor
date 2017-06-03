@@ -461,6 +461,8 @@ convertToXML = function() {
         });
     } catch(err) { setErrorMessage("Problem with the XML serialisation.");}
 
+    createFurtherOutput(tempvals[0]);
+/*
     if (useLoncapa) {                                      // only if LON-CAPA is being used
         if (xsdSchemaFile == version101) {
             createLONCAPAOutput(tempvals[0],codemirror,"101");
@@ -468,7 +470,7 @@ convertToXML = function() {
             createLONCAPAOutput(tempvals[0],codemirror,"old");
         }
     }
-
+*/
     success = true;
 };
 

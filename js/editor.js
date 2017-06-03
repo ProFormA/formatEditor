@@ -1170,7 +1170,10 @@ $(function() {
 */
 
 ///////////////////////////////////////////////////////// if LON-CAPA is used insert relevant form elements
-  if (useLoncapa == 1) { insertLCformelements();}
+  //if (useLoncapa == 1) { insertLCformelements();}
+
+  // create further elements needed for LMS
+  createFurtherUiElements();
 
   // create dummy button for saving task.xml
   var anchor = document.createElement("a");

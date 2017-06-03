@@ -2,9 +2,9 @@
  * Created by KarinBorm on 29.05.2017.
  */
 
-const usePraktomat = true;
+//const usePraktomat = true;
 const useCodemirror = true;  // setting this to false turns Codemirror off
-const useLoncapa = true;    // setting this to false turns LON-CAPA elements off
+//const useLoncapa = true;    // setting this to false turns LON-CAPA elements off
 
 // The values of these variables can be changed as needed.
 const version094    = 'taskxml0.9.4.xsd';                // name of schema files
@@ -231,3 +231,16 @@ proglangInfos = [
   new ProglangInfo("setlX/2.40", ["addSetlX", "addSetlXSynt", "addCheckStyle", "addDGSetup", "addDGTester"]),
 ];
 
+// overload functions for further activities
+function createFurtherUiElements() {
+    insertLCformelements();
+}
+
+function createFurtherOutput(tempvals) {
+    if (xsdSchemaFile == version101) {
+        createLONCAPAOutput(tempvals,codemirror,"101");
+    } else {
+        createLONCAPAOutput(tempvals,codemirror,"old");
+    }
+
+}
