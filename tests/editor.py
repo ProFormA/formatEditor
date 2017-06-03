@@ -288,7 +288,7 @@ def set_test_file(test_index, file_index):  # 0-based
 ####################################################################
 def add_java_compiler_test():
     change_tab("test_tab")          
-    elem = driver.find_element_by_id("addJavaComp").click()
+    elem = driver.find_element_by_id("addJavaCompilerTest").click()
 
 
 def set_jct_flags(jct_index, flags): # 0-based
@@ -317,7 +317,7 @@ def set_jct_file_pattern(jct_index, pattern): # 0-based
 ####################################################################
 def add_junit_test():
     change_tab("test_tab")              
-    elem = driver.find_element_by_id("addJavaJunit").click()
+    elem = driver.find_element_by_id("addJavaJUnitTest").click()
 
 
 def set_junit_description(junit_index, text): # 0-based
@@ -352,7 +352,7 @@ def set_junit_fileref2(junit_index, fileref_number):
 ####################################################################
 def add_checkstyle():
     change_tab("test_tab")                  
-    elem = driver.find_element_by_id("addCheckStyle").click()
+    elem = driver.find_element_by_id("addCheckStyleTest").click()
 
 # only one version can be selected (=> no test needed)
 def set_cs_version(cs_index, version):
@@ -380,28 +380,28 @@ def add_python_test():
 ####################################################################
 def add_setlx_test():
     change_tab("test_tab")                  
-    elem = driver.find_element_by_id("addSetlX").click()
+    elem = driver.find_element_by_id("addSetlXTest").click()
 
 ####################################################################
 # SETLX SYNTAX CHECK
 ####################################################################
 def add_setlx_syntax():
     change_tab("test_tab")                     
-    elem = driver.find_element_by_id("addSetlXSynt").click()
+    elem = driver.find_element_by_id("addSetlXSyntaxTest").click()
 
 ####################################################################
 # DEJAGNU SETUP
 ####################################################################
 def add_dejagnu_setup():
     change_tab("test_tab")                      
-    elem = driver.find_element_by_id("addDGSetup").click()
+    elem = driver.find_element_by_id("addDejaGnuSetup").click()
 
 ####################################################################
 # DEJAGNU TESTER
 ####################################################################
 def add_dejagnu_tester():
     change_tab("test_tab")                     
-    elem = driver.find_element_by_id("addDGTester").click()
+    elem = driver.find_element_by_id("addDejaGnuTester").click()
 
 
 

@@ -3,10 +3,9 @@
 // 3. test template name automatisch generieren
 
 // classes
-function TestInfo(buttonJQueryId,title, area, testType, template1, template2, withFileRef, onButtonClicked) {
-    this.buttonJQueryId   = buttonJQueryId; // TODO GENERATE AUTOMATICALLY
-    this.title = title;
-    this.testArea = area;
+function TestInfo(title, area, testType, template1, template2, withFileRef, onButtonClicked) {
+    this.title = title; // title in html output
+    this.testArea = area; // html extra elements
     this.testType = testType;
     this.xmlTemplate1 = template1;
     this.xmlTemplate2 = template2;
@@ -15,9 +14,10 @@ function TestInfo(buttonJQueryId,title, area, testType, template1, template2, wi
         this.withFileRef = true; // use filerefs
     this.onCreated = onButtonClicked;
 
-    var compactName = "add" + title.replace(/ /g, "");
+    var compactName = title.replace(/ /g, "");
     console.log(compactName);
     this.xmlTemplateName = compactName;
+    this.buttonJQueryId = "add" + compactName;
 
 }
 
