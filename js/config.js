@@ -86,7 +86,7 @@ const uiTextJavaCheckst = "<p><label for='xml_pr_CS_version'>Version<span class=
 
 
 
-const java_JUnit_Default_Title = "Java JUnit Test";
+
 
 
 // XML templates for praktomat
@@ -114,6 +114,7 @@ const TT_DEJAGNU_TESTER = "dejagnu-tester";
 const TT_PYTHON         = "python";
 //    "dejagnu" ??
 
+/*
 // template names for XML
 const T_JAVA_COMP   = "JavaCompile";
 const T_JUNIT       = "JavaJunit";
@@ -122,14 +123,16 @@ const T_CHECKSTYLE  = "CheckStyle";
 const T_DG_SETUP    = "DGSetup";
 const T_DG_TESTER   = "DGTester";
 const T_PYTHON      = "Python";
+*/
 
+const java_JUnit_Default_Title = "Java JUnit Test";
 
-const testJavaComp =  new TestInfo("addJavaComp","Java Compiler Test", uiTextJavaComp, TT_JAVA_COMP, T_JAVA_COMP, tPubReqAlways +tCompFlags, "", false);
-const testJavaJUnit = new TestInfo("addJavaJunit",java_JUnit_Default_Title, uiTextJavaJunit, TT_JUNIT, T_JUNIT, tPubReqAlways + tConfTestDesc, tJUnitVer);
-const testCheckStyle = new TestInfo("addCheckStyle","CheckStyle Test", uiTextJavaCheckst, TT_CHECKSTYLE, T_CHECKSTYLE, tPubReqAlways + tCSWarnings, tPrakVer);
-const testPython = new TestInfo("addPythonTest","Python Test", "", TT_PYTHON, T_PYTHON, tPubReqAlways, "");
-const testSetlX = new TestInfo("addSetlX","SetlX Test", uiTextSetlX, TT_JARTEST, T_SETLX, tPubReqAlways, tSetLxVer);
-const testSetlXSyntax = new TestInfo("addSetlXSynt","SetlX Syntax Test", uiTextSetlX, TT_JARTEST , T_SETLX, tPubReqAlways, tSetLxVer, true,
+const testJavaComp    =  new TestInfo("addJavaComp","Java Compiler Test", uiTextJavaComp, TT_JAVA_COMP, tPubReqAlways +tCompFlags, "", false);
+const testJavaJUnit   = new TestInfo("addJavaJunit",java_JUnit_Default_Title, uiTextJavaJunit, TT_JUNIT, tPubReqAlways + tConfTestDesc, tJUnitVer);
+const testCheckStyle  = new TestInfo("addCheckStyle","CheckStyle Test", uiTextJavaCheckst, TT_CHECKSTYLE, tPubReqAlways + tCSWarnings, tPrakVer);
+const testPython      = new TestInfo("addPythonTest","Python Test", "", TT_PYTHON, tPubReqAlways, "");
+const testSetlX       = new TestInfo("addSetlX","SetlX Test", uiTextSetlX, TT_JARTEST, tPubReqAlways, tSetLxVer);
+const testSetlXSyntax = new TestInfo("addSetlXSynt","SetlX Syntax Test", uiTextSetlX, TT_JARTEST , tPubReqAlways, tSetLxVer, true,
     function(testId) {
         // add file for the test
         const filename = 'setlxsyntaxtest.stlx';
@@ -140,8 +143,8 @@ const testSetlXSyntax = new TestInfo("addSetlXSynt","SetlX Syntax Test", uiTextS
         getTestField(testId, ".xml_test_title").val("SetlX-Syntax-Test");
     }
     );
-const testDgSetup = new TestInfo("addDGSetup","DejaGnu Setup", "", TT_DEJAGNU_SETUP, T_DG_SETUP, tPubReqAlways, "");
-const testDGTester = new TestInfo("addDGTester","DejaGnu Tester", "", TT_DEJAGNU_TESTER, T_DG_TESTER, tPubReqAlways, "");
+const testDgSetup     = new TestInfo("addDGSetup","DejaGnu Setup", "", TT_DEJAGNU_SETUP, tPubReqAlways, "");
+const testDGTester    = new TestInfo("addDGTester","DejaGnu Tester", "", TT_DEJAGNU_TESTER, tPubReqAlways, "");
 
 // Reihenfolge: in der Reihenfolge, in der die Test in testInfos angelegt werden, werden auch die Testbuttons erzeugt!
 // beachten, das bei gleichen XML-Testtypen derjenige zuerst eingetragen wird, der ein Einlesen einer Datei erzeugt werden soll.

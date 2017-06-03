@@ -1,23 +1,24 @@
 //TODO:
-// 1. proglang von test addr abhängen
 // 2. test button name automatisch generieren
 // 3. test template name automatisch generieren
 
 // classes
-function TestInfo(buttonJQueryId,title, area, testType, templateName, template1, template2, withFileRef, onButtonClicked) {
+function TestInfo(buttonJQueryId,title, area, testType, template1, template2, withFileRef, onButtonClicked) {
     this.buttonJQueryId   = buttonJQueryId; // TODO GENERATE AUTOMATICALLY
     this.title = title;
     this.testArea = area;
     this.testType = testType;
-    this.xmlTemplateName = templateName; // TODO GENERATE AUTOMATICALLY
-    if (!templateName)
-        throw "Configuration Error: TestInfo incomplete";
     this.xmlTemplate1 = template1;
     this.xmlTemplate2 = template2;
     this.withFileRef = withFileRef;
     if (withFileRef == null)
         this.withFileRef = true; // use filerefs
     this.onCreated = onButtonClicked;
+
+    var compactName = "add" + title.replace(/ /g, "");
+    console.log(compactName);
+    this.xmlTemplateName = compactName;
+
 }
 
 function ProglangInfo(name, tests) {
