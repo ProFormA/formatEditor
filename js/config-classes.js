@@ -1,21 +1,21 @@
-//TODO:
-// 2. test button name automatisch generieren
-// 3. test template name automatisch generieren
 
 // classes
-function TestInfo(title, area, testType, template1, template2, withFileRef, onButtonClicked) {
+function TestInfo(title, extraFields, testType, template1, template2, withFileRef, onButtonClicked) {
     this.title = title; // title in html output
-    this.testArea = area; // html extra elements
-    this.testType = testType;
-    this.xmlTemplate1 = template1;
-    this.xmlTemplate2 = template2;
-    this.withFileRef = withFileRef;
+    this.htmlExtraFields = extraFields; // html extra input elements
+    // XML
+    this.testType = testType; // test type in XML
+    this.xmlTemplate1 = template1; // XML template for new sub elements of test-meta-data
+    this.xmlTemplate2 = template2; // XML template for new elements(s) between
+        // filerefs and test-meta-data
+    this.withFileRef = withFileRef; // has tests asscociated files?
     if (withFileRef == null)
         this.withFileRef = true; // use filerefs
-    this.onCreated = onButtonClicked;
+    // editor
+    this.onCreated = onButtonClicked; // extra function for button clicked callback
 
+    // calculated member variables
     var compactName = title.replace(/ /g, "");
-    console.log(compactName);
     this.xmlTemplateName = compactName;
     this.buttonJQueryId = "add" + compactName;
 

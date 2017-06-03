@@ -161,53 +161,26 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
         extra = "";
     var xmlDc = $.parseXML(xmlTemp1 + xmlTemp2 + xmlTemp3 + xmlTemp4 + xmlTemp5 + tExtraTemplateTopLevel + xmlTemp6);
 
-    const xstrTestType = '<test ' + namespace + 'id=""><title/><test-type>';
-    const xstrFileRef = '</test-type><test-configuration><filerefs><fileref/></filerefs>';
-    const xstrMetaData = '<test-meta-data>';
-    const xstrTestCfg = '</test-meta-data></test-configuration></test>';
-
-/*
-    var xstrPrakVersion = "";
-    var xstrPrakPubReqAlways = "";
-    var xstrPrakCompilerFlags = "";
-    var xstrPrakConfigTestDesc = "";
-    var xstrPrakCSWarnings = "";
-    if (usePraktomat) {
-        xstrPrakVersion = '<praktomat:version/>';
-        xstrPrakPubReqAlways = '<praktomat:public>True</praktomat:public>'+
-            '<praktomat:required>True</praktomat:required>'+
-            '<praktomat:always>True</praktomat:always>';
-        xstrPrakCompilerFlags = '<praktomat:config-CompilerFlags/><praktomat:config-CompilerOutputFlags/>' +
-            '<praktomat:config-CompilerLibs/><praktomat:config-CompilerFilePattern/>';
-        xstrPrakConfigTestDesc = '<praktomat:config-testDescription/>';
-        xstrPrakCSWarnings = '<praktomat:max-checkstyle-warnings/>';
-    }
-*/
-
     function createXmlTestTemplate(testtype, metaDataElements, addElement) {
+        const xstrTestType = '<test ' + namespace + 'id=""><title/><test-type>';
+        const xstrFileRef = '</test-type><test-configuration><filerefs><fileref/></filerefs>';
+        const xstrMetaData = '<test-meta-data>';
+        const xstrTestCfg = '</test-meta-data></test-configuration></test>';
+
         if (!addElement)
             addElement = "";
-        var strTemplate = xstrTestType + testtype + xstrFileRef + addElement + xstrMetaData + metaDataElements + xstrTestCfg;
+        var strTemplate = xstrTestType + testtype + xstrFileRef +
+            addElement + xstrMetaData + metaDataElements + xstrTestCfg;
         return $.parseXML(strTemplate);
     }
 
     // build hash from testinfos
     var xmlHash = {};
     $.each(testInfos, function(index, testinfo) {
-        xmlHash[testinfo.xmlTemplateName] = createXmlTestTemplate(testinfo.testType, testinfo.xmlTemplate1, testinfo.xmlTemplate2);
+        xmlHash[testinfo.xmlTemplateName] =
+            createXmlTestTemplate(testinfo.testType, testinfo.xmlTemplate1, testinfo.xmlTemplate2);
     })
 
-/*
-    xmlHash[T_JAVA_COMP] = createXmlTestTemplate(TT_JAVA_COMP, xstrPrakPubReqAlways + xstrPrakCompilerFlags);
-    xmlHash[T_JUNIT]     = createXmlTestTemplate(TT_JUNIT, xstrPrakPubReqAlways + xstrPrakConfigTestDesc,
-        '<unit:unittest framework="junit" version="4.10"><unit:main-class></unit:main-class></unit:unittest>');
-    xmlHash[T_SETLX]     = createXmlTestTemplate(TT_DEJAGNU_SETUP, xstrPrakPubReqAlways,
-        '<jartest:jartest framework="setlX" version ="2.40"></jartest:jartest>');
-    xmlHash[T_CHECKSTYLE]= createXmlTestTemplate(TT_CHECKSTYLE, xstrPrakPubReqAlways + xstrPrakCSWarnings, xstrPrakVersion);
-    xmlHash[T_DG_SETUP]  = createXmlTestTemplate(TT_DEJAGNU_SETUP, xstrPrakPubReqAlways);
-    xmlHash[T_DG_TESTER] = createXmlTestTemplate(TT_DEJAGNU_TESTER, xstrPrakPubReqAlways);
-    xmlHash[T_PYTHON]    = createXmlTestTemplate(TT_PYTHON, xstrPrakPubReqAlways);
-*/
     return {xmlDoc : xmlDc, testtemplate: xmlHash};
 }
 
@@ -604,7 +577,7 @@ readXML = function(xmlText) {
                     found = false;
                     $.each(testInfos, function(index, item) {
                         if (!found && $(itm1).find('test-type')[0].textContent == item.testType) {
-                            newTest($(itm1).attr("id"), item.title, item.testArea, item.testType, item.withFileRef);
+                            newTest($(itm1).attr("id"), item.title, item.htmlExtraFields, item.testType, item.withFileRef);
                             found = true;
                         }
                     });

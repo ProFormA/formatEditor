@@ -532,7 +532,7 @@ $(function() {
           if (ui_title.length == 1) {
               $.each(ui_title, function(index, element) {
                   var currentTitle = $(element).val();
-                  if (!readXmlActive && currentTitle == java_JUnit_Default_Title)
+                  if (!readXmlActive && currentTitle == JUnit_Default_Title)
                       $(element).val("Junit Test " + java_getPureClassnameFromFilename(newFilename)).change();
               });
           }
@@ -1001,7 +1001,7 @@ $(function() {
             $("#" + item.buttonJQueryId).click(function() {
 
                 var testNo = setcounter(testIDs);    // sets the corresponding fileref, filename and title "SetlX-Syntax-Test"
-                newTest(testNo,item.title, item.testArea, item.testType, item.withFileRef);
+                newTest(testNo,item.title, item.htmlExtraFields, item.testType, item.withFileRef);
                 if (item.onCreated) {
                     item.onCreated(testNo);
                 }

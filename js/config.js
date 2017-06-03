@@ -37,13 +37,13 @@ if (xsdSchemaFile == version094) {
 }
 
 
-const tNsREUnittest = 'urn:proforma:(tests:)?unittest';
-const tNsREJartest  = 'urn:proforma:tests:jartest';
+const tNsREUnittest  = 'urn:proforma:(tests:)?unittest';
+const tNsREJartest   = 'urn:proforma:tests:jartest';
 const tNsREPraktomat = 'urn:proforma:praktomat';
 // nötig, um die Namespaces in den Griff zukriegen. Mehr weiß ich auch nicht...
 namespaceRE = [
     [tNsREUnittest,  pfix_unit],
-    [tNsREJartest, pfix_jart],
+    [tNsREJartest,   pfix_jart],
     [tNsREPraktomat, pfix_prak],
 ];
 
@@ -53,18 +53,19 @@ namespaceRE = [
 // TESTS
 // -------------------------
 
-// HTML building blocks for the extra fields in tests
-const uiTextJavaComp = "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
-        "<input class='tinyinput xml_pr_CompilerFlags'/>"+
-        " <label for='xml_pr_CompilerOutputFlags'>Compiler output flags: </label>"+
-        "<input class='tinyinput xml_pr_CompilerOutputFlags'/>"+
-        " <label for='xml_pr_CompilerLibs'>Compiler libs: </label>"+
-        "<input class='shortinput xml_pr_CompilerLibs' value='JAVA_LIBS'/>"+
-        " <label for='xml_pr_CompilerFPatt'>Compiler File Pattern: </label>"+
-        "<input class='shortinput xml_pr_CompilerFPatt' value='^.*\\.[jJ][aA][vV][aA]$'/></p>";
+// HTML building blocks for the extra input fields in tests
+const htmlJavaComp =
+    "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
+    "<input class='tinyinput xml_pr_CompilerFlags'/>"+
+    " <label for='xml_pr_CompilerOutputFlags'>Compiler output flags: </label>"+
+    "<input class='tinyinput xml_pr_CompilerOutputFlags'/>"+
+    " <label for='xml_pr_CompilerLibs'>Compiler libs: </label>"+
+    "<input class='shortinput xml_pr_CompilerLibs' value='JAVA_LIBS'/>"+
+    " <label for='xml_pr_CompilerFPatt'>Compiler File Pattern: </label>"+
+    "<input class='shortinput xml_pr_CompilerFPatt' value='^.*\\.[jJ][aA][vV][aA]$'/></p>";
 
 
-const uiTextJavaJunit = "<p><label for='xml_ju_mainclass'>Test class (no extension)<span class='red'>*</span>: </label>"+
+const htmlJavaJunit = "<p><label for='xml_ju_mainclass'>Test class (no extension)<span class='red'>*</span>: </label>"+
     "<input class='mediuminput xml_ju_mainclass'/>"+
     " <label for='xml_ju_framew'>Framework<span class='red'>*</span>: </label>"+
     "<select class='xml_ju_framew'><option selected='selected' value='JUnit'>JUnit</option></select>"+
@@ -74,12 +75,12 @@ const uiTextJavaJunit = "<p><label for='xml_ju_mainclass'>Test class (no extensi
     "<p><label for='xml_pr_configDescription'>Test description: </label>"+
     "<input class='largeinput xml_pr_configDescription'/></p>";
 
-const uiTextSetlX =  "<p><label for='xml_jt_framew'>Framework<span class='red'>*</span>: </label>"+
+const htmlSetlX =  "<p><label for='xml_jt_framew'>Framework<span class='red'>*</span>: </label>"+
     "<select class='xml_jt_framew'><option selected='selected' value='setlX'>setlX</option></select>"+
     " <label for='xml_jt_version'>Version<span class='red'>*</span>: </label>"+
     "<select class='xml_jt_version'><option selected='selected' value='2.40'>2.40</option></select></p>";
 
-const uiTextJavaCheckst = "<p><label for='xml_pr_CS_version'>Version<span class='red'>*</span>: </label>"+
+const htmlCheckstyle = "<p><label for='xml_pr_CS_version'>Version<span class='red'>*</span>: </label>"+
     "<select class='xml_pr_CS_version'><option selected='selected' value='6.2'>6.2</option></select>"+
     " <label for='xml_pr_CS_warnings'>Maximum warnings allowed<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_pr_CS_warnings' value='0'/></p>";
@@ -112,27 +113,25 @@ const TT_CHECKSTYLE     = "java-checkstyle";
 const TT_DEJAGNU_SETUP  = "dejagnu-setup";
 const TT_DEJAGNU_TESTER = "dejagnu-tester";
 const TT_PYTHON         = "python";
-//    "dejagnu" ??
 
-/*
-// template names for XML
-const T_JAVA_COMP   = "JavaCompile";
-const T_JUNIT       = "JavaJunit";
-const T_SETLX       = "SetlX";
-const T_CHECKSTYLE  = "CheckStyle";
-const T_DG_SETUP    = "DGSetup";
-const T_DG_TESTER   = "DGTester";
-const T_PYTHON      = "Python";
-*/
+const JUnit_Default_Title = "Java JUnit Test";
 
-const java_JUnit_Default_Title = "Java JUnit Test";
-
-const testJavaComp    =  new TestInfo("Java Compiler Test", uiTextJavaComp, TT_JAVA_COMP, tPubReqAlways +tCompFlags, "", false);
-const testJavaJUnit   = new TestInfo(java_JUnit_Default_Title, uiTextJavaJunit, TT_JUNIT, tPubReqAlways + tConfTestDesc, tJUnitVer);
-const testCheckStyle  = new TestInfo("CheckStyle Test", uiTextJavaCheckst, TT_CHECKSTYLE, tPubReqAlways + tCSWarnings, tPrakVer);
-const testPython      = new TestInfo("Python Test", "", TT_PYTHON, tPubReqAlways, "");
-const testSetlX       = new TestInfo("SetlX Test", uiTextSetlX, TT_JARTEST, tPubReqAlways, tSetLxVer);
-const testSetlXSyntax = new TestInfo("SetlX Syntax Test", uiTextSetlX, TT_JARTEST , tPubReqAlways, tSetLxVer, true,
+const testJavaComp    = new TestInfo("Java Compiler Test", htmlJavaComp,
+    TT_JAVA_COMP, tPubReqAlways + tCompFlags, "", false);
+const testJavaJUnit   = new TestInfo(JUnit_Default_Title, htmlJavaJunit,
+    TT_JUNIT, tPubReqAlways + tConfTestDesc, tJUnitVer);
+const testCheckStyle  = new TestInfo("CheckStyle Test", htmlCheckstyle,
+    TT_CHECKSTYLE, tPubReqAlways + tCSWarnings, tPrakVer);
+const testPython      = new TestInfo("Python Test", "",
+    TT_PYTHON, tPubReqAlways, "");
+const testDgSetup     = new TestInfo("DejaGnu Setup", "",
+    TT_DEJAGNU_SETUP, tPubReqAlways, "");
+const testDGTester    = new TestInfo("DejaGnu Tester", "",
+    TT_DEJAGNU_TESTER, tPubReqAlways, "");
+const testSetlX       = new TestInfo("SetlX Test", htmlSetlX,
+    TT_JARTEST, tPubReqAlways, tSetLxVer);
+const testSetlXSyntax = new TestInfo("SetlX Syntax Test", htmlSetlX,
+    TT_JARTEST , tPubReqAlways, tSetLxVer, true,
     function(testId) {
         // add file for the test
         const filename = 'setlxsyntaxtest.stlx';
@@ -143,8 +142,6 @@ const testSetlXSyntax = new TestInfo("SetlX Syntax Test", uiTextSetlX, TT_JARTES
         getTestField(testId, ".xml_test_title").val("SetlX-Syntax-Test");
     }
     );
-const testDgSetup     = new TestInfo("DejaGnu Setup", "", TT_DEJAGNU_SETUP, tPubReqAlways, "");
-const testDGTester    = new TestInfo("DejaGnu Tester", "", TT_DEJAGNU_TESTER, tPubReqAlways, "");
 
 // Reihenfolge: in der Reihenfolge, in der die Test in testInfos angelegt werden, werden auch die Testbuttons erzeugt!
 // beachten, das bei gleichen XML-Testtypen derjenige zuerst eingetragen wird, der ein Einlesen einer Datei erzeugt werden soll.
@@ -192,12 +189,12 @@ if (xsdSchemaFile == version094)
 // -------------------------------
 // SUPPORTED PROGRAMMING LANGUAGES
 // -------------------------------
-
+// with associated tests
 proglangInfos = [
-  new ProglangInfo("java/1.6", [testJavaComp, testJavaJUnit, testCheckStyle, testDgSetup, testDGTester]),
-  new ProglangInfo("java/1.8", [testJavaComp, testJavaJUnit, testCheckStyle, testDgSetup, testDGTester]),
-  new ProglangInfo("python/2", [testPython, testCheckStyle, testDgSetup, testDGTester]),
-  new ProglangInfo("setlX/2.40", [testSetlX, testSetlXSyntax, testCheckStyle, testDgSetup, testDGTester]),
+  new ProglangInfo("java/1.6",   [testJavaComp, testJavaJUnit,   testCheckStyle, testDgSetup, testDGTester]),
+  new ProglangInfo("java/1.8",   [testJavaComp, testJavaJUnit,   testCheckStyle, testDgSetup, testDGTester]),
+  new ProglangInfo("python/2",   [testPython,   testCheckStyle,  testDgSetup,    testDGTester]),
+  new ProglangInfo("setlX/2.40", [testSetlX,    testSetlXSyntax, testCheckStyle, testDgSetup, testDGTester]),
 ];
 
 
