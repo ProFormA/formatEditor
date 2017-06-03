@@ -47,8 +47,6 @@ namespaceRE = [
     [tNsREPraktomat, pfix_prak],
 ];
 
-
-
 // -------------------------
 // TESTS
 // -------------------------
@@ -87,51 +85,42 @@ const htmlCheckstyle = "<p><label for='xml_pr_CS_version'>Version<span class='re
 
 
 
-
-
-
 // XML templates for praktomat
-const tPrakVer      = '<praktomat:version/>';
-const tPubReqAlways = '<praktomat:public>True</praktomat:public>'+
+const xmlPrakVer      = '<praktomat:version/>';
+const xmlPubReqAlways = '<praktomat:public>True</praktomat:public>'+
     '<praktomat:required>True</praktomat:required>'+
     '<praktomat:always>True</praktomat:always>';
-const tCompFlags    = '<praktomat:config-CompilerFlags/><praktomat:config-CompilerOutputFlags/>' +
+const xmlCompFlags    = '<praktomat:config-CompilerFlags/><praktomat:config-CompilerOutputFlags/>' +
     '<praktomat:config-CompilerLibs/><praktomat:config-CompilerFilePattern/>';
-const tConfTestDesc = '<praktomat:config-testDescription/>';
-const tCSWarnings   = '<praktomat:max-checkstyle-warnings/>';
+const xmlConfTestDesc = '<praktomat:config-testDescription/>';
+const xmlCSWarnings   = '<praktomat:max-checkstyle-warnings/>';
 
 // other XML templates
-const tJUnitVer = '<unit:unittest framework="junit" version="4.10"><unit:main-class></unit:main-class></unit:unittest>';
-const tSetLxVer = '<jartest:jartest framework="setlX" version ="2.40"></jartest:jartest>';
+const xmlJUnitVer = '<unit:unittest framework="junit" version="4.10"><unit:main-class></unit:main-class></unit:unittest>';
+const xmlSetLxVer = '<jartest:jartest framework="setlX" version ="2.40"></jartest:jartest>';
 
 
 // testtypes used
-const TT_JAVA_COMP      = "java-compilation";
-const TT_JUNIT          = "unittest";
-const TT_JARTEST        = "jartest";
-const TT_CHECKSTYLE     = "java-checkstyle";
-const TT_DEJAGNU_SETUP  = "dejagnu-setup";
-const TT_DEJAGNU_TESTER = "dejagnu-tester";
-const TT_PYTHON         = "python";
-
+const xmlTesttypeJavaComp      = "java-compilation"; // do not change, is used in task.js (TODO)
 const JUnit_Default_Title = "Java JUnit Test";
 
+// Tests objects
 const testJavaComp    = new TestInfo("Java Compiler Test", htmlJavaComp,
-    TT_JAVA_COMP, tPubReqAlways + tCompFlags, "", false);
+    xmlTesttypeJavaComp, xmlPubReqAlways + xmlCompFlags, "", false);
 const testJavaJUnit   = new TestInfo(JUnit_Default_Title, htmlJavaJunit,
-    TT_JUNIT, tPubReqAlways + tConfTestDesc, tJUnitVer);
+    "unittest", xmlPubReqAlways + xmlConfTestDesc, xmlJUnitVer);
 const testCheckStyle  = new TestInfo("CheckStyle Test", htmlCheckstyle,
-    TT_CHECKSTYLE, tPubReqAlways + tCSWarnings, tPrakVer);
+    "java-checkstyle", xmlPubReqAlways + xmlCSWarnings, xmlPrakVer);
 const testPython      = new TestInfo("Python Test", "",
-    TT_PYTHON, tPubReqAlways, "");
+    "python", xmlPubReqAlways, "");
 const testDgSetup     = new TestInfo("DejaGnu Setup", "",
-    TT_DEJAGNU_SETUP, tPubReqAlways, "");
+    "dejagnu-setup", xmlPubReqAlways, "");
 const testDGTester    = new TestInfo("DejaGnu Tester", "",
-    TT_DEJAGNU_TESTER, tPubReqAlways, "");
+    "dejagnu-tester", xmlPubReqAlways, "");
 const testSetlX       = new TestInfo("SetlX Test", htmlSetlX,
-    TT_JARTEST, tPubReqAlways, tSetLxVer);
+    "jartest", xmlPubReqAlways, xmlSetLxVer);
 const testSetlXSyntax = new TestInfo("SetlX Syntax Test", htmlSetlX,
-    TT_JARTEST , tPubReqAlways, tSetLxVer, true,
+    "jartest" , xmlPubReqAlways, xmlSetLxVer, true,
     function(testId) {
         // add file for the test
         const filename = 'setlxsyntaxtest.stlx';
