@@ -1027,7 +1027,7 @@ $(function() {
             if (pl.name == progLang) {
                 found = true;
                 $.each(pl.tests, function(index, test) {
-                    $("#" + test).show();
+                    $("#" + test.buttonJQueryId).show();
                 });
             }
         });

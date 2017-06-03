@@ -123,25 +123,34 @@ const T_DG_SETUP    = "DGSetup";
 const T_DG_TESTER   = "DGTester";
 const T_PYTHON      = "Python";
 
+
+const testJavaComp =  new TestInfo("addJavaComp","Java Compiler Test", uiTextJavaComp, TT_JAVA_COMP, T_JAVA_COMP, tPubReqAlways +tCompFlags, "", false);
+const testJavaJUnit = new TestInfo("addJavaJunit",java_JUnit_Default_Title, uiTextJavaJunit, TT_JUNIT, T_JUNIT, tPubReqAlways + tConfTestDesc, tJUnitVer);
+const testCheckStyle = new TestInfo("addCheckStyle","CheckStyle Test", uiTextJavaCheckst, TT_CHECKSTYLE, T_CHECKSTYLE, tPubReqAlways + tCSWarnings, tPrakVer);
+const testPython = new TestInfo("addPythonTest","Python Test", "", TT_PYTHON, T_PYTHON, tPubReqAlways, "");
+const testSetlX = new TestInfo("addSetlX","SetlX Test", uiTextSetlX, TT_JARTEST, T_SETLX, tPubReqAlways, tSetLxVer);
+const testSetlXSyntax = new TestInfo("addSetlXSynt","SetlX Syntax Test", uiTextSetlX, TT_JARTEST , T_SETLX, tPubReqAlways, tSetLxVer, true,
+    function(testId) {
+        // add file for the test
+        const filename = 'setlxsyntaxtest.stlx';
+        createFileWithContent(filename, 'print("");');
+        // add file reference
+        addFileReferenceToTest(testId, filename);
+        // set test title
+        getTestField(testId, ".xml_test_title").val("SetlX-Syntax-Test");
+    }
+    );
+const testDgSetup = new TestInfo("addDGSetup","DejaGnu Setup", "", TT_DEJAGNU_SETUP, T_DG_SETUP, tPubReqAlways, "");
+const testDGTester = new TestInfo("addDGTester","DejaGnu Tester", "", TT_DEJAGNU_TESTER, T_DG_TESTER, tPubReqAlways, "");
+
+// Reihenfolge: in der Reihenfolge, in der die Test in testInfos angelegt werden, werden auch die Testbuttons erzeugt!
+// beachten, das bei gleichen XML-Testtypen derjenige zuerst eingetragen wird, der ein Einlesen einer Datei erzeugt werden soll.
 testInfos = [
-    new TestInfo("addJavaComp","Java Compiler Test", uiTextJavaComp, TT_JAVA_COMP, T_JAVA_COMP, tPubReqAlways +tCompFlags, "", false),
-    new TestInfo("addJavaJunit",java_JUnit_Default_Title, uiTextJavaJunit, TT_JUNIT, T_JUNIT, tPubReqAlways + tConfTestDesc, tJUnitVer),
-    new TestInfo("addPythonTest","Python Test", "", TT_PYTHON, T_PYTHON, tPubReqAlways, ""),
-    new TestInfo("addSetlX","SetlX Test", uiTextSetlX, TT_JARTEST, T_SETLX, tPubReqAlways, tSetLxVer), // zunächst den jartest, der auch beim Einlesen erzeugt werden soll
-    new TestInfo("addSetlXSynt","SetlX Syntax Test", uiTextSetlX, TT_JARTEST , T_SETLX, tPubReqAlways, tSetLxVer, true,
-        function(testId) {
-            // add file for the test
-            const filename = 'setlxsyntaxtest.stlx';
-            createFileWithContent(filename, 'print("");');
-            // add file reference
-            addFileReferenceToTest(testId, filename);
-            // set test title
-            getTestField(testId, ".xml_test_title").val("SetlX-Syntax-Test");
-        }
-    ),
-    new TestInfo("addCheckStyle","CheckStyle Test", uiTextJavaCheckst, TT_CHECKSTYLE, T_CHECKSTYLE, tPubReqAlways + tCSWarnings, tPrakVer),
-    new TestInfo("addDGSetup","DejaGnu Setup", "", TT_DEJAGNU_SETUP, T_DG_SETUP, tPubReqAlways, ""),
-    new TestInfo("addDGTester","DejaGnu Tester", "", TT_DEJAGNU_TESTER, T_DG_TESTER, tPubReqAlways, ""),
+    testJavaComp, testJavaJUnit,
+    testPython,
+    testSetlX, testSetlXSyntax,
+    testCheckStyle,
+    testDgSetup, testDGTester
 ];
 
 // -------------------------
@@ -182,11 +191,12 @@ if (xsdSchemaFile == version094)
 // -------------------------------
 
 proglangInfos = [
-  new ProglangInfo("java/1.6", ["addJavaComp", "addJavaJunit", "addCheckStyle", "addDGSetup", "addDGTester"]),
-  new ProglangInfo("java/1.8", ["addJavaComp", "addJavaJunit", "addCheckStyle", "addDGSetup", "addDGTester"]),
-  new ProglangInfo("python/2", ["addPythonTest", "addCheckStyle", "addDGSetup", "addDGTester"]),
-  new ProglangInfo("setlX/2.40", ["addSetlX", "addSetlXSynt", "addCheckStyle", "addDGSetup", "addDGTester"]),
+  new ProglangInfo("java/1.6", [testJavaComp, testJavaJUnit, testCheckStyle, testDgSetup, testDGTester]),
+  new ProglangInfo("java/1.8", [testJavaComp, testJavaJUnit, testCheckStyle, testDgSetup, testDGTester]),
+  new ProglangInfo("python/2", [testPython, testCheckStyle, testDgSetup, testDGTester]),
+  new ProglangInfo("setlX/2.40", [testSetlX, testSetlXSyntax, testCheckStyle, testDgSetup, testDGTester]),
 ];
+
 
 // -------------------------
 // XML
