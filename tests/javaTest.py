@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import editor
+import time
 
 description = "input111"
 title = "input222"
@@ -10,6 +11,8 @@ lon_capa_path = "input4444/"
 language = "en"
 prog_lang = "java/1.8"
 
+
+editor.browser = "Firefox"
 
 
 def check_lon_capa_problem(elemOutput):
@@ -47,8 +50,12 @@ editor.delete_temporary_files()
 ####################################################################
 
 # open browser
-#driver = editor.openFirefox()
-driver = editor.openChrome()
+driver = editor.openBrowser()
+# driver = editor.openFirefox()
+#driver = editor.openChrome()
+# driver = editor.openEdge()
+# driver = editor.openPhantomJs()
+
 editor.init(driver)
 # with editor page
 editor.openEditorPage()
@@ -128,9 +135,12 @@ editor.set_file_text(5, "package de.test.test1; class MyClass {}")
 # set filename for actual java code
 # -> expect change of filename
 editor.set_filename(4, "file4.java")
-# muss zweimal gesendet werden, weil erstmal eine MsgBox erscheint,
-# die bestätigt werden muss (die Eingabe geht daher im Test verloren)
-editor.set_file_comment(4, "comment for file file4.java")
+# beim Aufruf der nächsten Funktion verliert die Eingabe zurm Dateinamen den Fokus.
+# Dadurch wird ein Test ausgelöst, der feststellt, dass in der Datei ein Klassenname und
+# ein Packagename vorhanden sind. Daraufhin wird der Dateiname geändert.
+# Die eigentliche Eingabe geht daher verloren.
+editor.set_file_comment(4, "")
+time.sleep(1);
 alert = driver.switch_to.alert
 alert.accept()
 editor.set_file_comment(4, "comment for file file4.java")

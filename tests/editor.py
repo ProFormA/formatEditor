@@ -15,9 +15,26 @@ import sys
 
 driver = 0
 codemirror = True
+browser = "Chrome"
+
+
+def openBrowser():
+    if browser == "Chrome":
+        return openChrome()
+    elif browser == "Firefox":
+        return openFirefox()
+    elif browser == "Edge":
+        return openEdge()
+    elif browser == "PhantomJS":
+        return openPhantomJs()
+    else:
+        sys.stderr.write("invalid browser value: " + browser)
+
+
 
 
 def openChrome():
+    print "Starting Chrome"
     # chromedriver = "/Users/adam/Downloads/chromedriver"
     # os.environ["webdriver.chrome.driver"] = chromedriver
     # driver = webdriver.Chrome(chromedriver)
@@ -25,9 +42,27 @@ def openChrome():
     return driver
 
 
-def openFirefox():
-    d = DesiredCapabilities.FIREFOX
+def openEdge():
+    print "Starting Edge"
 
+    driver = webdriver.Edge()
+    return driver
+
+
+def openPhantomJs():
+    print "Starting PhantomJS"
+
+    driver = webdriver.PhantomJS()
+    return driver
+
+def openFirefox():
+    print "Starting Firefox"
+
+    driver = webdriver.Firefox()
+
+    return driver
+
+    d = DesiredCapabilities.FIREFOX
     usr_bin_firefox = "/usr/bin/firefox"
     c_program_x86_firefox = r"C:\Program Files (x86)\Mozilla Firefox\firefox.exe"
 

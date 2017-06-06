@@ -1,5 +1,17 @@
 
 // classes
+/**
+ * Container for test data in configuration
+ *
+ * @param title
+ * @param extraFields
+ * @param testType
+ * @param template1
+ * @param template2
+ * @param withFileRef
+ * @param onButtonClicked
+ * @constructor
+ */
 function TestInfo(title, extraFields, testType, template1, template2, withFileRef, onButtonClicked) {
     this.title = title; // title in html output
     this.htmlExtraFields = extraFields; // html extra input elements
@@ -21,6 +33,13 @@ function TestInfo(title, extraFields, testType, template1, template2, withFileRe
 
 }
 
+/**
+ * information about programming language
+ *
+ * @param name
+ * @param tests
+ * @constructor
+ */
 function ProglangInfo(name, tests) {
     this.name   = name;
     this.tests = tests;

@@ -47,8 +47,9 @@ editor.delete_temporary_files()
 ####################################################################
 
 # open browser
+driver = editor.openBrowser()
 #driver = editor.openFirefox()
-driver = editor.openChrome()
+#driver = editor.openChrome()
 editor.init(driver)
 # with editor page
 editor.openEditorPage()

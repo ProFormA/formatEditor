@@ -1,3 +1,9 @@
+import editor
+
+print "----------------------------------------------------"
+print "run test with * " + editor.browser + " * "
+print "----------------------------------------------------"
+
 print "----"
 print "run JAVA TEST"
 import javaTest

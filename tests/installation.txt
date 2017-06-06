@@ -2,18 +2,32 @@ Installation
 
 - install Python 2.x 
 
-- install selenium for python: 
+- install selenium for python (https://pypi.python.org/pypi/selenium):
 
   Windows: 
-  newer version of python alreaedy contain pip. 
+  newer version of python already contain pip.
   It is located in a subdirectory (scripts).
  
-  cmd -> cd c:\....\Python..\scripts
+  cmd -> cd c:\....\Python\scripts
          pip install selenium
+
+  upgrade:
+         pip install selenium --upgrade
+
+  show installed modules:
+         pip list
+         or
+         pip show selenium
 
 - for FIREFOX: install geckodriver (https://github.com/mozilla/geckodriver/releases) and add path to PATH variable
   (you can also copy the geckodriver into the python directory without modifying PATH variable)
 
-- for CHROME: install chromedriver (https://chromedriver.storage.googleapis.com/index.html?path=2.27/) and add path to PATH variable
+- for CHROME: install chromedriver (https://sites.google.com/a/chromium.org/chromedriver/downloads)
+  and add path to PATH variable
   (you can also copy the chromedriver into the python directory without modifying PATH variable)
 
+- for EDGE:  	https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
+  Determine which OS version you have.
+  Then download the appropriate driver (MicrosoftWebDriver.exe) and continue (see above).
+
+- for PHANTOMJS: http://phantomjs.org/download.html
