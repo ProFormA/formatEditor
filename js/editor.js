@@ -174,6 +174,11 @@ function clearErrorMessage() {                         // clearing the error con
  * or to create a download link for text from a textarea.
  * These functions are used in click events associated with textareas.
  */
+function uploadTestTaskFile(inputbutton) {
+    // var filenew = inputbutton.files[0];
+    // TODO....
+}
+
 function uploadTaskFile(inputbutton) {                     // upload button for textareas: output, output2
         var filenew = inputbutton.files[0];
         switch (filenew.type) {
