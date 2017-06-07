@@ -12,7 +12,6 @@ language = "en"
 prog_lang = "java/1.8"
 
 
-editor.browser = "Firefox"
 
 
 def check_lon_capa_problem(elemOutput):
