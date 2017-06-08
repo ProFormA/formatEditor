@@ -13,10 +13,18 @@ import testconfig
 import time
 import sys
 
-driver = 0
-codemirror = True
-browser = "Chrome"
+import os
 
+codemirror = True
+
+
+
+####################################################################
+# open browser window
+####################################################################
+
+driver = 0
+browser = "Chrome"
 
 def openBrowser():
     if browser == "Chrome":
@@ -93,11 +101,61 @@ def openEditorPage():
     driver.get("file:///" + editor_path)
     driver.execute_script('enableTestMode();')
 
-    
 
 def init(the_driver):
     global driver
     driver = the_driver
+
+####################################################################
+
+def loadTaskFile(task_file):
+    the_path = os.path.dirname(os.path.abspath(__file__))
+    filename = the_path + "/" + task_file
+
+    elem = driver.find_element_by_id("button_load")
+    elem.click()
+    time.sleep(1);
+    # dialog = driver.switch_to.active_element # find_element_by_name("Öffnen")
+    # dialog = driver.switch_to.window("Öffnen") # find_element_by_name("Öffnen")
+    # alert = driver.switch_to.alert
+
+    main_window_handle = None
+    while not main_window_handle:
+        main_window_handle = driver.current_window_handle
+
+    for handle in driver.window_handles:
+        tmp_wnd_handle = handle
+        driver.switch_to_window(tmp_wnd_handle)
+        print driver.title
+
+
+    driver.switch_to_window(main_window_handle)
+    title = driver.title
+    print title
+
+    # driver.find_element_by_xpath(u'//a[text()="click here"]').click()
+    #signin_window_handle = None
+    #while not signin_window_handle:
+    #    for handle in driver.window_handles:
+    #        if handle != main_window_handle:
+    #            signin_window_handle = handle
+    #            break
+    #driver.switch_to.window(signin_window_handle)
+
+#    driver.find_element_by_xpath(u'//input[@id="id_1"]').send_keys(user_text_1)
+#    driver.find_element_by_xpath(u'//input[@value="OK"]').click()
+#    driver.find_element_by_xpath(u'//input[@id="id_2"]').send_keys(user_text_2)
+#    driver.find_element_by_xpath(u'//input[@value="OK"]').click()
+
+    dialog = driver.switch_to.window(main_window_handle)
+
+    dialog.send_keys(filename)
+
+    # switch back
+    driver.switch_to.default_content
+
+    print filename
+
 
 ####################################################################
 # test support    
