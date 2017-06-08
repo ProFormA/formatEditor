@@ -110,7 +110,6 @@ def openEditorPage():
 #    driver.get("https://media.elan-ev.de/proforma/editor/releases/preview/proformaEditor101.html")
     driver.get("http://127.0.0.1:8000/proformaEditor101.html")
     driver.execute_script('enableTestMode();')
-    driver.execute_script('enableTestMode();')
 
 
 def init(the_driver):
@@ -120,7 +119,6 @@ def init(the_driver):
 def closeBrowser():
     driver.close()
     driver.quit()
-    httpd.shutdown()
 
 ####################################################################
 
@@ -148,6 +146,10 @@ def loadTaskFile(task_file):
     keyboard.release(Key.enter)
 
 
+def saveTaskFile():
+    print "press save zip button"
+    elem = driver.find_element_by_id("buttonZip")
+    elem.click()
 
 ####################################################################
 # test support    
