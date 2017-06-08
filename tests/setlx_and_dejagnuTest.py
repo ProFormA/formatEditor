@@ -277,5 +277,6 @@ else:
    editor.FAILED("task_1.xml does not match task_2.xml after reimport")
 
 driver.close()
+driver.quit()
 print "test finished"
 editor.TEST_SUMMARY()

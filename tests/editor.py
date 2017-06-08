@@ -21,6 +21,7 @@ codemirror = True
 
 
 
+
 ####################################################################
 # open browser window
 ####################################################################
@@ -30,6 +31,8 @@ browser = "Chrome"
 #browser = "Edge"
 
 def openBrowser():
+    # startHttpServer()
+
     if browser == "Chrome":
         return openChrome()
     elif browser == "Firefox":
@@ -94,20 +97,30 @@ def openFirefox():
     return driver
 
 
-def openEditorPage():
+def openEditorPageFile():
     the_path = os.path.dirname(os.path.abspath(__file__))
     # print the_path
     editor_path = the_path + "/../proformaEditor101.html"
     # print editor_path
-
-    # driver.get("proformaEditor.html")
     driver.get("file:///" + editor_path)
+    driver.execute_script('enableTestMode();')
+
+
+def openEditorPage():
+#    driver.get("https://media.elan-ev.de/proforma/editor/releases/preview/proformaEditor101.html")
+    driver.get("http://127.0.0.1:8000/proformaEditor101.html")
+    driver.execute_script('enableTestMode();')
     driver.execute_script('enableTestMode();')
 
 
 def init(the_driver):
     global driver
     driver = the_driver
+
+def closeBrowser():
+    driver.close()
+    driver.quit()
+    httpd.shutdown()
 
 ####################################################################
 

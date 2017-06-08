@@ -35,4 +35,8 @@ Installation
 
 - install pynput (monitors and controls user input devices)
 
-         pip install pynput
+    pip install pynput
+
+
+For Running the tests the editor must be served by a HTTP server!
+In order to run a simple HTTP server you can start httpserver.py.
