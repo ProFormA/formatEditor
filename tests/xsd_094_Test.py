@@ -42,6 +42,9 @@ editor.openEditorPage()
 # I N P U T
 editor.loadTaskFile(task_filename)
 
+# Problem: Chrome benötigt einen Https-Server, weil er sonst
+# den z-worker nicht startet...
+# Mit Firefox geht es
 ####################################################################
 ####################################################################
 ####################################################################

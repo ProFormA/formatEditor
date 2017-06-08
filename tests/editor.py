@@ -15,6 +15,8 @@ import sys
 
 import os
 
+from pynput.keyboard import Key, Controller
+
 codemirror = True
 
 
@@ -25,6 +27,7 @@ codemirror = True
 
 driver = 0
 browser = "Chrome"
+#browser = "Edge"
 
 def openBrowser():
     if browser == "Chrome":
@@ -111,50 +114,26 @@ def init(the_driver):
 def loadTaskFile(task_file):
     the_path = os.path.dirname(os.path.abspath(__file__))
     filename = the_path + "/" + task_file
-
-    elem = driver.find_element_by_id("button_load")
-    elem.click()
-    time.sleep(1);
-    # dialog = driver.switch_to.active_element # find_element_by_name("Öffnen")
-    # dialog = driver.switch_to.window("Öffnen") # find_element_by_name("Öffnen")
-    # alert = driver.switch_to.alert
-
-    main_window_handle = None
-    while not main_window_handle:
-        main_window_handle = driver.current_window_handle
-
-    for handle in driver.window_handles:
-        tmp_wnd_handle = handle
-        driver.switch_to_window(tmp_wnd_handle)
-        print driver.title
-
-
-    driver.switch_to_window(main_window_handle)
-    title = driver.title
-    print title
-
-    # driver.find_element_by_xpath(u'//a[text()="click here"]').click()
-    #signin_window_handle = None
-    #while not signin_window_handle:
-    #    for handle in driver.window_handles:
-    #        if handle != main_window_handle:
-    #            signin_window_handle = handle
-    #            break
-    #driver.switch_to.window(signin_window_handle)
-
-#    driver.find_element_by_xpath(u'//input[@id="id_1"]').send_keys(user_text_1)
-#    driver.find_element_by_xpath(u'//input[@value="OK"]').click()
-#    driver.find_element_by_xpath(u'//input[@id="id_2"]').send_keys(user_text_2)
-#    driver.find_element_by_xpath(u'//input[@value="OK"]').click()
-
-    dialog = driver.switch_to.window(main_window_handle)
-
-    dialog.send_keys(filename)
-
-    # switch back
-    driver.switch_to.default_content
-
+    filename = filename.replace("/", "\\") # needed on Windows!!
     print filename
+
+    print "press load button"
+    elem = driver.find_element_by_id("button_load")
+    elem.click() # .... Edge kommt erst wieder, wenn man den Dialog beendet hat :-(D:\users\karin\Code\zell\git\formatEditor\tests\input\Hello_World_094.zip
+
+    print "wait for dialog"
+    time.sleep(2);
+
+    print "type text into dialog"
+    # control the modal window with pynpy (not selenium!)
+    # type filename in input field
+    keyboard = Controller()
+    keyboard.type(filename)
+    # Press and release enterD:\users\karin\Code\zell\git\formatEditor\tests\input\Hello_World_094.zip
+
+    keyboard.press(Key.enter)
+    keyboard.release(Key.enter)
+
 
 
 ####################################################################
