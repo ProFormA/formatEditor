@@ -29,10 +29,12 @@ codemirror = True
 
 driver = 0
 browser = "Chrome"
+firstDownload = True
 #browser = "Edge"
 
 def openBrowser():
     # startHttpServer()
+    firstDownload = True
 
     if browser == "Chrome":
         return openChrome()
@@ -142,6 +144,7 @@ def loadTaskFile(task_file, content_will_be_deleted):
     keyboard = Controller()
     keyboard.type(filename)
     # Press and release enterD:\users\karin\Code\zell\git\formatEditor\tests\input\Hello_World_094.zip
+    time.sleep(1)
 
     keyboard.press(Key.enter)
     keyboard.release(Key.enter)
@@ -161,10 +164,33 @@ def getFilenameWithWildcard(file_name):
     return filename_with_wildcards
 
 
+def confirmDownloadSaveDialog():
+
+    time.sleep(2)
+    # a new window is opened asking what to do with the download
+    print "confirm dialog"
+    keyboard = Controller()
+
+    global firstDownload
+    if firstDownload:
+        # switch to save (instead of open)
+        keyboard.press(Key.down)
+        keyboard.release(Key.down)
+        time.sleep(1)
+        firstDownload = False
+
+    keyboard.press(Key.enter)
+    keyboard.release(Key.enter)
+
+
 def saveTaskFile(expected_file_name, move_to_folder, move_to_filename_xml):
     print "press save zip button"
     elem = driver.find_element_by_id("buttonZip")
     elem.click()
+
+    if browser == "Firefox":
+        confirmDownloadSaveDialog()
+
     # wait for download to complete
     time.sleep(2)
     # move downloaded file to output folder in order to avoid name clashes
@@ -204,6 +230,9 @@ def saveTaskFile(expected_file_name, move_to_folder, move_to_filename_xml):
 
 def saveLonCapa(expected_file_name):
     elem = driver.find_element_by_id("button_save_lon_capa").click()
+
+    if browser == "Firefox":
+        confirmDownloadSaveDialog()
 
     # wait for download to complete
     time.sleep(2)

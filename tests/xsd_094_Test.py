@@ -1,6 +1,9 @@
 # coding=utf-8
 
+
 import editor
+
+# editor.browser = "Firefox"
 
 
 task_filename =  "input/Hello_World_094.zip"

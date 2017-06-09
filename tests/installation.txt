@@ -39,4 +39,5 @@ Installation
 
 
 For Running the tests the editor must be served by a HTTP server!
-In order to run a simple HTTP server you can start httpserver.py.
+In order to run a simple HTTP server you can start httpserver.py (e.g. double click in Windows).
+
