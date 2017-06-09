@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
 
 import os.path
+import shutil
 
 import testconfig
 import time
@@ -122,7 +123,7 @@ def closeBrowser():
 
 ####################################################################
 
-def loadTaskFile(task_file):
+def loadTaskFile(task_file, content_will_be_deleted):
     the_path = os.path.dirname(os.path.abspath(__file__))
     filename = the_path + "/" + task_file
     filename = filename.replace("/", "\\") # needed on Windows!!
@@ -133,7 +134,7 @@ def loadTaskFile(task_file):
     elem.click() # .... Edge kommt erst wieder, wenn man den Dialog beendet hat :-(D:\users\karin\Code\zell\git\formatEditor\tests\input\Hello_World_094.zip
 
     print "wait for dialog"
-    time.sleep(2);
+    time.sleep(2)
 
     print "type text into dialog"
     # control the modal window with pynpy (not selenium!)
@@ -145,11 +146,77 @@ def loadTaskFile(task_file):
     keyboard.press(Key.enter)
     keyboard.release(Key.enter)
 
+    print "wait for rendering to complete"
+    time.sleep(3)
 
-def saveTaskFile():
+    if content_will_be_deleted:
+        alert = driver.switch_to.alert
+        alert.accept()
+
+
+def getFilenameWithWildcard(file_name):
+    tokens = file_name.split('.')
+    filename_with_wildcards = tokens[0] + "*." + tokens[1]
+    print filename_with_wildcards
+    return filename_with_wildcards
+
+
+def saveTaskFile(expected_file_name, move_to_folder, move_to_filename_xml):
     print "press save zip button"
     elem = driver.find_element_by_id("buttonZip")
     elem.click()
+    # wait for download to complete
+    time.sleep(2)
+    # move downloaded file to output folder in order to avoid name clashes
+    # letting the browser to rename the next download and
+    # to ease handling
+
+    # Chrome increments an internal counter for each file in a new test.
+    # So HelloWorld.zip is in the next test HelloWorld (1).zip no mather
+    # if the file exists in the download folder. SO we move and rename the
+    # downloaded file
+    filename_with_wildcards = getFilenameWithWildcard(expected_file_name)
+
+    import glob
+    listing = glob.glob(testconfig.download_path + "/" + filename_with_wildcards)
+    for filename in listing:
+        lastname = filename
+        # print filename
+
+    # könnte man auch direkt auspacken... (TODO)
+    # print "rename " + lastname + " to " + move_to_folder + "/" + expected_file_name
+
+    # todo: rename it
+    try:
+        os.remove(move_to_folder + "/" + expected_file_name)
+    except:
+        pass
+
+    shutil.move(lastname, move_to_folder + "/" + expected_file_name)
+
+    import zipfile
+
+    with zipfile.ZipFile(move_to_folder + "/" + expected_file_name, "r") as z:
+        z.extractall(move_to_folder)
+
+    shutil.move(move_to_folder + "/task.xml", move_to_filename_xml)
+
+
+def saveLonCapa(expected_file_name):
+    elem = driver.find_element_by_id("button_save_lon_capa").click()
+
+    # wait for download to complete
+    time.sleep(2)
+
+    import glob
+    listing = glob.glob(testconfig.download_path + "/task*.problem")
+    for filename in listing:
+        lastname = filename
+        print filename
+
+    # print "rename " + lastname + " to " +expected_file_name
+    shutil.move(lastname, expected_file_name)
+
 
 ####################################################################
 # test support    
@@ -514,6 +581,8 @@ def export_to(task_xml, lon_capa_problem):
     text_file.close()
 
 
+
+
 def export():
     change_tab("debug_output")
     elem = driver.find_element_by_id("buttonExport").click()
@@ -552,6 +621,17 @@ def delete_file(filename):
 
 def delete_temporary_files():
     for fl in glob.glob("*.tmp"):
+        os.remove(fl)
+
+def delete_old_task_files(expected_output, output_folder):
+
+    filename_with_wildcards = getFilenameWithWildcard(expected_output)
+
+    for fl in glob.glob(testconfig.download_path + "/" + filename_with_wildcards):
+        os.remove(fl)
+    for fl in glob.glob(testconfig.download_path + "/task*.problem"):
+        os.remove(fl)
+    for fl in glob.glob(output_folder + "/" + filename_with_wildcards):
         os.remove(fl)
 
 

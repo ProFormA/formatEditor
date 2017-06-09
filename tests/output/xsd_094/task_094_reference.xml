@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?><task xmlns:unit="urn:proforma:tests:unittest:v1" xmlns:praktomat="urn:proforma:praktomat:v0.2" xmlns="urn:proforma:task:v1.0.1" xmlns:jartest="urn:proforma:tests:jartest:v1" uuid="82d30e2e-548e-42e7-a884-eef594480c30" lang="de"><description><![CDATA[<p><translated><lang which="en">
+Write a program which prints "Hello World!" (without quotation marks). The program should contain a method that returns "Hello World!". The class should be named "HelloWorld" and the method should be named "greet".
+</lang>
+<lang which="de">
+Schreiben Sie ein Programm, das "Hello World!" (ohne die Anf&uuml;hrungsstriche) ausgibt. Das Programm soll eine Methode enthalten, welche den String "Hello World!" zur&uuml;ckgibt. Die Klasse soll "HelloWorld" und die Methode soll "greet" hei&szlig;en.
+</lang>
+<lang which="default">
+Write a program which prints "Hello World!" (without quotation marks). The program should contain a method that returns "Hello World!". The class should be named "HelloWorld" and the method should be named "greet".
+</lang></translated></p>
+]]></description><proglang version="1.6">java</proglang><submission-restrictions><regexp-restriction max-size="1000" mime-type-regexp="^(text/.*)$"/></submission-restrictions><files><file class="internal" filename="HelloWorld.java" id="1" type="embedded" comment=""><![CDATA[public class HelloWorld {
+
+   public static String greet() {
+       return "Hello World!";
+   }
+
+   public static void main(String[] args) {
+       System.out.println(greet());
+   }
+}]]></file><file class="internal" filename="HelloWorldTest.java" id="2" type="embedded" comment=""><![CDATA[import junit.framework.TestCase;
+
+public class HelloWorldTest extends TestCase {
+    public void testHello()
+    {
+    HelloWorld h = new HelloWorld();
+    assertEquals(h.greet(), "Hello World!");
+    }
+
+}
+]]></file></files><model-solutions><model-solution id="1" comment=""><filerefs><fileref refid="1"/></filerefs></model-solution></model-solutions><tests><test id="1"><title>Java Compiler Test</title><test-type>java-compilation</test-type><test-configuration><test-meta-data><praktomat:public>True</praktomat:public><praktomat:required>True</praktomat:required><praktomat:always>True</praktomat:always><praktomat:config-CompilerFlags/><praktomat:config-CompilerOutputFlags/><praktomat:config-CompilerLibs>JAVA_LIBS</praktomat:config-CompilerLibs><praktomat:config-CompilerFilePattern>^.*\.[jJ][aA][vV][aA]$</praktomat:config-CompilerFilePattern></test-meta-data></test-configuration></test><test id="2"><title>Java JUnit Test</title><test-type>unittest</test-type><test-configuration><filerefs><fileref refid="2"/></filerefs><unit:unittest framework="JUnit" version="4.10"><unit:main-class>HelloWorldTest</unit:main-class></unit:unittest><test-meta-data><praktomat:public>True</praktomat:public><praktomat:required>True</praktomat:required><praktomat:always>True</praktomat:always><praktomat:config-testDescription/></test-meta-data></test-configuration></test></tests><grading-hints/><meta-data><title>HelloWorld</title><praktomat:allowed-upload-filename-mimetypes>(text/.*)</praktomat:allowed-upload-filename-mimetypes></meta-data></task>

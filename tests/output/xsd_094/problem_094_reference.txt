@@ -1,0 +1,55 @@
+<problem>
+
+<!-- generated with ProFormA editor version 2.1.0 beta -->
+
+<import id="11">/res/fhwf/ecult/lib/proforma_v2.library</import>
+<import id="91">/res/fhwf/ecult/lib/SyntaxHighlighter/CodeMirror_Header.library</import>
+
+<script type="loncapa/perl">
+$zip_file = zip_path('zip/') . 'HelloWorld.zip';
+# LON-CAPA partID, redundant taskID, submissiontype, filename of submitted file,Mime type, zip location
+$externalurl = &proforma_url(0,'0', 'textfield', 'HelloWorld.java','x-java',$zip_file,'v1.0.1');
+$ausgabe = &proforma_output(0,1); # LON-CAPA partID, LON-CAPA responseID 
+$modelsolution = '<pre>public class HelloWorld {
+
+   public static String greet() {
+       return "Hello World!";
+   }
+
+   public static void main(String[] args) {
+       System.out.println(greet());
+   }
+}</pre>';
+</script>
+
+<startouttext />
+<p><translated><lang which="en">
+Write a program which prints "Hello World!" (without quotation marks). The program should contain a method that returns "Hello World!". The class should be named "HelloWorld" and the method should be named "greet".
+</lang>
+<lang which="de">
+Schreiben Sie ein Programm, das "Hello World!" (ohne die Anf&uuml;hrungsstriche) ausgibt. Das Programm soll eine Methode enthalten, welche den String "Hello World!" zur&uuml;ckgibt. Die Klasse soll "HelloWorld" und die Methode soll "greet" hei&szlig;en.
+</lang>
+<lang which="default">
+Write a program which prints "Hello World!" (without quotation marks). The program should contain a method that returns "Hello World!". The class should be named "HelloWorld" and the method should be named "greet".
+</lang></translated></p>
+
+<endouttext />
+
+<startouttext />
+$pfad_error
+$error
+$ausgabe
+<div id="codemirror-textfield">
+<endouttext />
+
+<externalresponse answerdisplay="$modelsolution" answer="" url="$externalurl" form="%args" id="1">
+<textfield>
+
+</textfield>
+</externalresponse>
+
+<startouttext />
+</div>
+<endouttext />
+<import id="92">/res/fhwf/ecult/lib/SyntaxHighlighter/CodeMirror_Footer.library</import>
+</problem>
