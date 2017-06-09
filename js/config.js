@@ -51,6 +51,13 @@ namespaceRE = [
     [tNsREPraktomat, pfix_prak],
 ];
 
+
+// list of XML schema files that shall be used for validation
+xsds = [
+    xsdSchemaFile, // XSD for task.xml (default)
+    // "praktomat.xsd"
+]
+
 // -------------------------
 // TESTS
 // -------------------------

@@ -424,14 +424,27 @@ convertToXML = function() {
             xmlString = "<?xml version='1.0' encoding='UTF-8'?>" + xmlString;
         }
         $("#output").val(xmlString);
+/*
         $.get(xsdSchemaFile, function(data, textStatus, jqXHR) {      // read XSD schema
             var valid = xmllint.validateXML({xml: xmlString, schema: jqXHR.responseText});
             if (valid.errors !== null) {                                // does not conform to schema
                 setErrorMessage(valid.errors[0]);
             }
         }).fail(function(jqXHR, textStatus, errorThrown) {
-            setErrorMessage("XSD-Schema not found.");
+            setErrorMessage("XSD-Schema " + xsdSchemaFile + " not found.");
         });
+*/
+        $.each(xsds, function(index, xsd_file) {       // loop: xsd files for validation
+            $.get(xsd_file, function(data, textStatus, jqXHR) {      // read XSD schema
+                var valid = xmllint.validateXML({xml: xmlString, schema: jqXHR.responseText});
+                if (valid.errors !== null) {                                // does not conform to schema
+                    setErrorMessage(valid.errors[0]);
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                setErrorMessage("XSD-Schema " + xsd_file + " not found.");
+            });
+        });
+
     } catch(err) { setErrorMessage("Problem with the XML serialisation.");}
 
     createFurtherOutput(tempvals);
@@ -535,11 +548,25 @@ readXML = function(xmlText) {
         $.get(tempschema, function(data, textStatus, jqXHR) {      // read XSD schema and validate
             var valid = xmllint.validateXML({xml: xmlTemplate, schema: jqXHR.responseText});
             if (valid.errors !== null) {                             // does not conform to schema?
-                setErrorMessage(valid.errors[0]);
+                setErrorMessage("Validation of " + tempschema + ": " + valid.errors[0]);
             }
         }).fail(function(jqXHR, textStatus, errorThrown) {
-            setErrorMessage("XSD-Schema not found.");
+            setErrorMessage("XSD-Schema " + tempschema + " not found.", errorThrown);
         });
+
+        if (tempschema == xsdSchemaFile) {
+            // current schema is used => validate all configured xsd files
+            $.each(xsds, function(index, xsd_file) {       // loop: xsd files for validation
+                $.get(xsd_file, function(data, textStatus, jqXHR) {      // read XSD schema and validate
+                    var valid = xmllint.validateXML({xml: xmlTemplate, schema: jqXHR.responseText});
+                    if (valid.errors !== null) {                             // does not conform to schema?
+                        setErrorMessage("Validation of " + xsd_file + ": " + valid.errors[0]);
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    setErrorMessage("XSD-Schema " + xsd_file + " not found.", errorThrown);
+                });
+            });
+        }
 
         $.each(mapSingleElements, function(index, item) {          // ToDo grading hints
             if (xmlObject.find(item.xmlname)[0]) {
