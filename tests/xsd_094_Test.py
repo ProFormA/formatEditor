@@ -12,7 +12,6 @@ filename_task_xml = "HelloWorld.zip"
 
 output_folder = "output/xsd_094"
 
-output_folder + "/" + filename_task_xml
 ####################################################################
 # clean up
 ####################################################################
