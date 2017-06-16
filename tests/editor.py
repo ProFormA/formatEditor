@@ -120,7 +120,7 @@ def init(the_driver):
     driver = the_driver
 
 def closeBrowser():
-    driver.close()
+    # driver.close() # webdriver throws an exception for Firefox if close and quit is called
     driver.quit()
 
 ####################################################################

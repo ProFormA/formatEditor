@@ -110,6 +110,6 @@ else:
    editor.FAILED("problem file is not ok! (2)")
 
 
-driver.close()
+editor.closeBrowser()
 print "test finished"
 editor.TEST_SUMMARY()

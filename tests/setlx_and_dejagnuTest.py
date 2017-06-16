@@ -276,7 +276,7 @@ if editor.is_file1_equal_to_file2_except_for_uuid(filename_task_xml_1, filename_
 else:
    editor.FAILED("task_1.xml does not match task_2.xml after reimport")
 
-driver.close()
-driver.quit()
+editor.closeBrowser()
+
 print "test finished"
 editor.TEST_SUMMARY()
