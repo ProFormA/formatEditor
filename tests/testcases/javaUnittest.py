@@ -201,9 +201,9 @@ class JavaTest(zipFileTest.ZipFileTest):
 
         # fill JUnit test #1
         editor.set_junit_description(1, "junit description # 1")
-        editor.set_test_file(counter_test_index, 3)
-        editor.set_test_title(counter_test_index, "JUnit Test #1")
-        editor.set_junit_test_class(1, "JUNIT test class #1")
+        editor.set_test_file(counter_test_index, 4) # file with package name
+        # editor.set_test_title(counter_test_index, "JUnit Test #1")
+        # editor.set_junit_test_class(1, "JUNIT test class #1")
         editor.set_test_public(counter_test_index, "True")
         editor.set_test_required(counter_test_index, "True")
         editor.set_junit_version(1, 0)
@@ -223,7 +223,7 @@ class JavaTest(zipFileTest.ZipFileTest):
         editor.set_test_required(counter_test_index, "False")
         editor.set_cs_version(0, 0)
         editor.set_cs_max_warnings(0, "2")
-        editor.set_test_file(counter_test_index, 4)
+        editor.set_test_file(counter_test_index, 3)
         counter_test_index = counter_test_index + 1
 
         editor.set_test_title(counter_test_index, "checkstyle test title #1")
@@ -231,7 +231,7 @@ class JavaTest(zipFileTest.ZipFileTest):
         editor.set_test_required(counter_test_index, "True")
         editor.set_cs_version(1, 0)
         editor.set_cs_max_warnings(1, "0")
-        editor.set_test_file(counter_test_index, 4)
+        editor.set_test_file(counter_test_index, 3)
         counter_test_index = counter_test_index + 1
 
         zipFileTest.ZipFileTest.saveFilesAndReloadAndSave(self, expectedZipName)
