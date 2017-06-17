@@ -76,7 +76,7 @@ class ZipFileTest(unittest.TestCase):
         # reimport
         editor.loadTaskFile(self.lastSavedZipFile, True) # self.output_folder + "/" + self.filename_task_xml, True)
 
-    def saveFilesAndReload(self, expectedFilename):
+    def saveFilesAndReloadAndSave(self, expectedFilename):
         # TODO??
         # editor.perform_xml_lint_check(filename_task_xml_1);
 

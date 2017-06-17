@@ -16,5 +16,5 @@ class Xsd_0_94_Test(zipFileTest.ZipFileTest):
 
     def test_zipfile_0_94(self):
         zipFileTest.ZipFileTest.loadZipFile(self, "input/Hello_World_094.zip") # relative to testsuite
-        zipFileTest.ZipFileTest.saveFilesAndReload(self, expectedZipName)
+        zipFileTest.ZipFileTest.saveFilesAndReloadAndSave(self, expectedZipName)
 

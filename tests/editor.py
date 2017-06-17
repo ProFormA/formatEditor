@@ -229,6 +229,8 @@ def saveTaskFile(expected_file_name, move_to_folder, move_to_filename_xml):
 
 
 def saveLonCapa(expected_file_name):
+    change_tab("main_tab")
+
     elem = driver.find_element_by_id("button_save_lon_capa").click()
 
     if browser == "Firefox":
@@ -295,6 +297,12 @@ def showModalWindow():
       pass
    alert = driver.switch_to.alert
    alert.accept()
+
+
+def confirmPopup():
+    alert = driver.switch_to.alert
+    alert.accept()
+
 
 ####################################################################
 # editor input helpers
