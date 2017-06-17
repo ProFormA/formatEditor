@@ -152,8 +152,9 @@ class SetlxDgTest(zipFileTest.ZipFileTest):
         # test titles and filerefs use common class name :-(
         editor.add_setlx_syntax()
 
-        editor.set_test_file(counter_test_index, 1)
-        editor.set_test_title(counter_test_index, "SETLX Syntax check #0")
+        # do not set filename and title because these values are set by editor!
+#        editor.set_test_file(counter_test_index, 1)
+#        editor.set_test_title(counter_test_index, "SETLX Syntax check #0")
         editor.set_test_public(counter_test_index, "False")
         editor.set_test_required(counter_test_index, "False")
 
