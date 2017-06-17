@@ -16,6 +16,7 @@ print "----------------------------------------------------"
 
 loader = unittest.TestLoader()
 start_dir = 'testcases'
+# suite = loader.discover(start_dir, "java*.py")
 suite = loader.discover(start_dir, "*test*.py")
 
 runner = unittest.TextTestRunner(verbosity=2)
