@@ -13,7 +13,7 @@ class ZipFileTest(unittest.TestCase):
 
     def setUp(self, testdir, testfile): # testdir e.g. 'xsd_094', testfile e.g. 'task_094'
         print "----------------------------------------------------"
-        print "starting ZipFileTest"
+        print "starting ZipFileTest " + testdir + "/" + testfile
         print "----------------------------------------------------"
 
         self.output_folder = self.default_output_folder + "/" + testdir
@@ -75,6 +75,16 @@ class ZipFileTest(unittest.TestCase):
     def reimportZipFile(self):
         # reimport
         editor.loadTaskFile(self.lastSavedZipFile, True) # self.output_folder + "/" + self.filename_task_xml, True)
+
+    def saveFilesAndReload(self, expectedFilename):
+        # TODO??
+        # editor.perform_xml_lint_check(filename_task_xml_1);
+
+        self.saveZipFile(expectedFilename)
+        self.saveLonCapaFile()
+        self.reimportZipFile()
+        self.saveZipFile(expectedFilename)
+        self.saveLonCapaFile()
 
 
     if __name__ == '__main__':
