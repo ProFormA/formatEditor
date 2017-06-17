@@ -23,7 +23,6 @@ runner.run(suite)
 
 time.sleep(3);
 
-# todo: das läuft noch nicht sauber, weil die ZIP-Datei nicht gespeichert sondern geöffnet wird...
 editor.browser = "Firefox"
 print "----------------------------------------------------"
 print "run test with * " + editor.browser + " * "

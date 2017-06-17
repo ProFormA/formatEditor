@@ -34,6 +34,7 @@ firstDownload = True
 
 def openBrowser():
     # startHttpServer()
+    global firstDownload
     firstDownload = True
 
     if browser == "Chrome":
@@ -129,16 +130,16 @@ def loadTaskFile(task_file, content_will_be_deleted):
     the_path = os.path.dirname(os.path.abspath(__file__))
     filename = the_path + "/" + task_file
     filename = filename.replace("/", "\\") # needed on Windows!!
-    print filename
+    # print filename
 
-    print "press load button"
+    # print "press load button"
     elem = driver.find_element_by_id("button_load")
     elem.click() # .... Edge kommt erst wieder, wenn man den Dialog beendet hat :-(D:\users\karin\Code\zell\git\formatEditor\tests\input\Hello_World_094.zip
 
-    print "wait for dialog"
+    # print "wait for dialog"
     time.sleep(2)
 
-    print "type text into dialog"
+    # print "type text into dialog"
     # control the modal window with pynpy (not selenium!)
     # type filename in input field
     keyboard = Controller()
@@ -149,7 +150,7 @@ def loadTaskFile(task_file, content_will_be_deleted):
     keyboard.press(Key.enter)
     keyboard.release(Key.enter)
 
-    print "wait for rendering to complete"
+    # print "wait for rendering to complete"
     time.sleep(3)
 
     if content_will_be_deleted:
@@ -160,7 +161,7 @@ def loadTaskFile(task_file, content_will_be_deleted):
 def getFilenameWithWildcard(file_name):
     tokens = file_name.split('.')
     filename_with_wildcards = tokens[0] + "*." + tokens[1]
-    print filename_with_wildcards
+    # print filename_with_wildcards
     return filename_with_wildcards
 
 
@@ -168,11 +169,12 @@ def confirmDownloadSaveDialog():
 
     time.sleep(2)
     # a new window is opened asking what to do with the download
-    print "confirm dialog"
+    # print "confirm dialog"
     keyboard = Controller()
 
     global firstDownload
     if firstDownload:
+        print "1. Download => Speichern statt Öffnen wählen"
         # switch to save (instead of open)
         keyboard.press(Key.down)
         keyboard.release(Key.down)
@@ -243,7 +245,7 @@ def saveLonCapa(expected_file_name):
     listing = glob.glob(testconfig.download_path + "/task*.problem")
     for filename in listing:
         lastname = filename
-        print filename
+        # print filename
 
     # print "rename " + lastname + " to " +expected_file_name
     shutil.move(lastname, expected_file_name)
