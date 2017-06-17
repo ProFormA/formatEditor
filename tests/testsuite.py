@@ -8,10 +8,17 @@ print "----------------------------------------------------"
 print "run test with * " + editor.browser + " * "
 print "----------------------------------------------------"
 
-print "run 0.94 version test (tc)"
+loader = unittest.TestLoader()
+start_dir = 'testcases'
+suite = loader.discover(start_dir, "*test*.py")
 
-suite = unittest.TestLoader().loadTestsFromTestCase(xsd_094_Unittest.Xsd_0_94_Test)
-unittest.TextTestRunner(verbosity=2).run(suite)
+runner = unittest.TextTestRunner()
+runner.run(suite)
+
+#print "run 0.94 version test (tc)"
+
+#suite = unittest.TestLoader().loadTestsFromTestCase(xsd_094_Unittest.Xsd_0_94_Test)
+#unittest.TextTestRunner(verbosity=2).run(suite)
 
 
 # print "run 0.94 version test"

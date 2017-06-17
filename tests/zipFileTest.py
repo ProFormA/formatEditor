@@ -12,7 +12,9 @@ class ZipFileTest(unittest.TestCase):
     default_output_folder = "output"
 
     def setUp(self, testdir, testfile): # testdir e.g. 'xsd_094', testfile e.g. 'task_094'
-        print "setup ZipFileTest"
+        print "----------------------------------------------------"
+        print "starting ZipFileTest"
+        print "----------------------------------------------------"
 
         self.output_folder = self.default_output_folder + "/" + testdir
         self.testfile = testfile
