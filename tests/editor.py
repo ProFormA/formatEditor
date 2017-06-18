@@ -186,7 +186,7 @@ def confirmDownloadSaveDialog():
 
 
 def saveTaskFile(expected_file_name, move_to_folder, move_to_filename_xml):
-    print "press save zip button"
+    # print "press save zip button"
     elem = driver.find_element_by_id("buttonZip")
     elem.click()
 
