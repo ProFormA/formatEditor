@@ -1,6 +1,9 @@
 Release Notes for 2.1.0
 
 support for configuration in separate file (config.js)
+test: support for Firefox
+test: read and write zip files instead of using output window
+test: new test for conversion of XSD version 0.9.4 input 
 
 Release Notes for 2.0.3
 

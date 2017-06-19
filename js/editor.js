@@ -38,7 +38,7 @@ const TEST_MODE = false;
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
 
-var codeversion   = '2.1.0 beta';                     // contains the current version of this code
+var codeversion   = '2.1.0';                     // contains the current version of this code
                                                        // these variables can be set in the calling HTML file  
 var readXmlActive = false;
 
