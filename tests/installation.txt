@@ -1,5 +1,5 @@
 Installation 
-
+------------
 - install Python 2.x 
 
 
@@ -38,6 +38,12 @@ Installation
     pip install pynput
 
 
+Running Tests
+-------------
 For Running the tests the editor must be served by a HTTP server!
-In order to run a simple HTTP server you can start httpserver.py (e.g. double click in Windows).
+This is very important because the tests start the editor with 'http://127.0.0.1:8000/proformaEditor101.html'. 
+In order to run a simple HTTP server you can start httpserver.py with the 'tests' working directory (e.g. double click in Windows). 
+
+If you want to debug a test script set the working directory to the 'tests' directory (not testcases where the actual test script is located).
+
 

@@ -25,7 +25,8 @@ console.log("isFirefox value = " + isFirefox);
 
 var ns_unit = "";
 var ns_praktomat = "";
-if (isFirefox) {
+// if (isFirefox) // this code must be include for newer version os Chrome!
+{
     ns_praktomat = pfix_prak + "\\:";
     ns_unit = pfix_unit + "\\:";
     var ns_jartest = pfix_jart + "\\:";

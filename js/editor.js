@@ -155,8 +155,10 @@ function setErrorMessageInvalidOption(xmlpath, attribute, value) {              
 function setErrorMessage(errormess, exception) {                  // setting the error console
     var error_output = $("#error-message");
     error_output.append("\n* " + errormess);
-    if (exception != undefined)
-        error_output.append("\n  " + exception.message);
+    if (exception != undefined) {
+        error_output.append("\n  (" + exception.message + ")");
+        console.log(exception.stack);
+    }
 
     error_output.css('visibility', 'visible');
     error_output.scrollTop(error_output[0].scrollHeight);

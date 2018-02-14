@@ -294,12 +294,12 @@ convertToXML = function() {
     $.each(mapSingleElements, function(index, item) {
         try {
             convertFormToXML(xmlObject.find(item.xmlname)[0],$(item.formname).val(),item.cdata);
-        } catch(err) { setErrorMessage("missing: "+ item.xmlname, err);}
+        } catch(err) { setErrorMessage("mapSingleElements: missing: "+ item.xmlname, err);}
     });
     $.each(mapSingleAttrs, function(index, item) {
         try {
             xmlObject.find(item.xmlpath)[0].setAttribute(item.xmlname,$(item.formname).val());
-        } catch(err) { setErrorMessage("missing: "+item.xmlpath, err);}
+        } catch(err) { setErrorMessage("mapSingleAttrs: missing: "+item.xmlpath, err);}
     });
 
     $.each(mapElemSequence, function(index, item) {                 // loop: files, model-sols, ...
@@ -331,7 +331,7 @@ convertToXML = function() {
                         }
                     }
                 }
-            } catch(err) { setErrorMessage("missing: "+item.xmlpath+" or "+item.xmlname, err);}
+            } catch(err) { setErrorMessage("mapElemSequence: missing: "+item.xmlpath+" or "+item.xmlname, err);}
 
             $(item.formname).each(function (idx1, itm1) {               // loop: xml_file existing in the form
                 $.each(mapTextInElemSequence, function(idx2, itm2) {
@@ -343,7 +343,7 @@ convertToXML = function() {
                             } else {
                                 convertFormToXML(xmlObject.find(item.xmlname)[idx1],$(itm1).find(itm2.formname).val(),itm2.cdata);
                             }
-                        } catch(err) { setErrorMessage("missing: "+item.xmlname, err);}
+                        } catch(err) { setErrorMessage("formname: missing: "+item.xmlname, err);}
                     }
                 });
 
@@ -352,7 +352,7 @@ convertToXML = function() {
                         try {
                             xmlObject.find(itm2.xmlpath)[idx1].setAttribute(itm2.xmlname,
                                 $(itm1).find(itm2.formname).val());
-                        } catch(err) { setErrorMessage("missing: "+item.xmlname, err);}
+                        } catch(err) { setErrorMessage("mapAttrInSequence: missing: "+item.xmlname, err);}
                     }
                 });
 
@@ -361,7 +361,7 @@ convertToXML = function() {
                         try {
                             $(xmlObject.find(itm2.listelem)[idx1]).find(itm2.xmlpath).attr(itm2.xmlname,
                                 $(itm1).find(itm2.formname).val());
-                        } catch(err) { setErrorMessage("missing: "+item.xmlname, err);}
+                        } catch(err) { setErrorMessage("mapAttrOfTestElems: missing: "+item.xmlname, err);}
                     }
                 });
 
@@ -369,9 +369,17 @@ convertToXML = function() {
                     if (typeof $(itm1).find(itm2.formname).val() != "undefined") {    // it exists in the form
                         if (item.formname == itm2.formcontainer) {            // relational join
                             try {
+/*                                para_1_1 = $(xmlObject.find(itm2.xmlpath)[idx1]);
+                                para_1_2 = para_1_1.find(itm2.xmlname);
+                                para_1_3 = para_1_2[0];
+                                para1 = $(xmlObject.find(itm2.xmlpath)[idx1]).find(itm2.xmlname)[0];
+                                para2 = $(itm1).find(itm2.formname).val();
+                                para3 = itm2.cdata;
+                                convertFormToXML(para1, para2, para3); */
                                 convertFormToXML($(xmlObject.find(itm2.xmlpath)[idx1]).find(itm2.xmlname)[0],
                                     $(itm1).find(itm2.formname).val(),itm2.cdata);
-                            } catch(err) { setErrorMessage("missing: "+itm2.xmlpath+idx1+itm2.xmlname, err);}
+//                                setErrorMessage("mapChildElems: OK: "+itm2.xmlpath+"["+idx1+"] "+itm2.xmlname, null);
+                            } catch(err) { setErrorMessage("mapChildElems: missing: "+itm2.xmlpath+"["+idx1+"] "+itm2.xmlname, err);}
                         }
                     }
                 });
@@ -391,7 +399,7 @@ convertToXML = function() {
                                 $.each($(tempvar).find(itm2.xmlname), function(idx3,itm3) {  // loop fileref
                                     itm3.setAttribute(itm2.listattr,$(itm1).find(itm2.formname)[idx3].value,itm2.cdata);
                                 });
-                            } catch(err) { setErrorMessage("missing: "+itm2.xmlpath+idx1+itm2.xmlname, err);}
+                            } catch(err) { setErrorMessage("mapListOfChildElems: missing: "+itm2.xmlpath+idx1+itm2.xmlname, err);}
                         }
                     }
                 });
