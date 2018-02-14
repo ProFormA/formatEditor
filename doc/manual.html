@@ -1,6 +1,6 @@
 <head>
-    <meta charset="utf-8"> 
-</head>   
+    <meta charset="utf-8">
+</head>
 <!-- See the file js/editor.js for the version number of this software, its license etc -->
 <h2>Anleitung für den ProFormA-Editor</h2>
 
@@ -12,11 +12,13 @@ Das XML-Format muss dem <a href="https://github.com/ProFormA/taskxml" target="ne
 Standard für den Austausch von Programmieraufgaben
 entsprechen</a>.</p>
 
-<b style="color:red"> Der Export nutzt eine Funktionalität, die nicht jeder Browser in der benötigten Form unterstützt. Chrome (getestet mit Version 56.0.2924.87 (64-bit)) und Firefox (getestet mit 51.0.1 (64-Bit)) sind hier die Browser der Wahl. 
+<b style="color:red"> Der Export nutzt eine Funktionalität, die nicht jeder Browser in
+  der benötigten Form unterstützt.
+  Chrome (getestet mit Version 64.0.3282.167 (64-bit)) und Firefox (getestet mit 51.0.1 (64-Bit)) sind hier die Browser der Wahl.
     </b>
 <br>
-In Internet Explorer (Version 11.576), Edge (Version 38.14393) und Safari funktioniert der Export gar nicht oder nur eingeschränkt. Hier besteht allerdings noch die Möglichkeit, die Dateien aus den Textfeldern im Output-Reiter zu kopieren und die Dateien (UTF-8-Kodierung) von Hand zu erzeugen. 
-    
+In Internet Explorer (Version 11.576), Edge (Version 38.14393) und Safari funktioniert der Export gar nicht oder nur eingeschränkt. Hier besteht allerdings noch die Möglichkeit, die Dateien aus den Textfeldern im Output-Reiter zu kopieren und die Dateien (UTF-8-Kodierung) von Hand zu erzeugen.
+
 
 
 <h3>Aufbau des Editors</h3>
@@ -27,7 +29,7 @@ Der Editor gliedert sich in mehrere Reiter, die jeweils unterschiedliche Bestand
     <li><b>Tests:</b> enthält Angaben zu Tests, mit denen überprüft wird, ob eine Einreichung korrekt oder fehlerhaft ist</li>
     <li><b>Files:</b> enthält die Dateien, die für die Musterlösung und Tests genutzt werden</li>
     <li><b>Output:</b> Anzeige der Ergebnisdatei (nur zu Debugzwecken)</li>
-        
+
 </ul>
 
 <h3>Erstellen einer neuen Aufgabe</h3>
@@ -38,7 +40,7 @@ Einreichung und der Dateityp (als MimeType) eingegeben. Der LON-CAPA-Pfad
 muss geändert werden, so dass er den Benutzernamen und eventuell die
 Namen der Unterordner enthält.</p>
 
-<p>Wichtig ist im gesamten Formular: Alle mit einem roten Stern (*) gekennzeichneten 
+<p>Wichtig ist im gesamten Formular: Alle mit einem roten Stern (*) gekennzeichneten
 Felder müssen ausgefüllt sein, damit eine Aufgabe exportiert werden kann.</p>
 
 <!--<p><img alt="doku1" src="images/doku1.png" /></p>-->
@@ -54,7 +56,7 @@ Musterlösung verknüpft werden.
 </p>
 <h4>Tests</h4>
 <p>
-    
+
     Analog zur Musterlösung wird mit den Tests verfahren. Hier müssen entprechend der Programmiersprache und der Aufgabenstellung
     geeignete Tests definiert werden.
     Der Editor bietet abhängig von der Programmiersprache unterschiedliche Testmöglichkeiten an:
@@ -71,22 +73,47 @@ Musterlösung verknüpft werden.
 <h4>Dateien</h4>
 <p>
 Jede Datei muss einen Namen mit einer entsprechende Endung (z.B. &bdquo;.java&ldquo;) erhalten.
-    (Werden die Dateien über die  &ltload...&gt-Option oder per
+    (Werden die Dateien über die &ltload...&gt-Option oder per
     Drag&Drop geladen, so wird der Original-Dateiname automatisch übernommen.)
 </p>
 <p>
     Bei Dateien muss immer ein Paramer <code>Class</code> angegeben werden. Dieser hat folgende Bedeutung:</p>
 <ul>
-    <li><code>internal</code> (Default), <code>internal-library</code>:  für die Studierenden ist die Datei
-    nicht sichtbar</li>
-    <li><code>library</code>: die Datei ist für die Studierenden sichtbar </li>
-    <li><code>template</code>: die Datei enthält ein Code-Template</li>
-    <li><code>instruction</code>: die Datei enthält weitere Details zur Aufgabenstellung </li>
+    <li><b>library</b> (Bibliothek): Eine Bibliothek enthält Funktionen, die benötigt werden,
+      um die studentische Einreichung (das Programm) laufen lassen zu können.<br>
+      Achtung! Die Bibliothek wird dem Lernenden als Download angeboten.
+      Hier darf also kein Code enthalten sein, den die Lernenden nicht sehen sollen.
+      Die Bibliothek ist auch im Grading-System zum Laufenlassen der Tests verfügbar.
+    </li>
+    <li><b>internal-library</b> (interne Bibliothek):
+        wie library, nur wird die Bibliothek dem Lernenden nicht zum Download angeboten.
+      I.allg. enthält die interne Bibliothek Hilfsfunktionen zum Laufenlassen der Tests. </li>
+    <li><b>template</b> (Code-Vorlage/Schablone):
+      Bei Verwendung des Editors (in der studentischen Ansicht) wird dieser beim ersten Darstellen
+      mit der Code-Vorlage vorbelegt. <br>
+      Wird der Filepicker eingesetzt, wird die Code-Vorlage als Download angeboten.<br>
+      Der Lernende kann dann seinen Code direkt in die Code-Vorlage tippen. <br>
+      Eine Code-Vorlage ist immer dann sinnvoll, wenn man sonst lange die
+      erwartete Programmierschnittstelle beschreiben müsste.
+      Sie hilft, Schnittstellenprobleme zu vermeiden.
+      Sind mehrere Templates angegeben, wird in LON-CAPA nur das letzte verwendet.
+    </li>
+    <li><b>instruction</b>: die Instruction-Datei enthält weitere Details zur Aufgabenstellung (description).
+      Dies kann zum Beispiel ein pdf sein oder ein Bild.
+      Die Instruction-Datei wird dem Lernenden zum Download angeboten.
+      Einen Einfluss auf die Tests hat sie nicht.
+    </li>
+    <li><b>internal</b> (Default):
+        Dieser Typ wird verwendet, wenn keiner der anderen Typen passt.
+        Hiermit werden die Musterlösung(en) und die Testskripte gekennzeichnet.
+        Die mit internal gekennzeichneten Dateien sind für den Lernenden nicht sichtbar.
+        Sie stehen aber dem Grading-System zur Verfügung.
+    </li>
 </ul>
 <p>
 <!--
-Es kann festgelegt werden, ob Dateien bei 
-der späteren Nutzung für die Studierenden sichtbar (library) oder unsichtbar 
+Es kann festgelegt werden, ob Dateien bei
+der späteren Nutzung für die Studierenden sichtbar (library) oder unsichtbar
 (internal, internal-library) sind, als Code-Template (template) bereitgestellt werden
 oder weitere Details zur Aufgabenstellung (instruction) enthalten.
 -->
@@ -98,7 +125,7 @@ Die Verbindung zwischen der Datei und ihrem Zweck erfolgt über den Dateinamen.<
 
 <h3>Exportieren und Zippen</h3>
 
-<p>Sobald alle gewünschten Dateien und Tests hinzugefügt wurden, kann 
+<p>Sobald alle gewünschten Dateien und Tests hinzugefügt wurden, kann
 die Aufgabe als Zip-Datei exportiert werden.
 
     Dazu wird der <code>Save Zip File</code>-Knopf verwendet. Dabei wird die Zip-Datei erzeugt, die
@@ -112,7 +139,7 @@ die Aufgabe als Zip-Datei exportiert werden.
 
 <h3>Importieren einer bestehenden XML-Datei</h3>
 
-<p>Eine XML-Datei oder eine Zip-Datei, welche eine task.xml enthält, können 
+<p>Eine XML-Datei oder eine Zip-Datei, welche eine task.xml enthält, können
 auch zu Bearbeitungszwecken eingelesen
 werden. Dazu wird über den <code>Load Task...</code>-Knopf  eine Datei gesucht und geladen.
 Die Aufgabe kann nun wie oben beschrieben verändert und auch wieder exportiert
@@ -144,7 +171,7 @@ an dem die ZIP-Datei in LON-CAPA hochgeladen wurde.
 
 
 <!--Zuletzt ist noch zu beachten, dass die ZIP-Datei
-auch schon beim Testen der Aufgabe veröffentlicht werden muss, 
+auch schon beim Testen der Aufgabe veröffentlicht werden muss,
 da diese sonst nicht verarbeitet wird.--!</p>
 
 

@@ -3,7 +3,7 @@
 
 This is an editor for an exchange format for programming exercises which is
 supported by a variety of tools from different universities. The format is documented at this
-<a href="https://github.com/ProFormA/taskxml" target="new">GitHub site</a>. Because 
+<a href="https://github.com/ProFormA/taskxml" target="new">GitHub site</a>. Because
 different tools implement the format in different manners, not everything
 that is supported by this editor actually works in every tool.
 
@@ -11,7 +11,7 @@ that is supported by this editor actually works in every tool.
 Why is no output produced?</h4>
 
 These are error messages. They are generated when form elements are missing
-or when an XML file is read that contains missing information or incorrect tags. 
+or when an XML file is read that contains missing information or incorrect tags.
 A task should only be uploaded to LON-CAPA if there are no error messages.
 Apart from missing information, another source of errors are duplicate IDs:
 each file, test and model solution must have a unique ID. Model solutions and most tests
@@ -33,10 +33,10 @@ If a file is needed as a library in a subdirecty, it is important that this
 file is of class 'library' or 'internal-library'. In that case the subdirectory
 will be created as needed by the system.
 
-<h4>How do I check static details about the code? How do I prohibit students from using 
+<h4>How do I check static details about the code? How do I prohibit students from using
 (or require them to use) a construct?</h4>
 
-Checkstyle can be used. It is quite powerful and supports regular expressions. 
+Checkstyle can be used. It is quite powerful and supports regular expressions.
 Examples can be found <a href="beispiel.html" target="new">here</a>.
 
 <h4>I have a question about model solutions:</h4>
@@ -45,8 +45,8 @@ At least one model solution must be provided. It should be uploaded as a file
 which is referenced using Fileref1 from a model solution element. The file
 should probably be of class 'internal' so that the students cannot see it.
 The reason for requiring a model solution is because it makes it easier to
-reuse a task at a later point. Some tools (but not LON-CAPA) use the model solution 
-for comparison with the students' submissions. (If it is really not feasible 
+reuse a task at a later point. Some tools (but not LON-CAPA) use the model solution
+for comparison with the students' submissions. (If it is really not feasible
 to upload a model solution in exceptional circumstances
 then an empty file could be provided instead.) If the students create their submission via a
 textarea, then the filename of the model solution is used as the filename of the
@@ -79,7 +79,7 @@ have not been filled in. It is recommended to run and test all tests in an IDE b
 using them in the editor. German umlauts can pose a problem (even in comments) because
 of incompatible encodings. The characters &lt;, &gt;, &amp; may need to be presented as
 &amp;lt;, &amp;gt;, &amp;amp;.
-If it still crashes even though everything seems fine, please 
+If it still crashes even though everything seems fine, please
 contact us at the address at the bottom of this page. Please send us a copy of the
 task zip file that causes the problem.
 
@@ -96,24 +96,26 @@ The version of the editor's output format can be set via the internal xsdSchemaF
 <li><b>Submission/max filesize</b>: of the file that is uploaded by the students in kilobytes.
 <li><b>Submission/mimetype</b>: what types of files can be uploaded. For Java the exact filename
 could be used.
-<li><b>LON-CAPA/path to zip file</b>: should be "/res/fhwf/..." and not "/priv/..." because that is where 
+<li><b>LON-CAPA/path to zip file</b>: should be "/res/fhwf/..." and not "/priv/..." because that is where
 it will be after publication. The filename of the zip file is not part of the path. When uploading the
 zip file to LON-CAPA its default name is the task title minus any non-alphanumeric characters.
-<li><b>File/class</b>: An <b>internal</b> file is not visible to the students. <br />
-A <b>template</b> file
+
+<li><b>File/class</b>: <br>
+  An <b>internal</b> file is not visible to the students. <br />
+  A <b>template</b> file
 should be a piece of code which the students can use as a starting point for their program. It is shown
-to the students within the input textarea in LON-CAPA. 
+to the students within the input textarea in LON-CAPA.
 If more than one file is specified as "template", then only the last one is used and
 the others are ignored. <br />
 A <b>library</b> file can have the same functionality as an internal file (i.e.
-can contain tests which are used by the system) but it is also shown to the students. 
+can contain tests which are used by the system) but it is also shown to the students.
 A library filename can contain a path.<br />
 An <b>internal-library</b> file is not shown to the students.
 An internal-library filename can contain a path.<br />
 An <b>instruction</b> file is shown to the students but not executed in any manner. It could,
 for example, contain a more detailed description of the task.
 <li>For tests: <b>public</b>: The students will see the test result.
-<li>For tests: <b>required</b>: This test must be passed in order to pass the whole task. 
+<li>For tests: <b>required</b>: This test must be passed in order to pass the whole task.
 </ul>
 
 <h4>What has not yet been implemented/does not work?</h4>
@@ -130,28 +132,28 @@ format which is implemented by this editor.)
 <li><b>Special characters (such as German umlauts)</b> may not work properly in all fields.
 It may depend on the encoding of the characters that is used.
 For example, they might not work in JUnit tests, not even in comments.
-<li>Not all fields are always used by the grading tool. For example, currently the title of a 
+<li>Not all fields are always used by the grading tool. For example, currently the title of a
 compile test is not displayed in LON-CAPA.
-<li>This version of the editor is not yet complete with respect to all tools and the exchange format. 
-It focuses on LON-CAPA. 
+<li>This version of the editor is not yet complete with respect to all tools and the exchange format.
+It focuses on LON-CAPA.
 </ul>
 
 <h4>Details about creating a task in LON-CAPA</h4>
 
 <ul>
-<li>The zip file <b>cannot be directly edited in LON-CAPA</b>! Trying to do so might 
-lead to a crash. It is possible to edit the files directly via Webdav but only with some 
+<li>The zip file <b>cannot be directly edited in LON-CAPA</b>! Trying to do so might
+lead to a crash. It is possible to edit the files directly via Webdav but only with some
 Webdav-clients. (The LON-CAPA support team can provide more information on how to
-access LON-CAPA via Webdav).  
+access LON-CAPA via Webdav).
 <li>After changing a zip file, it needs to be <b>uploaded</b> again to LON-CAPA. There is an
 upload button at the top of the relevant LON-CAPA page which needs to be used because
 there is no "edit file" option in the dropdown for the file in LON-CAPA.
 <li>The zip file must be <b>published</b> in LON-CAPA each time after it has been changed.
-<li><b>Changing the description</b> of a task: LON-CAPA reads the description from the 
+<li><b>Changing the description</b> of a task: LON-CAPA reads the description from the
 problem file, not from the zip. Thus the description can be changed in LON-CAPA
 without uploading a new zip file. For archiving purposes it might be useful to change the zip file
 as well, though.
-<li><b>LON-CAPA problem file</b>: the important information in the problem file is 
+<li><b>LON-CAPA problem file</b>: the important information in the problem file is
 in the line starting with "$externalurl = &proforma_url". The first 3 arguments of that
 function call should not be changed. The next 3 arguments are:
 the filename of the submitted file, the mimetype of the
@@ -165,10 +167,9 @@ It is possible to turn off LON-CAPA support and Codemirror in the source code of
 using the codemirrorOnOrOff and loncapaOnOrOff variables. Different versions of the exchange
 format can be set via the xsdSchemaFile variable. There is more information about
 <a href="installationFAQ.html" target="new">installation and configuration</a>.
-The current version of the editor can be found on 
+The current version of the editor can be found on
 <a href="https://github.com/ProFormA/formatEditor" target="new">GitHub</a>.
 
 <h4>My question has not been answered/I found a bug:</h4>
 
 Please send us an email: zell-proforma@ostfalia.de
-

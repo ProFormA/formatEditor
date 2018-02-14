@@ -44,14 +44,16 @@
             <div id="tabs-1">
                 <div class='ui-widget ui-widget-content ui-corner-all'>
                     <h3 class='ui-widget-header'>Task description</h3>
+                    
+                    <p><label for='xml_meta-data_title'>Title<span class='red'>*</span>: </label>
+                        <input class='largeinput' id='xml_meta-data_title'/></p>
+
                     <p><label for='xml_description'>Description (with HTML preview)<span class='red'>*</span>: </label><br>
                        <textarea rows='8' cols='80' id='xml_description' name='xml_description'
                             title = 'What the students will see.'></textarea>
                         <iframe id=preview title="HTML Preview"></iframe>
                     </p>
                     <!-- onfocus='this.rows=10;' onmouseout='this.rows=10;' -->
-                     <p><label for='xml_meta-data_title'>Title<span class='red'>*</span>: </label>
-                         <input class='largeinput' id='xml_meta-data_title'/></p>
                      <p><label for='xml_lang'>Language<span class='red'>*</span>: </label>
                          <select id='xml_lang'>
                              <option value='en'>English</option>
