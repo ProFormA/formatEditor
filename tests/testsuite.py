@@ -10,7 +10,7 @@ import time
 
 import unittest
 
-only_one_browser = True
+only_one_browser = False
 
 
 

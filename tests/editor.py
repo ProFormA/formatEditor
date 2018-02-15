@@ -21,6 +21,9 @@ from pynput.keyboard import Key, Controller
 codemirror = True
 
 
+# firstTimeDialogs = True
+# needed for Firefox to store the dialog-opened-state
+firstTimeDialogs = {'zip': True, 'loncapa': True}
 
 
 ####################################################################
@@ -28,14 +31,14 @@ codemirror = True
 ####################################################################
 
 driver = 0
-browser = "Chrome"
-firstDownload = True
+browser = testconfig.browser # "Chrome"
 #browser = "Edge"
 
 def openBrowser():
     # startHttpServer()
-    global firstDownload
-    firstDownload = True
+    global firstTimeDialogs
+    firstTimeDialogs['zip'] = True
+    firstTimeDialogs['loncapa'] = True
 
     if browser == "Chrome":
         return openChrome()
@@ -165,24 +168,28 @@ def getFilenameWithWildcard(file_name):
     return filename_with_wildcards
 
 
-def confirmDownloadSaveDialog():
+def confirmDownloadSaveDialog(dialogkey):
 
     time.sleep(2)
     # a new window is opened asking what to do with the download
     # print "confirm dialog"
     keyboard = Controller()
 
-    global firstDownload
-    if firstDownload:
+    global firstTimeDialogs
+    if firstTimeDialogs[dialogkey]:
         print "1. Download => Speichern statt Öffnen wählen"
         # switch to save (instead of open)
+        print "cursor down"
         keyboard.press(Key.down)
         keyboard.release(Key.down)
         time.sleep(1)
-        firstDownload = False
+        firstTimeDialogs[dialogkey] = False
 
+    print "enter"
     keyboard.press(Key.enter)
     keyboard.release(Key.enter)
+
+    print "confirmDownloadSaveDialog finished"
 
 
 def saveTaskFile(expected_file_name, move_to_folder, move_to_filename_xml):
@@ -191,7 +198,7 @@ def saveTaskFile(expected_file_name, move_to_folder, move_to_filename_xml):
     elem.click()
 
     if browser == "Firefox":
-        confirmDownloadSaveDialog()
+        confirmDownloadSaveDialog('zip')
 
     # wait for download to complete
     time.sleep(2)
@@ -236,7 +243,7 @@ def saveLonCapa(expected_file_name):
     elem = driver.find_element_by_id("button_save_lon_capa").click()
 
     if browser == "Firefox":
-        confirmDownloadSaveDialog()
+        confirmDownloadSaveDialog('loncapa')
 
     # wait for download to complete
     time.sleep(2)
@@ -247,7 +254,7 @@ def saveLonCapa(expected_file_name):
         lastname = filename
         # print filename
 
-    # print "rename " + lastname + " to " +expected_file_name
+    print "rename " + lastname + " to " +expected_file_name
     shutil.move(lastname, expected_file_name)
 
 
@@ -401,7 +408,10 @@ def set_model_solution_comment(ms_index, text): # 0-based
     elem[ms_index].send_keys(text)
 
 
-def add_file_to_model_solution(ms_index, file_index):  # 0-based
+# ms_index: 0-based
+# file_index: 1-based
+def add_file_to_model_solution(ms_index, file_index):
+    change_tab("ms_tab")
     # There seems to be a bug in the geckodriver:
     # The following code does not run with Firefox!
 
@@ -415,7 +425,7 @@ def add_file_to_model_solution(ms_index, file_index):  # 0-based
     # elem = driver.find_elements_by_class_name('mediuminput xml_model-solution_filename')
     select = Select(elem[ms_index])
 
-    select.select_by_index(0)
+    # select.select_by_index(0)
 
     #select.select_by_value(value) # unfortunately does not work
     select.select_by_index(file_index)

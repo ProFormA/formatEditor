@@ -57,6 +57,7 @@ class ZipFileTest(unittest.TestCase):
         self.lastSavedZipFile = self.output_folder + "/" + filename_task_xml
 
         # todo: auspacken der der Zip-Datei und auswerten
+        print 'compare files: ' + self.filename_task_xml_reference + ' <-> ' + self.getTaskFile(self.TaskFileNo)
         self.assertTrue(editor.is_file1_equal_to_file2_except_for_uuid(self.filename_task_xml_reference, self.getTaskFile(self.TaskFileNo)),
                         'task.xml output ' + str(self.TaskFileNo))
 
