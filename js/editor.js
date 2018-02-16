@@ -818,8 +818,6 @@ $(function() {
   const tdFileRemoveButtonInTest = "<td><button class='rem_file_ref_test' onclick='remTestFileRef($(this))'>x</button></td>";
 */
 
-  let fileref = new FileReference();
-
   newTest = function(tempcounter,TestName, MoreText, TestType, WithFileRef) { // create a new test HTML form element
 
     $("#testsection").append("<div "+
@@ -828,7 +826,7 @@ $(function() {
     "class='rightButton'><button onclick='remP3($(this));deletecounter(testIDs,$(this));'>x</button></span></h3>"+
     "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
-        FileReference.getTable() +
+        TestFileReference.getTableString() +
 /*    "<table>" +
         "<tr>" +
         tdFilenameLabelInTest + // label
@@ -935,7 +933,7 @@ $(function() {
 
                 if (!done) { // no empty select option is found
                     // create new filename option list
-                    FileReference.addTestFileRef($(testBox).find('.add_file_ref_test').last());
+                    TestFileReference.addTestFileRef($(testBox).find('.add_file_ref_test').last());
                     // select filename
                     $(testBox).find(".xml_test_filename").last().val(filename).change();
                 }
