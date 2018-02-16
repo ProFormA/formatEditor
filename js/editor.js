@@ -755,6 +755,7 @@ $(function() {
       });
   };
 
+/*
     addTestFileRef = function(element) {
         // add new line for selecting a file for a test
         var td = element.parent();
@@ -806,6 +807,7 @@ $(function() {
         }
     };
 
+
   const filenameLabelInTest = "<label for='xml_test_filename'>Filename<span class='red'>*</span>: </label>";
   const tdFilenameLabelInTest ="<td>" + filenameLabelInTest + "</td>";
   const tdFilenameInTest = "<td><select class='mediuminput xml_test_filename' " + // onfocus = 'updateFilenameList(this)' "+
@@ -814,23 +816,27 @@ $(function() {
       "<input class='tinyinput xml_test_fileref' readonly/></td>";
   const tdFileAddButtonInTest = "<td><button class='add_file_ref_test' title='add another filename' onclick='addTestFileRef($(this))'>+</button><br></td>";
   const tdFileRemoveButtonInTest = "<td><button class='rem_file_ref_test' onclick='remTestFileRef($(this))'>x</button></td>";
+*/
 
+  let fileref = new FileReference();
 
   newTest = function(tempcounter,TestName, MoreText, TestType, WithFileRef) { // create a new test HTML form element
+
     $("#testsection").append("<div "+
     "class='ui-widget ui-widget-content ui-corner-all xml_test'>"+
     "<h3 class='ui-widget-header'>" + TestName + " (Test #"+tempcounter+")<span "+
     "class='rightButton'><button onclick='remP3($(this));deletecounter(testIDs,$(this));'>x</button></span></h3>"+
     "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
-    "<table>" +
+        FileReference.getTable() +
+/*    "<table>" +
         "<tr>" +
         tdFilenameLabelInTest + // label
         tdFilenameInTest +
         tdFileRemoveButtonInTest + // x-button
         tdFileAddButtonInTest +
         "</tr>"+
-    "</table>" +
+    "</table>" + */
         "<span class='drop_zone drop_zone_text'>Drop Your File(s) Here!</span>" +
         //"<br>" +
 //    " <label for='xml_test_validity'>Validity: </label>"+
@@ -929,7 +935,7 @@ $(function() {
 
                 if (!done) { // no empty select option is found
                     // create new filename option list
-                    addTestFileRef($(testBox).find('.add_file_ref_test').last());
+                    FileReference.addTestFileRef($(testBox).find('.add_file_ref_test').last());
                     // select filename
                     $(testBox).find(".xml_test_filename").last().val(filename).change();
                 }
