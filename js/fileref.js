@@ -17,8 +17,10 @@
  */
 
 
-//var fileRefSingleton = null;
+
 var testFileRefSingleton = null;
+var modelSolutionFileRefSingleton = null;
+
 
 class FileReference {
 
@@ -52,9 +54,9 @@ class FileReference {
             "<td><label for='" + this.classFileref + "'>Fileref: </label>"+ // fileref
             "<input class='tinyinput " + this.classFileref + "' readonly/></td>";
         this.tdFileAddButtonInTest = "<td><button class='" + this.classAddFileref +
-            "' title='add another filename' onclick='" + className + ".addTestFileRef($(this))'>+</button><br></td>";
+            "' title='add another filename' onclick='" + className + ".addFileRef($(this))'>+</button><br></td>";
         this.tdFileRemoveButtonInTest = "<td><button class='" + this.classRemoveFileref +
-            "' onclick='" + className + ".remTestFileRef($(this))'>x</button></td>";
+            "' onclick='" + className + ".remFileRef($(this))'>x</button></td>";
 
         this.table = "<table>" +
             "<tr>" +
@@ -70,7 +72,7 @@ class FileReference {
         return this.table;
     }
 
-    addTestFileRef(element) {
+    addFileRef(element) {
         // add new line for selecting a file for a test
         var td = element.parent();
         var tr = td.parent();
@@ -95,7 +97,7 @@ class FileReference {
     }
 
 
-    remTestFileRef(element) {
+    remFileRef(element) {
         // remove line in file table for test
         var td = element.parent();
         var tr = td.parent();
@@ -128,7 +130,7 @@ class FileReference {
         return fileRefSingleton.table;
     }
 
-    static addTestFileRef(element) {
+    static addFileRef(element) {
         // add new line for selecting a file for a test
         var td = element.parent();
         var tr = td.parent();
@@ -153,7 +155,7 @@ class FileReference {
     }
 
 
-    static remTestFileRef(element) {
+    static remFileRef(element) {
         // remove line in file table for test
         var td = element.parent();
         var tr = td.parent();
@@ -181,21 +183,40 @@ class FileReference {
     */
 }
 
-//fileRefSingleton = new FileReference();
+
 
 class TestFileReference extends FileReference {
 
     constructor() {
-        super('xml_test_filename', 'xml_test_fileref', 'add_file_ref_test', 'rem_file_ref_test', 'TestFileReference');
+        super('xml_test_filename', 'xml_test_fileref',
+            'add_file_ref_test', 'rem_file_ref_test', 'TestFileReference');
 
         if (testFileRefSingleton == null) {
             testFileRefSingleton = this;
         }
     }
     static getTableString() { return testFileRefSingleton.getTableString(); }
-    static addTestFileRef(element) { return testFileRefSingleton.addTestFileRef(element); }
-    static remTestFileRef(element) { return testFileRefSingleton.remTestFileRef(element); }
+    static addFileRef(element) { return testFileRefSingleton.addFileRef(element); }
+    static remFileRef(element) { return testFileRefSingleton.remFileRef(element); }
 }
 
-
 testFileRefSingleton = new TestFileReference();
+
+
+class ModelSolutionFileReference extends FileReference {
+
+    constructor() {
+        super('xml_model-solution_filename', 'xml_model-solution_fileref',
+            'add_file_ref_ms', 'rem_file_ref_ms', 'ModelSolutionFileReference');
+
+        if (modelSolutionFileRefSingleton == null) {
+            modelSolutionFileRefSingleton = this;
+        }
+    }
+    static getTableString() { return modelSolutionFileRefSingleton.getTableString(); }
+    static addFileRef(element) { return modelSolutionFileRefSingleton.addFileRef(element); }
+    static remFileRef(element) { return modelSolutionFileRefSingleton.remFileRef(element); }
+}
+
+modelSolutionFileRefSingleton = new ModelSolutionFileReference();
+

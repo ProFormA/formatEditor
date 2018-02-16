@@ -635,7 +635,7 @@ $(function() {
       $(tempSelElem).append(tempOption);
   }
 
-
+/*
   addMsFileRef = function(element) {
         // add new line for selecting a file for a model solution
         var td = element.parent();
@@ -685,8 +685,8 @@ $(function() {
             table_body.find(".rem_file_ref_ms").hide();
         }
   };
-
-
+*/
+/*
   const filenameLabelInMs ="<label for='xml_model-solution_filename'>Filename<span class='red'>*</span>: </label>"; // label
   const tdFilenameLabelInMs ="<td>" + filenameLabelInMs + "</td>"; // label
   const tdFilenameInMs =  "<td><select class='mediuminput xml_model-solution_filename' " + // onfocus = 'updateFilenameList(this)' "+ // select
@@ -695,7 +695,7 @@ $(function() {
     "<input class='tinyinput xml_model-solution_fileref' readonly/></td>";
   const tdFileAddButtonInMs = "<td><button class='add_file_ref_ms' title='add another filename' onclick='addMsFileRef($(this))'>+</button><br></td>";
   const tdFileRemoveButtonInMs = "<td><button class='rem_file_ref_ms' onclick='remMsFileRef($(this))'>x</button></td>";
-
+*/
   newModelsol = function(tempcounter) {                // create a new model solution HTML form element
     $("#modelsolutionsection").append("<div "+
     "class='ui-widget ui-widget-content ui-corner-all xml_model-solution'>"+
@@ -703,7 +703,8 @@ $(function() {
     "class='rightButton'><button onclick='remP3($(this));deletecounter(modelSolIDs,$(this));'>x</button></span></h3>"+
     "<p><label for='xml_model-solution_id'>ID<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_model-solution_id' value='"+tempcounter+"' readonly/>"+
-
+        ModelSolutionFileReference.getTableString() +
+/*
     "<table>" +
         "<tr>" +
         tdFilenameLabelInMs + // label
@@ -712,6 +713,7 @@ $(function() {
         tdFileAddButtonInMs + // +-button
         "</tr>"+
     "</table>" +
+    */
         "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>" +
     "<p><label for='xml_model-solution_comment'>Comment: </label>"+
     "<input class='largeinput xml_model-solution_comment'/></p></div>");
@@ -756,7 +758,7 @@ $(function() {
   };
 
 /*
-    addTestFileRef = function(element) {
+    addFileRef = function(element) {
         // add new line for selecting a file for a test
         var td = element.parent();
         var tr = td.parent();
@@ -781,7 +783,7 @@ $(function() {
     };
 
 
-    remTestFileRef = function(element) {
+    remFileRef = function(element) {
         // remove line in file table for test
         var td = element.parent();
         var tr = td.parent();
@@ -814,8 +816,8 @@ $(function() {
       "onchange = 'onFileSelectionChanged(this)'></select></td>"+
       "<td><label for='xml_test_fileref'>Fileref: </label>"+ // fileref
       "<input class='tinyinput xml_test_fileref' readonly/></td>";
-  const tdFileAddButtonInTest = "<td><button class='add_file_ref_test' title='add another filename' onclick='addTestFileRef($(this))'>+</button><br></td>";
-  const tdFileRemoveButtonInTest = "<td><button class='rem_file_ref_test' onclick='remTestFileRef($(this))'>x</button></td>";
+  const tdFileAddButtonInTest = "<td><button class='add_file_ref_test' title='add another filename' onclick='addFileRef($(this))'>+</button><br></td>";
+  const tdFileRemoveButtonInTest = "<td><button class='rem_file_ref_test' onclick='remFileRef($(this))'>x</button></td>";
 */
 
   newTest = function(tempcounter,TestName, MoreText, TestType, WithFileRef) { // create a new test HTML form element
@@ -933,7 +935,7 @@ $(function() {
 
                 if (!done) { // no empty select option is found
                     // create new filename option list
-                    TestFileReference.addTestFileRef($(testBox).find('.add_file_ref_test').last());
+                    TestFileReference.addFileRef($(testBox).find('.add_file_ref_test').last());
                     // select filename
                     $(testBox).find(".xml_test_filename").last().val(filename).change();
                 }
@@ -974,7 +976,7 @@ $(function() {
 
                 if (!done) { // no empty select option is found
                     // append filename
-                    addMsFileRef($(modelSolBox).find('.add_file_ref_ms').last());
+                    ModelSolutionFileReference.addFileRef($(modelSolBox).find('.add_file_ref_ms').last());
                     // select filename
                     $(modelSolBox).find(".xml_model-solution_filename").last().val(filename).change();
                 }
