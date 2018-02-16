@@ -25,13 +25,6 @@ var modelSolutionFileRefSingleton = null;
 class FileReference {
 
     constructor(classFilename, classFileref, classAddFileref, classRemoveFileref, className) {
-/*        this.classFilename = 'xml_test_filename';
-        this.classFileref = 'xml_test_fileref';
-        this.classAddFileref = 'add_file_ref_test';
-        this.classRemoveFileref = 'rem_file_ref_test';
-
-        this.createTableStrings("FileReference");
-        */
         this.classFilename = classFilename;
         this.classFileref = classFileref;
         this.classAddFileref = classAddFileref;
@@ -39,10 +32,6 @@ class FileReference {
 
         this.createTableStrings(className);
 
-/*
-        if (fileRefSingleton == null) {
-            fileRefSingleton = this;
-        }*/
     }
 
     createTableStrings(className) {
@@ -124,63 +113,6 @@ class FileReference {
     }
 
 
-
-/*
-    static getTableString() {
-        return fileRefSingleton.table;
-    }
-
-    static addFileRef(element) {
-        // add new line for selecting a file for a test
-        var td = element.parent();
-        var tr = td.parent();
-        var table_body = tr.parent();
-        table_body.append(
-            "<tr><td></td>" + // label
-            fileRefSingleton.tdFilenameInTest +
-            fileRefSingleton.tdFileRemoveButtonInTest +
-            fileRefSingleton.tdFileAddButtonInTest +
-            "</tr>");
-        td.remove(); // remove current +-button
-        table_body.find("." + this.classRemoveFileref).show(); // show all remove file buttons
-
-        // add filelist to new file option
-        updateFilenameList(table_body.find("." + fileRefSingleton.classFilename).last());
-
-        if (!DEBUG_MODE) {
-            // hide new fileref fields
-            table_body.find("." + fileRefSingleton.classFileref).hide();
-            table_body.find("label[for='" + fileRefSingleton.classFileref + "']").hide();
-        }
-    }
-
-
-    static remFileRef(element) {
-        // remove line in file table for test
-        var td = element.parent();
-        var tr = td.parent();
-        var table_body = tr.parent();
-        var previousRow = tr.prev("tr");
-        var hasNextTr = tr.nextAll("tr");
-        var hasPrevTr = tr.prevAll("tr");
-        tr.remove(); // remove row
-        if (hasNextTr.length == 0) {
-            // if row to be deleted is last row then add +-button to last row
-            previousRow.append(fileRefSingleton.tdFileAddButtonInTest);
-        }
-        if (hasPrevTr.length == 0) {
-            // row to be deleted is first row
-            // => add filename label to first column
-            var firstCell =table_body.find("td").first();
-            firstCell.append(fileRefSingleton.filenameLabelInTest); // without td
-        }
-        if (table_body.find("tr").length == 1) {
-            // table has exactly one row left
-            // => hide all remove file buttons
-            table_body.find("." + fileRefSingleton.classRemoveFileref).hide();
-        }
-    }
-    */
 }
 
 
