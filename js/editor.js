@@ -325,7 +325,7 @@ $(function() {
   }
 
 
-  function readAndCreateFileData(file, fileId, callback) {
+    readAndCreateFileData = function(file, fileId, callback) {
       if (!file) return;
       var filename = file.name;
 
@@ -679,7 +679,7 @@ $(function() {
                       e.preventDefault();
                       e.stopPropagation();
                       /*UPLOAD FILES HERE*/
-                      uploadModelSolFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                      ModelSolutionFileReference.uploadModelSolFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
                   }
               }
           }
@@ -760,7 +760,7 @@ $(function() {
                         e.preventDefault();
                         e.stopPropagation();
                         /*UPLOAD FILES HERE*/
-                        uploadTestFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                        TestFileReference.uploadTestFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
                     }
                 }
             }
@@ -768,7 +768,7 @@ $(function() {
     }
 
   };
-
+/*
   function uploadTestFiles(files, testBox){
       //console.log("uploadTestFiles");
 
@@ -811,7 +811,8 @@ $(function() {
             });
         });
     }
-
+*/
+/*
   function uploadModelSolFiles(files, modelSolBox){
         //console.log("uploadModelSolFiles");
         if (files.length > 1) {
@@ -841,7 +842,7 @@ $(function() {
             });
         });
     }
-
+*/
     function uploadFileWhenDropped(files, fileBox){
         if (files.length > 1) {
             alert('You have dragged more than one file. You must drop exactly one file!');
