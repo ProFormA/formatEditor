@@ -648,7 +648,7 @@ $(function() {
     "<input class='largeinput xml_model-solution_comment'/></p></div>");
 
     var msroot = $(".xml_model-solution_id[value='" + tempcounter + "']").parent().parent();
-    msroot.find(".rem_file_ref_ms").hide(); // hide remove file button
+    // msroot.find(".rem_file_ref_ms").hide(); // hide remove file button
     updateFilenameList(msroot.find(".xml_model-solution_filename").last());
 
     if (!DEBUG_MODE) {
@@ -717,7 +717,7 @@ $(function() {
       // hide fields that exist only for technical reasons
     var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent().parent();
     testroot.find(".xml_test_type").val(TestType);
-    testroot.find(".rem_file_ref_test").hide(); // hide remove file button
+    // testroot.find(".rem_file_ref_test").hide(); // hide first remove file button
     updateFilenameList(testroot.find(".xml_test_filename").last());
 
     if (!DEBUG_MODE) {
@@ -768,81 +768,7 @@ $(function() {
     }
 
   };
-/*
-  function uploadTestFiles(files, testBox){
-      //console.log("uploadTestFiles");
 
-      if (files.length > 1) {
-            alert('You have dragged more than one file. You must drop exactly one file!');
-            return;
-        }
-        $.each(files, function(index, file) {
-            readAndCreateFileData(file, -1, function(filename) {
-                // select new filename in first empty filename select option list
-                console.log("uploadFiles: select " + filename + " in option list");
-                var done = false;
-                $.each($(testBox).find(".xml_test_filename"), function(index, element) {
-                    if (done) return false;
-                    var currentFilename = $(element).val();
-                    if (currentFilename == "") {
-                        $(element).val(filename).change();
-                        done = true;
-                    }
-                });
-
-
-                if (!done) { // no empty select option is found
-                    // create new filename option list
-                    TestFileReference.addFileRef($(testBox).find('.add_file_ref_test').last());
-                    // select filename
-                    $(testBox).find(".xml_test_filename").last().val(filename).change();
-                }
-
-                // set classname if exactly one file is assigned
-                var ui_classname = $(testBox).find(".xml_ju_mainclass");
-                if (ui_classname.length == 1) {
-                    $.each(ui_classname, function(index, element) {
-                        var currentFilename = $(element).val();
-                        if (currentFilename == "" && !readXmlActive) {
-                            $(element).val(java_getFullClassnameFromFilename(filename)).change();
-                        }
-                    });
-                }
-            });
-        });
-    }
-*/
-/*
-  function uploadFiles(files, modelSolBox){
-        //console.log("uploadFiles");
-        if (files.length > 1) {
-            alert('You have dragged more than one file. You must drop exactly one file!');
-            return;
-        }
-        $.each(files, function(index, file) {
-            readAndCreateFileData(file, -1, function(filename) {
-                // select new filename in first empty filename
-                //console.log("uploadFiles: select " + filename + " in option list");
-                var done = false;
-                $.each($(modelSolBox).find(".xml_model-solution_filename"), function(index, element) {
-                    if (done) return false;
-                    var currentFilename = $(element).val();
-                    if (currentFilename == "") {
-                        $(element).val(filename).change();
-                        done = true;
-                    }
-                });
-
-                if (!done) { // no empty select option is found
-                    // append filename
-                    ModelSolutionFileReference.addFileRef($(modelSolBox).find('.add_file_ref_ms').last());
-                    // select filename
-                    $(modelSolBox).find(".xml_model-solution_filename").last().val(filename).change();
-                }
-            });
-        });
-    }
-*/
     function uploadFileWhenDropped(files, fileBox){
         if (files.length > 1) {
             alert('You have dragged more than one file. You must drop exactly one file!');
@@ -864,9 +790,6 @@ $(function() {
 ///////////////////////////////////////////////////////// Configuration support
 
 
-
-
-
     function addTestButtons() {
         $.each(testInfos, function(index, item) {
             $("#testbuttons").append("<button id='" + item.buttonJQueryId + "'>Add " + item.title + "</button> ");
@@ -881,8 +804,6 @@ $(function() {
                 $("#tabs").tabs("option", "active", tab_page.TESTS); });
         });
     }
-
-
 
     function switchProgLang() {
         var progLang = $("#xml_programming-language").val();

@@ -35,24 +35,27 @@ class FileReference {
     }
 
     createTableStrings(className) {
-        this.filenameLabelInTest = "<label for='" + this.classFilename +
+        this.filenameLabel = "<label for='" + this.classFilename +
             "'>Filename<span class='red'>*</span>: </label>";
-        this.tdFilenameLabelInTest ="<td>" + this.filenameLabelInTest + "</td>";
-        this.tdFilenameInTest = "<td><select class='mediuminput " + this.classFilename + "' " + // onfocus = 'updateFilenameList(this)' "+
+        this.tdFilenameLabel ="<td>" + this.filenameLabel + "</td>";
+        this.tdFilename = "<td><select class='mediuminput " + this.classFilename + "' " + // onfocus = 'updateFilenameList(this)' "+
             "onchange = 'onFileSelectionChanged(this)'></select></td>"+
             "<td><label for='" + this.classFileref + "'>Fileref: </label>"+ // fileref
             "<input class='tinyinput " + this.classFileref + "' readonly/></td>";
-        this.tdFileAddButtonInTest = "<td><button class='" + this.classAddFileref +
+        this.tdAddButton = "<td><button class='" + this.classAddFileref +
             "' title='add another filename' onclick='" + className + ".addFileRef($(this))'>+</button><br></td>";
-        this.tdFileRemoveButtonInTest = "<td><button class='" + this.classRemoveFileref +
+        this.tdRemoveButton = "<td><button class='" + this.classRemoveFileref +
             "' onclick='" + className + ".remFileRef($(this))'>x</button></td>";
+        // hide first remove file button
+        this.tdFirstRemoveButton = "<td><button class='" + this.classRemoveFileref +
+            "' onclick='" + className + ".remFileRef($(this))' style='display: none;'>x</button></td>";
 
         this.table = "<table>" +
             "<tr>" +
-            this.tdFilenameLabelInTest + // label
-            this.tdFilenameInTest +
-            this.tdFileRemoveButtonInTest + // x-button
-            this.tdFileAddButtonInTest +
+            this.tdFilenameLabel + // label
+            this.tdFilename +
+            this.tdFirstRemoveButton + // x-button
+            this.tdAddButton +
             "</tr>"+
             "</table>";
     }
@@ -68,9 +71,9 @@ class FileReference {
         var table_body = tr.parent();
         table_body.append(
             "<tr><td></td>" + // label
-            this.tdFilenameInTest +
-            this.tdFileRemoveButtonInTest +
-            this.tdFileAddButtonInTest +
+            this.tdFilename +
+            this.tdRemoveButton +
+            this.tdAddButton +
             "</tr>");
         td.remove(); // remove current +-button
         table_body.find("." + this.classRemoveFileref).show(); // show all remove file buttons
@@ -97,13 +100,13 @@ class FileReference {
         tr.remove(); // remove row
         if (hasNextTr.length == 0) {
             // if row to be deleted is last row then add +-button to last row
-            previousRow.append(this.tdFileAddButtonInTest);
+            previousRow.append(this.tdAddButton);
         }
         if (hasPrevTr.length == 0) {
             // row to be deleted is first row
             // => add filename label to first column
             var firstCell =table_body.find("td").first();
-            firstCell.append(this.filenameLabelInTest); // without td
+            firstCell.append(this.filenameLabel); // without td
         }
         if (table_body.find("tr").length == 1) {
             // table has exactly one row left
@@ -111,21 +114,6 @@ class FileReference {
             table_body.find("." + this.classRemoveFileref).hide();
         }
     }
-/*
-    static uploadFiles(files, modelSolBox) {
-        //alert('ModelSolutionFileReference.uploadFiles');
-        //console.log("uploadFiles");
-        if (files.length > 1) {
-            alert('You have dragged more than one file. You must drop exactly one file!');
-            return;
-        }
-        $.each(files, function(index, file) {
-            readAndCreateFileData(file, -1, function(filename) {
-                ModelSolutionFileReference.onFileUpload(filename, modelSolBox);
-            });
-        });
-    }
-  */
 
     onFileUpload(filename, uploadBox) {
         // select new filename in first empty filename
