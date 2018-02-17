@@ -679,7 +679,7 @@ $(function() {
                       e.preventDefault();
                       e.stopPropagation();
                       /*UPLOAD FILES HERE*/
-                      ModelSolutionFileReference.uploadModelSolFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                      ModelSolutionFileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
                   }
               }
           }
@@ -760,7 +760,7 @@ $(function() {
                         e.preventDefault();
                         e.stopPropagation();
                         /*UPLOAD FILES HERE*/
-                        TestFileReference.uploadTestFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                        TestFileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
                     }
                 }
             }
@@ -813,8 +813,8 @@ $(function() {
     }
 */
 /*
-  function uploadModelSolFiles(files, modelSolBox){
-        //console.log("uploadModelSolFiles");
+  function uploadFiles(files, modelSolBox){
+        //console.log("uploadFiles");
         if (files.length > 1) {
             alert('You have dragged more than one file. You must drop exactly one file!');
             return;
