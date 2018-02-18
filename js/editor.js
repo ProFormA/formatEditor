@@ -589,15 +589,15 @@ $(function() {
 
                           //            $(tempSelElem).parent().find('.xml_test_fileref')[0].value=
                           //              $(item).first().parent().find(".xml_file_id").val();
+                          // set classname if file belongs to JUNIT
+                          setJavaClassname(selectedFilename);
+                          setJUnitDefaultTitle(selectedFilename);
                       } else {
 //                          var fileid = $(item).first().parent().find(".xml_file_id").val();
 //                          var nextTd = $(tempSelElem).parent().next('td');
                           nextTd.find('.xml_model-solution_fileref')[0].value=fileid;
                       }
                       found = true;
-                      // set classname if file belongs to JUNIT
-                      setJavaClassname(selectedFilename);
-                      setJUnitDefaultTitle(selectedFilename);
                       return false;
                   }
               });
@@ -648,19 +648,12 @@ $(function() {
     "<input class='largeinput xml_model-solution_comment'/></p></div>");
 
     var msroot = $(".xml_model-solution_id[value='" + tempcounter + "']").parent().parent();
-    // msroot.find(".rem_file_ref_ms").hide(); // hide remove file button
-    updateFilenameList(msroot.find(".xml_model-solution_filename").last());
+    ModelSolutionFileReference.init(msroot, DEBUG_MODE);
 
     if (!DEBUG_MODE) {
         // hide fields that exist only for technical reasons
         msroot.find(".xml_model-solution_id").hide();
         msroot.find("label[for='xml_model-solution_id']").hide();
-
-        msroot.find(".xml_model-solution_fileref").hide();
-        msroot.find("label[for='xml_model-solution_fileref']").hide();
-
-//      msroot.find(".xml_model-solution_fileref").first().hide();
-//      msroot.find("label[for='xml_model-solution_fileref']").first().hide();
     }
 
       msroot.on({
@@ -717,8 +710,7 @@ $(function() {
       // hide fields that exist only for technical reasons
     var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent().parent();
     testroot.find(".xml_test_type").val(TestType);
-    // testroot.find(".rem_file_ref_test").hide(); // hide first remove file button
-    updateFilenameList(testroot.find(".xml_test_filename").last());
+    TestFileReference.init(testroot, DEBUG_MODE);
 
     if (!DEBUG_MODE) {
       testroot.find(".xml_test_type").hide();
@@ -727,20 +719,10 @@ $(function() {
       testroot.find("label[for='xml_pr_always']").hide();
       testroot.find(".xml_test_id").hide();
       testroot.find("label[for='xml_test_id']").hide();
-      // hide first fileref since we have a filename instead
-      // testroot.find(".xml_test_fileref").first().hide();
-      // testroot.find("label[for='xml_test_fileref']").first().hide();
-      // hide all filerefs (first has filename instead, second is not supported)
-      testroot.find(".xml_test_fileref").hide();
-      testroot.find("label[for='xml_test_fileref']").hide();
     }
     if (!WithFileRef) {
         testroot.find("table").hide();
         testroot.find(".drop_zone").hide();
-        /*testroot.find(".xml_test_fileref").hide();
-        testroot.find("label[for='xml_test_fileref']").hide();
-        testroot.find(".xml_test_filename").hide();
-        testroot.find("label[for='xml_test_filename']").hide();*/
     }
     else
     {

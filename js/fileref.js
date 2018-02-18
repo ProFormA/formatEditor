@@ -22,6 +22,7 @@ var testFileRefSingleton = null;
 var modelSolutionFileRefSingleton = null;
 
 
+// abstract class for a filename reference input
 class FileReference {
 
     constructor(classFilename, classFileref, classAddFileref, classRemoveFileref, className) {
@@ -31,7 +32,6 @@ class FileReference {
         this.classRemoveFileref = classRemoveFileref;
 
         this.createTableStrings(className);
-
     }
 
     createTableStrings(className) {
@@ -47,14 +47,14 @@ class FileReference {
         this.tdRemoveButton = "<td><button class='" + this.classRemoveFileref +
             "' onclick='" + className + ".remFileRef($(this))'>x</button></td>";
         // hide first remove file button
-        this.tdFirstRemoveButton = "<td><button class='" + this.classRemoveFileref +
+        var tdFirstRemoveButton = "<td><button class='" + this.classRemoveFileref +
             "' onclick='" + className + ".remFileRef($(this))' style='display: none;'>x</button></td>";
 
         this.table = "<table>" +
             "<tr>" +
             this.tdFilenameLabel + // label
             this.tdFilename +
-            this.tdFirstRemoveButton + // x-button
+            tdFirstRemoveButton + // x-button
             this.tdAddButton +
             "</tr>"+
             "</table>";
@@ -62,6 +62,14 @@ class FileReference {
 
     getTableString() {
         return this.table;
+    }
+
+    init(root, DEBUG_MODE) {
+        updateFilenameList(root.find("." + this.classFilename).last());
+        if (!DEBUG_MODE) {
+            root.find("." + this.classFileref).hide();
+            root.find("label[for='" + this.classFileref + "']").hide();
+        }
     }
 
     addFileRef(element) {
@@ -151,6 +159,7 @@ class TestFileReference extends FileReference {
         }
     }
     static getTableString() { return testFileRefSingleton.getTableString(); }
+    static init(root, DEBUG_MODE) { testFileRefSingleton.init(root, DEBUG_MODE); }
     static addFileRef(element) { return testFileRefSingleton.addFileRef(element); }
     static remFileRef(element) { return testFileRefSingleton.remFileRef(element); }
     static onFileUpload(filename, uploadBox) {
@@ -195,6 +204,8 @@ class ModelSolutionFileReference extends FileReference {
         }
     }
     static getTableString() { return modelSolutionFileRefSingleton.getTableString(); }
+    static init(root, DEBUG_MODE) { modelSolutionFileRefSingleton.init(root, DEBUG_MODE); }
+
     static addFileRef(element) { return modelSolutionFileRefSingleton.addFileRef(element); }
     static remFileRef(element) { return modelSolutionFileRefSingleton.remFileRef(element); }
 
@@ -202,6 +213,7 @@ class ModelSolutionFileReference extends FileReference {
         modelSolutionFileRefSingleton.onFileUpload(filename, uploadBox)
     }
 
+    // TODO: move back to editor.js???
     static uploadFiles(files, modelSolBox) {
         //alert('ModelSolutionFileReference.uploadFiles');
         //console.log("uploadFiles");
