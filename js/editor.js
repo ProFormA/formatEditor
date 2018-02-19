@@ -396,7 +396,7 @@ $(function() {
       // after change of filename update all filelists
 
       if (textbox) {
-          // if thew user has changed the filename and the extension is .java
+          // if the user has changed the filename and the extension is .java
           // then the filename is recalculated on base of the source code (package class)
           // and checked against user filename
           var filename = $(textbox).val();
@@ -424,7 +424,9 @@ $(function() {
       }
 
 
-
+      // update filenames in all file references
+      FileReference.updateAllFilenameLists();
+/*
       $.each($(".xml_test_filename, .xml_model-solution_filename"), function(index, item) {
           //console.log("update filelist in test ");
           // store name of currently selected file
@@ -453,7 +455,7 @@ $(function() {
                     find($(".xml_test_fileref, .xml_model-solution_fileref")).first().val("");
               }
           }
-      });
+      });*/
   };
 
   newFile = function(tempcounter) {                    // create a new file HTML form element
@@ -517,6 +519,7 @@ $(function() {
       });
   };
 
+  /*
   onFileSelectionChanged = function(tempSelElem) {              // changing a filename in the drop-down
 
       function setJavaClassname(newFilename) {
@@ -617,6 +620,7 @@ $(function() {
       }
 
   };
+  */
 
   updateFilenameList = function(tempSelElem) {            // create the drop-down with all possible filenames
      $(tempSelElem).empty();
