@@ -696,7 +696,7 @@ readXML = function(xmlText) {
                                 if (item.formname == ".xml_test") {
                                     // set filename in test
                                     if (index > 0) {
-                                        addTestFileRef(object.find(".add_file_ref_test").first());
+                                        TestFileReference.addFileRef(object.find(".add_file_ref_test").first());
                                     }
                                     var element = object.find(".xml_test_filename");
                                     updateFilenameList(element.eq(index));
@@ -705,7 +705,7 @@ readXML = function(xmlText) {
                                 } else if (item.formname == ".xml_model-solution") {
                                     // set filename in model solution
                                     if (index > 0) {
-                                        addMsFileRef(object.find(".add_file_ref_ms").first());
+                                        ModelSolutionFileReference.addFileRef(object.find(".add_file_ref_ms").first());
                                     }
                                     var element = object.find(".xml_model-solution_filename");
                                     updateFilenameList(element.eq(index));
