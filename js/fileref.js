@@ -34,6 +34,10 @@ class FileReference {
         this.createTableStrings(className);
     }
 
+    getClassFilename() { return this.classFilename; }
+    getClassFileRef() { return this.classFileref; }
+
+
     createTableStrings(className) {
         this.filenameLabel = "<label for='" + this.classFilename +
             "'>Filename<span class='red'>*</span>: </label>";
@@ -71,6 +75,18 @@ class FileReference {
             root.find("label[for='" + this.classFileref + "']").hide();
         }
     }
+
+    setFilenameOnCreation(box, index, filename) { // index is 0-based
+        // set filename
+        if (index > 0) {
+            // create new fileref if index > 0
+            this.addFileRef(box.find("." + this.classAddFileref).first());
+        }
+        var element = box.find("." + this.classFilename);
+        updateFilenameList(element.eq(index));
+        element.eq(index).val(filename).change();
+    }
+
 
     addFileRef(element) {
         // add new line for selecting a file for a test
@@ -158,6 +174,14 @@ class TestFileReference extends FileReference {
             testFileRefSingleton = this;
         }
     }
+
+    static getClassFilename() { return testFileRefSingleton.classFilename; }
+    static getClassFileRef() { return testFileRefSingleton.classFileref; }
+    static getClassRoot() { return "xml_test"; }
+
+    static setFilenameOnCreation(box, index, filename) {
+        testFileRefSingleton.setFilenameOnCreation(box, index, filename); }
+
     static getTableString() { return testFileRefSingleton.getTableString(); }
     static init(root, DEBUG_MODE) { testFileRefSingleton.init(root, DEBUG_MODE); }
     static addFileRef(element) { return testFileRefSingleton.addFileRef(element); }
@@ -203,6 +227,14 @@ class ModelSolutionFileReference extends FileReference {
             modelSolutionFileRefSingleton = this;
         }
     }
+    static getClassFilename() { return modelSolutionFileRefSingleton.classFilename; }
+    static getClassFileRef() { return modelSolutionFileRefSingleton.classFileref; }
+    static getClassRoot() { return "xml_model-solution"; }
+
+    static setFilenameOnCreation(box, index, filename) {
+        modelSolutionFileRefSingleton.setFilenameOnCreation(box, index, filename); }
+
+
     static getTableString() { return modelSolutionFileRefSingleton.getTableString(); }
     static init(root, DEBUG_MODE) { modelSolutionFileRefSingleton.init(root, DEBUG_MODE); }
 

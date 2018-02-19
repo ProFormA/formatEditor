@@ -257,7 +257,7 @@ convertToXML = function() {
     if (returnFromFunction)
         return;
 
-    $.each($(".xml_model-solution_filename"), function(index, item) {   // check whether referenced filenames exists
+    $.each($("." + ModelSolutionFileReference.getClassFilename()), function(index, item) {   // check whether referenced filenames exists
         if (item.value == "") {
             $("#tabs").tabs("option", "active",  tab_page.MODEL_SOLUTION);
             setErrorMessage("Filename in model solution is missing.");
@@ -269,7 +269,7 @@ convertToXML = function() {
         return;
 
 
-    $.each($(".xml_test_filename"), function(index, item) {   // check whether referenced filenames exists
+    $.each($("." + TestFileReference.getClassFilename()), function(index, item) {   // check whether referenced filenames exists
         if ($(item).is(":visible") && item.value == "") {
             $("#tabs").tabs("option", "active",  tab_page.TESTS);
             setErrorMessage("Filename in test is missing.");
@@ -693,6 +693,18 @@ readXML = function(xmlText) {
                                 }
                                 // set filename in item
                                 var object = $($(item.formname)[idx1cnt]);
+                                switch (item.formname) {
+                                    case "." + TestFileReference.getClassRoot():
+                                        TestFileReference.setFilenameOnCreation(object, index, filename, itm2); break;
+                                    case "." + ModelSolutionFileReference.getClassRoot():
+                                        ModelSolutionFileReference.setFilenameOnCreation(object, index, filename, itm2); break;
+                                    default:
+                                        alert('invalid item.formname ' + item.formname);
+                                        break;
+                                }
+                                // TODO: what is itm2?
+                                object.find(itm2.formname)[index].value = fileid;
+/*
                                 if (item.formname == ".xml_test") {
                                     // set filename in test
                                     if (index > 0) {
@@ -711,7 +723,7 @@ readXML = function(xmlText) {
                                     updateFilenameList(element.eq(index));
                                     element.eq(index).val(filename).change();
                                     object.find(itm2.formname)[index].value = fileid;
-                                }
+                                } */
                             });
                         } catch(err) {setErrorMessage( "problem with reading filerefs", err);}
                     }
