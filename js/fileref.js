@@ -36,8 +36,8 @@ class FileReference {
         this.JsClassname = jsClassName;
     }
 
-    getClassFilename() { return this.classFilename; }
-    getClassFileRef() { return this.classFileref; }
+//    getClassFilename() { return this.classFilename; }
+    // getClassFileRef() { return this.classFileref; }
 
 
     createTableStrings(className) {
@@ -49,12 +49,12 @@ class FileReference {
             "<td><label for='" + this.classFileref + "'>Fileref: </label>"+ // fileref
             "<input class='tinyinput " + this.classFileref + "' readonly/></td>";
         this.tdAddButton = "<td><button class='" + this.classAddFileref +
-            "' title='add another filename' onclick='" + className + ".addFileRef($(this))'>+</button><br></td>";
+            "' title='add another filename' onclick='" + className + ".getInstance().addFileRef($(this))'>+</button><br></td>";
         this.tdRemoveButton = "<td><button class='" + this.classRemoveFileref +
-            "' onclick='" + className + ".remFileRef($(this))'>x</button></td>";
+            "' onclick='" + className + ".getInstance().remFileRef($(this))'>x</button></td>";
         // hide first remove file button
         var tdFirstRemoveButton = "<td><button class='" + this.classRemoveFileref +
-            "' onclick='" + className + ".remFileRef($(this))' style='display: none;'>x</button></td>";
+            "' onclick='" + className + ".getInstance().remFileRef($(this))' style='display: none;'>x</button></td>";
 
         this.table = "<table>" +
             "<tr>" +
@@ -79,7 +79,7 @@ class FileReference {
             root.find("label[for='" + this.classFileref + "']").hide();
         }
 
-        // register dragenter, dragover. 
+        // register dragenter, dragover.
         root.on({
             dragover: function(e) {
                 e.preventDefault();
@@ -335,19 +335,11 @@ class TestFileReference extends FileReference {
         }
     }
 
-    static getClassFilename() { return testFileRefSingleton.classFilename; }
-    static getClassFileRef() { return testFileRefSingleton.classFileref; }
+    static getInstance() {return testFileRefSingleton;}
     static getClassRoot() { return "xml_test"; }
 
-    static setFilenameOnCreation(box, index, filename) {
-        testFileRefSingleton.setFilenameOnCreation(box, index, filename); }
-
-    static getTableString() { return testFileRefSingleton.getTableString(); }
-    static init(root, DEBUG_MODE) { testFileRefSingleton.init(root, DEBUG_MODE); }
-    static addFileRef(element) { return testFileRefSingleton.addFileRef(element); }
-    static remFileRef(element) { return testFileRefSingleton.remFileRef(element); }
-    static onFileUpload(filename, uploadBox) {
-        testFileRefSingleton.onFileUpload(filename, uploadBox);
+    onFileUpload(filename, uploadBox) {
+        super.onFileUpload(filename, uploadBox);
         // set classname if exactly one file is assigned
         var ui_classname = $(uploadBox).find(".xml_ju_mainclass");
         if (ui_classname.length == 1) {
@@ -368,7 +360,7 @@ class TestFileReference extends FileReference {
         }
         $.each(files, function(index, file) {
             readAndCreateFileData(file, -1, function(filename) {
-                TestFileReference.onFileUpload(filename, testBox);
+                TestFileReference.getInstance().onFileUpload(filename, testBox);
             });
         });
     }
@@ -387,23 +379,8 @@ class ModelSolutionFileReference extends FileReference {
             modelSolutionFileRefSingleton = this;
         }
     }
-    static getClassFilename() { return modelSolutionFileRefSingleton.classFilename; }
-    static getClassFileRef() { return modelSolutionFileRefSingleton.classFileref; }
+    static getInstance() {return modelSolutionFileRefSingleton;}
     static getClassRoot() { return "xml_model-solution"; }
-
-    static setFilenameOnCreation(box, index, filename) {
-        modelSolutionFileRefSingleton.setFilenameOnCreation(box, index, filename); }
-
-
-    static getTableString() { return modelSolutionFileRefSingleton.getTableString(); }
-    static init(root, DEBUG_MODE) { modelSolutionFileRefSingleton.init(root, DEBUG_MODE); }
-
-    static addFileRef(element) { return modelSolutionFileRefSingleton.addFileRef(element); }
-    static remFileRef(element) { return modelSolutionFileRefSingleton.remFileRef(element); }
-
-    static onFileUpload(filename, uploadBox) {
-        modelSolutionFileRefSingleton.onFileUpload(filename, uploadBox)
-    }
 
     // TODO: move back to editor.js???
     static uploadFiles(files, modelSolBox) {
@@ -415,7 +392,7 @@ class ModelSolutionFileReference extends FileReference {
         }
         $.each(files, function(index, file) {
             readAndCreateFileData(file, -1, function(filename) {
-                ModelSolutionFileReference.onFileUpload(filename, modelSolBox);
+                ModelSolutionFileReference.getInstance().onFileUpload(filename, modelSolBox);
             });
         });
     }
@@ -436,23 +413,10 @@ class TemplateFileReference extends FileReference {
             templSingleton = this;
         }
     }
-    static getClassFilename() { return templSingleton.classFilename; }
-    static getClassFileRef() { return templSingleton.classFileref; }
+
+    static getInstance() {return templSingleton;}
+
     //static getClassRoot() { return "xml_model-solution"; }
-
-    static setFilenameOnCreation(box, index, filename) {
-        templSingleton.setFilenameOnCreation(box, index, filename); }
-
-
-    static getTableString() { return templSingleton.getTableString(); }
-    static init(root, DEBUG_MODE) { templSingleton.init(root, DEBUG_MODE); }
-
-    static addFileRef(element) { return templSingleton.addFileRef(element); }
-    static remFileRef(element) { return templSingleton.remFileRef(element); }
-
-    static onFileUpload(filename, uploadBox) {
-        templSingleton.onFileUpload(filename, uploadBox)
-    }
 
     // TODO: move back to editor.js???
     static uploadFiles(files, box) {
@@ -464,7 +428,7 @@ class TemplateFileReference extends FileReference {
         }
         $.each(files, function(index, file) {
             readAndCreateFileData(file, -1, function(filename) {
-                TemplateFileReference.onFileUpload(filename, box);
+                TemplateFileReference.getInstance().onFileUpload(filename, box);
             });
         });
     }

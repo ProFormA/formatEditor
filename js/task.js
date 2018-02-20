@@ -695,9 +695,9 @@ readXML = function(xmlText) {
                                 var object = $($(item.formname)[idx1cnt]);
                                 switch (item.formname) {
                                     case "." + TestFileReference.getClassRoot():
-                                        TestFileReference.setFilenameOnCreation(object, index, filename, itm2); break;
+                                        TestFileReference.getInstance().setFilenameOnCreation(object, index, filename, itm2); break;
                                     case "." + ModelSolutionFileReference.getClassRoot():
-                                        ModelSolutionFileReference.setFilenameOnCreation(object, index, filename, itm2); break;
+                                        ModelSolutionFileReference.getInstance().setFilenameOnCreation(object, index, filename, itm2); break;
                                     default:
                                         alert('invalid item.formname ' + item.formname);
                                         break;

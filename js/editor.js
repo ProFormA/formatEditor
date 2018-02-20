@@ -426,36 +426,6 @@ $(function() {
 
       // update filenames in all file references
       FileReference.updateAllFilenameLists();
-/*
-      $.each($(".xml_test_filename, .xml_model-solution_filename"), function(index, item) {
-          //console.log("update filelist in test ");
-          // store name of currently selected file
-          var text = $("option:selected", item).text(); // selected text
-          //console.log("selected is " + text);
-          updateFilenameList(item); // update filename list in tests and model solutions
-
-          if (text.length > 0) {
-              // check if previously selected filename is still in list
-              // (ich weiß im Moment nicht, wie man die Einträge aus
-              // der Liste rauszieht...TODO)
-              // TODO einfacher: einfach setzen und schauen, ob leer???
-              var indexFound = -1;
-              $.each($(".xml_file_filename"), function (indexOpt, item) {
-                  if (item.value.length > 0 && item.value == text) {
-                      indexFound = indexOpt;
-                  }
-              });
-              if (indexFound >= 0) {
-                  //console.log("selektiere " + indexFound);
-                  item.selectedIndex = indexFound + 1; // +1:weil am Anfang noch ein Leerstring ist
-              } else {
-                  // filename not found => remove fileid
-                  console.log("filename ref not found");
-                  $(item).closest(".xml_test,.xml_model-solution").
-                    find($(".xml_test_fileref, .xml_model-solution_fileref")).first().val("");
-              }
-          }
-      });*/
   };
 
   newFile = function(tempcounter) {                    // create a new file HTML form element
@@ -646,13 +616,13 @@ $(function() {
     "class='rightButton'><button onclick='remP3($(this));deletecounter(modelSolIDs,$(this));'>x</button></span></h3>"+
     "<p><label for='xml_model-solution_id'>ID<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_model-solution_id' value='"+tempcounter+"' readonly/>"+
-        ModelSolutionFileReference.getTableString() +
+        ModelSolutionFileReference.getInstance().getTableString() +
      //   "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>" +
     "<p><label for='xml_model-solution_comment'>Comment: </label>"+
     "<input class='largeinput xml_model-solution_comment'/></p></div>");
 
     var msroot = $(".xml_model-solution_id[value='" + tempcounter + "']").parent().parent();
-    ModelSolutionFileReference.init(msroot, DEBUG_MODE);
+    ModelSolutionFileReference.getInstance().init(msroot, DEBUG_MODE);
 
     if (!DEBUG_MODE) {
         // hide fields that exist only for technical reasons
@@ -682,7 +652,7 @@ $(function() {
     "class='rightButton'><button onclick='remP3($(this));deletecounter(testIDs,$(this));'>x</button></span></h3>"+
     "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
-        TestFileReference.getTableString() +
+        TestFileReference.getInstance().getTableString() +
         // "<span class='drop_zone drop_zone_text'>Drop Your File(s) Here!</span>" +
         //"<br>" +
 //    " <label for='xml_test_validity'>Validity: </label>"+
@@ -705,7 +675,7 @@ $(function() {
       // hide fields that exist only for technical reasons
     var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent().parent();
     testroot.find(".xml_test_type").val(TestType);
-    TestFileReference.init(testroot, DEBUG_MODE);
+    TestFileReference.getInstance().init(testroot, DEBUG_MODE);
 
     if (!DEBUG_MODE) {
       testroot.find(".xml_test_type").hide();
@@ -1040,8 +1010,8 @@ $(function() {
 
     // add file refernce for template
     var templateroot = $("#templatedropzone");
-    $('#templatesection').append(TemplateFileReference.getTableString());
-    TemplateFileReference.init(templateroot, DEBUG_MODE);
+    $('#templatesection').append(TemplateFileReference.getInstance().getTableString());
+    TemplateFileReference.getInstance().init(templateroot, DEBUG_MODE);
 
     templateroot.on({
         drop: function(e){
@@ -1125,7 +1095,6 @@ $(function() {
     }
     setTimeout(updatePreview, 300);
 
-    
     
 });
 
