@@ -647,7 +647,7 @@ $(function() {
     "<p><label for='xml_model-solution_id'>ID<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_model-solution_id' value='"+tempcounter+"' readonly/>"+
         ModelSolutionFileReference.getTableString() +
-        "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>" +
+     //   "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>" +
     "<p><label for='xml_model-solution_comment'>Comment: </label>"+
     "<input class='largeinput xml_model-solution_comment'/></p></div>");
 
@@ -661,15 +661,6 @@ $(function() {
     }
 
       msroot.on({
-          dragover: function(e) {
-              e.preventDefault();
-              e.stopPropagation();
-              //e.dataTransfer.dropEffect = 'copy';
-          },
-          dragenter: function(e) {
-              e.preventDefault();
-              e.stopPropagation();
-          },
           drop: function(e){
               if(e.originalEvent.dataTransfer){
                   if(e.originalEvent.dataTransfer.files.length) {
@@ -692,7 +683,7 @@ $(function() {
     "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
         TestFileReference.getTableString() +
-        "<span class='drop_zone drop_zone_text'>Drop Your File(s) Here!</span>" +
+        // "<span class='drop_zone drop_zone_text'>Drop Your File(s) Here!</span>" +
         //"<br>" +
 //    " <label for='xml_test_validity'>Validity: </label>"+
 //    "<input class='shortinput xml_test_validity'/>"+
@@ -731,15 +722,6 @@ $(function() {
     else
     {
         testroot.on({
-            dragover: function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                //e.dataTransfer.dropEffect = 'copy';
-            },
-            dragenter: function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            },
             drop: function(e){
                 if(e.originalEvent.dataTransfer){
                     if(e.originalEvent.dataTransfer.files.length) {
@@ -1056,6 +1038,23 @@ $(function() {
         }
     });
 
+    // add file refernce for template
+    var templateroot = $("#templatedropzone");
+    $('#templatesection').append(TemplateFileReference.getTableString());
+    TemplateFileReference.init(templateroot, DEBUG_MODE);
+
+    templateroot.on({
+        drop: function(e){
+            if(e.originalEvent.dataTransfer){
+                if(e.originalEvent.dataTransfer.files.length) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    //UPLOAD FILES HERE
+                    TemplateFileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                }
+            }
+        }
+    });
 
 // test
 //    var myCsv = "Col1,Col2,Col3\nval1,val2,val3";

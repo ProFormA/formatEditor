@@ -20,18 +20,20 @@
 
 var testFileRefSingleton = null;
 var modelSolutionFileRefSingleton = null;
+var templSingleton = null;
 
 
 // abstract class for a filename reference input
 class FileReference {
 
-    constructor(classFilename, classFileref, classAddFileref, classRemoveFileref, className) {
+    constructor(classFilename, classFileref, classAddFileref, classRemoveFileref, jsClassName) {
         this.classFilename = classFilename;
         this.classFileref = classFileref;
         this.classAddFileref = classAddFileref;
         this.classRemoveFileref = classRemoveFileref;
 
-        this.createTableStrings(className);
+        this.createTableStrings(jsClassName);
+        this.JsClassname = jsClassName;
     }
 
     getClassFilename() { return this.classFilename; }
@@ -61,7 +63,8 @@ class FileReference {
             tdFirstRemoveButton + // x-button
             this.tdAddButton +
             "</tr>"+
-            "</table>";
+            "</table>" +
+            "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>";
     }
 
     getTableString() {
@@ -75,6 +78,30 @@ class FileReference {
             root.find("." + this.classFileref).hide();
             root.find("label[for='" + this.classFileref + "']").hide();
         }
+
+        // register dragenter, dragover. 
+        root.on({
+            dragover: function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                //e.dataTransfer.dropEffect = 'copy';
+            },
+            dragenter: function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            },
+/*
+            drop: function(e){
+                if(e.originalEvent.dataTransfer){
+                    if(e.originalEvent.dataTransfer.files.length) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        //UPLOAD FILES HERE
+                        this.JsClassname.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                    }
+                }
+            } */
+        });
     }
 
     // for creation by reading xml
@@ -231,15 +258,13 @@ class FileReference {
                         var fileid = $(item).first().parent().find(".xml_file_id").val();
                         if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
                             nextTd.find('.xml_test_fileref')[0].value=fileid;
-
-                            //            $(tempSelElem).parent().find('.xml_test_fileref')[0].value=
-                            //              $(item).first().parent().find(".xml_file_id").val();
                             // set classname if file belongs to JUNIT
                             setJavaClassname(selectedFilename);
                             setJUnitDefaultTitle(selectedFilename);
-                        } else {
-//                          var fileid = $(item).first().parent().find(".xml_file_id").val();
-//                          var nextTd = $(tempSelElem).parent().next('td');
+                        } else if ($(tempSelElem).hasClass('xml_template_filename')) {
+                            nextTd.find('.xml_template_fileref')[0].value=fileid;
+                        }
+                        else {
                             nextTd.find('.xml_model-solution_fileref')[0].value=fileid;
                         }
                         found = true;
@@ -250,12 +275,10 @@ class FileReference {
                 if (!found) {
                     console.log("could not find file id for " + selectedFilename);
                     if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
-//                      var nextTd = $(tempSelElem).parent().next('td');
-                        nextTd.find('.xml_test_fileref')[0].value="";
-                        //$(tempSelElem).parent().find('.xml_test_fileref')[0].value="";
-
+                        nextTd.find('.xml_test_fileref')[0].value = "";
+                    } else if ($(tempSelElem).hasClass('xml_test_filename')) {
+                        nextTd.find('.xml_template_fileref')[0].value = "";
                     } else {
-//                      var nextTd = $(tempSelElem).parent().next('td');
                         nextTd.find('.xml_model-solution_fileref')[0].value="";
                     }
                 }
@@ -266,7 +289,7 @@ class FileReference {
 
     // update all filename lists
     static updateAllFilenameLists() {
-        $.each($(".xml_test_filename, .xml_model-solution_filename"), function(index, item) {
+        $.each($(".xml_test_filename, .xml_model-solution_filename, .xml_template_filename"), function(index, item) {
         //console.log("update filelist in test ");
         // store name of currently selected file
         var text = $("option:selected", item).text(); // selected text
@@ -290,8 +313,8 @@ class FileReference {
             } else {
                 // filename not found => remove fileid
                 console.log("filename ref not found");
-                $(item).closest(".xml_test,.xml_model-solution").
-                find($(".xml_test_fileref, .xml_model-solution_fileref")).first().val("");
+                $(item).closest(".xml_test,.xml_model-solution, #templatedropzone").
+                find($(".xml_test_fileref, .xml_model-solution_fileref, .xml_template_fileref")).first().val("");
             }
         }
         });
@@ -400,3 +423,51 @@ class ModelSolutionFileReference extends FileReference {
 
 modelSolutionFileRefSingleton = new ModelSolutionFileReference();
 
+
+
+
+class TemplateFileReference extends FileReference {
+
+    constructor() {
+        super('xml_template_filename', 'xml_template_fileref',
+            'add_file_ref_templ', 'rem_file_ref_templ', 'TemplateFileReference');
+
+        if (templSingleton == null) {
+            templSingleton = this;
+        }
+    }
+    static getClassFilename() { return templSingleton.classFilename; }
+    static getClassFileRef() { return templSingleton.classFileref; }
+    //static getClassRoot() { return "xml_model-solution"; }
+
+    static setFilenameOnCreation(box, index, filename) {
+        templSingleton.setFilenameOnCreation(box, index, filename); }
+
+
+    static getTableString() { return templSingleton.getTableString(); }
+    static init(root, DEBUG_MODE) { templSingleton.init(root, DEBUG_MODE); }
+
+    static addFileRef(element) { return templSingleton.addFileRef(element); }
+    static remFileRef(element) { return templSingleton.remFileRef(element); }
+
+    static onFileUpload(filename, uploadBox) {
+        templSingleton.onFileUpload(filename, uploadBox)
+    }
+
+    // TODO: move back to editor.js???
+    static uploadFiles(files, box) {
+        //alert('ModelSolutionFileReference.uploadFiles');
+        //console.log("uploadFiles");
+        if (files.length > 1) {
+            alert('You have dragged more than one file. You must drop exactly one file!');
+            return;
+        }
+        $.each(files, function(index, file) {
+            readAndCreateFileData(file, -1, function(filename) {
+                TemplateFileReference.onFileUpload(filename, box);
+            });
+        });
+    }
+}
+
+templSingleton = new TemplateFileReference();
