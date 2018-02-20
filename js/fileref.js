@@ -189,6 +189,7 @@ class FileReference {
         }
     }
 
+    // TODO: split for different handling in classes
     static onFileSelectionChanged (tempSelElem) {              // changing a filename in the drop-down
 
         function setJavaClassname(newFilename) {
@@ -384,8 +385,6 @@ class ModelSolutionFileReference extends FileReference {
 
     // TODO: move back to editor.js???
     static uploadFiles(files, modelSolBox) {
-        //alert('ModelSolutionFileReference.uploadFiles');
-        //console.log("uploadFiles");
         if (files.length > 1) {
             alert('You have dragged more than one file. You must drop exactly one file!');
             return;
@@ -420,8 +419,6 @@ class TemplateFileReference extends FileReference {
 
     // TODO: move back to editor.js???
     static uploadFiles(files, box) {
-        //alert('ModelSolutionFileReference.uploadFiles');
-        //console.log("uploadFiles");
         if (files.length > 1) {
             alert('You have dragged more than one file. You must drop exactly one file!');
             return;
