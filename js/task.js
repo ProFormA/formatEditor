@@ -257,7 +257,7 @@ convertToXML = function() {
     if (returnFromFunction)
         return;
 
-    $.each($("." + ModelSolutionFileReference.getClassFilename()), function(index, item) {   // check whether referenced filenames exists
+    $.each($("." + ModelSolutionFileReference.getInstance().getClassFilename()), function(index, item) {   // check whether referenced filenames exists
         if (item.value == "") {
             $("#tabs").tabs("option", "active",  tab_page.MODEL_SOLUTION);
             setErrorMessage("Filename in model solution is missing.");
@@ -269,7 +269,7 @@ convertToXML = function() {
         return;
 
 
-    $.each($("." + TestFileReference.getClassFilename()), function(index, item) {   // check whether referenced filenames exists
+    $.each($("." + TestFileReference.getInstance().getClassFilename()), function(index, item) {   // check whether referenced filenames exists
         if ($(item).is(":visible") && item.value == "") {
             $("#tabs").tabs("option", "active",  tab_page.TESTS);
             setErrorMessage("Filename in test is missing.");

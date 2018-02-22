@@ -345,7 +345,7 @@ $(function() {
 
           // special handling for JAVA: extract class name and package name and
           // recalc filename!
-          if (filename.match(/(.java)/i)) {
+          if (filename.match(/(\.java)/i)) {
               filename = java_getFilenameWithPackage(text);
           }
 
@@ -372,7 +372,7 @@ $(function() {
           onFilenameChanged();
 
           if (callback)
-            callback(filename);
+            callback(filename, fileId);
       };
       //console.log("read file");
       reader.readAsText(file);
@@ -400,7 +400,7 @@ $(function() {
           // then the filename is recalculated on base of the source code (package class)
           // and checked against user filename
           var filename = $(textbox).val();
-          if (filename.match(/(.java)/i)) {
+          if (filename.match(/(\.java)/i)) {
               var filebox = $(textbox).closest(".xml_file");
               var text = "";
               if (useCodemirror) {

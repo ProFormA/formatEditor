@@ -213,10 +213,14 @@ def saveTaskFile(expected_file_name, move_to_folder, move_to_filename_xml):
     filename_with_wildcards = getFilenameWithWildcard(expected_file_name)
 
     import glob
+    lastname = None
     listing = glob.glob(testconfig.download_path + "/" + filename_with_wildcards)
     for filename in listing:
         lastname = filename
         # print filename
+
+    if lastname == None:
+        print testconfig.download_path + "/" + filename_with_wildcards + ' does not exist'
 
     # könnte man auch direkt auspacken... (TODO)
     # print "rename " + lastname + " to " + move_to_folder + "/" + expected_file_name

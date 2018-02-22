@@ -26,23 +26,25 @@ var templSingleton = null;
 // abstract class for a filename reference input
 class FileReference {
 
-    constructor(classFilename, classFileref, classAddFileref, classRemoveFileref, jsClassName) {
+    constructor(classFilename, classFileref, classAddFileref, classRemoveFileref, jsClassName, label, mandatory) {
         this.classFilename = classFilename;
         this.classFileref = classFileref;
         this.classAddFileref = classAddFileref;
         this.classRemoveFileref = classRemoveFileref;
 
-        this.createTableStrings(jsClassName);
+        this.createTableStrings(jsClassName, label, mandatory);
         this.JsClassname = jsClassName;
     }
 
-//    getClassFilename() { return this.classFilename; }
+    getClassFilename() { return this.classFilename; }
+
+    // getClassFilename() { return this.classFilename; }
     // getClassFileRef() { return this.classFileref; }
 
 
-    createTableStrings(className) {
+    createTableStrings(className, label, mandatory) {
         this.filenameLabel = "<label for='" + this.classFilename +
-            "'>Filename<span class='red'>*</span>: </label>";
+            "'>" + label + (mandatory?"<span class='red'>*</span>":"") + ": </label>";
         this.tdFilenameLabel ="<td>" + this.filenameLabel + "</td>";
         this.tdFilename = "<td><select class='mediuminput " + this.classFilename + "' " + // onfocus = 'updateFilenameList(this)' "+
             "onchange = 'FileReference.onFileSelectionChanged(this)'></select></td>"+
@@ -238,13 +240,13 @@ class FileReference {
                         return;
                     }
                     readAndCreateFileData(filenew, -1,
-                        function (newFilename) {
+                        function (newFilename, fileId) {
                             if ($(tempSelElem)) {
                                 $(tempSelElem).val(newFilename).change();
                             }
                             // set classname if file belongs to JUNIT
-                            setJavaClassname(newFilename);
-                            setJUnitDefaultTitle(newFilename);
+                            //setJavaClassname(newFilename);
+                            //setJUnitDefaultTitle(newFilename);
                         });
                 });
                 // perform dummy click
@@ -254,34 +256,27 @@ class FileReference {
                 return; // do nothing
             default:
                 var nextTd = $(tempSelElem).parent().next('td');
+                var fileid = "";
                 $.each($(".xml_file_filename"), function(index, item) {
                     if (selectedFilename == item.value ) {
-                        var fileid = $(item).first().parent().find(".xml_file_id").val();
-                        if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
-                            nextTd.find('.xml_test_fileref')[0].value=fileid;
-                            // set classname if file belongs to JUNIT
-                            setJavaClassname(selectedFilename);
-                            setJUnitDefaultTitle(selectedFilename);
-                        } else if ($(tempSelElem).hasClass('xml_template_filename')) {
-                            nextTd.find('.xml_template_fileref')[0].value=fileid;
-                        }
-                        else {
-                            nextTd.find('.xml_model-solution_fileref')[0].value=fileid;
-                        }
-                        found = true;
-                        return false;
+                        fileid = $(item).first().parent().find(".xml_file_id").val();
+                        return;
                     }
                 });
-                // file id not found
-                if (!found) {
-                    console.log("could not find file id for " + selectedFilename);
-                    if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
-                        nextTd.find('.xml_test_fileref')[0].value = "";
-                    } else if ($(tempSelElem).hasClass('xml_test_filename')) {
-                        nextTd.find('.xml_template_fileref')[0].value = "";
-                    } else {
-                        nextTd.find('.xml_model-solution_fileref')[0].value="";
+                if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
+                    nextTd.find('.xml_test_fileref')[0].value = fileid;
+                    // set classname if file belongs to JUNIT
+                    if (fileid != '') {
+                        setJavaClassname(selectedFilename);
+                        setJUnitDefaultTitle(selectedFilename);
                     }
+                } else if ($(tempSelElem).hasClass('xml_template_filename')) {
+                    nextTd.find('.xml_template_fileref')[0].value = fileid;
+                    // set to file class to 'template'
+                    $(".xml_file_id[value='"+fileid+"']").parent().find(".xml_file_class").first().val('template');
+
+                } else {
+                    nextTd.find('.xml_model-solution_fileref')[0].value = fileid;
                 }
         }
 
@@ -329,7 +324,7 @@ class TestFileReference extends FileReference {
 
     constructor() {
         super('xml_test_filename', 'xml_test_fileref',
-            'add_file_ref_test', 'rem_file_ref_test', 'TestFileReference');
+            'add_file_ref_test', 'rem_file_ref_test', 'TestFileReference', 'Testscript', true);
 
         if (testFileRefSingleton == null) {
             testFileRefSingleton = this;
@@ -374,7 +369,7 @@ class ModelSolutionFileReference extends FileReference {
 
     constructor() {
         super('xml_model-solution_filename', 'xml_model-solution_fileref',
-            'add_file_ref_ms', 'rem_file_ref_ms', 'ModelSolutionFileReference');
+            'add_file_ref_ms', 'rem_file_ref_ms', 'ModelSolutionFileReference', 'Filename', true);
 
         if (modelSolutionFileRefSingleton == null) {
             modelSolutionFileRefSingleton = this;
@@ -406,7 +401,7 @@ class TemplateFileReference extends FileReference {
 
     constructor() {
         super('xml_template_filename', 'xml_template_fileref',
-            'add_file_ref_templ', 'rem_file_ref_templ', 'TemplateFileReference');
+            'add_file_ref_templ', 'rem_file_ref_templ', 'TemplateFileReference', 'Template', false);
 
         if (templSingleton == null) {
             templSingleton = this;
