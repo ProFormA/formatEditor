@@ -736,6 +736,27 @@ readXML = function(xmlText) {
         // copy description into CodeMirror element
         descriptionEditor.setValue($("#xml_description").val());
 
+        // special handling for template and instruction file class
+        var indexTemplate = 0;
+        var indexInstruction = 0;
+        var templateroot = $("#templatedropzone");
+        var instructionroot = $("#instructiondropzone");
+        xmlObject.find('file').each(function (index, element) {    // iterate through all files
+            console.log(index + ' ' + element);
+            var fileid = element.getAttribute('id');
+            var filename = element.getAttribute('filename');
+            switch(element.getAttribute('class')) {
+                case 'template':
+                    TemplateFileReference.getInstance().setFilenameOnCreation(templateroot, indexTemplate++, filename);
+                    break;
+                case 'instruction':
+                    InstructionFileReference.getInstance().setFilenameOnCreation(instructionroot, indexInstruction++, filename);
+                default:
+                    break;
+            }
+
+        });
+
 
         if (xmlObject.find("proglang")[0]) {              // deal with proglang
             var tempvals1, tempvals0;

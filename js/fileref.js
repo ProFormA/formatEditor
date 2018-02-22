@@ -275,7 +275,10 @@ class FileReference {
                 } else if ($(tempSelElem).hasClass('xml_template_filename')) {
                     nextTd.find('.xml_template_fileref')[0].value = fileid;
                     // set to file class to 'template'
-                    $(".xml_file_id[value='"+fileid+"']").parent().find(".xml_file_class").first().val('template');
+                    var fileclass = $(".xml_file_id[value='"+fileid+"']").parent().find(".xml_file_class").first();
+                    fileclass.val('template');
+                    // TODO: disable class is easy, but when to enable it??
+                    // fileclass.attr('disabled', true);
 
                 } else if ($(tempSelElem).hasClass('xml_instruction_filename')) {
                     nextTd.find('.xml_instruction_fileref')[0].value = fileid;
