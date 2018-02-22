@@ -1008,7 +1008,7 @@ $(function() {
         }
     });
 
-    // add file refernce for template
+    // add file refernce for template and instruction
     var templateroot = $("#templatedropzone");
     $('#templatesection').append(TemplateFileReference.getInstance().getTableString());
     TemplateFileReference.getInstance().init(templateroot, DEBUG_MODE);
@@ -1025,6 +1025,25 @@ $(function() {
             }
         }
     });
+
+
+    var instructionroot = $("#instructiondropzone");
+    $('#instructionsection').append(InstructionFileReference.getInstance().getTableString());
+    InstructionFileReference.getInstance().init(instructionroot, DEBUG_MODE);
+
+    instructionroot.on({
+        drop: function(e){
+            if(e.originalEvent.dataTransfer){
+                if(e.originalEvent.dataTransfer.files.length) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    //UPLOAD FILES HERE
+                    InstructionFileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                }
+            }
+        }
+    });
+
 
 // test
 //    var myCsv = "Col1,Col2,Col3\nval1,val2,val3";

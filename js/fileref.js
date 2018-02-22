@@ -21,6 +21,7 @@
 var testFileRefSingleton = null;
 var modelSolutionFileRefSingleton = null;
 var templSingleton = null;
+var instructionSingleton = null;
 
 
 // abstract class for a filename reference input
@@ -43,13 +44,14 @@ class FileReference {
 
 
     createTableStrings(className, label, mandatory) {
+        label = label + '(s)';
         this.filenameLabel = "<label for='" + this.classFilename +
             "'>" + label + (mandatory?"<span class='red'>*</span>":"") + ": </label>";
         this.tdFilenameLabel ="<td>" + this.filenameLabel + "</td>";
-        this.tdFilename = "<td><select class='mediuminput " + this.classFilename + "' " + // onfocus = 'updateFilenameList(this)' "+
+        this.tdFilename = "<td><select class='mediuminput fileref_filename " + this.classFilename + "' " + // onfocus = 'updateFilenameList(this)' "+
             "onchange = 'FileReference.onFileSelectionChanged(this)'></select></td>"+
             "<td><label for='" + this.classFileref + "'>Fileref: </label>"+ // fileref
-            "<input class='tinyinput " + this.classFileref + "' readonly/></td>";
+            "<input class='tinyinput fileref_fileref " + this.classFileref + "' readonly/></td>";
         this.tdAddButton = "<td><button class='" + this.classAddFileref +
             "' title='add another filename' onclick='" + className + ".getInstance().addFileRef($(this))'>+</button><br></td>";
         this.tdRemoveButton = "<td><button class='" + this.classRemoveFileref +
@@ -275,17 +277,21 @@ class FileReference {
                     // set to file class to 'template'
                     $(".xml_file_id[value='"+fileid+"']").parent().find(".xml_file_class").first().val('template');
 
+                } else if ($(tempSelElem).hasClass('xml_instruction_filename')) {
+                    nextTd.find('.xml_instruction_fileref')[0].value = fileid;
+                    // set to file class to 'template'
+                    $(".xml_file_id[value='"+fileid+"']").parent().find(".xml_file_class").first().val('instruction');
+
                 } else {
                     nextTd.find('.xml_model-solution_fileref')[0].value = fileid;
                 }
         }
-
     };
 
 
     // update all filename lists
     static updateAllFilenameLists() {
-        $.each($(".xml_test_filename, .xml_model-solution_filename, .xml_template_filename"), function(index, item) {
+        $.each($(".xml_test_filename, .xml_model-solution_filename, .xml_template_filename, .xml_instruction_filename"), function(index, item) {
         //console.log("update filelist in test ");
         // store name of currently selected file
         var text = $("option:selected", item).text(); // selected text
@@ -310,7 +316,7 @@ class FileReference {
                 // filename not found => remove fileid
                 console.log("filename ref not found");
                 $(item).closest(".xml_test,.xml_model-solution, #templatedropzone").
-                find($(".xml_test_fileref, .xml_model-solution_fileref, .xml_template_fileref")).first().val("");
+                find($(".xml_test_fileref, .xml_model-solution_fileref, .xml_template_fileref, .xml_template_fileref")).first().val("");
             }
         }
         });
@@ -361,7 +367,6 @@ class TestFileReference extends FileReference {
         });
     }
 }
-
 testFileRefSingleton = new TestFileReference();
 
 
@@ -391,10 +396,38 @@ class ModelSolutionFileReference extends FileReference {
         });
     }
 }
-
 modelSolutionFileRefSingleton = new ModelSolutionFileReference();
 
 
+
+
+class InstructionFileReference extends FileReference {
+
+    constructor() {
+        super('xml_instruction_filename', 'xml_instruction_fileref',
+            'add_file_ref_instr', 'rem_file_ref_instr', 'InstructionFileReference', 'Attachment', false);
+
+        if (instructionSingleton == null) {
+            instructionSingleton = this;
+        }
+    }
+    static getInstance() {return instructionSingleton;}
+    //static getClassRoot() { return "???"; }
+
+    // TODO: move back to editor.js???
+    static uploadFiles(files, box) {
+        if (files.length > 1) {
+            alert('You have dragged more than one file. You must drop exactly one file!');
+            return;
+        }
+        $.each(files, function(index, file) {
+            readAndCreateFileData(file, -1, function(filename) {
+                InstructionFileReference.getInstance().onFileUpload(filename, box);
+            });
+        });
+    }
+}
+instructionSingleton = new InstructionFileReference();
 
 
 class TemplateFileReference extends FileReference {
@@ -425,5 +458,4 @@ class TemplateFileReference extends FileReference {
         });
     }
 }
-
 templSingleton = new TemplateFileReference();

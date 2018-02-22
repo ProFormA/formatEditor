@@ -43,7 +43,7 @@
                 <li id="manual"><a href="#tabs-5">Manual</a></li> -->
             </ul>
             <div id="tabs-1">
-                <div class='ui-widget ui-widget-content ui-corner-all'>
+                <div class='ui-widget ui-widget-content ui-corner-all' id="instructiondropzone">
                     <h3 class='ui-widget-header'>Task description</h3>
 
                     <p><label for='xml_meta-data_title'>Title<span class='red'>*</span>: </label>
@@ -54,6 +54,7 @@
                             title = 'What the students will see.'></textarea>
                         <iframe id=preview title="HTML Preview"></iframe>
                     </p>
+                    <span id='instructionsection' ></span>
                     <!-- onfocus='this.rows=10;' onmouseout='this.rows=10;' -->
                      <p><label for='xml_lang'>Language<span class='red'>*</span>: </label>
                          <select id='xml_lang'>
