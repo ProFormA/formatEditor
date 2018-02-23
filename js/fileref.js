@@ -115,7 +115,7 @@ class FileReference {
             // create new fileref if index > 0
             this.addFileRef(box.find("." + this.classAddFileref).first());
         }
-        var element = box.find("." + this.classFilename);
+        let element = box.find("." + this.classFilename);
         updateFilenameList(element.eq(index));
         element.eq(index).val(filename).change();
     }
@@ -379,7 +379,7 @@ class ModelSolutionFileReference extends FileReference {
         super('xml_model-solution_filename', 'xml_model-solution_fileref',
             'add_file_ref_ms', 'rem_file_ref_ms', 'ModelSolutionFileReference', 'Filename', true);
 
-        if (modelSolutionFileRefSingleton == null) {
+        if (modelSolutionFileRefSingleton === null) {
             modelSolutionFileRefSingleton = this;
         }
     }

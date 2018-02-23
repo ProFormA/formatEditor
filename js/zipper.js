@@ -44,6 +44,7 @@ unzipme = function (blob,location, readyCallback) {
 };
 
 zipme = function() {
+    // get task.xml content from user interface
     var TEXT_CONTENT = $("#output").val();
     if (TEXT_CONTENT.length == 0) {
         console.log("zipme called with empty output");
@@ -56,11 +57,44 @@ zipme = function() {
     zipname = zipname.replace(/[^a-z0-9]/gi, "");
     zipname = zipname + '.zip';
 
+
+    // bom: aus dem Internet gefunden
+    function onerror(message) {
+        console.error(message);
+        alert(message);
+    }
+
     function zipBlob(blob, callback) {
         zip.createWriter(new zip.BlobWriter("application/zip"), function (zipWriter) {
-            zipWriter.add(FILENAME, new zip.BlobReader(blob), function () {
+
+            // bom: new
+            var f = 0;
+            function nextFile(f) {
+                const fs = fileStorages[f];
+                if (f >= fileStorages.length) {
+                    // end of recursion
+                    zipWriter.add(FILENAME, new zip.BlobReader(blob), function () {
+                        zipWriter.close(callback);
+                    });
+                } else {
+                    if (fs != undefined && fs.isBinary) {
+                        fblob = new Blob([fs.content], {type: fs.mimetype});
+                        zipWriter.add(fs.filename, new zip.BlobReader(fblob), function () {
+                            // callback
+                            f++;
+                            nextFile(f);
+                        });
+                    } else {
+                        f++;
+                        nextFile(f);
+                    }
+                }
+            }
+
+            /*zipWriter.add(FILENAME, new zip.BlobReader(blob), function () {
                 zipWriter.close(callback);
-            });
+            }); */
+            nextFile(f);
         }, onerror);
     }
     blob = new Blob([ TEXT_CONTENT ], {

@@ -57,6 +57,16 @@ var modelSolIDs = {};
 var testIDs = {};
 var gradingHintCounter;                                // only 1 grading hint is allowed
 var codemirror = {};
+var fileStorages = [];
+
+class FileStorage {
+    constructor(isBinary, mimetype, content, filename) {
+        this.isBinary = isBinary;
+        this.mimetype = mimetype;
+        this.content = content;
+        this.filename = filename;
+    }
+}
 
 // Codemirror description editor is made global in order to allow access
 // to test environment.
@@ -335,8 +345,12 @@ $(function() {
           return;
       }
 
-      var type = file.type;
+      var type = file.type; //get mime type
       var reader = new FileReader();
+      var binaryFile =  true;
+      if (type.match(/(text\/)/i)) {
+          binaryFile = false;
+      }
 
       reader.onload = function(e) {
           // get file content
@@ -362,6 +376,7 @@ $(function() {
           // set filename in test
           $(".xml_file_id[value='"+fileId+"']").parent().find(".xml_file_filename").first().val(filename);
           // set file text
+          fileStorages[fileId] = new FileStorage(binaryFile, type, text, filename);
           if (useCodemirror) {
               codemirror[fileId].setValue(text);
           } else {
@@ -489,108 +504,6 @@ $(function() {
       });
   };
 
-  /*
-  onFileSelectionChanged = function(tempSelElem) {              // changing a filename in the drop-down
-
-      function setJavaClassname(newFilename) {
-          // set classname if file belongs to JUNIT and if exactly one file is assigned
-          var testBox = $(tempSelElem).closest(".xml_test");
-          var ui_classname = $(testBox).find(".xml_ju_mainclass");
-          if (ui_classname.length == 1) {
-              $.each(ui_classname, function(index, element) {
-                  var currentFilename = $(element).val();
-                  if (!readXmlActive)
-                      $(element).val(java_getFullClassnameFromFilename(newFilename)).change();
-              });
-          }
-      }
-
-      function setJUnitDefaultTitle(newFilename) {
-          // set decsription according to classname
-          var testBox = $(tempSelElem).closest(".xml_test");
-          var ui_title = $(testBox).find(".xml_test_title");
-          if (ui_title.length == 1) {
-              $.each(ui_title, function(index, element) {
-                  var currentTitle = $(element).val();
-                  if (!readXmlActive && currentTitle == JUnit_Default_Title)
-                      $(element).val("Junit Test " + java_getPureClassnameFromFilename(newFilename)).change();
-              });
-          }
-      }
-
-      var found = false;
-      var selectedFilename = $(tempSelElem).val();
-      //console.log("-> selected is '" + selectedFilename + "'");
-
-      switch (selectedFilename) {
-          case loadFileOption:
-              // read new file
-              // reset selection in case choosing a file fails
-              $(tempSelElem).val(emptyFileOption); // do not call change!
-              // change callback
-              var dummybutton = $("#dummy_file_upload_button").first();
-              dummybutton.unbind("change");
-              dummybutton.change(function () {
-                  var inputbutton = $("#dummy_file_upload_button")[0];
-                  var filenew = inputbutton.files[0];
-                  if (!filenew) {
-                      console.log("no file selected -> cancel");
-                      return;
-                  }
-                  readAndCreateFileData(filenew, -1,
-                      function (newFilename) {
-                          if ($(tempSelElem)) {
-                              $(tempSelElem).val(newFilename).change();
-                          }
-                          // set classname if file belongs to JUNIT
-                          setJavaClassname(newFilename);
-                          setJUnitDefaultTitle(newFilename);
-                      });
-              });
-              // perform dummy click
-              dummybutton.click();
-              return;
-          case emptyFileOption:
-              return; // do nothing
-          default:
-              var nextTd = $(tempSelElem).parent().next('td');
-              $.each($(".xml_file_filename"), function(index, item) {
-                  if (selectedFilename == item.value ) {
-                      var fileid = $(item).first().parent().find(".xml_file_id").val();
-                      if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
-                          nextTd.find('.xml_test_fileref')[0].value=fileid;
-
-                          //            $(tempSelElem).parent().find('.xml_test_fileref')[0].value=
-                          //              $(item).first().parent().find(".xml_file_id").val();
-                          // set classname if file belongs to JUNIT
-                          setJavaClassname(selectedFilename);
-                          setJUnitDefaultTitle(selectedFilename);
-                      } else {
-//                          var fileid = $(item).first().parent().find(".xml_file_id").val();
-//                          var nextTd = $(tempSelElem).parent().next('td');
-                          nextTd.find('.xml_model-solution_fileref')[0].value=fileid;
-                      }
-                      found = true;
-                      return false;
-                  }
-              });
-              // file id not found
-              if (!found) {
-                  console.log("could not find file id for " + selectedFilename);
-                  if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
-//                      var nextTd = $(tempSelElem).parent().next('td');
-                      nextTd.find('.xml_test_fileref')[0].value="";
-                      //$(tempSelElem).parent().find('.xml_test_fileref')[0].value="";
-
-                  } else {
-//                      var nextTd = $(tempSelElem).parent().next('td');
-                      nextTd.find('.xml_model-solution_fileref')[0].value="";
-                  }
-              }
-      }
-
-  };
-  */
 
   updateFilenameList = function(tempSelElem) {            // create the drop-down with all possible filenames
      $(tempSelElem).empty();
