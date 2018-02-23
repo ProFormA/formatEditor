@@ -376,7 +376,7 @@ $(function() {
           // set filename in test
           $(".xml_file_id[value='"+fileId+"']").parent().find(".xml_file_filename").first().val(filename);
           // set file text
-          fileStorages[fileId] = new FileStorage(binaryFile, type, text, filename);
+          fileStorages[fileId] = new FileStorage(binaryFile, type, e.target.result, filename);
           if (useCodemirror) {
               codemirror[fileId].setValue(text);
           } else {

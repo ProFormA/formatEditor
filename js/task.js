@@ -338,8 +338,21 @@ convertToXML = function() {
                     if (item.xmlname == itm2.xmlname) {                    // relational join
                         try {                                                // deal with codemirror for file textarea
                             if ((itm2.formname == '.xml_file_text') && (useCodemirror)) {
-                                //convertFormToXML(xmlObject.find(item.xmlname)[idx1],codemirror[idx1+1].getValue(),itm2.cdata);
-                                convertFormToXML(xmlObject.find(item.xmlname)[idx1],codemirror[$(itm1).find('.xml_file_id').val()].getValue(),itm2.cdata);
+                                const index = $(itm1).find('.xml_file_id').val();
+                                if (fileStorages.length <= index || fileStorages[index] == undefined || !fileStorages[index].isBinary) {
+                                    // do not store binary files inline!
+                                    //convertFormToXML(xmlObject.find(item.xmlname)[idx1],codemirror[idx1+1].getValue(),itm2.cdata);
+                                    convertFormToXML(xmlObject.find(item.xmlname)[idx1],codemirror[index].getValue(),itm2.cdata);
+                                } else {
+                                    // handle binary file => convert type from embedded to file
+                                    var file_element = xmlObject.find(item.xmlname)[idx1];
+                                    var type = file_element.getAttribute('type');
+                                    file_element.setAttribute('type', 'file');
+                                    var type = file_element.getAttribute('type');
+                                    //xmlObject.find(item.xmlname)[idx1].setAttribute('type', 'file');
+                                    console.log(file_element);
+
+                                }
                             } else {
                                 convertFormToXML(xmlObject.find(item.xmlname)[idx1],$(itm1).find(itm2.formname).val(),itm2.cdata);
                             }
