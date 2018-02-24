@@ -374,15 +374,21 @@ $(function() {
               newFile(fileId); // add file
           }
           // set filename in test
-          $(".xml_file_id[value='"+fileId+"']").parent().find(".xml_file_filename").first().val(filename);
+          let fileroot =  $(".xml_file_id[value='"+fileId+"']").parent();
+          fileroot.find(".xml_file_filename").first().val(filename);
           // set file text
           fileStorages[fileId] = new FileStorage(binaryFile, type, e.target.result, filename);
           if (useCodemirror) {
               codemirror[fileId].setValue(text);
           } else {
-              $(inputbutton).parent().parent().find(".xml_file_text").val(text);
+              fileroot.find(".xml_file_text").val(text);
           }
 
+          if (binaryFile) {
+              fileroot.find(".xml_file_type").first().val('file');
+          } else {
+              fileroot.find(".xml_file_type").first().val('embedded');
+          }
           // update filenames in all filename options
           onFilenameChanged();
 
@@ -452,19 +458,22 @@ $(function() {
     "<input class='tinyinput xml_file_id' value='"+tempcounter+"' readonly/>"+
     " <label for='xml_file_filename'>Filename (with extension)<span class='red'>*</span>: </label>"+
     "<input class='mediuminput xml_file_filename' onchange='onFilenameChanged(this)'/>"+
+        " <label for='xml_file_class'>Class<span class='red'>*</span>: </label>"+
+        "<select class='xml_file_class'>"+
+        "<option selected='selected'>internal</option>"+
+        "<option>template</option>"+
+        "<option>library</option>"+
+//  "<option>inputdata</option>"+                      // not used at the moment
+        "<option>internal-library</option>"+
+        "<option>instruction</option></select>"+
+
     " <label for='xml_file_type'>Type: </label>"+
-        "<span class='drop_zone_text'>Drop Your File Here!</span>" +
     "<select class='xml_file_type'>"+
     "<option selected='selected'>embedded</option>"+
     "<option>file</option></select>"+
-    " <label for='xml_file_class'>Class<span class='red'>*</span>: </label>"+
-    "<select class='xml_file_class'>"+
-    "<option selected='selected'>internal</option>"+
-    "<option>template</option>"+
-    "<option>library</option>"+
-//  "<option>inputdata</option>"+                      // not used at the moment
-    "<option>internal-library</option>"+
-    "<option>instruction</option></select></p>"+
+        "<span class='drop_zone_text'>Drop Your File Here!</span>" +
+
+        "</p>"+
     "<p><label for='xml_file_comment'>Comment: </label>"+
     "<input class='largeinput xml_file_comment'/></p>"+
     "<p><label>File content<span class='red'>*</span>: </label>"+
@@ -474,8 +483,8 @@ $(function() {
     // hide fields that exist only for technical reasons
     var fileroot = $(".xml_file_id[value='" + tempcounter + "']").closest(".xml_file");
     if (!DEBUG_MODE) {
-      fileroot.find(".xml_file_type").hide();
-      fileroot.find("label[for='xml_file_type']").hide();
+      //fileroot.find(".xml_file_type").hide();
+      //fileroot.find("label[for='xml_file_type']").hide();
       fileroot.find(".xml_file_id").hide();
       fileroot.find("label[for='xml_file_id']").hide();
     }
