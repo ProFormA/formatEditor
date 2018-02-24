@@ -353,13 +353,11 @@ $(function() {
       }
 
       reader.onload = function(e) {
-          // get file content
-          //console.log("create filebox");
-          var text = e.target.result;
 
           // special handling for JAVA: extract class name and package name and
           // recalc filename!
           if (filename.match(/(\.java)/i)) {
+              var text = e.target.result;
               filename = java_getFilenameWithPackage(text);
           }
 
@@ -376,18 +374,26 @@ $(function() {
           // set filename in test
           let fileroot =  $(".xml_file_id[value='"+fileId+"']").parent();
           fileroot.find(".xml_file_filename").first().val(filename);
+
           // set file text
-          fileStorages[fileId] = new FileStorage(binaryFile, type, e.target.result, filename);
-          if (useCodemirror) {
-              codemirror[fileId].setValue(text);
-          } else {
-              fileroot.find(".xml_file_text").val(text);
-          }
 
           if (binaryFile) {
               fileroot.find(".xml_file_type").first().val('file');
+              if (useCodemirror) {
+                  codemirror[fileId].setValue('<supposed to be a binary file, cannot be edited>');
+              } else {
+                  fileroot.find(".xml_file_text").val('<supposed to be a binary file, cannot be edited>');
+              }
+              fileStorages[fileId] = new FileStorage(binaryFile, type, e.target.result, filename);
           } else {
               fileroot.find(".xml_file_type").first().val('embedded');
+              var text = e.target.result;
+              fileStorages[fileId] = new FileStorage(binaryFile, type, text, filename);
+              if (useCodemirror) {
+                  codemirror[fileId].setValue(text);
+              } else {
+                  fileroot.find(".xml_file_text").val(text);
+              }
           }
           // update filenames in all filename options
           onFilenameChanged();
