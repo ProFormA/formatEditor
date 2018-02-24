@@ -348,7 +348,7 @@ $(function() {
       var type = file.type; //get mime type
       var reader = new FileReader();
       var binaryFile =  true;
-      if (type.match(/(text\/)/i)) {
+      if ((type.match(/(text\/)/i)) || (filename.match(/(\.java)/i))) {
           binaryFile = false;
       }
 
@@ -401,8 +401,12 @@ $(function() {
           if (callback)
             callback(filename, fileId);
       };
+
       //console.log("read file");
-      reader.readAsText(file);
+      if (binaryFile)
+          reader.readAsArrayBuffer(file);
+        else
+        reader.readAsText(file);
   }
 
   // OBSOLETE

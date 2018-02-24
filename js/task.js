@@ -461,10 +461,10 @@ convertToXML = function() {
             $.get(xsd_file, function(data, textStatus, jqXHR) {      // read XSD schema
                 var valid = xmllint.validateXML({xml: xmlString, schema: jqXHR.responseText});
                 if (valid.errors !== null) {                                // does not conform to schema
-                    setErrorMessage(valid.errors[0]);
+                    setErrorMessage("Errors in XSD-Validation: " + valid.errors[0]);
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
-                setErrorMessage("XSD-Schema " + xsd_file + " not found.");
+                setErrorMessage("XSD-Schema " + xsd_file + " not found.", errorThrown);
             });
         });
 
