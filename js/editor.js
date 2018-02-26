@@ -346,12 +346,9 @@ $(function() {
       }
 
       var type = file.type; //get mime type
+      // determine if we have a binary or non-binary file
+      const binaryFile =  isBinaryFile(file);
       var reader = new FileReader();
-      var binaryFile =  true;
-      if ((type.match(/(text\/)/i)) || (filename.match(/(\.java)/i))) {
-          binaryFile = false;
-      }
-
       reader.onload = function(e) {
 
           // special handling for JAVA: extract class name and package name and
@@ -372,13 +369,18 @@ $(function() {
               newFile(fileId); // add file
           }
           // set filename in test
-          let fileroot =  $(".xml_file_id[value='"+fileId+"']").parent();
+          let fileroot = $(".xml_file_id[value='" + fileId + "']").closest(".xml_file");
           fileroot.find(".xml_file_filename").first().val(filename);
 
           // set file text
+          var filetype = fileroot.find(".xml_file_type").first();
+          filetype.attr('disabled',binaryFile); // disable file/embedded selection in case of binary file
 
           if (binaryFile) {
-              fileroot.find(".xml_file_type").first().val('file');
+              // binary file
+              filetype.val('file');
+              fileroot.find(".xml_file_binary").show(); // show binary text
+              fileroot.find(".xml_file_non_binary").hide(); // hide editor
               if (useCodemirror) {
                   codemirror[fileId].setValue('<supposed to be a binary file, cannot be edited>');
               } else {
@@ -386,9 +388,12 @@ $(function() {
               }
               fileStorages[fileId] = new FileStorage(binaryFile, type, e.target.result, filename);
           } else {
-              fileroot.find(".xml_file_type").first().val('embedded');
+              // assume non binary file
+              filetype.val('embedded');
+              fileroot.find(".xml_file_binary").hide(); // hide binary text
+              fileroot.find(".xml_file_non_binary").show(); // show editor
               var text = e.target.result;
-              fileStorages[fileId] = new FileStorage(binaryFile, type, text, filename);
+              fileStorages[fileId] = new FileStorage(binaryFile, type, 'text is in editor', filename);
               if (useCodemirror) {
                   codemirror[fileId].setValue(text);
               } else {
@@ -482,19 +487,22 @@ $(function() {
     "<option selected='selected'>embedded</option>"+
     "<option>file</option></select>"+
         "<span class='drop_zone_text'>Drop Your File Here!</span>" +
-
         "</p>"+
     "<p><label for='xml_file_comment'>Comment: </label>"+
     "<input class='largeinput xml_file_comment'/></p>"+
+
     "<p><label>File content<span class='red'>*</span>: </label>"+
-    "<input type='file' class='largeinput file_input' onchange='readSingleFile(this)'/>" +
-    "<textarea rows='3' cols='80' class='xml_file_text'"+
-    "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea></p></div>");
+    "<span class='xml_file_binary'>(Binary file)</span>" +
+    "<span class='xml_file_non_binary'>" +
+        "<input type='file' class='largeinput file_input' onchange='readSingleFile(this)'/>" +
+        "<textarea rows='3' cols='80' class='xml_file_text'"+
+        "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea>" +
+    "</span></p>" +
+        "</div>");
     // hide fields that exist only for technical reasons
     var fileroot = $(".xml_file_id[value='" + tempcounter + "']").closest(".xml_file");
+    fileroot.find(".xml_file_binary").hide(); // hide binary text
     if (!DEBUG_MODE) {
-      //fileroot.find(".xml_file_type").hide();
-      //fileroot.find("label[for='xml_file_type']").hide();
       fileroot.find(".xml_file_id").hide();
       fileroot.find("label[for='xml_file_id']").hide();
     }

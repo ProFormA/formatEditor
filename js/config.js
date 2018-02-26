@@ -221,3 +221,20 @@ function createFurtherOutput(tempvals) {
         createLONCAPAOutput(tempvals[0],codemirror,"old");
     }
 }
+
+function isBinaryFile(file) {
+    var binaryFile =  true;
+    if (file.type.match(/(text\/)/i))  // mimetype is 'text/...'
+        return false;
+
+    const extension = file.name.split('.').pop();
+    switch (extension.toLowerCase()) {
+        case 'java' :
+        case 'log' :
+        case 'txt' :
+        case 'xml' :
+            return false;
+        default: break;
+    }
+    return true;
+}
