@@ -557,7 +557,7 @@ readXML = function(xmlText) {
         try {
             var xmlDoc = $.parseXML(xmlTemplate);          // parse its XML
         } catch (err){
-            setErrorMessage("Error while parsing the xml file. The file has not been imported.");
+            setErrorMessage("Error while parsing the xml file. The file has not been imported.". err);
             return;                                        // Stop. Do not make any further changes.
         }
         var xmlObject = $(xmlDoc);                       // convert it into a jQuery object

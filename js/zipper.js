@@ -16,32 +16,80 @@
 
 zip.workerScriptsPath = "./js/";
 
-unzipme = function (blob,location, readyCallback) {
-  var unzipped_text = "???";
-  function unzipBlob(blob, callback) {
-    try{
-      zip.createReader(new zip.BlobReader(blob), function (zipReader) {
-	  zipReader.getEntries(function (entries) {
-	      entries[0].getData(new zip.BlobWriter("text/plain"), function (data) {
-		  zipReader.close();
-		  callback(data);
-		});
-	    });
-	}, onerror);
-    } catch(e) { console.log(e); }
-  }
+var unzippedFiles = {};
 
-  unzipBlob(blob, function (unzippedBlob) {
-      var readfi = new FileReader();
-      readfi.onload = function(e) {
-        unzipped_text = e.target.result;
-        if (readyCallback) readyCallback(unzipped_text);
-	    location.val(unzipped_text);
-      }
-      readfi.readAsText(unzippedBlob);
-  });
+
+unzipme = function (blob, location, readyCallback) {
+    var unzipped_text = "???";
+    unzippedFiles = {};
+
+    function moveFiles() {
+        // store files in correct location
+    }
+
+    function unzipBlob(blob, callbackForTaskXml, callbackForFile) {
+          try {
+              zip.createReader(new zip.BlobReader(blob), function (zipReader) {
+                  zipReader.getEntries(function (entries) {
+                      $.each(entries, function(index, entry) {
+                          if (entry.filename = 'task.xml') {
+                              console.log('unzip taks.xml');
+                              entry.getData(new zip.BlobWriter("text/plain"), function (data) {
+                                  callbackForTaskXml(data);
+                                  if (index == entries.length -1) {
+                                      moveFiles();
+                                      zipReader.close();
+                                  }
+
+                              });
+                          }
+                          else {
+                              // handle not embedded files'
+                              console.log('unzip ' + entry.filename);
+                              unzippedFiles[entry.filename] = entry;
+                              entry.getData(new zip.BlobWriter(), function (data) {
+                                  callbackForFile(data);
+                                  if (index == entries.length -1) {
+                                      moveFiles();
+                                      zipReader.close();
+                                  }
+                              });
+                          }
+                      });
+                    });
+            }, onerror);
+          } catch(e) {
+              console.log(e);
+          }
+    }
+
+    unzipBlob(blob,
+        // callback for task.xml
+        function (unzippedBlob) {
+          var readfi = new FileReader();
+          readfi.onload = function(e) {
+              unzipped_text = e.target.result;
+              // callback for task.xml
+              if (readyCallback)
+                  readyCallback(unzipped_text);
+              location.val(unzipped_text);
+          }
+          readfi.readAsText(unzippedBlob);
+        },
+        // callback for files
+        function (unzippedBlob) {
+            var readfi = new FileReader();
+            readfi.onload = function (e) {
+                // store file
+                unzippedFiles[entry.filename].content = e.target.result;
+            }
+            readfi.readAsArrayBuffer(unzippedBlob);
+        }
+        );
+
   return unzipped_text;
 };
+
 
 zipme = function() {
     // get task.xml content from user interface
