@@ -50,13 +50,33 @@ zipme = function() {
         console.log("zipme called with empty output");
         return;
     }
-
     var FILENAME = "task.xml";
     var blob;
     var zipname = $("#xml_meta-data_title").val();
     zipname = zipname.replace(/[^a-z0-9]/gi, "");
     zipname = zipname + '.zip';
 
+    // iterate through all files:
+    // - if file type is 'file' the file must be added to zip file
+    // - if file is non binary it is stored in the editor!
+    $.each($(".xml_file_id"), function(index, item) {
+        let fileroot = $(item).closest(".xml_file");
+        const fileId = fileroot.find(".xml_file_id").val();
+        const embedded = fileroot.find(".xml_file_type").val() == 'embedded';
+        if (!embedded) {
+            // copy editor content to file storage
+            fileStorages[fileId].storeAsFile = true;
+            if (!fileStorages[fileId].isBinary) {
+                // copy content from editor
+                if (useCodemirror) {
+                    var text = codemirror[fileId].getValue();
+                    fileStorages[fileId].content = text;
+                } else {
+                    fileStorages[fileId].content = fileroot.find(".xml_file_text").val();
+                }
+            }
+        }
+    });
 
     // bom: aus dem Internet gefunden
     function onerror(message) {
@@ -72,12 +92,12 @@ zipme = function() {
             function nextFile(f) {
                 const fs = fileStorages[f];
                 if (f >= fileStorages.length) {
-                    // end of recursion
+                    // end of recursion => write task.xml
                     zipWriter.add(FILENAME, new zip.BlobReader(blob), function () {
                         zipWriter.close(callback);
                     });
                 } else {
-                    if (fs != undefined && fs.isBinary) {
+                    if (fs != undefined && fs.storeAsFile) {
                         fblob = new Blob([fs.content], {type: fs.mimetype});
                         zipWriter.add(fs.filename, new zip.BlobReader(fblob), function () {
                             // callback

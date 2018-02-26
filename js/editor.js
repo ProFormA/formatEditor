@@ -65,6 +65,7 @@ class FileStorage {
         this.mimetype = mimetype;
         this.content = content;
         this.filename = filename;
+        this.storeAsFile = isBinary;
     }
 }
 
