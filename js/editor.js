@@ -38,8 +38,9 @@ const TEST_MODE = false;
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
 
-var codeversion   = '2.1.1';                     // contains the current version of this code
-                                                       // these variables can be set in the calling HTML file  
+var codeversion   = '2.2.0';                     // contains the current version of this code
+
+// these variables can be set in the calling HTML file
 var readXmlActive = false;
 
 
@@ -356,7 +357,7 @@ $(function() {
           // recalc filename!
           if (filename.match(/(\.java)/i)) {
               var text = e.target.result;
-              filename = java_getFilenameWithPackage(text);
+              filename = java_getFilenameWithPackage(text, filename);
           }
 
           // recheck if a file with that filename already is stored
@@ -448,7 +449,7 @@ $(function() {
                   text = textarea.val();
               }
 
-              var expectedFilename = java_getFilenameWithPackage(text);
+              var expectedFilename = java_getFilenameWithPackage(text, filename);
               if (expectedFilename != filename && expectedFilename != ".java") {
                   if (confirm("Java filenames shall consist of the " +
                       "package name, if any, and the class name. " +

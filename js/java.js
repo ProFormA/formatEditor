@@ -65,16 +65,22 @@ function java_getClassAndPackage(code) {
     return out;
 }
 
-function java_getFilenameWithPackage(code/*, filename*/) {
+function java_getFilenameWithPackage(code, filename) {
     var out = java_getClassAndPackage(code);
     //const className = filename.match(/([\S]*?)(.java)/i);
     var newFilename = "";
 
+    if (out.class.length > 0) {
+        filename = out.class + ".java";
+    } else {
+        // no class name found (e.g. enum, interface ...)
+    }
+
     const package = out.package.replace(/\./g, "/");
     if (package.length > 0)
-        newFilename = package + "/" + out.class + ".java";
+        newFilename = package + "/" + filename; // out.class + ".java";
     else
-        newFilename = out.class + ".java";
+        newFilename = filename; // out.class + ".java";
     return newFilename;
 }
 
@@ -88,7 +94,9 @@ function java_getPureClassnameFromFilename(filename) {
 }
 
 function java_getFullClassnameFromFilename(filename) {
+    // replace / by .
     var newFilename = filename.replace(/\//g, ".");
+    // remove .java
     newFilename = newFilename.replace(/.java/i, "");
     return newFilename;
 }

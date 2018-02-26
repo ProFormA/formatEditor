@@ -546,6 +546,7 @@ readXML = function(xmlText) {
     gradingHintCounter = 1;                            // variable initialisation
     codemirror = {};
     clearErrorMessage();
+    fileStorages = []; // empty array
 
     var xmlTemplate = xmlText; // copy text from variable if available
     if (xmlTemplate == undefined)
