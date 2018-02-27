@@ -65,23 +65,51 @@ function insertLCformelements () {
 
 
 function checkForLibOrInstr(cmhash) {
-  var returnvalue = "";
-  var tempbase64 = "";
-  $.each($(".xml_file_filename"), function(index, item) {
-    if ($(item).first().parent().find(".xml_file_class").val() == "library" ||
-        $(item).first().parent().find(".xml_file_class").val() == "instruction") {
-      try {
-        tempbase64 = window.btoa(codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue());
-      } catch(err) {
-        alert("Files which are to be downloaded by students (i.e. 'library'" +
-                " or 'instruction') in LON-CAPA cannot contain raw unicode characters, " +
-                "for example, certain encodings of Umlaute and ß. Please change" +
-			    "the file to 'internal' or remove or change the encoding of such characters.");}
-       returnvalue = returnvalue + "<a href='data:text/text;base64,"+ tempbase64 +
-         "' download='" + item.value + "'>Download: " + item.value +"</a>\n";
-    }
-  });
-  return returnvalue;
+    var returnvalue = "";
+    var tempbase64 = "";
+    $.each($(".xml_file_filename"), function(index, item) {
+        let fileroot = $(item).closest(".xml_file");
+        let fileclass = fileroot.find(".xml_file_class").val();
+        if (fileclass == "library" || fileclass == "instruction") {
+            let filetype = fileroot.find(".xml_file_type").val();
+            let fileid = fileroot.find(".xml_file_id").val();
+            // create download
+            switch (filetype) {
+                case 'embedded':
+                    // read from editor
+                    try {
+                        tempbase64 = window.btoa(codemirror[fileid].getValue());
+                        // tempbase64 = window.btoa(codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue());
+                    } catch(err) {
+                        alert("Files which are to be downloaded by students (i.e. 'library'" +
+                            " or 'instruction') in LON-CAPA cannot contain raw unicode characters, " +
+                            "for example, certain encodings of Umlaute and ß. Please change" +
+                            "the file to 'internal' or remove or change the encoding of such characters.");
+                    }
+                    break;
+                case 'file':
+                    // read from filestorage
+                    if (fileStorages[fileid] == undefined || fileStorages[fileid].content == undefined) {
+                        alert('internal error: no file stored for id ' + fileid);
+                        return returnvalue;
+                    }
+
+                    // TODO
+                    // tempbase64 = window.btoa(fileStorages[fileid].content);
+                    alert("Sorry! Binary files are not yet supported for LON-CAPA download (instruction or library file type)");
+                    break;
+                default:
+                    alert('unknown file type: ' + filetype);
+                    break;
+            }
+
+  //      if ($(item).first().parent().find(".xml_file_class").val() == "library" ||
+  //        $(item).first().parent().find(".xml_file_class").val() == "instruction") {
+            returnvalue = returnvalue + "<a href='data:text/text;base64,"+ tempbase64 +
+                "' download='" + item.value + "'>Download: " + item.value +"</a>\n";
+        }
+    });
+    return returnvalue;
 };
 
 

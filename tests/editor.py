@@ -189,7 +189,7 @@ def confirmDownloadSaveDialog(dialogkey):
     keyboard.press(Key.enter)
     keyboard.release(Key.enter)
 
-    print "confirmDownloadSaveDialog finished"
+    # print "confirmDownloadSaveDialog finished"
 
 
 def saveTaskFile(expected_file_name, move_to_folder, move_to_filename_xml):
