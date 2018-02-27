@@ -31,6 +31,10 @@ unzipme = function (blob, location, readyCallback) {
           try {
               zip.createReader(new zip.BlobReader(blob), function (zipReader) {
                   zipReader.getEntries(function (entries) {
+                      if (entries.length > 1) {
+                          alert('Sorry! Binary files in zip file are not yet supported!');
+                      }
+
                       $.each(entries, function(index, entry) {
                           if (entry.filename = 'task.xml') {
                               console.log('unzip taks.xml');
