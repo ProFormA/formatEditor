@@ -63,8 +63,20 @@ function insertLCformelements () {
 
 }
 
+// very slow!
+function _arrayBufferToBase64( buffer ) {
+    var binary = '';
+    var bytes = new Uint8Array( buffer );
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode( bytes[ i ] );
+    }
+    return window.btoa( binary );
+}
 
-function checkForLibOrInstr(cmhash) {
+
+function createDownloadLinks(cmhash) {
+    const megabyte = 1024*1024;
     var returnvalue = "";
     var tempbase64 = "";
     $.each($(".xml_file_filename"), function(index, item) {
@@ -94,9 +106,11 @@ function checkForLibOrInstr(cmhash) {
                         return returnvalue;
                     }
 
-                    // TODO
-                    // tempbase64 = window.btoa(fileStorages[fileid].content);
-                    alert("Sorry! Binary files are not yet supported for LON-CAPA download (instruction or library file type)");
+                    const filelength = fileStorages[fileid].content.byteLength;
+                    if (fileStorages[fileid].content.byteLength > megabyte)
+                        alert('File ' + fileStorages[fileid].filename + ' is larger than 1MB. ' +
+                        'It will be added to the LON CAPA problem file but you should think about using a smaller file.');
+                    tempbase64  =_arrayBufferToBase64(fileStorages[fileid].content);
                     break;
                 default:
                     alert('unknown file type: ' + filetype);
@@ -113,7 +127,8 @@ function checkForLibOrInstr(cmhash) {
 };
 
 
-function checkForTemplate(cmhash) {
+// returns the last template
+function getTemplate(cmhash) {
   var returnvalue;
   $.each($(".xml_file_filename"), function(index, item) {
      if ($(item).first().parent().find(".xml_file_class").val() == "template") {
@@ -134,8 +149,8 @@ function getModelSolution(cmhash) {
 };
 
 createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimetype,cmhash,versionchck) {
-  var template = checkForTemplate(cmhash);
-  var downloadable = checkForLibOrInstr(cmhash);
+  var template = getTemplate(cmhash);
+  var downloadable = createDownloadLinks(cmhash);
   if ($("#lczip").val().slice(-1) != "/") { $("#lczip").val($("#lczip").val()+ "/"); }  // add / to path if missing
   if (typeof template == "undefined") { template = ""; }
   if (typeof downloadable == "undefined") { downloadable = ""; }
