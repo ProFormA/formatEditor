@@ -466,6 +466,52 @@ $(function() {
       FileReference.updateAllFilenameLists();
   };
 
+  onFiletypeChanged = function(selectfield) {
+        // after change of filetype change binary
+
+        if (selectfield) {
+            // if the user has changed the filename and the extension is .java
+            // then the filename is recalculated on base of the source code (package class)
+            // and checked against user filename
+            let filetype = $(selectfield).val();
+            let fileroot = $(selectfield).closest(".xml_file");
+            switch (filetype ) {
+                case 'file':
+                    const fileId = fileroot.find(".xml_file_id").val();
+                    const filename = fileroot.find(".xml_file_filename").val();
+                    console.log('change to file');
+                    fileroot.find(".xml_file_binary").show(); // show binary text
+                    fileroot.find(".xml_file_non_binary").hide(); // hide editor
+                    let text = codemirror[fileId].getValue();
+
+                    if (!("TextEncoder" in window))
+                        alert("Sorry, this browser does not support TextEncoder...");
+
+                    let enc = new TextEncoder("utf-8");
+                    console.log();
+
+                    fileStorages[fileId] = new FileStorage(false, '', enc.encode(text), filename);
+                    break;
+                case 'embedded':
+                    console.log('change to embedded');
+                    fileroot.find(".xml_file_binary").hide(); // hide binary text
+                    fileroot.find(".xml_file_non_binary").show(); // show editor
+                    break;
+            }
+
+
+/*            let text = "";
+            if (useCodemirror) {
+                const fileId = filebox.find(".xml_file_id").val();
+                text = codemirror[fileId].getValue();
+            } else {
+                let textarea = filebox.find(".xml_file_text");
+                text = textarea.val();
+            }*/
+        }
+    };
+
+
   newFile = function(tempcounter) {                    // create a new file HTML form element
     $("#filesection").append("<div "+
     "class='ui-widget ui-widget-content ui-corner-all xml_file drop_zone'>"+
@@ -473,8 +519,8 @@ $(function() {
     "class='rightButton'><button onclick='removeFile($(this));'>x</button></span></h3>"+
     "<p><label for='xml_file_id'>ID: </label>"+
     "<input class='tinyinput xml_file_id' value='"+tempcounter+"' readonly/>"+
-    " <label for='xml_file_filename'>Filename (with extension)<span class='red'>*</span>: </label>"+
-    "<input class='mediuminput xml_file_filename' onchange='onFilenameChanged(this)'/>"+
+    " <label for='xml_file_filename'>Filename<span class='red'>*</span>: </label>"+
+    "<input class='mediuminput xml_file_filename' onchange='onFilenameChanged(this)' title='with extension'/>"+
         " <label for='xml_file_class'>Class<span class='red'>*</span>: </label>"+
         "<select class='xml_file_class'>"+
         "<option selected='selected'>internal</option>"+
@@ -485,7 +531,7 @@ $(function() {
         "<option>instruction</option></select>"+
 
     " <label for='xml_file_type'>Type: </label>"+
-    "<select class='xml_file_type'>"+
+    "<select class='xml_file_type' onchange='onFiletypeChanged(this)'>"+
     "<option selected='selected'>embedded</option>"+
     "<option>file</option></select>"+
         "<span class='drop_zone_text'>Drop Your File Here!</span>" +

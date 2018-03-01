@@ -16,32 +16,62 @@
 
 zip.workerScriptsPath = "./js/";
 
+// dictionary with files (name -> FileStorage)
 var unzippedFiles = {};
 
 
+/**
+ * unzips the {task}.zip file
+ * - store files temporarily in unzippedFiles
+ * - when everything is read then iterate through all fileIds and
+ *   move stored files to fileStorages
+ *
+ * @param blob: zip file object
+ * @param location: where to put the 'task.xml'
+ * @param readyCallback: callback for 'task.xml' file
+ * @returns {string}
+ */
 unzipme = function (blob, location, readyCallback) {
     var unzipped_text = "???";
     unzippedFiles = {};
+    var taskfile_read = false;
 
     function moveFiles() {
-        // store files in correct location
+        if (!taskfile_read)
+            return; // wait and retry later
+
+        // store not-embedded files in correct location in fileStorages array
+        $.each($(".xml_file_filename"), function(index, item) {
+            let fileroot = $(item).closest(".xml_file");
+            let filetype = fileroot.find(".xml_file_type").val();
+            if (filetype === 'file') {
+                let fileid = fileroot.find(".xml_file_id").val();
+                let filename = $(item).val();
+                fileStorages[fileid] = unzippedFiles[filename];
+                console.log("store filename " + filename + " -> " + fileid + " " + filetype);
+                fileroot.find(".xml_file_binary").show(); // show binary text
+                fileroot.find(".xml_file_non_binary").hide(); // hide editor
+            } else {
+                fileroot.find(".xml_file_binary").hide(); // hide binary text
+                fileroot.find(".xml_file_non_binary").show(); // show editor
+            }
+        });
     }
 
     function unzipBlob(blob, callbackForTaskXml, callbackForFile) {
           try {
               zip.createReader(new zip.BlobReader(blob), function (zipReader) {
                   zipReader.getEntries(function (entries) {
-                      if (entries.length > 1) {
-                          alert('Sorry! Binary files in zip file are not yet supported!');
-                      }
+//                      if (entries.length > 1) {
+//                          alert('Sorry! Binary files in zip file are not yet supported!');
+//                      }
 
                       $.each(entries, function(index, entry) {
-                          if (entry.filename = 'task.xml') {
+                          if (entry.filename === 'task.xml') {
                               console.log('unzip taks.xml');
                               entry.getData(new zip.BlobWriter("text/plain"), function (data) {
-                                  callbackForTaskXml(data);
-                                  if (index == entries.length -1) {
-                                      moveFiles();
+                                  callbackForTaskXml(data, entry);
+                                  if (index === entries.length -1) {
                                       zipReader.close();
                                   }
 
@@ -50,11 +80,12 @@ unzipme = function (blob, location, readyCallback) {
                           else {
                               // handle not embedded files'
                               console.log('unzip ' + entry.filename);
-                              unzippedFiles[entry.filename] = entry;
+                              // store file
+                              //unzippedFiles[entry.filename] =
+                              //    new FileStorage(true, entry.type, content, entry.filename);
                               entry.getData(new zip.BlobWriter(), function (data) {
-                                  callbackForFile(data);
-                                  if (index == entries.length -1) {
-                                      moveFiles();
+                                  callbackForFile(data, entry);
+                                  if (index === entries.length -1) {
                                       zipReader.close();
                                   }
                               });
@@ -69,24 +100,29 @@ unzipme = function (blob, location, readyCallback) {
 
     unzipBlob(blob,
         // callback for task.xml
-        function (unzippedBlob) {
-          var readfi = new FileReader();
-          readfi.onload = function(e) {
-              unzipped_text = e.target.result;
-              // callback for task.xml
-              if (readyCallback)
-                  readyCallback(unzipped_text);
-              location.val(unzipped_text);
-          }
-          readfi.readAsText(unzippedBlob);
+        function (unzippedBlob, entry) {
+            let readfi = new FileReader();
+            readfi.onload = function(e) {
+                unzipped_text = e.target.result;
+                // callback for task.xml
+                location.val(unzipped_text);
+                if (readyCallback)
+                    readyCallback(unzipped_text);
+                taskfile_read = true;
+                moveFiles();
+            };
+            readfi.readAsText(unzippedBlob);
         },
         // callback for files
-        function (unzippedBlob) {
-            var readfi = new FileReader();
+        function (unzippedBlob, entry) {
+            let readfi = new FileReader();
             readfi.onload = function (e) {
                 // store file
-                unzippedFiles[entry.filename].content = e.target.result;
-            }
+                console.log("read binary file " + entry.filename);
+                unzippedFiles[entry.filename] =
+                    new FileStorage(true, entry.type, e.target.result, entry.filename);
+                moveFiles();
+            };
             readfi.readAsArrayBuffer(unzippedBlob);
         }
         );
@@ -95,6 +131,9 @@ unzipme = function (blob, location, readyCallback) {
 };
 
 
+/**
+ * create zip file
+ */
 zipme = function() {
     // get task.xml content from user interface
     var TEXT_CONTENT = $("#output").val();
