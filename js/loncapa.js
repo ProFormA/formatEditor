@@ -65,77 +65,115 @@ function insertLCformelements () {
 
 // very slow!
 function _arrayBufferToBase64( buffer ) {
-    var binary = '';
-    var bytes = new Uint8Array( buffer );
-    var len = bytes.byteLength;
-    for (var i = 0; i < len; i++) {
+    let binary = '';
+    const bytes = new Uint8Array( buffer );
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
         binary += String.fromCharCode( bytes[ i ] );
     }
     return window.btoa( binary );
 }
 
 
-function createDownloadLinks(cmhash) {
+function createDownloadLink(fileroot, item) {
+    //let fileroot = $(item).closest(".xml_file");
+    //let fileclass = fileroot.find(".xml_file_class").val();
+    //if (fileclass == "library" || fileclass == "instruction") {
+
     const megabyte = 1024*1024;
-    var returnvalue = "";
-    var tempbase64 = "";
+    let tempbase64 = "";
+    let filetype = fileroot.find(".xml_file_type").val();
+    let fileid = fileroot.find(".xml_file_id").val();
+    // create download
+    switch (filetype) {
+        case 'embedded':
+            // read from editor
+            try {
+                tempbase64 = window.btoa(codemirror[fileid].getValue());
+                // tempbase64 = window.btoa(codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue());
+            } catch(err) {
+                alert("Files which are to be downloaded by students (i.e. 'library'" +
+                    " or 'instruction') in LON-CAPA cannot contain raw unicode characters, " +
+                    "for example, certain encodings of Umlaute and ß. Please change " +
+                    "the file " + item.value + " to 'internal' or remove or change the encoding of such characters.");
+            }
+            break;
+        case 'file':
+            // read from filestorage
+            if (fileStorages[fileid] === undefined || fileStorages[fileid].content === undefined) {
+                alert('internal error: no file stored for id ' + fileid);
+                return "";
+            }
+
+            if (fileStorages[fileid].content.byteLength > megabyte)
+                alert('File ' + fileStorages[fileid].filename + ' is larger than 1MB. ' +
+                    'It will be added to the LON CAPA problem file but you should think about using a smaller file.');
+            tempbase64  =_arrayBufferToBase64(fileStorages[fileid].content);
+            break;
+        default:
+            alert('unknown file type: ' + filetype);
+            break;
+    }
+
+    //      if ($(item).first().parent().find(".xml_file_class").val() == "library" ||
+    //        $(item).first().parent().find(".xml_file_class").val() == "instruction") {
+    return "<a href='data:text/text;base64,"+ tempbase64 +
+        "' download='" + item.value + "'>Download: " + item.value +"</a>\n";
+}
+
+function createDownloadLinks(/*cmhash*/) {
+    let returnvalue = "";
+    let templateCounter = 0;
     $.each($(".xml_file_filename"), function(index, item) {
         let fileroot = $(item).closest(".xml_file");
         let fileclass = fileroot.find(".xml_file_class").val();
-        if (fileclass == "library" || fileclass == "instruction") {
-            let filetype = fileroot.find(".xml_file_type").val();
-            let fileid = fileroot.find(".xml_file_id").val();
-            // create download
-            switch (filetype) {
-                case 'embedded':
-                    // read from editor
-                    try {
-                        tempbase64 = window.btoa(codemirror[fileid].getValue());
-                        // tempbase64 = window.btoa(codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue());
-                    } catch(err) {
-                        alert("Files which are to be downloaded by students (i.e. 'library'" +
-                            " or 'instruction') in LON-CAPA cannot contain raw unicode characters, " +
-                            "for example, certain encodings of Umlaute and ß. Please change" +
-                            "the file to 'internal' or remove or change the encoding of such characters.");
-                    }
-                    break;
-                case 'file':
-                    // read from filestorage
-                    if (fileStorages[fileid] == undefined || fileStorages[fileid].content == undefined) {
-                        alert('internal error: no file stored for id ' + fileid);
-                        return returnvalue;
-                    }
-
-                    const filelength = fileStorages[fileid].content.byteLength;
-                    if (fileStorages[fileid].content.byteLength > megabyte)
-                        alert('File ' + fileStorages[fileid].filename + ' is larger than 1MB. ' +
-                        'It will be added to the LON CAPA problem file but you should think about using a smaller file.');
-                    tempbase64  =_arrayBufferToBase64(fileStorages[fileid].content);
-                    break;
-                default:
-                    alert('unknown file type: ' + filetype);
-                    break;
-            }
-
-  //      if ($(item).first().parent().find(".xml_file_class").val() == "library" ||
-  //        $(item).first().parent().find(".xml_file_class").val() == "instruction") {
-            returnvalue = returnvalue + "<a href='data:text/text;base64,"+ tempbase64 +
-                "' download='" + item.value + "'>Download: " + item.value +"</a>\n";
+        switch (fileclass) {
+            case "template":
+                let filetype = fileroot.find(".xml_file_type").val();
+                switch (filetype) {
+                    case 'file':
+                        // first template is binary => do not skip
+                        returnvalue = returnvalue + createDownloadLink(fileroot, item);
+                        break;
+                    case 'embedded':
+                        // skip first embedded template
+                        if (templateCounter === 0) {
+                            templateCounter++;
+                        } else {
+                            returnvalue = returnvalue + createDownloadLink(fileroot, item);
+                        }
+                        break;
+                }
+                break;
+            case "library":
+            case "instruction":
+                returnvalue = returnvalue + createDownloadLink(fileroot, item);
+                break;
         }
     });
     return returnvalue;
-};
+}
 
 
-// returns the last template
-function getTemplate(cmhash) {
-  var returnvalue;
-  $.each($(".xml_file_filename"), function(index, item) {
-     if ($(item).first().parent().find(".xml_file_class").val() == "template") {
-       returnvalue = codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue();
-     }
-   });
-  return returnvalue;
+// returns the first 'embedded file' template
+function getEditorTemplate(cmhash) {
+    var returnvalue = "";
+    $.each($(".xml_file_filename"), function(index, item) {
+    let fileroot = $(item).closest(".xml_file");
+    let fileclass = fileroot.find(".xml_file_class").val();
+    if (fileclass == "template") {
+        let filetype = fileroot.find(".xml_file_type").val();
+        if (filetype == 'embedded') {
+            let fileid = fileroot.find(".xml_file_id").val();
+            if (returnvalue === "")
+                returnvalue = codemirror[fileid].getValue();
+        }
+    }
+//     if ($(item).first().parent().find(".xml_file_class").val() == "template") {
+//       returnvalue = codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue();
+//     }
+    });
+    return returnvalue;
 };
 
 function getModelSolution(cmhash) {
@@ -149,7 +187,7 @@ function getModelSolution(cmhash) {
 };
 
 createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimetype,cmhash,versionchck) {
-  var template = getTemplate(cmhash);
+  var template = getEditorTemplate(cmhash);
   var downloadable = createDownloadLinks(cmhash);
   if ($("#lczip").val().slice(-1) != "/") { $("#lczip").val($("#lczip").val()+ "/"); }  // add / to path if missing
   if (typeof template == "undefined") { template = ""; }
