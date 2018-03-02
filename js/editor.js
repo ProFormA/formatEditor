@@ -52,7 +52,7 @@ const testTypes = getTesttypeOptions();
 
 
 //////////////////////////////////////////////////////////////////////////////
-//* These global variables keep track of how many of these elements currently exist. 
+//* These global variables keep track of how many of these elements currently exist.
 var fileIDs = {};
 var modelSolIDs = {};
 var testIDs = {};
@@ -67,6 +67,10 @@ class FileStorage {
         this.content = content;
         this.filename = filename;
         this.storeAsFile = isBinary;
+    }
+
+    setSize(size) {
+        this.size = size;
     }
 }
 
@@ -104,6 +108,19 @@ function getProgLangOptions() {
         list = list + "</option>";
     });
     return list;
+}
+
+function showBinaryFile(fileroot, fileObject) {
+    fileroot.find(".xml_file_binary").show(); // show binary text
+    fileroot.find(".xml_file_non_binary").hide(); // hide editor
+    let xml_file_size = fileroot.find(".xml_file_size");
+    xml_file_size.first().text('File size: ' + fileObject.size.toLocaleString() + ", " +
+        'File type: ' + fileObject.mimetype);
+}
+
+function showTextFile(fileroot) {
+    fileroot.find(".xml_file_binary").hide(); // hide binary text
+    fileroot.find(".xml_file_non_binary").show(); // show editor
 }
 
 
@@ -194,29 +211,29 @@ function uploadTestTaskFile(inputbutton) {
 }
 
 function uploadTaskFile(inputbutton) {                     // upload button for textareas: output, output2
-        var filenew = inputbutton.files[0];
-        switch (filenew.type) {
-            case 'application/zip':
-            case 'application/x-zip-compressed':
-                var text = unzipme(filenew, $("#output"), function (text) {
+    var filenew = inputbutton.files[0];
+    switch (filenew.type) {
+        case 'application/zip':
+        case 'application/x-zip-compressed':
+            var text = unzipme(filenew, $("#output"), function (text) {
+                readXMLWithLock(text);
+            });
+            break;
+        case "text/xml":
+            if (filenew) {
+                var readfi = new FileReader();
+                readfi.onload = function (e) {
+                    var text = e.target.result;
+                    $("#output").val(text);
                     readXMLWithLock(text);
-                });
-                break;
-            case "text/xml":
-                if (filenew) {
-                    var readfi = new FileReader();
-                    readfi.onload = function (e) {
-                        var text = e.target.result;
-                        $("#output").val(text);
-                        readXMLWithLock(text);
-                    }
-                    readfi.readAsText(filenew);
                 }
-                break;
-            default:
-                setErrorMessage("Unsupported file format: " + filenew.type);
-                break;
-        }
+                readfi.readAsText(filenew);
+            }
+            break;
+        default:
+            setErrorMessage("Unsupported file format: " + filenew.type);
+            break;
+    }
 }
 
 // unused
@@ -283,7 +300,7 @@ function generateUUID(){
 ///////////////////////////////////////////////////////// document ready function
 /* The main part of this program. To be executed on "document ready".
  * It creates the dynamic HTML elements that are not already defined in the static HTML page.
- * It contains a function for converting the form into an XML file and 
+ * It contains a function for converting the form into an XML file and
  * a function for filling the form from an uploaded XML file.
  */
 $(function() {
@@ -336,10 +353,9 @@ $(function() {
     readAndCreateFileData(filenew, fileId);
   }
 
-
-    readAndCreateFileData = function(file, fileId, callback) {
+  readAndCreateFileData = function(file, fileId, callback) {
       if (!file) return;
-      var filename = file.name;
+      let filename = file.name;
 
       // check if a file with that filename already is stored
       if (doesFilenameExist(filename)) {
@@ -347,16 +363,17 @@ $(function() {
           return;
       }
 
-      var type = file.type; //get mime type
+      const size = file.size; //get mime type
+      const type = file.type; //get mime type
       // determine if we have a binary or non-binary file
       const binaryFile =  isBinaryFile(file);
-      var reader = new FileReader();
+      let reader = new FileReader();
       reader.onload = function(e) {
 
           // special handling for JAVA: extract class name and package name and
           // recalc filename!
           if (filename.match(/(\.java)/i)) {
-              var text = e.target.result;
+              const text = e.target.result;
               filename = java_getFilenameWithPackage(text, filename);
           }
 
@@ -375,27 +392,29 @@ $(function() {
           fileroot.find(".xml_file_filename").first().val(filename);
 
           // set file text
-          var filetype = fileroot.find(".xml_file_type").first();
+          let filetype = fileroot.find(".xml_file_type").first();
           filetype.attr('disabled',binaryFile); // disable file/embedded selection in case of binary file
 
           if (binaryFile) {
               // binary file
               filetype.val('file');
-              fileroot.find(".xml_file_binary").show(); // show binary text
-              fileroot.find(".xml_file_non_binary").hide(); // hide editor
-              if (useCodemirror) {
+/*              if (useCodemirror) {
                   codemirror[fileId].setValue('<supposed to be a binary file, cannot be edited>');
               } else {
                   fileroot.find(".xml_file_text").val('<supposed to be a binary file, cannot be edited>');
               }
-              fileStorages[fileId] = new FileStorage(binaryFile, type, e.target.result, filename);
+*/
+              let fileObject = new FileStorage(binaryFile, type, e.target.result, filename);
+              fileObject.setSize(size);
+              fileStorages[fileId] = fileObject;
+              showBinaryFile(fileroot, fileObject);
           } else {
               // assume non binary file
               filetype.val('embedded');
-              fileroot.find(".xml_file_binary").hide(); // hide binary text
-              fileroot.find(".xml_file_non_binary").show(); // show editor
+              showTextFile(fileroot);
               var text = e.target.result;
-              fileStorages[fileId] = new FileStorage(binaryFile, type, 'text is in editor', filename);
+              let fileObject = new FileStorage(binaryFile, type, 'text is in editor', filename);
+              fileStorages[fileId] = fileObject;
               if (useCodemirror) {
                   codemirror[fileId].setValue(text);
               } else {
@@ -480,9 +499,7 @@ $(function() {
                     const fileId = fileroot.find(".xml_file_id").val();
                     const filename = fileroot.find(".xml_file_filename").val();
                     console.log('change to file');
-                    fileroot.find(".xml_file_binary").show(); // show binary text
-                    fileroot.find(".xml_file_non_binary").hide(); // hide editor
-                    let text = codemirror[fileId].getValue();
+                    const text = codemirror[fileId].getValue();
 
                     if (!("TextEncoder" in window))
                         alert("Sorry, this browser does not support TextEncoder...");
@@ -490,12 +507,14 @@ $(function() {
                     let enc = new TextEncoder("utf-8");
                     console.log();
 
-                    fileStorages[fileId] = new FileStorage(false, '', enc.encode(text), filename);
+                    fileobject = new FileStorage(false, '', enc.encode(text), filename);
+                    fileobject.setSize(text.length);
+                    fileStorages[fileId] = fileobject;
+                    showBinaryFile(fileroot, fileobject);
                     break;
                 case 'embedded':
                     console.log('change to embedded');
-                    fileroot.find(".xml_file_binary").hide(); // hide binary text
-                    fileroot.find(".xml_file_non_binary").show(); // show editor
+                    showTextFile(fileroot);
                     break;
             }
 
@@ -540,13 +559,16 @@ $(function() {
     "<input class='largeinput xml_file_comment'/></p>"+
 
     "<p><label>File content<span class='red'>*</span>: </label>"+
-    "<span class='xml_file_binary'>(Binary file)</span>" +
+    "<span class='xml_file_binary'>(Binary file) " +
+        "<span class='xml_file_size'>File size: ???</span>" +
+    "</span>" +
     "<span class='xml_file_non_binary'>" +
         "<input type='file' class='largeinput file_input' onchange='readSingleFile(this)'/>" +
         "<textarea rows='3' cols='80' class='xml_file_text'"+
         "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea>" +
     "</span></p>" +
-        "</div>");
+    "</div>");
+
     // hide fields that exist only for technical reasons
     var fileroot = $(".xml_file_id[value='" + tempcounter + "']").closest(".xml_file");
     fileroot.find(".xml_file_binary").hide(); // hide binary text
@@ -798,14 +820,14 @@ $(function() {
       $("#end-container").show();
       $("#xml-output-input").show();
       $("#otherSoftware2").show();
-      
-      // refresh codemirror editors  - 
+
+      // refresh codemirror editors  -
       // otherwise content is visible only after first click in window
       setTimeout(function () {
           Object.keys(codemirror).forEach(function(item) {codemirror[item].refresh();});
       }, 5);
 
-                
+
     }
   });
 //   $("#filesection").sortable();
@@ -919,7 +941,7 @@ $(function() {
     //downloadTextFile2($("#output"), "task.xml", $("#dummy_save_xml_button")[0]);
   })
 
- 
+
 
   if (!DEBUG_MODE) {
     $("#buttonClear").hide();
@@ -1102,7 +1124,7 @@ $(function() {
     }
     setTimeout(updatePreview, 300);
 
-    
+
 });
 
 ///////////////////////////////////////////////////////// end of document ready function

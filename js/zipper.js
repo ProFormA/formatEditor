@@ -36,6 +36,16 @@ unzipme = function (blob, location, readyCallback) {
     unzippedFiles = {};
     var taskfile_read = false;
 
+
+    /**
+     * link files to fileStorages array
+     *
+     * This must be done after reading all files.
+     * Unfortunately file reading is performed asynchrously. So it is not clear
+     * in which order the files are read. Because of this the moveFiles function
+     * is called after every processing of a single file in order to guarantee
+     * that all files are handled.
+     **/
     function moveFiles() {
         if (!taskfile_read)
             return; // wait and retry later
@@ -47,13 +57,20 @@ unzipme = function (blob, location, readyCallback) {
             if (filetype === 'file') {
                 let fileid = fileroot.find(".xml_file_id").val();
                 let filename = $(item).val();
-                fileStorages[fileid] = unzippedFiles[filename];
-                console.log("store filename " + filename + " -> " + fileid + " " + filetype);
-                fileroot.find(".xml_file_binary").show(); // show binary text
-                fileroot.find(".xml_file_non_binary").hide(); // hide editor
+                if (unzippedFiles[filename] != undefined && fileStorages[fileid] === undefined) {
+                    // file is not yet relinked
+                    fileStorages[fileid] = unzippedFiles[filename];
+                    unzippedFiles[filename] = undefined;
+                    console.log("store filename " + filename + " -> " + fileid + " " + filetype);
+                    showBinaryFile(fileroot, fileStorages[fileid]);
+                } else {
+                    if (unzippedFiles[filename] !== undefined && fileStorages[fileid] !== undefined) {
+                        // consistency check
+                        alert('internal error: file is already relinked!');
+                    }
+                }
             } else {
-                fileroot.find(".xml_file_binary").hide(); // hide binary text
-                fileroot.find(".xml_file_non_binary").show(); // show editor
+                showTextFile(fileroot);
             }
         });
     }
@@ -62,9 +79,6 @@ unzipme = function (blob, location, readyCallback) {
           try {
               zip.createReader(new zip.BlobReader(blob), function (zipReader) {
                   zipReader.getEntries(function (entries) {
-//                      if (entries.length > 1) {
-//                          alert('Sorry! Binary files in zip file are not yet supported!');
-//                      }
 
                       $.each(entries, function(index, entry) {
                           if (entry.filename === 'task.xml') {
@@ -117,10 +131,41 @@ unzipme = function (blob, location, readyCallback) {
         function (unzippedBlob, entry) {
             let readfi = new FileReader();
             readfi.onload = function (e) {
+                // read file header and derive mime type
+                var arr = (new Uint8Array(e.target.result)).subarray(0, 4);
+                var header = "";
+                for(var i = 0; i < arr.length; i++) {
+                    let number = arr[i].toString(16);
+                    if (number.length === 1) {
+                        number = '0' + number;
+                    }
+
+                    header += number;
+                }
+
+
+                let type = unzippedBlob.type; // "unknown"; // Or you can use the blob.type as fallback
+                switch (header.toLowerCase()) {
+                    case '504b0304': type = 'application/zip'; break;
+                    case "25504446": type = 'application/pdf'; break;
+                    case "89504e47": type = "image/png"; break;
+                    case "47494638": type = "image/gif"; break;
+                    case "ffd8ffe0":
+                    case "ffd8ffe1":
+                    case "ffd8ffe2":
+                    case "ffd8ffe3":
+                    case "ffd8ffe8":
+                        type = "image/jpeg";
+                        break;
+                }
+
+                console.log(header + " => " + type);
+
                 // store file
                 console.log("read binary file " + entry.filename);
                 unzippedFiles[entry.filename] =
-                    new FileStorage(true, entry.type, e.target.result, entry.filename);
+                    new FileStorage(true, type, e.target.result, entry.filename);
+                unzippedFiles[entry.filename].setSize(entry.uncompressedSize);
                 moveFiles();
             };
             readfi.readAsArrayBuffer(unzippedBlob);
@@ -153,15 +198,14 @@ zipme = function() {
     $.each($(".xml_file_id"), function(index, item) {
         let fileroot = $(item).closest(".xml_file");
         const fileId = fileroot.find(".xml_file_id").val();
-        const embedded = fileroot.find(".xml_file_type").val() == 'embedded';
+        const embedded = fileroot.find(".xml_file_type").val() === 'embedded';
         if (!embedded) {
             // copy editor content to file storage
             fileStorages[fileId].storeAsFile = true;
             if (!fileStorages[fileId].isBinary) {
-                // copy content from editor
+                // copy content from editor if file is non binary
                 if (useCodemirror) {
-                    var text = codemirror[fileId].getValue();
-                    fileStorages[fileId].content = text;
+                    fileStorages[fileId].content = codemirror[fileId].getValue();
                 } else {
                     fileStorages[fileId].content = fileroot.find(".xml_file_text").val();
                 }
@@ -179,7 +223,7 @@ zipme = function() {
         zip.createWriter(new zip.BlobWriter("application/zip"), function (zipWriter) {
 
             // bom: new
-            var f = 0;
+            let f = 0;
             function nextFile(f) {
                 const fs = fileStorages[f];
                 if (f >= fileStorages.length) {
@@ -188,7 +232,7 @@ zipme = function() {
                         zipWriter.close(callback);
                     });
                 } else {
-                    if (fs != undefined && fs.storeAsFile) {
+                    if (fs !== undefined && fs.storeAsFile) {
                         fblob = new Blob([fs.content], {type: fs.mimetype});
                         zipWriter.add(fs.filename, new zip.BlobReader(fblob), function () {
                             // callback
@@ -214,7 +258,7 @@ zipme = function() {
     zipBlob(blob, function(zippedBlob){
         // console.log(zippedBlob);
         url = window.URL.createObjectURL(zippedBlob);
-        var a = document.createElement("a");
+        let a = document.createElement("a");
         document.body.appendChild(a);
         a.style = "display: none";
         a.download = zipname;
