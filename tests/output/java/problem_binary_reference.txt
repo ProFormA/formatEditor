@@ -1,0 +1,40 @@
+<problem>
+
+<!-- generated with ProFormA editor version 2.2.0 alpha -->
+
+<import id="11">/res/fhwf/ecult/lib/proforma_v2.library</import>
+<import id="91">/res/fhwf/ecult/lib/SyntaxHighlighter/CodeMirror_Header.library</import>
+
+<script type="loncapa/perl">
+$zip_file = zip_path('zip/') . 'binary.zip';
+# LON-CAPA partID, redundant taskID, submissiontype, filename of submitted file,Mime type, zip location
+$externalurl = &proforma_url(0,'0', 'textfield', 'de/myproject/file0.java','x-java',$zip_file,'v1.0.1');
+$ausgabe = &proforma_output(0,1); # LON-CAPA partID, LON-CAPA responseID 
+$modelsolution = '<pre>// dummy file text 1</pre>';
+</script>
+
+<startouttext />
+binary files test
+<a href='data:text/text;base64,VGhpcyBpcyBhbiBpbnN0cnVjdGlvbiBmaWxlLg==' download='instruction.txt'>Download: instruction.txt</a>
+<a href='data:text/text;base64,UEsDBBQAAAAAAPeNbExKC7gzHAAAABwAAAAPAAAAaW5zdHJ1Y3Rpb24udHh0VGhpcyBpcyBhbiBpbnN0cnVjdGlvbiBmaWxlLlBLAQIUABQAAAAAAPeNbExKC7gzHAAAABwAAAAPAAAAAAAAAAEAIAAAAAAAAABpbnN0cnVjdGlvbi50eHRQSwUGAAAAAAEAAQA9AAAASQAAAAAA' download='instruction.zip'>Download: instruction.zip</a>
+<a href='data:text/text;base64,UEsDBBQAAAAAAP2NbEwl+uudGAAAABgAAAAMAAAAdGVtcGxhdGUudHh0VGhpcyBpcyBhIHRlbXBsYXRlIGZpbGUuUEsBAhQAFAAAAAAA/Y1sTCX6650YAAAAGAAAAAwAAAAAAAAAAQAgAAAAAAAAAHRlbXBsYXRlLnR4dFBLBQYAAAAAAQABADoAAABCAAAAAAA=' download='template.zip'>Download: template.zip</a>
+<endouttext />
+
+<startouttext />
+$pfad_error
+$error
+$ausgabe
+<div id="codemirror-textfield">
+<endouttext />
+
+<externalresponse answerdisplay="$modelsolution" answer="" url="$externalurl" form="%args" id="1">
+<textfield>
+This is a template file.
+</textfield>
+</externalresponse>
+
+<startouttext />
+</div>
+<endouttext />
+<import id="92">/res/fhwf/ecult/lib/SyntaxHighlighter/CodeMirror_Footer.library</import>
+</problem>

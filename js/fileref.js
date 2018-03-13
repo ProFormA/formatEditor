@@ -30,8 +30,8 @@ class FileReference {
     constructor(classFilename, classFileref, classAddFileref, classRemoveFileref, jsClassName, label, mandatory) {
         this.classFilename = classFilename;
         this.classFileref = classFileref;
-        this.classAddFileref = classAddFileref;
-        this.classRemoveFileref = classRemoveFileref;
+        this.classAddFileref = classFileref.replace('xml_', 'add_'); // classAddFileref;
+        this.classRemoveFileref = classFileref.replace('xml_', 'remove_'); // classRemoveFileref;
 
         this.createTableStrings(jsClassName, label, mandatory);
         this.JsClassname = jsClassName;

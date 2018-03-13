@@ -2,6 +2,10 @@
 
 import unittest
 import editor
+import testconfig
+import os
+import shutil
+
 
 # TODO Baustelle:
 # mal versuchen, ein Framework aufzubauen, was das Laden und Schreiben der Zip-Dateien
@@ -53,7 +57,52 @@ class ZipFileTest(unittest.TestCase):
 
     def saveZipFile(self, filename_task_xml):
         self.TaskFileNo = self.TaskFileNo + 1
-        editor.saveTaskFile(filename_task_xml, self.output_folder, self.getTaskFile(self.TaskFileNo)) # filename_task_xml_1
+        editor.save_task_file_plain(filename_task_xml, self.output_folder, self.getTaskFile(self.TaskFileNo)) # filename_task_xml_1
+        # self.assertTrue()
+
+        move_to_folder = self.output_folder
+        move_to_filename_xml = self.getTaskFile(self.TaskFileNo)
+        expected_file_name = filename_task_xml
+
+        # move downloaded file to output folder in order to avoid name clashes
+        # letting the browser to rename the next download and
+        # to ease handling
+
+        # Chrome increments an internal counter for each file in a new test.
+        # So HelloWorld.zip is in the next test HelloWorld (1).zip no mather
+        # if the file exists in the download folder. SO we move and rename the
+        # downloaded file
+        filename_with_wildcards = editor.getFilenameWithWildcard(filename_task_xml)
+
+        import glob
+        lastname = None
+        listing = glob.glob(testconfig.download_path + "/" + filename_with_wildcards)
+        for filename in listing:
+            lastname = filename
+            # print filename
+
+        self.assertTrue(lastname != None, testconfig.download_path + "/" + filename_with_wildcards + ' does not exist')
+
+        # könnte man auch direkt auspacken... (TODO)
+        # print "rename " + lastname + " to " + move_to_folder + "/" + expected_file_name
+
+        # todo: rename it
+        try:
+            os.remove(move_to_folder + "/" + expected_file_name)
+        except:
+            pass
+
+        shutil.move(lastname, move_to_folder + "/" + expected_file_name)
+
+        import zipfile
+
+        with zipfile.ZipFile(move_to_folder + "/" + expected_file_name, "r") as z:
+            z.extractall(move_to_folder)
+
+        shutil.move(move_to_folder + "/task.xml", move_to_filename_xml)
+
+
+
         self.lastSavedZipFile = self.output_folder + "/" + filename_task_xml
 
         # todo: auspacken der der Zip-Datei und auswerten
@@ -65,7 +114,7 @@ class ZipFileTest(unittest.TestCase):
 
     def saveLonCapaFile(self):
         self.ProblemFileNo = self.ProblemFileNo + 1
-        editor.saveLonCapa(self.getProblemFile(self.ProblemFileNo)) # self.filename_problem_1)
+        editor.save_lon_capa_problem(self.getProblemFile(self.ProblemFileNo)) # self.filename_problem_1)
 
         self.assertTrue(editor.is_file1_equal_to_file2(self.filename_problem_reference, self.getProblemFile(self.ProblemFileNo)),
                         "problem file output " + str(self.ProblemFileNo))

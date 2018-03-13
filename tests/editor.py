@@ -191,8 +191,7 @@ def confirmDownloadSaveDialog(dialogkey):
 
     # print "confirmDownloadSaveDialog finished"
 
-
-def saveTaskFile(expected_file_name, move_to_folder, move_to_filename_xml):
+def save_task_file_plain(expected_file_name, move_to_folder, move_to_filename_xml):
     # print "press save zip button"
     elem = driver.find_element_by_id("buttonZip")
     elem.click()
@@ -202,6 +201,21 @@ def saveTaskFile(expected_file_name, move_to_folder, move_to_filename_xml):
 
     # wait for download to complete
     time.sleep(2)
+
+
+def save_task_file(expected_file_name, move_to_folder, move_to_filename_xml):
+    # print "press save zip button"
+    elem = driver.find_element_by_id("buttonZip")
+    elem.click()
+
+    if browser == "Firefox":
+        confirmDownloadSaveDialog('zip')
+
+    # wait for download to complete
+    time.sleep(2)
+
+
+
     # move downloaded file to output folder in order to avoid name clashes
     # letting the browser to rename the next download and
     # to ease handling
@@ -241,7 +255,10 @@ def saveTaskFile(expected_file_name, move_to_folder, move_to_filename_xml):
     shutil.move(move_to_folder + "/task.xml", move_to_filename_xml)
 
 
-def saveLonCapa(expected_file_name):
+
+
+
+def save_lon_capa_problem(expected_file_name):
     change_tab("main_tab")
 
     elem = driver.find_element_by_id("button_save_lon_capa").click()
@@ -351,6 +368,96 @@ def set_language(text):
 def set_prog_language(text):
     select_option("xml_programming-language", text)
 
+
+###########
+# FILE REF
+###########
+
+# workaround for select_by_visible_text in Chrome
+def select_chrome_option(elem, select):
+    options_list = select.options
+    opt_index = 0
+    for option in options_list:
+        if option.text == "<load...>":
+            break
+        opt_index = opt_index + 1
+
+    # print "index of <load...> is " + str(opt_index)
+    elem.click()
+    time.sleep(1)
+    keyboard = Controller()
+
+    for i in range (0, opt_index):
+        # print "[down]"
+        keyboard.press(Key.down)
+        keyboard.release(Key.down)
+        # time.sleep(1)
+
+    # print "[enter]"
+    keyboard.press(Key.enter)
+    keyboard.release(Key.enter)
+
+
+def add_instruction_file():
+    elems = driver.find_elements_by_class_name("add_instruction_fileref")
+    elem = elems[0].click()
+
+def add_template_file():
+    elems = driver.find_elements_by_class_name("add_template_fileref")
+    elem = elems[0].click()
+
+
+def load_fileref(filename, index, xml_class):
+    the_path = os.path.dirname(os.path.abspath(__file__))
+    filename = the_path + "/" + filename
+    filename = filename.replace("/", "\\") # needed on Windows!!
+    # print filename
+
+    elems = driver.find_elements_by_class_name(xml_class)
+    elem = elems[index]
+    select = Select(elem)
+
+    # select <load...>
+    if browser == 'Chrome':
+        # does not work with Chrome (maybe because of a bug!)
+        select_chrome_option(elem, select)
+    else:
+        select.select_by_visible_text('<load...>')
+
+    # print "wait for dialog"
+
+    time.sleep(2)
+
+    # print "type text into dialog"
+    # control the modal window with pynpy (not selenium!)
+    # type filename in input field
+    keyboard = Controller()
+    keyboard.type(filename)
+    time.sleep(1)
+
+    keyboard.press(Key.enter)
+    keyboard.release(Key.enter)
+
+    # print "wait for rendering to complete"
+    time.sleep(3)
+
+
+def load_instruction_file(filename, index):
+    change_tab("main_tab")
+    load_fileref(filename, index, "xml_instruction_filename")
+
+
+def load_template_file(filename, index):
+    change_tab("main_tab")
+    load_fileref(filename, index, "xml_template_filename")
+
+
+def load_test_file(filename, index):
+    change_tab("test_tab")
+    load_fileref(filename, index, "xml_test_filename")
+
+
+
 ####################################################################
 # FILE
 ####################################################################
@@ -385,6 +492,14 @@ def set_file_class(file_index, option_index):  # 0-based
     select = Select(elem[file_index])
     #select.select_by_value(value) # unfortunately does not work
     select.select_by_index(option_index)
+
+
+def set_file_type(file_index, option):  # 0-based
+    elem = driver.find_elements_by_class_name('xml_file_type')
+    select = Select(elem[file_index])
+    #select.select_by_value(value) # unfortunately does not work
+    select.select_by_visible_text(option)
+
 
 def set_file_text(file_index, text): # 0-based
     elem = driver.find_elements_by_class_name('xml_file_text')

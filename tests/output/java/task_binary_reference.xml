@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?><task xmlns:unit="urn:proforma:tests:unittest:v1" xmlns:praktomat="urn:proforma:praktomat:v0.2" xmlns="urn:proforma:task:v1.0.1" xmlns:jartest="urn:proforma:tests:jartest:v1" uuid="a8f00691-ff2a-4a87-ad84-ce74ed494884" lang="de"><description><![CDATA[binary files test]]></description><proglang version="1.8">java</proglang><submission-restrictions><regexp-restriction max-size="1000" mime-type-regexp="^(text/.*)$"/></submission-restrictions><files><file class="internal" filename="de/myproject/file0.java" id="1" type="file" comment=""/><file class="instruction" filename="instruction.txt" id="2" type="embedded" comment=""><![CDATA[This is an instruction file.]]></file><file class="instruction" filename="instruction.zip" id="3" type="file" comment=""/><file class="template" filename="template.txt" id="4" type="embedded" comment=""><![CDATA[This is a template file.]]></file><file class="template" filename="template.zip" id="5" type="file" comment=""/><file class="internal" filename="reverse_task/MyStringTest.java" id="6" type="embedded" comment=""><![CDATA[package reverse_task;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class MyStringTest {
+
+	@Test
+	public void testOddNumberOfCharacters() {
+		assertEquals("ollah", MyString.flip("hallo"));
+	}
+
+	@Test
+	public void testEvenNumberOfCharacters() {
+		assertEquals("4321", MyString.flip("1234"));
+	}
+	
+	
+	@Test
+	public void testEmptyString() {
+		assertEquals("", MyString.flip(""));
+	}
+
+}
+]]></file></files><model-solutions><model-solution id="1" comment=""><filerefs><fileref refid="1"/></filerefs></model-solution></model-solutions><tests><test id="1"><title>JUnit Test #0</title><test-type>unittest</test-type><test-configuration><filerefs><fileref refid="6"/></filerefs><unit:unittest framework="JUnit" version="4.12-gruendel"><unit:main-class>reverse_task.MyStringTestJUNIT test class #0</unit:main-class></unit:unittest><test-meta-data><praktomat:public>False</praktomat:public><praktomat:required>False</praktomat:required><praktomat:always>True</praktomat:always><praktomat:config-testDescription>junit description # 0</praktomat:config-testDescription></test-meta-data></test-configuration></test></tests><grading-hints/><meta-data><title>binary</title><praktomat:allowed-upload-filename-mimetypes>(text/.*)</praktomat:allowed-upload-filename-mimetypes></meta-data></task>

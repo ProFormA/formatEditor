@@ -67,7 +67,7 @@ editor.perform_xml_lint_check(filename_task_xml_1);
 ####################################################################
 
 # save task (expecting it to be converted to new version)
-editor.saveTaskFile(filename_task_xml, output_folder, filename_task_xml_1)
+editor.save_task_file(filename_task_xml, output_folder, filename_task_xml_1)
 
 if editor.is_file1_equal_to_file2_except_for_uuid(filename_task_xml_reference, filename_task_xml_1):
    editor.PASS("task.xml output")
@@ -76,7 +76,7 @@ else:
 
 
 # save LAN CAPA file
-editor.saveLonCapa(filename_problem_1)
+editor.save_lon_capa_problem(filename_problem_1)
 
 if editor.is_file1_equal_to_file2(filename_problem_reference, filename_problem_1):
    editor.PASS("problem file output (1)")
@@ -90,7 +90,7 @@ else:
 # reimport
 editor.loadTaskFile(output_folder + "/" + filename_task_xml, True)
 # export
-editor.saveTaskFile(filename_task_xml, output_folder, filename_task_xml_2)
+editor.save_task_file(filename_task_xml, output_folder, filename_task_xml_2)
 
 # editor.export_to(filename_task_xml_2, filename_problem_2)
 if editor.is_file1_equal_to_file2_except_for_uuid(filename_task_xml_1, filename_task_xml_2):
@@ -101,7 +101,7 @@ else:
 
 
 # resave LAN CAPA file
-editor.saveLonCapa(filename_problem_2)
+editor.save_lon_capa_problem(filename_problem_2)
 
 if editor.is_file1_equal_to_file2(filename_problem_reference, filename_problem_2):
    editor.PASS("problem file output (2)")
