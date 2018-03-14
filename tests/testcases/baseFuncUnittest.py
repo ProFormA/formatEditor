@@ -75,7 +75,7 @@ class BaseFunctionalityTest(zipFileTest.ZipFileTest):
         # add 2 compiler tests
         editor.add_java_compiler_test()
 
-        zipFileTest.ZipFileTest.saveFilesAndReloadAndSave(self, expectedZipName)
+        zipFileTest.ZipFileTest.saveFilesAndReloadAndSave(self, expectedZipName, False)
         # zipFileTest.ZipFileTest.saveZipFile(self, expectedZipName)
         # zipFileTest.ZipFileTest.saveLonCapaFile(self)
 

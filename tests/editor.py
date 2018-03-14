@@ -170,7 +170,7 @@ def getFilenameWithWildcard(file_name):
 
 def confirmDownloadSaveDialog(dialogkey):
 
-    time.sleep(2)
+    time.sleep(3)
     # a new window is opened asking what to do with the download
     # print "confirm dialog"
     keyboard = Controller()
@@ -266,11 +266,11 @@ def save_lon_capa_problem(expected_file_name, modelSolution_alert):
 
     elem = driver.find_element_by_id("button_save_lon_capa").click()
 
-    if browser == "Firefox":
-        confirmDownloadSaveDialog('loncapa')
-
     if modelSolution_alert:
         confirmPopup()
+
+    if browser == "Firefox":
+        confirmDownloadSaveDialog('loncapa')
 
     # wait for download to complete
     time.sleep(2)

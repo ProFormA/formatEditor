@@ -194,7 +194,7 @@ class SetlxDgTest(zipFileTest.ZipFileTest):
         editor.set_test_file(counter_test_index, 3)
         counter_test_index = counter_test_index + 1
 
-        zipFileTest.ZipFileTest.saveFilesAndReloadAndSave(self, expectedZipName)
+        zipFileTest.ZipFileTest.saveFilesAndReloadAndSave(self, expectedZipName, False)
 
 
 
