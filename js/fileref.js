@@ -27,7 +27,7 @@ var instructionSingleton = null;
 // abstract class for a filename reference input
 class FileReference {
 
-    constructor(classFilename, classFileref, classAddFileref, classRemoveFileref, jsClassName, label, mandatory) {
+    constructor(classFilename, classFileref, jsClassName, label, mandatory) {
         this.classFilename = classFilename;
         this.classFileref = classFileref;
         this.classAddFileref = classFileref.replace('xml_', 'add_'); // classAddFileref;
@@ -332,8 +332,7 @@ class FileReference {
 class TestFileReference extends FileReference {
 
     constructor() {
-        super('xml_test_filename', 'xml_test_fileref',
-            'add_file_ref_test', 'rem_file_ref_test', 'TestFileReference', 'Testscript', true);
+        super('xml_test_filename', 'xml_test_fileref', 'TestFileReference', 'Testscript', true);
 
         if (testFileRefSingleton == null) {
             testFileRefSingleton = this;
@@ -377,7 +376,7 @@ class ModelSolutionFileReference extends FileReference {
 
     constructor() {
         super('xml_model-solution_filename', 'xml_model-solution_fileref',
-            'add_file_ref_ms', 'rem_file_ref_ms', 'ModelSolutionFileReference', 'Filename', true);
+            'ModelSolutionFileReference', 'Filename', true);
 
         if (modelSolutionFileRefSingleton === null) {
             modelSolutionFileRefSingleton = this;
@@ -408,7 +407,7 @@ class InstructionFileReference extends FileReference {
 
     constructor() {
         super('xml_instruction_filename', 'xml_instruction_fileref',
-            'add_file_ref_instr', 'rem_file_ref_instr', 'InstructionFileReference', 'Attachment', false);
+            'InstructionFileReference', 'Attachment', false);
 
         if (instructionSingleton == null) {
             instructionSingleton = this;
@@ -437,7 +436,7 @@ class TemplateFileReference extends FileReference {
 
     constructor() {
         super('xml_template_filename', 'xml_template_fileref',
-            'add_file_ref_templ', 'rem_file_ref_templ', 'TemplateFileReference', 'Template', false);
+            'TemplateFileReference', 'Template', false);
 
         if (templSingleton == null) {
             templSingleton = this;

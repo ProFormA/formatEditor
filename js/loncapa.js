@@ -159,16 +159,16 @@ function createDownloadLinks(/*cmhash*/) {
 function getEditorTemplate(cmhash) {
     var returnvalue = "";
     $.each($(".xml_file_filename"), function(index, item) {
-    let fileroot = $(item).closest(".xml_file");
-    let fileclass = fileroot.find(".xml_file_class").val();
-    if (fileclass == "template") {
-        let filetype = fileroot.find(".xml_file_type").val();
-        if (filetype == 'embedded') {
-            let fileid = fileroot.find(".xml_file_id").val();
-            if (returnvalue === "")
-                returnvalue = codemirror[fileid].getValue();
+        let fileroot = $(item).closest(".xml_file");
+        let fileclass = fileroot.find(".xml_file_class").val();
+        if (fileclass == "template") {
+            let filetype = fileroot.find(".xml_file_type").val();
+            if (filetype == 'embedded') {
+                let fileid = fileroot.find(".xml_file_id").val();
+                if (returnvalue === "")
+                    returnvalue = codemirror[fileid].getValue();
+            }
         }
-    }
 //     if ($(item).first().parent().find(".xml_file_class").val() == "template") {
 //       returnvalue = codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue();
 //     }
@@ -180,7 +180,17 @@ function getModelSolution(cmhash) {
   var returnvalue;
   $.each($(".xml_file_id"), function(index, item) {
 	  if (item.value == $(".xml_model-solution_fileref").first().val()) {
-       returnvalue = codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue();
+          // file is first model solution
+          let fileroot = $(item).closest(".xml_file");
+          let filetype = fileroot.find(".xml_file_type").val();
+          if (filetype == 'embedded') {
+              // file is embedded
+              returnvalue = codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue();
+          } else {
+              // file is not embedded
+              alert("The Model Solution will not be shown in LON-CAPA because file type 'file' is used for it.");
+              returnvalue = 'A Model Solution is not available.';
+          }
      }
    });
   return returnvalue;

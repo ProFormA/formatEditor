@@ -191,10 +191,13 @@ def confirmDownloadSaveDialog(dialogkey):
 
     # print "confirmDownloadSaveDialog finished"
 
-def save_task_file_plain(expected_file_name, move_to_folder, move_to_filename_xml):
+def save_task_file_plain(modelSolution_alert):
     # print "press save zip button"
     elem = driver.find_element_by_id("buttonZip")
     elem.click()
+
+    if modelSolution_alert:
+        confirmPopup()
 
     if browser == "Firefox":
         confirmDownloadSaveDialog('zip')
@@ -258,13 +261,16 @@ def save_task_file(expected_file_name, move_to_folder, move_to_filename_xml):
 
 
 
-def save_lon_capa_problem(expected_file_name):
+def save_lon_capa_problem(expected_file_name, modelSolution_alert):
     change_tab("main_tab")
 
     elem = driver.find_element_by_id("button_save_lon_capa").click()
 
     if browser == "Firefox":
         confirmDownloadSaveDialog('loncapa')
+
+    if modelSolution_alert:
+        confirmPopup()
 
     # wait for download to complete
     time.sleep(2)
@@ -457,6 +463,20 @@ def load_test_file(filename, index):
     load_fileref(filename, index, "xml_test_filename")
 
 
+
+####################################################################
+# RETRIEVE VALUES
+####################################################################
+def get_template_file(index):
+    change_tab("main_tab")
+    elems = driver.find_elements_by_class_name("xml_template_filename")
+    return elems[index].get_attribute("value")
+
+
+def get_instruction_file(index):
+    change_tab("main_tab")
+    elems = driver.find_elements_by_class_name("xml_instruction_filename")
+    return elems[index].get_attribute("value")
 
 ####################################################################
 # FILE

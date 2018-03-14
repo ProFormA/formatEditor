@@ -548,6 +548,20 @@ readXML = function(xmlText) {
     clearErrorMessage();
     fileStorages = []; // empty array
 
+    $("#filesection")[0].textContent = "";                     // delete previous content
+    $("#modelsolutionsection")[0].textContent = "";
+    $("#testsection")[0].textContent = "";
+    let template_section = $("#templatesection");
+    template_section[0].textContent = "";
+    template_section.append(TemplateFileReference.getInstance().getTableString());
+    $("#instructionsection")[0].textContent = "";
+    $('#instructionsection').append(InstructionFileReference.getInstance().getTableString());
+
+    fileIDs = {};
+    modelSolIDs = {};
+    testIDs = {};
+
+
     var xmlTemplate = xmlText; // copy text from variable if available
     if (xmlTemplate == undefined)
         xmlTemplate = outputValue;              // read textarea
@@ -604,12 +618,7 @@ readXML = function(xmlText) {
                 }
             }
         });
-        $("#filesection")[0].textContent = "";                     // delete previous content
-        $("#modelsolutionsection")[0].textContent = "";
-        $("#testsection")[0].textContent = "";
-        fileIDs = {};
-        modelSolIDs = {};
-        testIDs = {};
+
 
         $.each(mapElemSequence, function(index, item) {
             idx1cnt = 0;                                                 // differs from idx1 if wrong test-type

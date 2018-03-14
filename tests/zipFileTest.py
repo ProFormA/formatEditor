@@ -55,9 +55,9 @@ class ZipFileTest(unittest.TestCase):
     def loadZipFile(self, task_filename):
         editor.loadTaskFile(task_filename, False)
 
-    def saveZipFile(self, filename_task_xml):
+    def saveZipFile(self, filename_task_xml, modelSolution_alert):
         self.TaskFileNo = self.TaskFileNo + 1
-        editor.save_task_file_plain(filename_task_xml, self.output_folder, self.getTaskFile(self.TaskFileNo)) # filename_task_xml_1
+        editor.save_task_file_plain(modelSolution_alert) # filename_task_xml_1
         # self.assertTrue()
 
         move_to_folder = self.output_folder
@@ -81,7 +81,8 @@ class ZipFileTest(unittest.TestCase):
             lastname = filename
             # print filename
 
-        self.assertTrue(lastname != None, testconfig.download_path + "/" + filename_with_wildcards + ' does not exist')
+        self.assertTrue(lastname != None,
+                        'expected task.zip file ' + testconfig.download_path + "/" + filename_with_wildcards + ' does not exist')
 
         # könnte man auch direkt auspacken... (TODO)
         # print "rename " + lastname + " to " + move_to_folder + "/" + expected_file_name
@@ -108,16 +109,16 @@ class ZipFileTest(unittest.TestCase):
         # todo: auspacken der der Zip-Datei und auswerten
         print 'compare files: ' + self.filename_task_xml_reference + ' <-> ' + self.getTaskFile(self.TaskFileNo)
         self.assertTrue(editor.is_file1_equal_to_file2_except_for_uuid(self.filename_task_xml_reference, self.getTaskFile(self.TaskFileNo)),
-                        'task.xml output ' + str(self.TaskFileNo))
+                        'task.xml output mismatch ' + str(self.TaskFileNo))
 
         return self.TaskFileNo
 
-    def saveLonCapaFile(self):
+    def saveLonCapaFile(self, modelSolution_alert):
         self.ProblemFileNo = self.ProblemFileNo + 1
-        editor.save_lon_capa_problem(self.getProblemFile(self.ProblemFileNo)) # self.filename_problem_1)
+        editor.save_lon_capa_problem(self.getProblemFile(self.ProblemFileNo), modelSolution_alert) # self.filename_problem_1)
 
         self.assertTrue(editor.is_file1_equal_to_file2(self.filename_problem_reference, self.getProblemFile(self.ProblemFileNo)),
-                        "problem file output " + str(self.ProblemFileNo))
+                        "problem file output mismatch " + str(self.ProblemFileNo))
 
         return self.ProblemFileNo
 
@@ -126,15 +127,15 @@ class ZipFileTest(unittest.TestCase):
         # reimport
         editor.loadTaskFile(self.lastSavedZipFile, True) # self.output_folder + "/" + self.filename_task_xml, True)
 
-    def saveFilesAndReloadAndSave(self, expectedFilename):
+    def saveFilesAndReloadAndSave(self, expectedFilename, modelSolution_alert):
         # TODO??
         # editor.perform_xml_lint_check(filename_task_xml_1);
 
-        self.saveZipFile(expectedFilename)
-        self.saveLonCapaFile()
+        self.saveZipFile(expectedFilename, modelSolution_alert)
+        self.saveLonCapaFile(modelSolution_alert)
         self.reimportZipFile()
-        self.saveZipFile(expectedFilename)
-        self.saveLonCapaFile()
+        self.saveZipFile(expectedFilename, modelSolution_alert)
+        self.saveLonCapaFile(modelSolution_alert)
 
 
     if __name__ == '__main__':
