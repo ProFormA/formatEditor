@@ -571,7 +571,7 @@ def add_file_to_model_solution(ms_index, file_index):
 
 def append_file_to_model_solution(ms_index):
     change_tab("ms_tab")
-    elem = driver.find_elements_by_class_name("add_file_ref_ms")
+    elem = driver.find_elements_by_class_name("add_model-solution_fileref")
     elem[ms_index].click()
 
 

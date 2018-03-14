@@ -89,6 +89,7 @@ class ZipFileTest(unittest.TestCase):
 
         # todo: rename it
         try:
+            # delete old file in target folder
             os.remove(move_to_folder + "/" + expected_file_name)
         except:
             pass

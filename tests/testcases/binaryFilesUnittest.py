@@ -25,9 +25,9 @@ class BinaryFilesTest(zipFileTest.ZipFileTest):
         zipFileTest.ZipFileTest.setUp(self, 'java', 'binary')
         editor.delete_old_task_files(expectedZipName, self.output_folder)
 
-        for fl in glob.glob(testconfig.download_path + "/instruction.zip"):
+        for fl in glob.glob(self.output_folder + "/instruction.zip"):
             os.remove(fl)
-        for fl in glob.glob(testconfig.download_path + "/templates.zip"):
+        for fl in glob.glob(self.output_folder + "/templates.zip"):
             os.remove(fl)
         for fl in glob.glob(self.output_folder + "/de/myproject/file0.java"):
             os.remove(fl)
@@ -37,30 +37,35 @@ class BinaryFilesTest(zipFileTest.ZipFileTest):
         # check if not-embedded files exist
 
         # check for instruction.zip in zip file
-        extractedFile = None
-        listing = glob.glob(self.output_folder + "/instruction.zip")
-        for filename in listing:
-            extractedFile = filename
-        self.assertTrue(None != extractedFile, 'instruction.zip exists in zip file')
+        # extractedFile = None
+        # listing = glob.glob(self.output_folder + "/instruction.zip")
+        # for filename in listing:
+        #    extractedFile = filename
+        #self.assertTrue(None != extractedFile, 'instruction.zip exists in zip file')
 
         # check for templates.zip in zip file
-        extractedFile = None
-        listing = glob.glob(self.output_folder + "/templates.zip")
-        for filename in listing:
-            extractedFile = filename
-        self.assertTrue(None != extractedFile, 'templates.zip exists in zip file')
+        #extractedFile = None
+        #listing = glob.glob(self.output_folder + "/templates.zip")
+        #for filename in listing:
+        #    extractedFile = filename
+        #self.assertTrue(None != extractedFile, 'templates.zip exists in zip file')
 
         # check for /de/myproject/file0.java in zip file
-        extractedFile = None
-        listing = glob.glob(self.output_folder + "/de/myproject/file0.java")
-        for filename in listing:
-            extractedFile = filename
-        self.assertTrue(None != extractedFile, '/de/myproject/file0.java exists in zip file')
+        #extractedFile = None
+        #listing = glob.glob(self.output_folder + "/de/myproject/file0.java")
+        #for filename in listing:
+        #    extractedFile = filename
+        #self.assertTrue(None != extractedFile, '/de/myproject/file0.java exists in zip file')
+
+        import filecmp
+        self.assertTrue(filecmp.cmp(self.output_folder + "/template.zip", "input/template.zip", 0))
+        self.assertTrue(filecmp.cmp(self.output_folder + "/instruction.zip", "input/instruction.zip", 0))
+        self.assertTrue(filecmp.cmp(self.output_folder + "/de/myproject/file0.java", "input/file0.java", 0))
 
 
-        for fl in glob.glob(testconfig.download_path + "/instruction.zip"):
+        for fl in glob.glob(self.output_folder + "/instruction.zip"):
             os.remove(fl)
-        for fl in glob.glob(testconfig.download_path + "/templates.zip"):
+        for fl in glob.glob(self.output_folder + "/template.zip"):
             os.remove(fl)
         for fl in glob.glob(self.output_folder + "/de/myproject/file0.java"):
             os.remove(fl)
