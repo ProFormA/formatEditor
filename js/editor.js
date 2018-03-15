@@ -30,7 +30,7 @@ const tab_page = {
   FAQ:    6
 };
 
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 const TEST_MODE = false;
 
 
@@ -47,7 +47,7 @@ var readXmlActive = false;
 
 // string constants
 const loadFileOption = "<load...>";
-const emptyFileOption = "";
+const emptyFileOption = " "; // must not be empty!!
 const testTypes = getTesttypeOptions();
 
 
@@ -315,14 +315,23 @@ $(function() {
   };
 */
   removeFile = function(bt) {                                       // ask before removing
-    // TODO: check if file is referenced somewhere
-    // if true: cancel or remove all filenames/filerefs from model solution and test
-    var remtemp = window.confirm("Do you really want to delete this file?");
-    if (remtemp) {
-      bt.parent().parent().parent().remove();
-      deletecounter(fileIDs,bt);
-      onFilenameChanged(); // update filenames
-    }
+      let root = bt.parent().parent().parent();
+      const id = root.find('.xml_file_id')[0].value;
+      const filename = root.find('.xml_file_filename')[0].value;
+
+      let ok = false;
+      if (FileReference.isFileIdReferenced(id)) {
+          // if true: cancel or remove all filenames/filerefs from model solution and test
+          ok = window.confirm("File " + id + " '" + filename + "' is still referenced!\n" +
+              "Do you really want to delete it?");
+      } else {
+          ok = window.confirm("Do you really want to delete file '" + filename + "'?");
+      }
+      if (ok) {
+          root.remove(); // bt.parent().parent().parent().remove();
+          deletecounter(fileIDs, bt);
+          onFilenameChanged(); // update filenames
+      }
   };
 
   doesFilenameExist = function(filename) {

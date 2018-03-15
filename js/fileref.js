@@ -39,10 +39,6 @@ class FileReference {
 
     getClassFilename() { return this.classFilename; }
 
-    // getClassFilename() { return this.classFilename; }
-    // getClassFileRef() { return this.classFileref; }
-
-
     createTableStrings(className, label, mandatory) {
         label = label + '(s)';
         this.filenameLabel = "<label for='" + this.classFilename +
@@ -55,10 +51,10 @@ class FileReference {
         this.tdAddButton = "<td><button class='" + this.classAddFileref +
             "' title='add another filename' onclick='" + className + ".getInstance().addFileRef($(this))'>+</button><br></td>";
         this.tdRemoveButton = "<td><button class='" + this.classRemoveFileref +
-            "' onclick='" + className + ".getInstance().remFileRef($(this))'>x</button></td>";
+            "' onclick='" + className + ".getInstance().removeFileRef($(this))'>x</button></td>";
         // hide first remove file button
         const tdFirstRemoveButton = "<td><button class='" + this.classRemoveFileref +
-            "' onclick='" + className + ".getInstance().remFileRef($(this))' style='display: none;'>x</button></td>";
+            "' onclick='" + className + ".getInstance().removeFileRef($(this))' style='display: none;'>x</button></td>";
 
         this.table = "<table>" +
             "<tr>" +
@@ -146,10 +142,14 @@ class FileReference {
     }
 
 
-    remFileRef(element) {
-        // remove line in file table for test
+    removeFileRef(element) {
         let td = element.parent();
         let tr = td.parent();
+        // get associated fileid
+        // const fileid = tr.find('.fileref_fileref');
+        // alert(fileid.value);
+
+        // remove line in file table for test
         let table_body = tr.parent();
         let previousRow = tr.prev("tr");
         let hasNextTr = tr.nextAll("tr");
@@ -170,6 +170,19 @@ class FileReference {
             // => hide all remove file buttons
             table_body.find("." + this.classRemoveFileref).hide();
         }
+    }
+
+    // checks if a given file id is used somewhere
+    // (needed when file shall be deleted)
+    static isFileIdReferenced(fileId) {
+        let found = false;
+        $.each($(".fileref_fileref"), function(index, item) {
+            const filerefId = item.value;
+            if (filerefId === fileId)
+                found = true;
+        });
+
+        return found;
     }
 
     onFileUpload(filename, uploadBox) {
@@ -226,6 +239,8 @@ class FileReference {
         var selectedFilename = $(tempSelElem).val();
         //console.log("-> selected is '" + selectedFilename + "'");
 
+
+
         switch (selectedFilename) {
             case loadFileOption:
                 // read new file
@@ -255,9 +270,10 @@ class FileReference {
                 dummybutton.click();
                 return;
             case emptyFileOption:
-                return; // do nothing
+                // delete fileref id
+                alert('empty file option'); // is never called - why???
+                // fall through
             default:
-                var nextTd = $(tempSelElem).parent().next('td');
                 var fileid = "";
                 $.each($(".xml_file_filename"), function(index, item) {
                     if (selectedFilename == item.value ) {
@@ -265,6 +281,7 @@ class FileReference {
                         return;
                     }
                 });
+                const nextTd = $(tempSelElem).parent().next('td');
                 if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
                     nextTd.find('.xml_test_fileref')[0].value = fileid;
                     // set classname if file belongs to JUNIT
@@ -294,34 +311,35 @@ class FileReference {
 
     // update all filename lists
     static updateAllFilenameLists() {
-        $.each($(".xml_test_filename, .xml_model-solution_filename, .xml_template_filename, .xml_instruction_filename"), function(index, item) {
-        //console.log("update filelist in test ");
-        // store name of currently selected file
-        var text = $("option:selected", item).text(); // selected text
-        //console.log("selected is " + text);
-        updateFilenameList(item); // update filename list in tests and model solutions
+        $.each($(".xml_test_filename, .xml_model-solution_filename, .xml_template_filename, .xml_instruction_filename"),
+            function(index, item) {
+                //console.log("update filelist in test ");
+                // store name of currently selected file
+                var text = $("option:selected", item).text(); // selected text
+                //console.log("selected is " + text);
+                updateFilenameList(item); // update filename list in tests and model solutions
 
-        if (text.length > 0) {
-            // check if previously selected filename is still in list
-            // (ich weiß im Moment nicht, wie man die Einträge aus
-            // der Liste rauszieht...TODO)
-            // TODO einfacher: einfach setzen und schauen, ob leer???
-            var indexFound = -1;
-            $.each($(".xml_file_filename"), function (indexOpt, item) {
+                if (text.length > 0) {
+                    // check if previously selected filename is still in list
+                    // (ich weiß im Moment nicht, wie man die Einträge aus
+                    // der Liste rauszieht...TODO)
+                    // TODO einfacher: einfach setzen und schauen, ob leer???
+                    var indexFound = -1;
+                    $.each($(".xml_file_filename"), function (indexOpt, item) {
                 if (item.value.length > 0 && item.value == text) {
-                    indexFound = indexOpt;
+                            indexFound = indexOpt;
+                        }
+                    });
+                    if (indexFound >= 0) {
+                        //console.log("selektiere " + indexFound);
+                        item.selectedIndex = indexFound + 1; // +1:weil am Anfang noch ein Leerstring ist
+                    } else {
+                        // filename not found => remove fileid
+                        console.log("filename ref not found");
+                        $(item).closest(".xml_test,.xml_model-solution, #templatedropzone").
+                        find($(".xml_test_fileref, .xml_model-solution_fileref, .xml_template_fileref, .xml_template_fileref")).first().val("");
+                    }
                 }
-            });
-            if (indexFound >= 0) {
-                //console.log("selektiere " + indexFound);
-                item.selectedIndex = indexFound + 1; // +1:weil am Anfang noch ein Leerstring ist
-            } else {
-                // filename not found => remove fileid
-                console.log("filename ref not found");
-                $(item).closest(".xml_test,.xml_model-solution, #templatedropzone").
-                find($(".xml_test_fileref, .xml_model-solution_fileref, .xml_template_fileref, .xml_template_fileref")).first().val("");
-            }
-        }
         });
     }
 
@@ -345,11 +363,11 @@ class TestFileReference extends FileReference {
     onFileUpload(filename, uploadBox) {
         super.onFileUpload(filename, uploadBox);
         // set classname if exactly one file is assigned
-        var ui_classname = $(uploadBox).find(".xml_ju_mainclass");
-        if (ui_classname.length == 1) {
+        const ui_classname = $(uploadBox).find(".xml_ju_mainclass");
+        if (ui_classname.length === 1) {
             $.each(ui_classname, function(index, element) {
-                var currentFilename = $(element).val();
-                if (currentFilename == "" && !readXmlActive) {
+                const currentFilename = $(element).val();
+                if (currentFilename === "" && !readXmlActive) {
                     $(element).val(java_getFullClassnameFromFilename(filename)).change();
                 }
             });
@@ -414,7 +432,6 @@ class InstructionFileReference extends FileReference {
         }
     }
     static getInstance() {return instructionSingleton;}
-    //static getClassRoot() { return "???"; }
 
     // TODO: move back to editor.js???
     static uploadFiles(files, box) {
@@ -444,8 +461,6 @@ class TemplateFileReference extends FileReference {
     }
 
     static getInstance() {return templSingleton;}
-
-    //static getClassRoot() { return "xml_model-solution"; }
 
     // TODO: move back to editor.js???
     static uploadFiles(files, box) {

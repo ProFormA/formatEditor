@@ -231,7 +231,7 @@ convertToXML = function() {
     }
 
     inputField = $("#xml_meta-data_title");
-    if (inputField.val() == "") {
+    if (inputField.val() === "") {
         setErrorMessage("Task title is empty.");
         // switch to appropriate tab and set focus
         $("#tabs").tabs("option", "active",  tab_page.MAIN);
@@ -459,7 +459,7 @@ convertToXML = function() {
 */
         $.each(xsds, function(index, xsd_file) {       // loop: xsd files for validation
             $.get(xsd_file, function(data, textStatus, jqXHR) {      // read XSD schema
-                var valid = xmllint.validateXML({xml: xmlString, schema: jqXHR.responseText});
+                const valid = xmllint.validateXML({xml: xmlString, schema: jqXHR.responseText});
                 if (valid.errors !== null) {                                // does not conform to schema
                     setErrorMessage("Errors in XSD-Validation: " + valid.errors[0]);
                 }
