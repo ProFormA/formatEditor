@@ -1,3 +1,15 @@
+Release Notes for 2.2.0
+
+#23: special JUnit-version
+#21: bugfix java class evaluation
+#14: support for binary files
+show template and instruction file list on main tab
+redesign concerning file references
+#17: more information for file classes in documentation
+bugfix #20: do not switch off namespace handling, new version of Chrome needs it
+#15: show 'max filesize' unit (kB)
+move documentation pages to subfolder doc
+
 Release Notes for 2.1.0
 
 support for configuration in separate file (config.js)
