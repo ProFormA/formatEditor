@@ -18,10 +18,10 @@
 
 
 
-var testFileRefSingleton = null;
-var modelSolutionFileRefSingleton = null;
-var templSingleton = null;
-var instructionSingleton = null;
+let testFileRefSingleton = null;
+let modelSolutionFileRefSingleton = null;
+let templSingleton = null;
+let instructionSingleton = null;
 
 
 // abstract class for a filename reference input
@@ -57,7 +57,7 @@ class FileReference {
         this.tdRemoveButton = "<td><button class='" + this.classRemoveFileref +
             "' onclick='" + className + ".getInstance().remFileRef($(this))'>x</button></td>";
         // hide first remove file button
-        var tdFirstRemoveButton = "<td><button class='" + this.classRemoveFileref +
+        const tdFirstRemoveButton = "<td><button class='" + this.classRemoveFileref +
             "' onclick='" + className + ".getInstance().remFileRef($(this))' style='display: none;'>x</button></td>";
 
         this.table = "<table>" +
@@ -123,9 +123,9 @@ class FileReference {
 
     addFileRef(element) {
         // add new line for selecting a file for a test
-        var td = element.parent();
-        var tr = td.parent();
-        var table_body = tr.parent();
+        let td = element.parent();
+        let tr = td.parent();
+        let table_body = tr.parent();
         table_body.append(
             "<tr><td></td>" + // label
             this.tdFilename +
@@ -148,24 +148,24 @@ class FileReference {
 
     remFileRef(element) {
         // remove line in file table for test
-        var td = element.parent();
-        var tr = td.parent();
-        var table_body = tr.parent();
-        var previousRow = tr.prev("tr");
-        var hasNextTr = tr.nextAll("tr");
-        var hasPrevTr = tr.prevAll("tr");
+        let td = element.parent();
+        let tr = td.parent();
+        let table_body = tr.parent();
+        let previousRow = tr.prev("tr");
+        let hasNextTr = tr.nextAll("tr");
+        let hasPrevTr = tr.prevAll("tr");
         tr.remove(); // remove row
-        if (hasNextTr.length == 0) {
+        if (hasNextTr.length === 0) {
             // if row to be deleted is last row then add +-button to last row
             previousRow.append(this.tdAddButton);
         }
-        if (hasPrevTr.length == 0) {
+        if (hasPrevTr.length === 0) {
             // row to be deleted is first row
             // => add filename label to first column
-            var firstCell =table_body.find("td").first();
+            let firstCell = table_body.find("td").first();
             firstCell.append(this.filenameLabel); // without td
         }
-        if (table_body.find("tr").length == 1) {
+        if (table_body.find("tr").length === 1) {
             // table has exactly one row left
             // => hide all remove file buttons
             table_body.find("." + this.classRemoveFileref).hide();
@@ -334,7 +334,7 @@ class TestFileReference extends FileReference {
     constructor() {
         super('xml_test_filename', 'xml_test_fileref', 'TestFileReference', 'Testscript', true);
 
-        if (testFileRefSingleton == null) {
+        if (testFileRefSingleton === null) {
             testFileRefSingleton = this;
         }
     }
@@ -409,7 +409,7 @@ class InstructionFileReference extends FileReference {
         super('xml_instruction_filename', 'xml_instruction_fileref',
             'InstructionFileReference', 'Attachment', false);
 
-        if (instructionSingleton == null) {
+        if (instructionSingleton === null) {
             instructionSingleton = this;
         }
     }
@@ -438,7 +438,7 @@ class TemplateFileReference extends FileReference {
         super('xml_template_filename', 'xml_template_fileref',
             'TemplateFileReference', 'Template', false);
 
-        if (templSingleton == null) {
+        if (templSingleton === null) {
             templSingleton = this;
         }
     }

@@ -38,7 +38,7 @@ const TEST_MODE = false;
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
 
-var codeversion   = '2.2.0 alpha';                     // contains the current version of this code
+const codeversion   = '2.2.0';                     // current version of this code
 
 // these variables can be set in the calling HTML file
 var readXmlActive = false;
@@ -934,13 +934,14 @@ $(function() {
     $("#upload_xml_file").click();
   })
 
+/*
   $("#button_save_xml").click(function(){
     console.log("button_save_xml clicked");
     convertToXML();
     downloadTextFile2($("#output"), "task.xml", anchor);
     //downloadTextFile2($("#output"), "task.xml", $("#dummy_save_xml_button")[0]);
   })
-
+*/
 
 
   if (!DEBUG_MODE) {
