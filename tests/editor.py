@@ -129,7 +129,7 @@ def closeBrowser():
 
 ####################################################################
 
-def loadTaskFile(task_file, content_will_be_deleted):
+def load_task_file(task_file, content_will_be_deleted):
     the_path = os.path.dirname(os.path.abspath(__file__))
     filename = the_path + "/" + task_file
     filename = filename.replace("/", "\\") # needed on Windows!!

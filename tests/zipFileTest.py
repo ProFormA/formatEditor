@@ -53,7 +53,7 @@ class ZipFileTest(unittest.TestCase):
 
 
     def loadZipFile(self, task_filename):
-        editor.loadTaskFile(task_filename, False)
+        editor.load_task_file(task_filename, True)
 
     def saveZipFile(self, filename_task_xml, modelSolution_alert):
         self.TaskFileNo = self.TaskFileNo + 1
@@ -126,7 +126,7 @@ class ZipFileTest(unittest.TestCase):
 
     def reimportZipFile(self):
         # reimport
-        editor.loadTaskFile(self.lastSavedZipFile, True) # self.output_folder + "/" + self.filename_task_xml, True)
+        editor.load_task_file(self.lastSavedZipFile, True) # self.output_folder + "/" + self.filename_task_xml, True)
 
     def saveFilesAndReloadAndSave(self, expectedFilename, modelSolution_alert):
         # TODO??

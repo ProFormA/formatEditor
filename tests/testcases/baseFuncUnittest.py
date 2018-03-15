@@ -12,12 +12,6 @@ title = "base"
 expectedZipName = title + ".zip"
 
 
-description = "input111"
-
-filesize = "3333"
-mimetype = "text/TEST"
-lon_capa_path = "input4444/"
-language = "en"
 prog_lang = "java/1.8"
 
 
@@ -26,7 +20,7 @@ prog_lang = "java/1.8"
 class BaseFunctionalityTest(zipFileTest.ZipFileTest):
 
     def setUp(self):
-        print "setup JavaTest"
+        print "setup BaseTest"
         zipFileTest.ZipFileTest.setUp(self, 'java', 'base')
         editor.delete_old_task_files(expectedZipName, self.output_folder)
 
@@ -39,7 +33,7 @@ class BaseFunctionalityTest(zipFileTest.ZipFileTest):
         ####################################################################
 
         # fill Task decription
-        editor.set_task_description(description)
+        editor.set_task_description("input111")
         # fill title
         editor.set_task_title(title)
         # fill programming language
