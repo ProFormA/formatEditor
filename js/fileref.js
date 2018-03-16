@@ -146,8 +146,7 @@ class FileReference {
         let td = element.parent();
         let tr = td.parent();
         // get associated fileid
-        // const fileid = tr.find('.fileref_fileref');
-        // alert(fileid.value);
+        const fileid = tr.find('.fileref_fileref')[0].value;
 
         // remove line in file table for test
         let table_body = tr.parent();
@@ -170,6 +169,30 @@ class FileReference {
             // => hide all remove file buttons
             table_body.find("." + this.classRemoveFileref).hide();
         }
+
+        if (fileid) {
+            FileReference.deleteFile(fileid);
+        }
+    }
+
+    static deleteFile(fileid) {
+        // check how many references exist
+        const references = $(".fileref_fileref");
+        let exit = false;
+        $.each(references, function(index, item) {
+            if (item.value === fileid) {
+                // fileid found => do not delete
+                exit = true;
+            }
+        });
+        if (exit)
+            return;
+
+        // delete file
+        const fileroot = $(".xml_file_id[value='" + fileid + "']").closest(".xml_file");
+        fileroot.remove();
+        delete fileIDs[fileid];
+        onFilenameChanged(); // update filenames
     }
 
     // checks if a given file id is used somewhere
@@ -237,8 +260,9 @@ class FileReference {
 
         var found = false;
         var selectedFilename = $(tempSelElem).val();
-        //console.log("-> selected is '" + selectedFilename + "'");
-
+        // get old file id
+        const nextTd = $(tempSelElem).parent().next('td');
+        const oldFileId = nextTd.find('.fileref_fileref')[0].value;
 
 
         switch (selectedFilename) {
@@ -274,37 +298,43 @@ class FileReference {
                 alert('empty file option'); // is never called - why???
                 // fall through
             default:
-                var fileid = "";
+                // find file id belonging to the filename
+                let fileid = "";
                 $.each($(".xml_file_filename"), function(index, item) {
-                    if (selectedFilename == item.value ) {
+                    if (selectedFilename === item.value ) {
                         fileid = $(item).first().parent().find(".xml_file_id").val();
-                        return;
                     }
                 });
-                const nextTd = $(tempSelElem).parent().next('td');
+                // set new file id
+                nextTd.find('.fileref_fileref')[0].value = fileid;
                 if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
-                    nextTd.find('.xml_test_fileref')[0].value = fileid;
+                    // nextTd.find('.xml_test_fileref')[0].value = fileid;
                     // set classname if file belongs to JUNIT
                     if (fileid != '') {
                         setJavaClassname(selectedFilename);
                         setJUnitDefaultTitle(selectedFilename);
                     }
                 } else if ($(tempSelElem).hasClass('xml_template_filename')) {
-                    nextTd.find('.xml_template_fileref')[0].value = fileid;
+                    // nextTd.find('.xml_template_fileref')[0].value = fileid;
                     // set to file class to 'template'
-                    var fileclass = $(".xml_file_id[value='"+fileid+"']").parent().find(".xml_file_class").first();
+                    let fileclass = $(".xml_file_id[value='"+fileid+"']").parent().find(".xml_file_class").first();
                     fileclass.val('template');
                     // TODO: disable class is easy, but when to enable it??
                     // fileclass.attr('disabled', true);
 
                 } else if ($(tempSelElem).hasClass('xml_instruction_filename')) {
-                    nextTd.find('.xml_instruction_fileref')[0].value = fileid;
+                    // nextTd.find('.xml_instruction_fileref')[0].value = fileid;
                     // set to file class to 'template'
                     $(".xml_file_id[value='"+fileid+"']").parent().find(".xml_file_class").first().val('instruction');
 
                 } else {
-                    nextTd.find('.xml_model-solution_fileref')[0].value = fileid;
+                    // model solution, nothing to be done
                 }
+        }
+
+        if (oldFileId !== '') {
+            // delete old file
+            FileReference.deleteFile(oldFileId);
         }
     };
 

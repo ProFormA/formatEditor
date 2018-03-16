@@ -30,7 +30,7 @@ const tab_page = {
   FAQ:    6
 };
 
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 const TEST_MODE = false;
 
 
@@ -38,7 +38,7 @@ const TEST_MODE = false;
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
 
-const codeversion   = '2.2.0';                     // current version of this code
+const codeversion   = '2.2.1';                     // current version of this code
 
 // these variables can be set in the calling HTML file
 var readXmlActive = false;
