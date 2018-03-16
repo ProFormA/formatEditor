@@ -232,7 +232,7 @@ class JavaTest(zipFileTest.ZipFileTest):
         editor.set_test_title(counter_test_index, "checkstyle test title #1")
         editor.set_test_public(counter_test_index, "True")
         editor.set_test_required(counter_test_index, "True")
-        editor.set_cs_version(1, 0)
+        editor.set_cs_version(1, 1)
         editor.set_cs_max_warnings(1, "0")
         editor.set_test_file(counter_test_index, 3)
         counter_test_index = counter_test_index + 1

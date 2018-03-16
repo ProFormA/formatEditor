@@ -696,7 +696,6 @@ def add_checkstyle():
     change_tab("test_tab")                  
     elem = driver.find_element_by_id("addCheckStyleTest").click()
 
-# only one version can be selected (=> no test needed)
 def set_cs_version(cs_index, version):
     elem = driver.find_elements_by_class_name('xml_pr_CS_version')
     select = Select(elem[cs_index])
