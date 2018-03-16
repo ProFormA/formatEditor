@@ -68,11 +68,12 @@ const htmlJavaComp =
     "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
     "<input class='shortinput xml_pr_CompilerFlags'/>"+
     " <label for='xml_pr_CompilerOutputFlags'>Compiler output flags: </label>"+
-    "<input class='shortinput xml_pr_CompilerOutputFlags'/></p>"+
+    "<input class='shortinput xml_pr_CompilerOutputFlags' title='-o %s (%s will be replaced by program name)'/></p>"+
     " <p><label for='xml_pr_CompilerLibs'>Compiler libs: </label>"+
     "<input class='shortinput xml_pr_CompilerLibs' value='JAVA_LIBS'/>"+
     " <label for='xml_pr_CompilerFPatt'>Compiler File Pattern: </label>"+
-    "<input class='mediuminput xml_pr_CompilerFPatt' value='^.*\\.[jJ][aA][vV][aA]$'/></p>";
+    "<input class='mediuminput xml_pr_CompilerFPatt' value='^.*\\.[jJ][aA][vV][aA]$' " +
+    "title='Regular expression describing all source files to be passed to the compiler'/></p>";
 
 
 const htmlJavaJunit = "<p><label for='xml_ju_mainclass'>Test class (no extension)<span class='red'>*</span>: </label>"+
