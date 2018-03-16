@@ -66,13 +66,13 @@ xsds = [
 // HTML building blocks for the extra input fields in tests
 const htmlJavaComp =
     "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
-    "<input class='tinyinput xml_pr_CompilerFlags'/>"+
+    "<input class='shortinput xml_pr_CompilerFlags'/>"+
     " <label for='xml_pr_CompilerOutputFlags'>Compiler output flags: </label>"+
-    "<input class='tinyinput xml_pr_CompilerOutputFlags'/>"+
-    " <label for='xml_pr_CompilerLibs'>Compiler libs: </label>"+
+    "<input class='shortinput xml_pr_CompilerOutputFlags'/></p>"+
+    " <p><label for='xml_pr_CompilerLibs'>Compiler libs: </label>"+
     "<input class='shortinput xml_pr_CompilerLibs' value='JAVA_LIBS'/>"+
     " <label for='xml_pr_CompilerFPatt'>Compiler File Pattern: </label>"+
-    "<input class='shortinput xml_pr_CompilerFPatt' value='^.*\\.[jJ][aA][vV][aA]$'/></p>";
+    "<input class='mediuminput xml_pr_CompilerFPatt' value='^.*\\.[jJ][aA][vV][aA]$'/></p>";
 
 
 const htmlJavaJunit = "<p><label for='xml_ju_mainclass'>Test class (no extension)<span class='red'>*</span>: </label>"+
@@ -95,7 +95,11 @@ const htmlSetlX =  "<p><label for='xml_jt_framew'>Framework<span class='red'>*</
     "<select class='xml_jt_version'><option selected='selected' value='2.40'>2.40</option></select></p>";
 
 const htmlCheckstyle = "<p><label for='xml_pr_CS_version'>Version<span class='red'>*</span>: </label>"+
-    "<select class='xml_pr_CS_version'><option selected='selected' value='6.2'>6.2</option></select>"+
+    "<select class='xml_pr_CS_version'>" +
+    "<option value='5.4'>5.4</option>" +
+    "<option selected='selected' value='6.2'>6.2</option>" +
+    "<option value='7.6'>7.6</option>" +
+    "</select>"+
     " <label for='xml_pr_CS_warnings'>Maximum warnings allowed<span class='red'>*</span>: </label>"+
     "<input class='tinyinput xml_pr_CS_warnings' value='0'/></p>";
 
