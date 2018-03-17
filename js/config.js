@@ -231,9 +231,19 @@ function createFurtherOutput(tempvals) {
     }
 }
 
-function isBinaryFile(file) {
+function getConfigMimetype(mimetype, extension) {
+    switch (extension.toLowerCase()) {
+        case 'c':    return 'text/x-csrc';
+        case 'java': return 'text/x-java';
+        case 'py':   return 'text/x-python';
+        case 'stlx':   return 'text/x-setlx'; // no actual mode availble
+        default: return mimetype;
+    }
+}
+
+function isBinaryFile(file, mimetype) {
     var binaryFile =  true;
-    if (file.type.match(/(text\/)/i))  // mimetype is 'text/...'
+    if (mimetype && mimetype.match(/(text\/)/i))  // mimetype is 'text/...'
         return false;
 
     const extension = file.name.split('.').pop();

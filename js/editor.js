@@ -78,6 +78,11 @@ class FileStorage {
 // to test environment.
 var descriptionEditor;
 
+
+function getExtension(filename) {
+    return filename.split('.').pop();
+}
+
 // create option list string with all test types
 function getTesttypeOptions() {
     var list = "";
@@ -139,7 +144,7 @@ function addCodemirrorElement(cmID) {                     // cmID is determined 
             dragDrop: false
     });
 
-    var editor = codemirror[cmID];
+    let editor = codemirror[cmID];
     $(editor.getWrapperElement()).resizable({
         handles: 's', // only resize in north-south-direction
         resize: function() {
@@ -304,6 +309,7 @@ function generateUUID(){
  * a function for filling the form from an uploaded XML file.
  */
 $(function() {
+
   $('#codeversion').text("Version "+codeversion);
   gradingHintCounter = 1;
 
@@ -356,14 +362,28 @@ $(function() {
     gradingHintCounter++;
   };
 
-  readSingleFile = function(inputbutton) {             // read a file and its filename into the HTML form
-    var filenew = inputbutton.files[0];
-    const fileId = $(inputbutton).parent().parent().find(".xml_file_id").val();
-    readAndCreateFileData(filenew, fileId);
-  }
+    readSingleFile = function(inputbutton) {             // read a file and its filename into the HTML form
+        let filenew = inputbutton.files[0];
+        const fileId = $(inputbutton).parent().parent().find(".xml_file_id").val();
+        readAndCreateFileData(filenew, fileId);
+    }
+
+
+    // convert to mimetype that can be directely handeled by codemirror
+    function getMimeType(mimetype, filename) {
+        const extension = getExtension(filename);
+        switch (extension.toLowerCase()) {
+            // case 'log':
+            // case 'txt':
+            case 'xml':  return 'application/xml';
+            case 'html':  return 'text/html';
+            default: return getConfigMimetype(mimetype, extension);
+        }
+    }
 
   readAndCreateFileData = function(file, fileId, callback) {
-      if (!file) return;
+      if (!file)
+          return;
       let filename = file.name;
 
       // check if a file with that filename already is stored
@@ -372,10 +392,10 @@ $(function() {
           return;
       }
 
-      const size = file.size; //get mime type
-      const type = file.type; //get mime type
+      const size = file.size; //get file size
+      const type = getMimeType(file.type, filename); //get mime type
       // determine if we have a binary or non-binary file
-      const binaryFile =  isBinaryFile(file);
+      const binaryFile =  isBinaryFile(file, type);
       let reader = new FileReader();
       reader.onload = function(e) {
 
@@ -407,12 +427,6 @@ $(function() {
           if (binaryFile) {
               // binary file
               filetype.val('file');
-/*              if (useCodemirror) {
-                  codemirror[fileId].setValue('<supposed to be a binary file, cannot be edited>');
-              } else {
-                  fileroot.find(".xml_file_text").val('<supposed to be a binary file, cannot be edited>');
-              }
-*/
               let fileObject = new FileStorage(binaryFile, type, e.target.result, filename);
               fileObject.setSize(size);
               fileStorages[fileId] = fileObject;
@@ -426,6 +440,7 @@ $(function() {
               fileStorages[fileId] = fileObject;
               if (useCodemirror) {
                   codemirror[fileId].setValue(text);
+                  codemirror[fileId].setOption("mode", type);
               } else {
                   fileroot.find(".xml_file_text").val(text);
               }
@@ -482,7 +497,7 @@ $(function() {
                   if (confirm("Java filenames shall consist of the " +
                       "package name, if any, and the class name. " +
                       "Thus the expected filename is '" + expectedFilename + "'\n" +
-                      "Do you want to change the filename?")) {
+                      "Do you want to change the filename to '" + expectedFilename + "'?")) {
                         $(textbox).val(expectedFilename);
                   }
               }
@@ -512,13 +527,18 @@ $(function() {
 
                     if (!("TextEncoder" in window))
                         alert("Sorry, this browser does not support TextEncoder...");
-
                     let enc = new TextEncoder("utf-8");
-                    console.log();
 
-                    fileobject = new FileStorage(false, '', enc.encode(text), filename);
+                    // change filestore attributes
+                    fileobject = fileStorages[fileId];
+                    if (getExtension(fileobject.filename) !== getExtension(filename)) {
+                        fileobject.mimetype = ''; // delete mimetype if filename has changed
+                        fileobject.filename = filename;
+                    }
+                    fileobject.isBinary = true;
+                    fileobject.content =  enc.encode(text);
                     fileobject.setSize(text.length);
-                    fileStorages[fileId] = fileobject;
+                    // fileStorages[fileId] = fileobject;
                     showBinaryFile(fileroot, fileobject);
                     break;
                 case 'embedded':
