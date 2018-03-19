@@ -48,12 +48,15 @@ function java_getClassAndPackage(code) {
     }
 
     function java_getClasseName(code) {
-        const className = code.match(/class([\s\S]*?)(\{|extends|implements)/);
+        //const className = code.match("\\s*(public|private)\\s+class\\((s+)*?)(\\w+)\\s+((extends\\s+\\w+)|(implements\\s+\\w+( ,\\w+)*))?\\s*\\{");
+
+        const className = code.match(/\s*(public|private)\s+class([\s\S]*?)(\{|extends|implements)/);
+        //const className = code.match(/class([\s\S]*?)(\{|extends|implements)/);
         if (!className) return "";
         switch (className.length) {
             case 0:  return ""; // no className found???
             case 1:  return className[0]; // unclear what it is, deliver everything
-            default: return className[1].trim(); // found, expect className name as 2nd
+            default: return className[2].trim(); // found, expect className name as 2nd
         }
     }
 
