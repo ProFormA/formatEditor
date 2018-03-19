@@ -26,7 +26,7 @@
  */
 
 function java_codeWithoutComment(code) {
-    var newCode = code.replace(/\/\*[\s\S]*?\*\//gm, ""); // comment with /* */
+    let newCode = code.replace(/\/\*[\s\S]*?\*\//gm, ""); // comment with /* */
     return newCode.replace(/\/\/.*/g, ""); // comment with //
 }
 
@@ -38,12 +38,12 @@ function java_codeWithoutComment(code) {
  */
 function java_getClassAndPackage(code) {
     function java_getPackageName(code) {
-        const package = code.match(/package([\s\S]*?);/);
-        if (!package) return "";
-        switch (package.length) {
+        const javapackage = code.match(/package([\s\S]*?);/);
+        if (!javapackage) return "";
+        switch (javapackage.length) {
             case 0:  return ""; // no package found
-            case 1:  return package[0]; // unclear what it is, deliver everything
-            default: return package[1].trim(); // found, expect package name as 2nd
+            case 1:  return javapackage[0]; // unclear what it is, deliver everything
+            default: return javapackage[1].trim(); // found, expect package name as 2nd
         }
     }
 
@@ -61,17 +61,17 @@ function java_getClassAndPackage(code) {
     }
 
     // preset return value
-    var out = { class:"?", package:"?" };
-    var pureCode = java_codeWithoutComment(code);
+    let out = { class:"?", package:"?" };
+    const pureCode = java_codeWithoutComment(code);
     out.class = java_getClasseName(pureCode);
     out.package = java_getPackageName(pureCode);
     return out;
 }
 
 function java_getFilenameWithPackage(code, filename) {
-    var out = java_getClassAndPackage(code);
+    let out = java_getClassAndPackage(code);
     //const className = filename.match(/([\S]*?)(.java)/i);
-    var newFilename = "";
+    let newFilename = "";
 
     if (out.class.length > 0) {
         filename = out.class + ".java";
@@ -79,17 +79,17 @@ function java_getFilenameWithPackage(code, filename) {
         // no class name found (e.g. enum, interface ...)
     }
 
-    const package = out.package.replace(/\./g, "/");
-    if (package.length > 0)
-        newFilename = package + "/" + filename; // out.class + ".java";
+    const javapackage = out.package.replace(/\./g, "/");
+    if (javapackage.length > 0)
+        newFilename = javapackage + "/" + filename; // out.class + ".java";
     else
         newFilename = filename; // out.class + ".java";
     return newFilename;
 }
 
 function java_getPureClassnameFromFilename(filename) {
-    var newFilename = filename.replace(/.java/i, "");
-    var index =  newFilename.indexOf("/");
+    let newFilename = filename.replace(/.java/i, "");
+    const index =  newFilename.indexOf("/");
     if (index > 0) {
         newFilename = newFilename.substring(index+1);
     }
@@ -98,7 +98,7 @@ function java_getPureClassnameFromFilename(filename) {
 
 function java_getFullClassnameFromFilename(filename) {
     // replace / by .
-    var newFilename = filename.replace(/\//g, ".");
+    let newFilename = filename.replace(/\//g, ".");
     // remove .java
     newFilename = newFilename.replace(/.java/i, "");
     return newFilename;
