@@ -79,8 +79,10 @@ class FileStorage {
 var descriptionEditor;
 
 
+// without . (MyString.Java = java)
+// to lowercase
 function getExtension(filename) {
-    return filename.split('.').pop();
+    return filename.split('.').pop().toLowerCase();
 }
 
 // create option list string with all test types
@@ -401,7 +403,7 @@ $(function() {
 
           // special handling for JAVA: extract class name and package name and
           // recalc filename!
-          if (filename.match(/(\.java)/i)) {
+          if (getExtension(filename) == 'java') {
               const text = e.target.result;
               filename = java_getFilenameWithPackage(text, filename);
           }
@@ -419,6 +421,8 @@ $(function() {
           // set filename in test
           let fileroot = $(".xml_file_id[value='" + fileId + "']").closest(".xml_file");
           fileroot.find(".xml_file_filename").first().val(filename);
+          let filenameheader = fileroot.find(".xml_filename_header").first();
+          filenameheader.text(filename);
 
           // set file text
           let filetype = fileroot.find(".xml_file_type").first();
@@ -477,22 +481,29 @@ $(function() {
       // after change of filename update all filelists
 
       if (textbox) {
+          // (the user has changed the filename in the filename input field)
+
           // if the user has changed the filename and the extension is .java
           // then the filename is recalculated on base of the source code (package class)
           // and checked against user filename
-          var filename = $(textbox).val();
-          if (filename.match(/(\.java)/i)) {
-              var filebox = $(textbox).closest(".xml_file");
-              var text = "";
+          const filename = $(textbox).val();
+
+          // change filename in header
+          let filebox = $(textbox).closest(".xml_file");
+          let filenameheader = filebox.find(".xml_filename_header").first();
+          filenameheader.text(filename);
+
+          if (getExtension(filename) === 'java') {
+              // let filebox = $(textbox).closest(".xml_file");
+              let text = "";
               if (useCodemirror) {
                   const fileId = filebox.find(".xml_file_id").val();
                   text = codemirror[fileId].getValue();
               } else {
-                  var textarea = filebox.find(".xml_file_text");
-                  text = textarea.val();
+                  text = filebox.find(".xml_file_text").val();
               }
 
-              var expectedFilename = java_getFilenameWithPackage(text, filename);
+              let expectedFilename = java_getFilenameWithPackage(text, filename);
               if (expectedFilename != filename && expectedFilename != ".java") {
                   if (confirm("Java filenames shall consist of the " +
                       "package name, if any, and the class name. " +
@@ -563,7 +574,7 @@ $(function() {
   newFile = function(tempcounter) {                    // create a new file HTML form element
     $("#filesection").append("<div "+
     "class='ui-widget ui-widget-content ui-corner-all xml_file drop_zone'>"+
-    "<h3 class='ui-widget-header'>File #"+tempcounter+"<span "+
+    "<h3 class='ui-widget-header'><span class ='xml_filename_header'></span> (File #"+tempcounter+")<span "+
     "class='rightButton'><button onclick='removeFile($(this));'>x</button></span></h3>"+
     "<p><label for='xml_file_id'>ID: </label>"+
     "<input class='tinyinput xml_file_id' value='"+tempcounter+"' readonly/>"+

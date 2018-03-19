@@ -232,7 +232,7 @@ function createFurtherOutput(tempvals) {
 }
 
 function getConfigMimetype(mimetype, extension) {
-    switch (extension.toLowerCase()) {
+    switch (extension) {
         case 'c':    return 'text/x-csrc';
         case 'java': return 'text/x-java';
         case 'py':   return 'text/x-python';
