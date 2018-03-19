@@ -7,11 +7,10 @@ const useCodemirror = true;  // setting this to false turns Codemirror off
 // The values of these variables can be changed as needed.
 const version094    = 'taskxml0.9.4.xsd';                // name of schema files
 const version101    = 'taskxml1.0.1.xsd';
-const xsdSchemaFile = version101;                        // choose version
+const xsdSchemaFile = version101;                        // choose version for output
 
 // TODO:
 // - Prüfung weiterer XSD-Dateien (Praktomat, ...)
-// - Codemirror auch mit anderen modi starten (derzeit x-java)
 // - Sonderbehandlung von Dateien mit Endung Java konfigurierbar machen (auch nur im Java-Modus)
 // -------------------------
 // NAMESPACE HANDLING
