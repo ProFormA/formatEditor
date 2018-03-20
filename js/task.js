@@ -115,7 +115,7 @@ function createMapping(schemaversion) {                // note: the maps are glo
     ];
 
     // add configured extra mapping
-    $.each(config_createMappingList(schemaversion)/*uiXmlMapList*/, function(index, item) {
+    $.each(config.createMappingList(schemaversion)/*uiXmlMapList*/, function(index, item) {
         switch(item.mappingType) {
             case MapType.CHILD_ELEM:
                 mapChildElems.push(item.valmap);
@@ -470,7 +470,7 @@ convertToXML = function() {
 
     } catch(err) { setErrorMessage("Problem with the XML serialisation.");}
 
-    createFurtherOutput(tempvals);
+    config.createFurtherOutput(tempvals);
 /*
     if (useLoncapa) {                                      // only if LON-CAPA is being used
         if (xsdSchemaFile == version101) {

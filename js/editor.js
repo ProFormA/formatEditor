@@ -359,7 +359,7 @@ $(function() {
             // case 'txt':
             case 'xml':  return 'application/xml';
             case 'html':  return 'text/html';
-            default: return getConfigMimetype(mimetype, extension);
+            default: return config.getMimetype(mimetype, extension);
         }
     }
 
@@ -377,7 +377,7 @@ $(function() {
       const size = file.size; //get file size
       const type = getMimeType(file.type, filename); //get mime type
       // determine if we have a binary or non-binary file
-      const binaryFile =  isBinaryFile(file, type);
+      const binaryFile =  config.isBinaryFile(file, type);
       let reader = new FileReader();
       reader.onload = function(e) {
 
@@ -780,7 +780,7 @@ $(function() {
         // show only test buttons needed for programming language
         found = false;
         $.each(proglangInfos, function(index, pl) {
-            if (pl.name == progLang) {
+            if (pl.name === progLang) {
                 found = true;
                 $.each(pl.tests, function(index, test) {
                     $("#" + test.buttonJQueryId).show();
@@ -930,7 +930,7 @@ $(function() {
   //if (useLoncapa == 1) { insertLCformelements();}
 
   // create further elements needed for LMS
-  createFurtherUiElements();
+  config.createFurtherUiElements();
 
   // create dummy button for saving task.xml
   var anchor = document.createElement("a");
@@ -984,29 +984,37 @@ $(function() {
   // (otherwise dropping a file in the browser leaves the editor site)
 
     const dropzoneClass = "drop_zone";
-    window.addEventListener("dragenter", function(e) {
-        if (e.target.class != dropzoneClass) {
+    function noDragNDropSupport(e) {
+        if (e.target.class !== dropzoneClass) {
             e.preventDefault();
             e.dataTransfer.effectAllowed = "none";
             e.dataTransfer.dropEffect = "none";
         }
-    }, false);
+    }
+    window.addEventListener("dragenter", noDragNDropSupport, false);
+    /*function(e) {
+        if (e.target.class !== dropzoneClass) {
+            e.preventDefault();
+            e.dataTransfer.effectAllowed = "none";
+            e.dataTransfer.dropEffect = "none";
+        }
+    }, false);*/
 
-    window.addEventListener("dragover", function(e) {
-        if (e.target.class != dropzoneClass) {
+    window.addEventListener("dragover", noDragNDropSupport); /*function(e) {
+        if (e.target.class !== dropzoneClass) {
             e.preventDefault();
             e.dataTransfer.effectAllowed = "none";
             e.dataTransfer.dropEffect = "none";
         }
-    });
+    });*/
 
-    window.addEventListener("drop", function(e) {
-        if (e.target.class != dropzoneClass) {
+    window.addEventListener("drop", noDragNDropSupport); /*function(e) {
+        if (e.target.class !== dropzoneClass) {
             e.preventDefault();
             e.dataTransfer.effectAllowed = "none";
             e.dataTransfer.dropEffect = "none";
         }
-    });
+    });*/
 
     // enable dropping files in the file section
     // with creating new file boxes

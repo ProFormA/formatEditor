@@ -160,51 +160,111 @@ testInfos = [
     testDgSetup, testDGTester
 ];
 
-// -------------------------
-// MAPPING UI ELEMENT <-> XML
-// -------------------------
-
-// UI <-> XML mapping
-function config_createMappingList(xsdSchemaFile) {
-    uiXmlMapList = [
-        // JUnit test
-        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_ju_mainclass", ns_unit + "main-class", "test-configuration", 0, ".xml_test")),
-        new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_ju_framew", "framework", ns_unit + "unittest", 0, ".xml_test", "test")),
-        new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_ju_version", "version", ns_unit + "unittest", 0, ".xml_test", "test")),
-        // Jatest
-        new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_jt_framew", "framework", ns_jartest + "jartest", 0, ".xml_test", "test")),
-        new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_jt_version", "version", ns_jartest + "jartest", 0, ".xml_test", "test")),
-
-        // Praktomat
-        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFlags", ns_praktomat + "config-CompilerFlags", "test test-meta-data", 0, ".xml_test")),
-        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerOutputFlags", ns_praktomat + "config-CompilerOutputFlags", "test-meta-data", 0, ".xml_test")),
-        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerLibs", ns_praktomat + "config-CompilerLibs", "test-meta-data", 0, ".xml_test")),
-        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFPatt", ns_praktomat + "config-CompilerFilePattern", "test-meta-data", 1, ".xml_test")), // use CDATA
-        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_configDescription", ns_praktomat + "config-testDescription", "test-meta-data", 0, ".xml_test")),
-        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_public", ns_praktomat + "public", "test-meta-data", 0, ".xml_test")),
-        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_required", ns_praktomat + "required", "test-meta-data", 0, ".xml_test")),
-        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_always", ns_praktomat + "always", "test-meta-data", 0, ".xml_test")),
-        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_version", ns_praktomat + "version", "test-configuration", 0, ".xml_test")),
-        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_warnings", ns_praktomat + "max-checkstyle-warnings", "test-configuration", 0, ".xml_test")),
-    ];
-    if (xsdSchemaFile == version094)
-        uiXmlMapList.push(new UiXmlMap(MapType.SINGLE_ELEM, new ValMap("#xml_upload-mime-type",ns_praktomat+"allowed-upload-filename-mimetypes","",0)));
-
-    return uiXmlMapList;
-}
-
-
-
 // -------------------------------
 // SUPPORTED PROGRAMMING LANGUAGES
 // -------------------------------
 // with associated tests
 proglangInfos = [
-  new ProglangInfo("java/1.6",   [testJavaComp, testJavaJUnit,   testCheckStyle, testDgSetup, testDGTester]),
-  new ProglangInfo("java/1.8",   [testJavaComp, testJavaJUnit,   testCheckStyle, testDgSetup, testDGTester]),
-  new ProglangInfo("python/2",   [testPython,   testCheckStyle,  testDgSetup,    testDGTester]),
-  new ProglangInfo("setlX/2.40", [testSetlX,    testSetlXSyntax, testCheckStyle, testDgSetup, testDGTester]),
+    new ProglangInfo("java/1.6",   [testJavaComp, testJavaJUnit,   testCheckStyle, testDgSetup, testDGTester]),
+    new ProglangInfo("java/1.8",   [testJavaComp, testJavaJUnit,   testCheckStyle, testDgSetup, testDGTester]),
+    new ProglangInfo("python/2",   [testPython,   testCheckStyle,  testDgSetup,    testDGTester]),
+    new ProglangInfo("setlX/2.40", [testSetlX,    testSetlXSyntax, testCheckStyle, testDgSetup, testDGTester]),
 ];
+
+// -------------------------
+// MAPPING UI ELEMENT <-> XML
+// -------------------------
+
+var config = (function() {
+
+    // expose to public
+    return {
+        createMappingList: createMappingList,
+        createFurtherUiElements: createFurtherUiElements,
+        createFurtherOutput: createFurtherOutput,
+        getMimetype: getMimetype,
+        isBinaryFile: isBinaryFile
+    }
+
+
+
+
+    // UI <-> XML mapping
+    function createMappingList(xsdSchemaFile) {
+        uiXmlMapList = [
+            // JUnit test
+            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_ju_mainclass", ns_unit + "main-class", "test-configuration", 0, ".xml_test")),
+            new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_ju_framew", "framework", ns_unit + "unittest", 0, ".xml_test", "test")),
+            new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_ju_version", "version", ns_unit + "unittest", 0, ".xml_test", "test")),
+            // Jatest
+            new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_jt_framew", "framework", ns_jartest + "jartest", 0, ".xml_test", "test")),
+            new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_jt_version", "version", ns_jartest + "jartest", 0, ".xml_test", "test")),
+
+            // Praktomat
+            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFlags", ns_praktomat + "config-CompilerFlags", "test test-meta-data", 0, ".xml_test")),
+            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerOutputFlags", ns_praktomat + "config-CompilerOutputFlags", "test-meta-data", 0, ".xml_test")),
+            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerLibs", ns_praktomat + "config-CompilerLibs", "test-meta-data", 0, ".xml_test")),
+            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFPatt", ns_praktomat + "config-CompilerFilePattern", "test-meta-data", 1, ".xml_test")), // use CDATA
+            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_configDescription", ns_praktomat + "config-testDescription", "test-meta-data", 0, ".xml_test")),
+            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_public", ns_praktomat + "public", "test-meta-data", 0, ".xml_test")),
+            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_required", ns_praktomat + "required", "test-meta-data", 0, ".xml_test")),
+            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_always", ns_praktomat + "always", "test-meta-data", 0, ".xml_test")),
+            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_version", ns_praktomat + "version", "test-configuration", 0, ".xml_test")),
+            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_warnings", ns_praktomat + "max-checkstyle-warnings", "test-configuration", 0, ".xml_test")),
+        ];
+        if (xsdSchemaFile == version094)
+            uiXmlMapList.push(new UiXmlMap(MapType.SINGLE_ELEM, new ValMap("#xml_upload-mime-type",ns_praktomat+"allowed-upload-filename-mimetypes","",0)));
+
+        return uiXmlMapList;
+    }
+
+
+// -------------------------
+// overload functions for further activities
+// -------------------------
+    function createFurtherUiElements() {
+        insertLCformelements();
+    }
+
+    function createFurtherOutput(tempvals) {
+        if (xsdSchemaFile == version101) {
+            createLONCAPAOutput(tempvals[0],codemirror,"101");
+        } else {
+            createLONCAPAOutput(tempvals[0],codemirror,"old");
+        }
+    }
+
+    function getMimetype(mimetype, extension) {
+        switch (extension) {
+            case 'c':    return 'text/x-csrc';
+            case 'java': return 'text/x-java';
+            case 'py':   return 'text/x-python';
+            case 'stlx':   return 'text/x-setlx'; // no actual mode availble
+            default: return mimetype;
+        }
+    }
+
+    function isBinaryFile(file, mimetype) {
+        var binaryFile =  true;
+        if (mimetype && mimetype.match(/(text\/)/i))  // mimetype is 'text/...'
+            return false;
+
+        const extension = file.name.split('.').pop();
+        switch (extension.toLowerCase()) {
+            case 'java' :
+            case 'log' :
+            case 'txt' :
+            case 'xml' :
+                return false;
+            default: break;
+        }
+        return true;
+    }
+
+})();
+
+
+
 
 
 // -------------------------
@@ -215,44 +275,3 @@ proglangInfos = [
 const tExtraTemplateTopLevel = '<praktomat:allowed-upload-filename-mimetypes>(text/.*)</praktomat:allowed-upload-filename-mimetypes>';
 
 
-// -------------------------
-// overload functions for further activities
-// -------------------------
-function createFurtherUiElements() {
-    insertLCformelements();
-}
-
-function createFurtherOutput(tempvals) {
-    if (xsdSchemaFile == version101) {
-        createLONCAPAOutput(tempvals[0],codemirror,"101");
-    } else {
-        createLONCAPAOutput(tempvals[0],codemirror,"old");
-    }
-}
-
-function getConfigMimetype(mimetype, extension) {
-    switch (extension) {
-        case 'c':    return 'text/x-csrc';
-        case 'java': return 'text/x-java';
-        case 'py':   return 'text/x-python';
-        case 'stlx':   return 'text/x-setlx'; // no actual mode availble
-        default: return mimetype;
-    }
-}
-
-function isBinaryFile(file, mimetype) {
-    var binaryFile =  true;
-    if (mimetype && mimetype.match(/(text\/)/i))  // mimetype is 'text/...'
-        return false;
-
-    const extension = file.name.split('.').pop();
-    switch (extension.toLowerCase()) {
-        case 'java' :
-        case 'log' :
-        case 'txt' :
-        case 'xml' :
-            return false;
-        default: break;
-    }
-    return true;
-}
