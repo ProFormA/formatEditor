@@ -240,7 +240,7 @@ class FileReference {
                 $.each(ui_classname, function(index, element) {
                     var currentFilename = $(element).val();
                     if (!readXmlActive)
-                        $(element).val(java_getFullClassnameFromFilename(newFilename)).change();
+                        $(element).val(javaParser.getFullClassnameFromFilename(newFilename)).change();
                 });
             }
         }
@@ -253,7 +253,7 @@ class FileReference {
                 $.each(ui_title, function(index, element) {
                     var currentTitle = $(element).val();
                     if (!readXmlActive && currentTitle === JUnit_Default_Title)
-                        $(element).val("Junit Test " + java_getPureClassnameFromFilename(newFilename)).change();
+                        $(element).val("Junit Test " + javaParser.getPureClassnameFromFilename(newFilename)).change();
                 });
             }
         }
@@ -398,7 +398,7 @@ class TestFileReference extends FileReference {
             $.each(ui_classname, function(index, element) {
                 const currentFilename = $(element).val();
                 if (currentFilename === "" && !readXmlActive) {
-                    $(element).val(java_getFullClassnameFromFilename(filename)).change();
+                    $(element).val(javaParser.getFullClassnameFromFilename(filename)).change();
                 }
             });
         }

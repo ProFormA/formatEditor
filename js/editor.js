@@ -405,7 +405,7 @@ $(function() {
           // recalc filename!
           if (getExtension(filename) == 'java') {
               const text = e.target.result;
-              filename = java_getFilenameWithPackage(text, filename);
+              filename = javaParser.getFilenameWithPackage(text, filename);
           }
 
           // recheck if a file with that filename already is stored
@@ -504,7 +504,7 @@ $(function() {
                   text = filebox.find(".xml_file_text").val();
               }
 
-              let expectedFilename = java_getFilenameWithPackage(text, filename);
+              let expectedFilename = javaParser.getFilenameWithPackage(text, filename);
               if (expectedFilename != filename && expectedFilename != ".java") {
                   if (confirm("Java filenames shall consist of the " +
                       "package name, if any, and the class name. " +

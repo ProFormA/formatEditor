@@ -6,5 +6,7 @@ Needs Firefox or Chrome
 
 
 TODO:
-- Tests für Binärdateien fehlen
+- Bei der Description müsste neben der Liste der Instruction-Attachments auch
+  noch eine Liste mit Libraries erscheinen
+- Bei den Filerefs auch einen edit-Button einbauen, damit dort auch editiert werden kann
 
