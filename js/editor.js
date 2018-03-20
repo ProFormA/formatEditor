@@ -542,6 +542,11 @@ $(function() {
 
                     // change filestore attributes
                     fileobject = fileStorages[fileId];
+                    if (!fileobject) {
+                        // create fileobject
+                        fileobject = new FileStorage(true, '', '', filename);
+                        fileStorages[fileId] = fileobject;
+                    }
                     if (getExtension(fileobject.filename) !== getExtension(filename)) {
                         fileobject.mimetype = ''; // delete mimetype if filename has changed
                         fileobject.filename = filename;
@@ -549,7 +554,6 @@ $(function() {
                     fileobject.isBinary = true;
                     fileobject.content =  enc.encode(text);
                     fileobject.setSize(text.length);
-                    // fileStorages[fileId] = fileobject;
                     showBinaryFile(fileroot, fileobject);
                     break;
                 case 'embedded':

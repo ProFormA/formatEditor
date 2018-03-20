@@ -52,7 +52,7 @@ function java_getClassAndPackage(code) {
 
         //const className = code.match(/\s*(|public|private)\s+class([\s\S]*?)(\{|extends|implements)/);
         //const className = code.match(/\s*(public|private)\s+class([\s\S]*?)(\{|extends|implements)/);
-        const className = code.match(/class\s([\S]+?)\s*(\{|extends|implements)/);
+        const className = code.match(/class\s+([\S]+?)\s*(\{|extends|implements)/);
         if (!className) return "";
         switch (className.length) {
             case 0:  return ""; // no className found???
