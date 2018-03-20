@@ -214,8 +214,8 @@ class FileReference {
         var done = false;
         $.each($(uploadBox).find("." + this.classFilename), function(index, element) {
             if (done) return false;
-            var currentFilename = $(element).val();
-            if (currentFilename == "") {
+            const currentFilename = $(element).val();
+            if (currentFilename === "") {
                 $(element).val(filename).change();
                 done = true;
             }
@@ -236,7 +236,7 @@ class FileReference {
             // set classname if file belongs to JUNIT and if exactly one file is assigned
             var testBox = $(tempSelElem).closest(".xml_test");
             var ui_classname = $(testBox).find(".xml_ju_mainclass");
-            if (ui_classname.length == 1) {
+            if (ui_classname.length === 1) {
                 $.each(ui_classname, function(index, element) {
                     var currentFilename = $(element).val();
                     if (!readXmlActive)
@@ -249,10 +249,10 @@ class FileReference {
             // set decsription according to classname
             var testBox = $(tempSelElem).closest(".xml_test");
             var ui_title = $(testBox).find(".xml_test_title");
-            if (ui_title.length == 1) {
+            if (ui_title.length === 1) {
                 $.each(ui_title, function(index, element) {
                     var currentTitle = $(element).val();
-                    if (!readXmlActive && currentTitle == JUnit_Default_Title)
+                    if (!readXmlActive && currentTitle === JUnit_Default_Title)
                         $(element).val("Junit Test " + java_getPureClassnameFromFilename(newFilename)).change();
                 });
             }

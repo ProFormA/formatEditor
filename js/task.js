@@ -337,14 +337,14 @@ convertToXML = function() {
 
             $(item.formname).each(function (idx1, itm1) {               // loop: xml_file existing in the form
                 $.each(mapTextInElemSequence, function(idx2, itm2) {
-                    if (item.xmlname == itm2.xmlname) {                    // relational join
+                    if (item.xmlname === itm2.xmlname) {                    // relational join
                         try {                                                // deal with codemirror for file textarea
-                            if (itm2.formname == '.xml_file_text') {
+                            if (itm2.formname === '.xml_file_text') {
                                 // special handling for file text:
                                 // only store file text here if file type is 'embedded'
                                 const filetype = $(itm1).find('.xml_file_type').val();
                                 //console.log(filetype);
-                                if (filetype == 'embedded') {
+                                if (filetype === 'embedded') {
                                     if (useCodemirror) {
                                         //convertFormToXML(xmlObject.find(item.xmlname)[idx1],codemirror[idx1+1].getValue(),itm2.cdata);
                                         var text = codemirror[$(itm1).find('.xml_file_id').val()].getValue();
@@ -758,10 +758,13 @@ readXML = function(xmlText) {
             });
         });
 
+        // post processing
+
         // copy description into CodeMirror element
         descriptionEditor.setValue($("#xml_description").val());
 
-        // special handling for template and instruction file class
+        // special handling for template and instruction file class:
+        // add dummy file references
         var indexTemplate = 0;
         var indexInstruction = 0;
         var templateroot = $("#templatedropzone");
@@ -776,22 +779,31 @@ readXML = function(xmlText) {
                     break;
                 case 'instruction':
                     InstructionFileReference.getInstance().setFilenameOnCreation(instructionroot, indexInstruction++, filename);
+                    break;
                 default:
                     break;
             }
-
         });
 
 
-        if (xmlObject.find("proglang")[0]) {              // deal with proglang
-            var tempvals1, tempvals0;
-            tempvals1 = xmlObject.find("proglang")[0].getAttribute("version");
-            tempvals0 = xmlObject.find("proglang")[0].textContent;
+        // deal with proglang
+        if (xmlObject.find("proglang")[0]) {
+            const tempvals1 = xmlObject.find("proglang")[0].getAttribute("version");
+            const tempvals0 = xmlObject.find("proglang")[0].textContent;
             $("#xml_programming-language").val(tempvals0+"/"+tempvals1);
             if ($("#xml_programming-language").val() === null) {
                 setErrorMessage("This combination of programming language and version is not supported.");
             }
         }
+
+        // show filenames in filename headers
+        $.each($(".xml_file_filename"), function(index, item) {
+            if (item.value.length > 0) {
+                let filebox = $(item).closest(".xml_file");
+                let filenameheader = filebox.find(".xml_filename_header").first();
+                filenameheader.text(item.value);
+            }
+        });
 
     } else {                                           // end: if there is xml content provided
         setErrorMessage("The textarea is empty.");

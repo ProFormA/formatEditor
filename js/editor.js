@@ -338,7 +338,7 @@ $(function() {
       if (ok) {
           root.remove(); // bt.parent().parent().parent().remove();
           deletecounter(fileIDs, bt);
-          onFilenameChanged(); // update filenames
+          onFilenameChanged(); // update filenames in file references
       }
   };
 
@@ -420,9 +420,10 @@ $(function() {
           }
           // set filename in test
           let fileroot = $(".xml_file_id[value='" + fileId + "']").closest(".xml_file");
-          fileroot.find(".xml_file_filename").first().val(filename);
-          let filenameheader = fileroot.find(".xml_filename_header").first();
-          filenameheader.text(filename);
+          let filenamebox = fileroot.find(".xml_file_filename").first();
+          filenamebox.val(filename);
+          // let filenameheader = fileroot.find(".xml_filename_header").first();
+          // filenameheader.text(filename);
 
           // set file text
           let filetype = fileroot.find(".xml_file_type").first();
@@ -450,7 +451,7 @@ $(function() {
               }
           }
           // update filenames in all filename options
-          onFilenameChanged();
+          onFilenameChanged(filenamebox);
 
           if (callback)
             callback(filename, fileId);
@@ -477,19 +478,19 @@ $(function() {
   }
 */
 
-  onFilenameChanged = function(textbox) {
+  onFilenameChanged = function(filenamebox) {
       // after change of filename update all filelists
 
-      if (textbox) {
+      if (filenamebox) {
           // (the user has changed the filename in the filename input field)
 
           // if the user has changed the filename and the extension is .java
           // then the filename is recalculated on base of the source code (package class)
           // and checked against user filename
-          const filename = $(textbox).val();
+          const filename = $(filenamebox).val();
 
           // change filename in header
-          let filebox = $(textbox).closest(".xml_file");
+          let filebox = $(filenamebox).closest(".xml_file");
           let filenameheader = filebox.find(".xml_filename_header").first();
           filenameheader.text(filename);
 
@@ -509,7 +510,7 @@ $(function() {
                       "package name, if any, and the class name. " +
                       "Thus the expected filename is '" + expectedFilename + "'\n" +
                       "Do you want to change the filename to '" + expectedFilename + "'?")) {
-                        $(textbox).val(expectedFilename);
+                        $(filenamebox).val(expectedFilename);
                   }
               }
           }
@@ -825,13 +826,14 @@ $(function() {
 // -------------------------------------------------------------
 
 
-    // helper function for customn test configuration
+    // helper function for custom test configuration
     createFileWithContent = function(filename, content) {
-        var fileId = setcounter(fileIDs);    // adding a file for the test
+        const fileId = setcounter(fileIDs);    // adding a file for the test
         newFile(fileId);                     // filename: setlxsyntaxtest.stlx, content: print()
-        $(".xml_file_id[value='"+fileId+"']").parent().find(".xml_file_filename").first().val(filename);
+        let filenamebox = $(".xml_file_id[value='"+fileId+"']").parent().find(".xml_file_filename").first();
+        filenamebox.val(filename);
         codemirror[fileId].setValue(content);
-        onFilenameChanged();
+        onFilenameChanged(filenamebox);
         return fileId;
     }
 
