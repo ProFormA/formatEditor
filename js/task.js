@@ -115,7 +115,7 @@ function createMapping(schemaversion) {                // note: the maps are glo
     ];
 
     // add configured extra mapping
-    $.each(uiXmlMapList, function(index, item) {
+    $.each(config_createMappingList(schemaversion)/*uiXmlMapList*/, function(index, item) {
         switch(item.mappingType) {
             case MapType.CHILD_ELEM:
                 mapChildElems.push(item.valmap);
@@ -551,11 +551,20 @@ readXML = function(xmlText) {
     $("#filesection")[0].textContent = "";                     // delete previous content
     $("#modelsolutionsection")[0].textContent = "";
     $("#testsection")[0].textContent = "";
+
+    // initialise template section
     let template_section = $("#templatesection");
     template_section[0].textContent = "";
     template_section.append(TemplateFileReference.getInstance().getTableString());
+    const templateroot = $("#templatedropzone");
+    TemplateFileReference.getInstance().init(templateroot, DEBUG_MODE);
+
+    // initialise instruction section
+    const instructionroot = $("#instructiondropzone");
     $("#instructionsection")[0].textContent = "";
     $('#instructionsection').append(InstructionFileReference.getInstance().getTableString());
+    InstructionFileReference.getInstance().init(instructionroot, DEBUG_MODE);
+
 
     fileIDs = {};
     modelSolIDs = {};
@@ -767,8 +776,8 @@ readXML = function(xmlText) {
         // add dummy file references
         var indexTemplate = 0;
         var indexInstruction = 0;
-        var templateroot = $("#templatedropzone");
-        var instructionroot = $("#instructiondropzone");
+        // var templateroot = $("#templatedropzone");
+        // var instructionroot = $("#instructiondropzone");
         xmlObject.find('file').each(function (index, element) {    // iterate through all files
             console.log(index + ' ' + element);
             var fileid = element.getAttribute('id');

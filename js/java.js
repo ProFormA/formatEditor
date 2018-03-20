@@ -89,14 +89,18 @@ var javaParser = (function() {
         let out = getClassAndPackage(code);
         //const className = filename.match(/([\S]*?)(.java)/i);
         let newFilename = "";
+        const javapackage = out.package.replace(/\./g, "/");
 
         if (out.class.length > 0) {
             filename = out.class + ".java";
         } else {
             // no class name found (e.g. enum, interface ...)
+            // if filename starts with package then remove package
+            if (javapackage.length > 0 && filename.startsWith(javapackage)) {
+                filename = filename.substr(javapackage.length + 1);
+            }
         }
 
-        const javapackage = out.package.replace(/\./g, "/");
         if (javapackage.length > 0)
             newFilename = javapackage + "/" + filename; // out.class + ".java";
         else

@@ -30,15 +30,13 @@ const tab_page = {
   FAQ:    6
 };
 
-const DEBUG_MODE = false;
-const TEST_MODE = false;
+
 
 
 
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
 
-const codeversion   = '2.2.1';                     // current version of this code
 
 // these variables can be set in the calling HTML file
 var readXmlActive = false;
@@ -78,12 +76,6 @@ class FileStorage {
 // to test environment.
 var descriptionEditor;
 
-
-// without . (MyString.Java = java)
-// to lowercase
-function getExtension(filename) {
-    return filename.split('.').pop().toLowerCase();
-}
 
 // create option list string with all test types
 function getTesttypeOptions() {
@@ -289,19 +281,7 @@ function downloadText3(text, name, type) {
 }
 */
 
-//////////////////////////////////////////////////////////////////////////////
-/* Each newly exported task needs its own UUID.
- * This function generates and returns an UUID.
- */
-function generateUUID(){
-  var date = new Date().getTime();
-  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c_value) {
-      var rand = (date + Math.random()*16)%16 | 0;
-      date = Math.floor(date/16);
-      return (c_value == 'x' ? rand : (rand&0x3|0x8)).toString(16);
-    });
-  return uuid;
-};
+
 
 
 ///////////////////////////////////////////////////////// document ready function
@@ -333,7 +313,7 @@ $(function() {
           ok = window.confirm("File " + id + " '" + filename + "' is still referenced!\n" +
               "Do you really want to delete it?");
       } else {
-          ok = window.confirm("Do you really want to delete file '" + filename + "'?");
+          ok = window.confirm("Do you really want to delete file\n'" + filename + "'?");
       }
       if (ok) {
           root.remove(); // bt.parent().parent().parent().remove();
@@ -403,7 +383,7 @@ $(function() {
 
           // special handling for JAVA: extract class name and package name and
           // recalc filename!
-          if (getExtension(filename) == 'java') {
+          if (getExtension(filename) === 'java') {
               const text = e.target.result;
               filename = javaParser.getFilenameWithPackage(text, filename);
           }
@@ -464,19 +444,6 @@ $(function() {
         reader.readAsText(file);
   }
 
-  // OBSOLETE
-/*
-  function readSingleFileAndCreateFilebox(inputbutton, callback) {  // read a file and its filename into the HTML form
-      //console.log("select file");
-      var filenew = inputbutton.files[0];
-      if (!filenew) {
-          console.log("no file selected -> cancel");
-          return;
-      }
-
-      readAndSetFileData(filenew, callback);
-  }
-*/
 
   onFilenameChanged = function(filenamebox) {
       // after change of filename update all filelists
@@ -507,10 +474,13 @@ $(function() {
               let expectedFilename = javaParser.getFilenameWithPackage(text, filename);
               if (expectedFilename != filename && expectedFilename != ".java") {
                   if (confirm("Java filenames shall consist of the " +
-                      "package name, if any, and the class name. " +
-                      "Thus the expected filename is '" + expectedFilename + "'\n" +
+                      "package name, if any, and the class name.\n" +
+                      "So the expected filename is '" + expectedFilename + "'\n" +
                       "Do you want to change the filename to '" + expectedFilename + "'?")) {
-                        $(filenamebox).val(expectedFilename);
+                            $(filenamebox).val(expectedFilename);
+                            let filenameheader = filebox.find(".xml_filename_header").first();
+                            filenameheader.text(expectedFilename);
+
                   }
               }
           }
@@ -1066,7 +1036,7 @@ $(function() {
     });
 
     // add file refernce for template and instruction
-    var templateroot = $("#templatedropzone");
+    const templateroot = $("#templatedropzone");
     $('#templatesection').append(TemplateFileReference.getInstance().getTableString());
     TemplateFileReference.getInstance().init(templateroot, DEBUG_MODE);
 
@@ -1084,7 +1054,7 @@ $(function() {
     });
 
 
-    var instructionroot = $("#instructiondropzone");
+    const instructionroot = $("#instructiondropzone");
     $('#instructionsection').append(InstructionFileReference.getInstance().getTableString());
     InstructionFileReference.getInstance().init(instructionroot, DEBUG_MODE);
 

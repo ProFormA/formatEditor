@@ -5,8 +5,6 @@
 const useCodemirror = true;  // setting this to false turns Codemirror off
 
 // The values of these variables can be changed as needed.
-const version094    = 'taskxml0.9.4.xsd';                // name of schema files
-const version101    = 'taskxml1.0.1.xsd';
 const xsdSchemaFile = version101;                        // choose version for output
 
 // TODO:
@@ -167,32 +165,34 @@ testInfos = [
 // -------------------------
 
 // UI <-> XML mapping
-uiXmlMapList = [
-    // JUnit test
-    new UiXmlMap(MapType.CHILD_ELEM,  new ValMap(".xml_ju_mainclass",ns_unit+"main-class","test-configuration",0,".xml_test")),
-    new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_ju_framew","framework",ns_unit+"unittest",0,".xml_test","test")),
-    new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_ju_version","version",ns_unit+"unittest",0,".xml_test","test")),
-    // Jatest
-    new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_jt_framew","framework",ns_jartest+"jartest",0,".xml_test","test")),
-    new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_jt_version","version",ns_jartest+"jartest",0,".xml_test","test")),
+function config_createMappingList(xsdSchemaFile) {
+    uiXmlMapList = [
+        // JUnit test
+        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_ju_mainclass", ns_unit + "main-class", "test-configuration", 0, ".xml_test")),
+        new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_ju_framew", "framework", ns_unit + "unittest", 0, ".xml_test", "test")),
+        new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_ju_version", "version", ns_unit + "unittest", 0, ".xml_test", "test")),
+        // Jatest
+        new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_jt_framew", "framework", ns_jartest + "jartest", 0, ".xml_test", "test")),
+        new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_jt_version", "version", ns_jartest + "jartest", 0, ".xml_test", "test")),
 
-    // Praktomat
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFlags",ns_praktomat+"config-CompilerFlags","test test-meta-data",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerOutputFlags",ns_praktomat+"config-CompilerOutputFlags","test-meta-data",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerLibs",ns_praktomat+"config-CompilerLibs","test-meta-data",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFPatt",ns_praktomat+"config-CompilerFilePattern","test-meta-data",1,".xml_test")), // use CDATA
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_configDescription",ns_praktomat+"config-testDescription","test-meta-data",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_public",ns_praktomat+"public","test-meta-data",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_required",ns_praktomat+"required","test-meta-data",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_always",ns_praktomat+"always","test-meta-data",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_version",ns_praktomat +"version","test-configuration",0,".xml_test")),
-    new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_warnings",ns_praktomat +"max-checkstyle-warnings","test-configuration",0,".xml_test")),
+        // Praktomat
+        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFlags", ns_praktomat + "config-CompilerFlags", "test test-meta-data", 0, ".xml_test")),
+        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerOutputFlags", ns_praktomat + "config-CompilerOutputFlags", "test-meta-data", 0, ".xml_test")),
+        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerLibs", ns_praktomat + "config-CompilerLibs", "test-meta-data", 0, ".xml_test")),
+        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFPatt", ns_praktomat + "config-CompilerFilePattern", "test-meta-data", 1, ".xml_test")), // use CDATA
+        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_configDescription", ns_praktomat + "config-testDescription", "test-meta-data", 0, ".xml_test")),
+        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_public", ns_praktomat + "public", "test-meta-data", 0, ".xml_test")),
+        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_required", ns_praktomat + "required", "test-meta-data", 0, ".xml_test")),
+        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_always", ns_praktomat + "always", "test-meta-data", 0, ".xml_test")),
+        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_version", ns_praktomat + "version", "test-configuration", 0, ".xml_test")),
+        new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_warnings", ns_praktomat + "max-checkstyle-warnings", "test-configuration", 0, ".xml_test")),
+    ];
+    if (xsdSchemaFile == version094)
+        uiXmlMapList.push(new UiXmlMap(MapType.SINGLE_ELEM, new ValMap("#xml_upload-mime-type",ns_praktomat+"allowed-upload-filename-mimetypes","",0)));
 
+    return uiXmlMapList;
+}
 
-];
-
-if (xsdSchemaFile == version094)
-    uiXmlMapList.push(new UiXmlMap(MapType.SINGLE_ELEM, new ValMap("#xml_upload-mime-type",ns_praktomat+"allowed-upload-filename-mimetypes","",0)));
 
 
 // -------------------------------
