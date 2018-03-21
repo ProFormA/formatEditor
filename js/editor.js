@@ -646,27 +646,32 @@ $(function() {
     "<p><label for='xml_model-solution_comment'>Comment: </label>"+
     "<input class='largeinput xml_model-solution_comment'/></p></div>");
 
-    var msroot = $(".xml_model-solution_id[value='" + tempcounter + "']").parent().parent();
-    ModelSolutionFileReference.getInstance().init(msroot, DEBUG_MODE);
+    const msroot = $(".xml_model-solution_id[value='" + tempcounter + "']").parent().parent();
+    FileReference.init(null, null, ModelSolutionFileReference, msroot);
+
+    // ModelSolutionFileReference.getInstance().init(msroot, DEBUG_MODE);
 
     if (!DEBUG_MODE) {
         // hide fields that exist only for technical reasons
         msroot.find(".xml_model-solution_id").hide();
         msroot.find("label[for='xml_model-solution_id']").hide();
     }
-
+/*
       msroot.on({
           drop: function(e){
               if(e.originalEvent.dataTransfer){
                   if(e.originalEvent.dataTransfer.files.length) {
                       e.preventDefault();
                       e.stopPropagation();
-                      /*UPLOAD FILES HERE*/
-                      ModelSolutionFileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                      //UPLOAD FILES HERE
+                      FileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
+                          ModelSolutionFileReference.getInstance());
+                      // ModelSolutionFileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
                   }
               }
           }
       });
+      */
   };
 
   newTest = function(tempcounter,TestName, MoreText, TestType, WithFileRef) { // create a new test HTML form element
@@ -700,7 +705,9 @@ $(function() {
       // hide fields that exist only for technical reasons
     var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent().parent();
     testroot.find(".xml_test_type").val(TestType);
-    TestFileReference.getInstance().init(testroot, DEBUG_MODE);
+
+    FileReference.init(null, null, TestFileReference, testroot);
+    // TestFileReference.getInstance().init(testroot, DEBUG_MODE);
 
     if (!DEBUG_MODE) {
       testroot.find(".xml_test_type").hide();
@@ -716,18 +723,22 @@ $(function() {
     }
     else
     {
+        // TODO: disable drag & drop!
+/*
         testroot.on({
             drop: function(e){
                 if(e.originalEvent.dataTransfer){
                     if(e.originalEvent.dataTransfer.files.length) {
                         e.preventDefault();
                         e.stopPropagation();
-                        /*UPLOAD FILES HERE*/
-                        TestFileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                        //UPLOAD FILES HERE
+                        FileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
+                            TestFileReference.getInstance());
                     }
                 }
             }
         });
+*/
     }
 
   };
@@ -992,29 +1003,8 @@ $(function() {
         }
     }
     window.addEventListener("dragenter", noDragNDropSupport, false);
-    /*function(e) {
-        if (e.target.class !== dropzoneClass) {
-            e.preventDefault();
-            e.dataTransfer.effectAllowed = "none";
-            e.dataTransfer.dropEffect = "none";
-        }
-    }, false);*/
-
-    window.addEventListener("dragover", noDragNDropSupport); /*function(e) {
-        if (e.target.class !== dropzoneClass) {
-            e.preventDefault();
-            e.dataTransfer.effectAllowed = "none";
-            e.dataTransfer.dropEffect = "none";
-        }
-    });*/
-
-    window.addEventListener("drop", noDragNDropSupport); /*function(e) {
-        if (e.target.class !== dropzoneClass) {
-            e.preventDefault();
-            e.dataTransfer.effectAllowed = "none";
-            e.dataTransfer.dropEffect = "none";
-        }
-    });*/
+    window.addEventListener("dragover", noDragNDropSupport);
+    window.addEventListener("drop", noDragNDropSupport);
 
     // enable dropping files in the file section
     // with creating new file boxes
@@ -1043,7 +1033,12 @@ $(function() {
         }
     });
 
-    // add file refernce for template and instruction
+    // add file reference for template, library instruction
+    FileReference.init("#librarydropzone", '#librarysection', LibraryFileReference);
+    FileReference.init("#instructiondropzone", '#instructionsection', InstructionFileReference);
+    FileReference.init("#templatedropzone", '#templatesection', TemplateFileReference);
+/*
+
     const templateroot = $("#templatedropzone");
     $('#templatesection').append(TemplateFileReference.getInstance().getTableString());
     TemplateFileReference.getInstance().init(templateroot, DEBUG_MODE);
@@ -1055,12 +1050,33 @@ $(function() {
                     e.preventDefault();
                     e.stopPropagation();
                     //UPLOAD FILES HERE
-                    TemplateFileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                    // TemplateFileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                    FileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
+                        TemplateFileReference.getInstance());
                 }
             }
         }
     });
 
+
+
+    const libroot = $("#librarydropzone");
+    $('#librarysection').append(LibraryFileReference.getInstance().getTableString());
+    LibraryFileReference.getInstance().init(libroot, DEBUG_MODE);
+    libroot.on({
+        drop: function(e){
+            if(e.originalEvent.dataTransfer){
+                if(e.originalEvent.dataTransfer.files.length) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    //UPLOAD FILES HERE
+                    // TemplateFileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                    FileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
+                        LibraryFileReference.getInstance());
+                }
+            }
+        }
+    });
 
     const instructionroot = $("#instructiondropzone");
     $('#instructionsection').append(InstructionFileReference.getInstance().getTableString());
@@ -1073,12 +1089,15 @@ $(function() {
                     e.preventDefault();
                     e.stopPropagation();
                     //UPLOAD FILES HERE
-                    InstructionFileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                    // InstructionFileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
+                    FileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
+                        InstructionFileReference.getInstance());
+
                 }
             }
         }
     });
-
+*/
 
 // test
 //    var myCsv = "Col1,Col2,Col3\nval1,val2,val3";

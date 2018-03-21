@@ -565,19 +565,35 @@ readXML = function(xmlText) {
     $("#modelsolutionsection")[0].textContent = "";
     $("#testsection")[0].textContent = "";
 
-    // initialise template section
+    // initialise other sections
+    FileReference.init("#librarydropzone", '#librarysection', LibraryFileReference);
+    FileReference.init("#instructiondropzone", '#instructionsection', InstructionFileReference);
+    FileReference.init("#templatedropzone", '#templatesection', TemplateFileReference);
+    const templateroot = $("#templatedropzone");
+    const libroot = $("#librarydropzone");
+    const instructionroot = $("#instructiondropzone");
+
+/*
     let template_section = $("#templatesection");
     template_section[0].textContent = "";
     template_section.append(TemplateFileReference.getInstance().getTableString());
     const templateroot = $("#templatedropzone");
     TemplateFileReference.getInstance().init(templateroot, DEBUG_MODE);
 
+
+    // initialise library section
+    let lib_section = $("#librarysection");
+    lib_section[0].textContent = "";
+    lib_section.append(TemplateFileReference.getInstance().getTableString());
+    const libroot = $("#libraryropzone");
+    LibraryFileReference.getInstance().init(libroot, DEBUG_MODE);
+
     // initialise instruction section
     const instructionroot = $("#instructiondropzone");
     $("#instructionsection")[0].textContent = "";
     $('#instructionsection').append(InstructionFileReference.getInstance().getTableString());
     InstructionFileReference.getInstance().init(instructionroot, DEBUG_MODE);
-
+*/
 
     fileIDs = {};
     modelSolIDs = {};
@@ -785,10 +801,11 @@ readXML = function(xmlText) {
         // copy description into CodeMirror element
         descriptionEditor.setValue($("#xml_description").val());
 
-        // special handling for template and instruction file class:
+        // special handling for template, library and instruction file class:
         // add dummy file references
         var indexTemplate = 0;
         var indexInstruction = 0;
+        var indexLib = 0;
         // var templateroot = $("#templatedropzone");
         // var instructionroot = $("#instructiondropzone");
         xmlObject.find('file').each(function (index, element) {    // iterate through all files
@@ -801,6 +818,9 @@ readXML = function(xmlText) {
                     break;
                 case 'instruction':
                     InstructionFileReference.getInstance().setFilenameOnCreation(instructionroot, indexInstruction++, filename);
+                    break;
+                case 'library':
+                    LibraryFileReference.getInstance().setFilenameOnCreation(libroot, indexLib++, filename);
                     break;
                 default:
                     break;
@@ -826,6 +846,8 @@ readXML = function(xmlText) {
                 filenameheader.text(item.value);
             }
         });
+
+        // FileReference.updateAllFilenameLists();
 
     } else {                                           // end: if there is xml content provided
         setErrorMessage("The textarea is empty.");

@@ -22,7 +22,11 @@ let testFileRefSingleton = null;
 let modelSolutionFileRefSingleton = null;
 let templSingleton = null;
 let instructionSingleton = null;
+let librarySingleton = null;
 
+
+let filenameClassList = [];
+let filerefClassList = [];
 
 // abstract class for a filename reference input
 class FileReference {
@@ -35,6 +39,9 @@ class FileReference {
 
         this.createTableStrings(jsClassName, label, mandatory);
         this.JsClassname = jsClassName;
+
+        filenameClassList.push('.' + this.classFilename);
+        filerefClassList.push('.' + this.classFileref);
     }
 
     getClassFilename() { return this.classFilename; }
@@ -308,15 +315,13 @@ class FileReference {
                 // set new file id
                 nextTd.find('.fileref_fileref')[0].value = fileid;
                 if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
-                    // nextTd.find('.xml_test_fileref')[0].value = fileid;
-                    // set classname if file belongs to JUNIT
+                    // call test specific configured handler
                     if (fileid) {
                         // setJavaClassname(selectedFilename);
                         // setJUnitDefaultTitle(selectedFilename);
                         config.handleFilenameChangeInTest(selectedFilename, tempSelElem);
                     }
                 } else if ($(tempSelElem).hasClass('xml_template_filename')) {
-                    // nextTd.find('.xml_template_fileref')[0].value = fileid;
                     // set to file class to 'template'
                     let fileclass = $(".xml_file_id[value='"+fileid+"']").parent().find(".xml_file_class").first();
                     fileclass.val('template');
@@ -324,9 +329,12 @@ class FileReference {
                     // fileclass.attr('disabled', true);
 
                 } else if ($(tempSelElem).hasClass('xml_instruction_filename')) {
-                    // nextTd.find('.xml_instruction_fileref')[0].value = fileid;
-                    // set to file class to 'template'
+                    // set to file class to 'instruction'
                     $(".xml_file_id[value='"+fileid+"']").parent().find(".xml_file_class").first().val('instruction');
+
+                } else if ($(tempSelElem).hasClass('xml_library_filename')) {
+                    // set to file class to 'library'
+                    $(".xml_file_id[value='"+fileid+"']").parent().find(".xml_file_class").first().val('library');
 
                 } else {
                     // model solution, nothing to be done
@@ -339,10 +347,10 @@ class FileReference {
         }
     };
 
-
     // update all filename lists
     static updateAllFilenameLists() {
-        $.each($(".xml_test_filename, .xml_model-solution_filename, .xml_template_filename, .xml_instruction_filename"),
+//        $.each($(".xml_test_filename, .xml_model-solution_filename, .xml_template_filename, .xml_instruction_filename"),
+        $.each($(filenameClassList.join(',')),
             function(index, item) {
                 //console.log("update filelist in test ");
                 // store name of currently selected file
@@ -357,24 +365,66 @@ class FileReference {
                     // TODO einfacher: einfach setzen und schauen, ob leer???
                     var indexFound = -1;
                     $.each($(".xml_file_filename"), function (indexOpt, item) {
-                if (item.value.length > 0 && item.value == text) {
+                        if (item.value.length > 0 && item.value == text) {
                             indexFound = indexOpt;
                         }
                     });
+
                     if (indexFound >= 0) {
                         //console.log("selektiere " + indexFound);
                         item.selectedIndex = indexFound + 1; // +1:weil am Anfang noch ein Leerstring ist
                     } else {
-                        // filename not found => remove fileid
+                        // filename not found => remove file id
                         console.log("filename ref not found");
-                        $(item).closest(".xml_test,.xml_model-solution, #templatedropzone").
-                        find($(".xml_test_fileref, .xml_model-solution_fileref, .xml_template_fileref, .xml_template_fileref")).first().val("");
+                        $(item).closest(".xml_test,.xml_model-solution, #templatedropzone, #instructiondropzone, #librarydropzone").
+                            find($(filerefClassList.join(','))).first().val("");
+                        // $(item).closest(".xml_test,.xml_model-solution, #templatedropzone").
+                        // find($(".xml_test_fileref, .xml_model-solution_fileref, .xml_template_fileref, .xml_template_fileref")).first().val("");
                     }
                 }
         });
     }
 
+    static uploadFiles(files, box, instance) {
+        if (files.length > 1) {
+            alert('You have dragged more than one file. You must drop exactly one file!');
+            return;
+        }
+        $.each(files, function(index, file) {
+            readAndCreateFileData(file, -1, function(filename) {
+                instance.onFileUpload(filename, box);
+            });
+        });
+    }
+
+    static init(dropzoneSelector, sectionSelector, classname, dropZoneObject) {
+        let root = dropZoneObject;
+        if (dropzoneSelector)
+            root = $(dropzoneSelector); // find approach that fits all classes
+
+        if (sectionSelector) {
+            $(sectionSelector)[0].textContent = "";
+            $(sectionSelector).append(classname.getInstance().getTableString());
+        }
+
+        classname.getInstance().init(root, DEBUG_MODE);
+        root.on({
+            drop: function(e){
+                if(e.originalEvent.dataTransfer){
+                    if(e.originalEvent.dataTransfer.files.length) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        //UPLOAD FILES HERE
+                        FileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
+                            classname.getInstance());
+                    }
+                }
+            }
+        });
+    }
 }
+
+
 
 
 
@@ -382,10 +432,6 @@ class TestFileReference extends FileReference {
 
     constructor() {
         super('xml_test_filename', 'xml_test_fileref', 'TestFileReference', 'Testscript', true);
-
-        if (testFileRefSingleton === null) {
-            testFileRefSingleton = this;
-        }
     }
 
     static getInstance() {return testFileRefSingleton;}
@@ -404,19 +450,6 @@ class TestFileReference extends FileReference {
             });
         }
     }
-
-    static uploadFiles(files, testBox) {
-        //console.log("uploadFiles");
-        if (files.length > 1) {
-            alert('You have dragged more than one file. You must drop exactly one file!');
-            return;
-        }
-        $.each(files, function(index, file) {
-            readAndCreateFileData(file, -1, function(filename) {
-                TestFileReference.getInstance().onFileUpload(filename, testBox);
-            });
-        });
-    }
 }
 testFileRefSingleton = new TestFileReference();
 
@@ -426,29 +459,11 @@ class ModelSolutionFileReference extends FileReference {
     constructor() {
         super('xml_model-solution_filename', 'xml_model-solution_fileref',
             'ModelSolutionFileReference', 'Filename', true);
-
-        if (modelSolutionFileRefSingleton === null) {
-            modelSolutionFileRefSingleton = this;
-        }
     }
     static getInstance() {return modelSolutionFileRefSingleton;}
     static getClassRoot() { return "xml_model-solution"; }
-
-    // TODO: move back to editor.js???
-    static uploadFiles(files, modelSolBox) {
-        if (files.length > 1) {
-            alert('You have dragged more than one file. You must drop exactly one file!');
-            return;
-        }
-        $.each(files, function(index, file) {
-            readAndCreateFileData(file, -1, function(filename) {
-                ModelSolutionFileReference.getInstance().onFileUpload(filename, modelSolBox);
-            });
-        });
-    }
 }
 modelSolutionFileRefSingleton = new ModelSolutionFileReference();
-
 
 
 
@@ -457,53 +472,26 @@ class InstructionFileReference extends FileReference {
     constructor() {
         super('xml_instruction_filename', 'xml_instruction_fileref',
             'InstructionFileReference', 'Attachment', false);
-
-        if (instructionSingleton === null) {
-            instructionSingleton = this;
-        }
     }
     static getInstance() {return instructionSingleton;}
-
-    // TODO: move back to editor.js???
-    static uploadFiles(files, box) {
-        if (files.length > 1) {
-            alert('You have dragged more than one file. You must drop exactly one file!');
-            return;
-        }
-        $.each(files, function(index, file) {
-            readAndCreateFileData(file, -1, function(filename) {
-                InstructionFileReference.getInstance().onFileUpload(filename, box);
-            });
-        });
-    }
 }
 instructionSingleton = new InstructionFileReference();
 
 
 class TemplateFileReference extends FileReference {
-
     constructor() {
         super('xml_template_filename', 'xml_template_fileref',
             'TemplateFileReference', 'Template', false);
-
-        if (templSingleton === null) {
-            templSingleton = this;
-        }
     }
-
     static getInstance() {return templSingleton;}
-
-    // TODO: move back to editor.js???
-    static uploadFiles(files, box) {
-        if (files.length > 1) {
-            alert('You have dragged more than one file. You must drop exactly one file!');
-            return;
-        }
-        $.each(files, function(index, file) {
-            readAndCreateFileData(file, -1, function(filename) {
-                TemplateFileReference.getInstance().onFileUpload(filename, box);
-            });
-        });
-    }
 }
 templSingleton = new TemplateFileReference();
+
+class LibraryFileReference extends FileReference {
+    constructor() {
+        super('xml_library_filename', 'xml_library_fileref',
+            'LibraryFileReference', 'Library', false);
+    }
+    static getInstance() {return librarySingleton;}
+}
+librarySingleton = new LibraryFileReference();
