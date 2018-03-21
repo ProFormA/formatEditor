@@ -185,6 +185,85 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
 }
 
 
+function isInputComplete() {
+    let inputField = $("#xml_description");
+    if (!inputField.val()) {
+        setErrorMessage("Task description is empty.");
+        // switch to appropriate tab and set focus
+        $("#tabs").tabs("option", "active",  tab_page.MAIN);
+        inputField.focus();
+        return false;
+    }
+
+    inputField = $("#xml_meta-data_title");
+    if (!inputField.val()) {
+        setErrorMessage("Task title is empty.");
+        // switch to appropriate tab and set focus
+        $("#tabs").tabs("option", "active",  tab_page.MAIN);
+        inputField.focus();
+        return false;
+    }
+
+    if ((typeof $(".xml_file_id")[0] === "undefined") ||      //  check for missing form values
+        (typeof $(".xml_model-solution_fileref")[0] === "undefined")) {
+        setErrorMessage("Required elements are missing. " +
+            "At least one model solution element and its " +
+            "corresponding file element must be provided. ");
+        return false;
+    }
+
+    let returnFromFunction = false;
+    $.each($(".xml_file_filename"), function(index, item) {  // check whether filenames are provided
+        if (!item.value) {
+            setErrorMessage("Filename is empty.");
+            $("#tabs").tabs("option", "active",  tab_page.FILES);
+            item.focus();
+            returnFromFunction = true;
+        }
+    });
+    if (returnFromFunction)
+        return false;
+
+    $.each($("." + ModelSolutionFileReference.getInstance().getClassFilename()), function(index, item) {   // check whether referenced filenames exists
+        if (!item.value) {
+            $("#tabs").tabs("option", "active",  tab_page.MODEL_SOLUTION);
+            setErrorMessage("Filename in model solution is missing.");
+            item.focus();
+            returnFromFunction = true;
+        }
+    });
+    if (returnFromFunction)
+        return false;
+
+
+
+    $.each($("." + TestFileReference.getInstance().getClassFilename()), function(index, item) {   // check whether referenced filenames exists
+        if ($(item).is(":visible") && !item.value) {
+            $("#tabs").tabs("option", "active",  tab_page.TESTS);
+            setErrorMessage("Filename in test is missing.");
+            item.focus();
+            returnFromFunction = true;
+        }
+    });
+    if (returnFromFunction)
+        return false;
+
+    $.each($(".xml_ju_mainclass"), function(index, item) {   // check whether main-class exists
+        if (!item.value) {
+            $("#tabs").tabs("option", "active",  tab_page.TESTS);
+            setErrorMessage("Class name is missing.");
+            item.focus();
+            returnFromFunction = true;
+        }
+    });
+
+    if (returnFromFunction)
+        return false;
+
+    return true;
+}
+
+
 // on document ready...:
 
 ///////////////////////////////////////////////////////// function: convertToXML
@@ -221,77 +300,11 @@ convertToXML = function() {
     var tempXmlDoc = $.parseXML('<task></task>');
 
     descriptionEditor.save();
-    var inputField = $("#xml_description");
-    if (inputField.val() == "") {
-        setErrorMessage("Task description is empty.");
-        // switch to appropriate tab and set focus
-        $("#tabs").tabs("option", "active",  tab_page.MAIN);
-        inputField.focus();
+
+    // check input
+    if (!isInputComplete()) {
         return;
     }
-
-    inputField = $("#xml_meta-data_title");
-    if (inputField.val() === "") {
-        setErrorMessage("Task title is empty.");
-        // switch to appropriate tab and set focus
-        $("#tabs").tabs("option", "active",  tab_page.MAIN);
-        inputField.focus();
-        return;
-    }
-
-    if ((typeof $(".xml_file_id")[0] == "undefined") ||      //  check for missing form values
-        (typeof $(".xml_model-solution_fileref")[0] == "undefined")) {
-        setErrorMessage("Required elements are missing. " +
-            "At least one model solution element and its " +
-            "corresponding file element must be provided. ");
-        return;
-    }
-
-    var returnFromFunction = false;
-    $.each($(".xml_file_filename"), function(index, item) {  // check whether filenames are provided
-        if (item.value == "") {
-            setErrorMessage("Filename is empty.");
-            $("#tabs").tabs("option", "active",  tab_page.FILES);
-            item.focus();
-            returnFromFunction = true;
-        }
-    });
-    if (returnFromFunction)
-        return;
-
-    $.each($("." + ModelSolutionFileReference.getInstance().getClassFilename()), function(index, item) {   // check whether referenced filenames exists
-        if (item.value == "") {
-            $("#tabs").tabs("option", "active",  tab_page.MODEL_SOLUTION);
-            setErrorMessage("Filename in model solution is missing.");
-            item.focus();
-            returnFromFunction = true;
-        }
-    });
-    if (returnFromFunction)
-        return;
-
-
-    $.each($("." + TestFileReference.getInstance().getClassFilename()), function(index, item) {   // check whether referenced filenames exists
-        if ($(item).is(":visible") && item.value == "") {
-            $("#tabs").tabs("option", "active",  tab_page.TESTS);
-            setErrorMessage("Filename in test is missing.");
-            item.focus();
-            returnFromFunction = true;
-        }
-    });
-    if (returnFromFunction)
-        return;
-
-    $.each($(".xml_ju_mainclass"), function(index, item) {   // check whether main-class exists
-        if (item.value == "") {
-            $("#tabs").tabs("option", "active",  tab_page.TESTS);
-            setErrorMessage("Class name is missing.");
-            item.focus();
-            returnFromFunction = true;
-        }
-    });
-    if (returnFromFunction)
-        return;
 
     $.each(mapSingleElements, function(index, item) {
         try {
