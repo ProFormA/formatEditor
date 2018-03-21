@@ -139,11 +139,11 @@ function createMapping(schemaversion) {                // note: the maps are glo
  * The second return value contains a hash which has an element for each test type.
  */
 function createXMLTemplate(schemaversion) {            // parseXML is not namespace-aware
-    if (schemaversion == version094) {
-        var xmlTemp1 = '<task ' + namespace + 'lang="">';
+    if (schemaversion === version094) {
+        var xmlTemp1 = '<task ' + xsdNamespace.namespace + 'lang="">';
         var xmlTemp2 = '<description></description><proglang version=""></proglang><submission-restrictions max-size=""/>';
     } else {
-        var xmlTemp1 = '<task ' + namespace + 'uuid ="" lang="">';
+        var xmlTemp1 = '<task ' + xsdNamespace.namespace + 'uuid ="" lang="">';
         var xmlTemp2 = '<description></description><proglang version=""></proglang><submission-restrictions>'+
             '<regexp-restriction max-size="" mime-type-regexp=""/></submission-restrictions>';
     }
@@ -162,7 +162,7 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
     var xmlDc = $.parseXML(xmlTemp1 + xmlTemp2 + xmlTemp3 + xmlTemp4 + xmlTemp5 + tExtraTemplateTopLevel + xmlTemp6);
 
     function createXmlTestTemplate(testtype, metaDataElements, addElement) {
-        const xstrTestType = '<test ' + namespace + 'id=""><title/><test-type>';
+        const xstrTestType = '<test ' + xsdNamespace.namespace + 'id=""><title/><test-type>';
         const xstrFileRef = '</test-type><test-configuration><filerefs><fileref/></filerefs>';
         const xstrMetaData = '<test-meta-data>';
         const xstrTestCfg = '</test-meta-data></test-configuration></test>';
@@ -176,7 +176,7 @@ function createXMLTemplate(schemaversion) {            // parseXML is not namesp
 
     // build hash from testinfos
     var xmlHash = {};
-    $.each(testInfos, function(index, testinfo) {
+    $.each(config.testInfos, function(index, testinfo) {
         xmlHash[testinfo.xmlTemplateName] =
             createXmlTestTemplate(testinfo.testType, testinfo.xmlTemplate1, testinfo.xmlTemplate2);
     })
@@ -322,7 +322,7 @@ convertToXML = function() {
                     for(cnt=1;cnt<=$(item.formname).length;cnt++) {        // recreate all tests
                         found = false;
                         const testType = $(item.formname).find(".xml_test_type")[cnt-1].value;
-                        $.each(testInfos, function(index, testinfo) {
+                        $.each(config.testInfos, function(index, testinfo) {
                             if (!found && testType == testinfo.testType)  {
                                 found = true;
                                 xmlObject.find(item.xmlpath)[0].appendChild($(testtemplate[testinfo.xmlTemplateName]).find('test')[0].cloneNode(1));
@@ -439,7 +439,7 @@ convertToXML = function() {
         var replacer = new RegExp('xmlns.*? ',"g");                  // remove all namespace declarations
         xmlString = xmlString.replace(replacer, "");
         replacer = new RegExp('<task ',"g");                         // insert correct namespace declaration
-        xmlString = xmlString.replace(replacer, "<task "+namespace);
+        xmlString = xmlString.replace(replacer, "<task "+xsdNamespace.namespace);
         replacer =                                                   // ToDo: this is a hack, set filerefs properly
             new RegExp(xmlTesttypeJavaComp + '</test-type><test-configuration><filerefs><fileref refid=""/></filerefs>',"g");
         xmlString = xmlString.replace(replacer, xmlTesttypeJavaComp + "</test-type><test-configuration>");
@@ -457,7 +457,7 @@ convertToXML = function() {
             setErrorMessage("XSD-Schema " + xsdSchemaFile + " not found.");
         });
 */
-        $.each(xsds, function(index, xsd_file) {       // loop: xsd files for validation
+        $.each(config.xsds, function(index, xsd_file) {       // loop: xsd files for validation
             $.get(xsd_file, function(data, textStatus, jqXHR) {      // read XSD schema
                 const valid = xmllint.validateXML({xml: xmlString, schema: jqXHR.responseText});
                 if (valid.errors !== null) {                                // does not conform to schema
@@ -511,7 +511,7 @@ readXML = function(xmlText) {
         tempmatch = somexml.match(tempreg);
         somexml = replaceNamespace(somexml,tempmatch,"","");
 
-        $.each(namespaceRE, function(index, item) {
+        $.each(xsdNamespace.namespaceRE, function(index, item) {
             tempreg = new RegExp("xmlns:(\\S*?)=[\"']" + item[0]);   // unittests
             tempmatch = somexml.match(tempreg);
             somexml = replaceNamespace(somexml,tempmatch,item[1],":");
@@ -603,7 +603,7 @@ readXML = function(xmlText) {
 
         if (tempschema == xsdSchemaFile) {
             // current schema is used => validate all configured xsd files
-            $.each(xsds, function(index, xsd_file) {       // loop: xsd files for validation
+            $.each(config.xsds, function(index, xsd_file) {       // loop: xsd files for validation
                 $.get(xsd_file, function(data, textStatus, jqXHR) {      // read XSD schema and validate
                     var valid = xmllint.validateXML({xml: xmlTemplate, schema: jqXHR.responseText});
                     if (valid.errors !== null) {                             // does not conform to schema?
@@ -644,7 +644,7 @@ readXML = function(xmlText) {
                     testIDs[$(itm1).attr("id")] = 1;
 
                     found = false;
-                    $.each(testInfos, function(index, item) {
+                    $.each(config.testInfos, function(index, item) {
                         if (!found && $(itm1).find('test-type')[0].textContent == item.testType) {
                             newTest($(itm1).attr("id"), item.title, item.htmlExtraFields, item.testType, item.withFileRef);
                             found = true;

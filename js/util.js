@@ -45,3 +45,6 @@ function generateUUID(){
     });
     return uuid;
 };
+
+const isFirefox = typeof InstallTrigger !== 'undefined'; // Firefox 1.0+
+console.log("isFirefox value = " + isFirefox);

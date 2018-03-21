@@ -231,7 +231,7 @@ class FileReference {
 
     // TODO: split for different handling in classes
     static onFileSelectionChanged (tempSelElem) {              // changing a filename in the drop-down
-
+/*
         function setJavaClassname(newFilename) {
             // set classname if file belongs to JUNIT and if exactly one file is assigned
             var testBox = $(tempSelElem).closest(".xml_test");
@@ -257,7 +257,7 @@ class FileReference {
                 });
             }
         }
-
+*/
         var found = false;
         var selectedFilename = $(tempSelElem).val();
         // get old file id
@@ -310,9 +310,10 @@ class FileReference {
                 if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
                     // nextTd.find('.xml_test_fileref')[0].value = fileid;
                     // set classname if file belongs to JUNIT
-                    if (fileid != '') {
-                        setJavaClassname(selectedFilename);
-                        setJUnitDefaultTitle(selectedFilename);
+                    if (fileid) {
+                        // setJavaClassname(selectedFilename);
+                        // setJUnitDefaultTitle(selectedFilename);
+                        config.handleFilenameChangeInTest(selectedFilename, tempSelElem);
                     }
                 } else if ($(tempSelElem).hasClass('xml_template_filename')) {
                     // nextTd.find('.xml_template_fileref')[0].value = fileid;

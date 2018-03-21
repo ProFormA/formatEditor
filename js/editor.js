@@ -81,7 +81,7 @@ var descriptionEditor;
 function getTesttypeOptions() {
     var list = "";
     var first = true;
-    $.each(testInfos, function(index, item) {
+    $.each(config.testInfos, function(index, item) {
         list = list + "<option";
         if (first) {
             list = list + " selected='selected'";
@@ -97,7 +97,7 @@ function getTesttypeOptions() {
 function getProgLangOptions() {
     var list = "";
     var first = true;
-    $.each(proglangInfos, function(index, item) {
+    $.each(config.proglangInfos, function(index, item) {
         list = list + "<option";
         if (first) {
             list = list + " selected='selected'";
@@ -754,7 +754,7 @@ $(function() {
 
 
     function addTestButtons() {
-        $.each(testInfos, function(index, item) {
+        $.each(config.testInfos, function(index, item) {
             $("#testbuttons").append("<button id='" + item.buttonJQueryId + "'>Add " + item.title + "</button> ");
             $("#" + item.buttonJQueryId).click(function() {
 
@@ -773,13 +773,13 @@ $(function() {
         console.log("changing programming language to " + progLang);
 
         // hide all test buttons
-        $.each(testInfos, function(index, test) {
+        $.each(config.testInfos, function(index, test) {
             $("#" + test.buttonJQueryId).hide();
         });
 
         // show only test buttons needed for programming language
         found = false;
-        $.each(proglangInfos, function(index, pl) {
+        $.each(config.proglangInfos, function(index, pl) {
             if (pl.name === progLang) {
                 found = true;
                 $.each(pl.tests, function(index, test) {
