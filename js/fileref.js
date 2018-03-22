@@ -200,10 +200,14 @@ class FileReference {
             return;
 
         // delete file
-        const fileroot = $(".xml_file_id[value='" + fileid + "']").closest(".xml_file");
+        let ui_file = FileWrapper.constructFromId(fileid);
+        ui_file.delete();
+
+        /*const fileroot = $(".xml_file_id[value='" + fileid + "']").closest(".xml_file");
         fileroot.remove();
-        delete fileIDs[fileid];
-        onFilenameChanged(); // update filenames
+        delete fileIDs[fileid];*/
+
+        // onFilenameChanged(); // update filenames
     }
 
     // checks if a given file id is used somewhere

@@ -52,17 +52,19 @@ unzipme = function (blob, location, readyCallback) {
 
         // store not-embedded files in correct location in fileStorages array
         $.each($(".xml_file_filename"), function(index, item) {
-            let fileroot = $(item).closest(".xml_file");
-            let filetype = fileroot.find(".xml_file_type").val();
-            if (filetype === 'file') {
-                let fileid = fileroot.find(".xml_file_id").val();
+            ui_file = FileWrapper.constructFromRoot($(item).closest(".xml_file"));
+
+            // let fileroot = $(item).closest(".xml_file");
+            // let filetype = fileroot.find(".xml_file_type").val();
+            if (ui_file.type === 'file') {
+                let fileid = ui_file.id; // fileroot.find(".xml_file_id").val();
                 let filename = $(item).val();
                 if (unzippedFiles[filename] != undefined && fileStorages[fileid] === undefined) {
                     // file is not yet relinked
                     fileStorages[fileid] = unzippedFiles[filename];
                     unzippedFiles[filename] = undefined;
-                    console.log("store filename " + filename + " -> " + fileid + " " + filetype);
-                    showBinaryFile(fileroot, fileStorages[fileid]);
+                    console.log("store filename " + filename + " -> " + fileid + " " + ui_file.type);
+                    showBinaryFile(ui_file.root, fileStorages[fileid]);
                 } else {
                     if (unzippedFiles[filename] !== undefined && fileStorages[fileid] !== undefined) {
                         // consistency check
@@ -70,7 +72,7 @@ unzipme = function (blob, location, readyCallback) {
                     }
                 }
             } else {
-                showTextFile(fileroot);
+                showTextFile(ui_file.root);
             }
         });
     }

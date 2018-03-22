@@ -303,25 +303,23 @@ $(function() {
   };
 */
   removeFile = function(bt) {                                       // ask before removing
-      let root = bt.parent().parent().parent();
-      const id = root.find('.xml_file_id')[0].value;
-      const filename = root.find('.xml_file_filename')[0].value;
+      let root = bt.parent().parent().parent(); // arrgh!
+      let ui_file = FileWrapper.constructFromRoot(root);
 
       let ok = false;
-      if (FileReference.isFileIdReferenced(id)) {
+      if (FileReference.isFileIdReferenced(ui_file.id)) {
           // if true: cancel or remove all filenames/filerefs from model solution and test
-          ok = window.confirm("File " + id + " '" + filename + "' is still referenced!\n" +
+          ok = window.confirm("File " + ui_file.id + " '" + ui_file.filename + "' is still referenced!\n" +
               "Do you really want to delete it?");
       } else {
-          ok = window.confirm("Do you really want to delete file\n'" + filename + "'?");
+          ok = window.confirm("Do you really want to delete file\n'" + ui_file.filename + "'?");
       }
       if (ok) {
-          root.remove(); // bt.parent().parent().parent().remove();
-          deletecounter(fileIDs, bt);
-          onFilenameChanged(); // update filenames in file references
+          ui_file.delete();
       }
   };
 
+/*
   doesFilenameExist = function(filename) {
       var found = false;
       $.each($(".xml_file_filename"), function(index, item) {
@@ -332,7 +330,7 @@ $(function() {
 
       return found;
   }
-
+*/
 ///////////////////////////////////////////////////////// creating new HTML form elements
   newGH = function() {                                 // create a new grading hint HTML form element
     $("#gradinghintsection").append("<div "+
@@ -369,7 +367,7 @@ $(function() {
       let filename = file.name;
 
       // check if a file with that filename already is stored
-      if (doesFilenameExist(filename)) {
+      if (FileWrapper.doesFilenameExist(filename)) {
           alert("A file named '" + filename + "' already exists.");
           return;
       }
@@ -389,7 +387,7 @@ $(function() {
           }
 
           // recheck if a file with that filename already is stored
-          if (doesFilenameExist(filename)) {
+          if (FileWrapper.doesFilenameExist(filename)) {
               alert("A file named '" + filename + "' already exists.");
               return;
           }
@@ -399,8 +397,7 @@ $(function() {
               newFile(fileId); // add file
           }
           // set filename in test
-          let ui_file = new FileWrapper();
-          ui_file.constructFromId(fileId);
+          let ui_file = FileWrapper.constructFromId(fileId);
           ui_file.filename = filename;
           /*
           let fileroot = $(".xml_file_id[value='" + fileId + "']").closest(".xml_file");
@@ -450,40 +447,40 @@ $(function() {
   }
 
     onFilenameChangedCallback = function(filenamebox) {
-        let file = new FileWrapper();
-        file.constructFromRoot($(filenamebox).closest(".xml_file"));
+        let file = FileWrapper.constructFromRoot($(filenamebox).closest(".xml_file"));
         onFilenameChanged(file);
     }
 
-    onFilenameChanged = function(file) {
+    onFilenameChanged = function(ui_file) {
       // after change of filename update all filelists
 
-      if (file) {
+      if (ui_file) {
           // (the user has changed the filename in the filename input field)
 
           // if the user has changed the filename and the extension is .java
           // then the filename is recalculated on base of the source code (package class)
           // and checked against user filename
-          if (getExtension(file.filename) === 'java') {
+          if (getExtension(ui_file.filename) === 'java') {
               // let filebox = $(textbox).closest(".xml_file");
-              let text = file.text; // "";
-              let expectedFilename = javaParser.getFilenameWithPackage(text, file.filename);
-              if (expectedFilename !== file.filename && expectedFilename !== ".java") {
+              let text = ui_file.text; // "";
+              let expectedFilename = javaParser.getFilenameWithPackage(text, ui_file.filename);
+              if (expectedFilename !== ui_file.filename && expectedFilename !== ".java") {
                   if (confirm("Java filenames shall consist of the " +
                       "package name, if any, and the class name.\n" +
                       "So the expected filename is '" + expectedFilename + "'\n" +
                       "Do you want to change the filename to '" + expectedFilename + "'?")) {
-                            file.filename = expectedFilename;
+                            ui_file.filename = expectedFilename;
                   }
               }
           } else {
-              file.filenameHeader = file.filename;
+              ui_file.filenameHeader = ui_file.filename;
           }
       }
 
       // update filenames in all file references
       FileReference.updateAllFilenameLists();
     };
+
 
   onFiletypeChanged = function(selectfield) {
         // after change of filetype change binary
@@ -496,14 +493,11 @@ $(function() {
             //let filetype = $(selectfield).val();
             //let fileroot = $(selectfield).closest(".xml_file");
 
-            let file = new FileWrapper();
-            file.constructFromRoot($(selectfield).closest(".xml_file"));
-
+            let file = FileWrapper.constructFromRoot($(selectfield).closest(".xml_file"));
             switch (file.type) { // filetype ) {
                 case 'file':
                     const fileId = file.id;
                     const filename = file.filename;
-                    console.log('change to file');
                     const text = file.text;
 
                     if (!("TextEncoder" in window))
@@ -527,20 +521,9 @@ $(function() {
                     showBinaryFile(file.root /*fileroot*/, fileobject);
                     break;
                 case 'embedded':
-                    console.log('change to embedded');
                     showTextFile(file.root);
                     break;
             }
-
-
-/*            let text = "";
-            if (useCodemirror) {
-                const fileId = filebox.find(".xml_file_id").val();
-                text = codemirror[fileId].getValue();
-            } else {
-                let textarea = filebox.find(".xml_file_text");
-                text = textarea.val();
-            }*/
         }
     };
 
@@ -809,16 +792,20 @@ $(function() {
     createFileWithContent = function(filename, content) {
         const fileId = setcounter(fileIDs);    // adding a file for the test
         newFile(fileId);                     // filename: setlxsyntaxtest.stlx, content: print()
-        let filenamebox = $(".xml_file_id[value='"+fileId+"']").parent().find(".xml_file_filename").first();
-        filenamebox.val(filename);
-        codemirror[fileId].setValue(content);
-        onFilenameChangedCallback(filenamebox);
+
+        let ui_file = FileWrapper.constructFromId(fileId);
+        ui_file.filename = filename;
+
+        //let filenamebox = $(".xml_file_id[value='"+fileId+"']").parent().find(".xml_file_filename").first();
+        // filenamebox.val(filename);
+        // codemirror[fileId].setValue(content);
+        ui_file.text = content;
+        onFilenameChanged(ui_file);
         return fileId;
     }
 
     addFileReferenceToTest = function(testId, filename) {
         var xml_test_root = $(".xml_test_id[value='"+testId+"']").parent().parent();
-        //xml_test_root.find(".xml_test_fileref").first().val(tempnumber1);
         var element = xml_test_root.find(".xml_test_filename").last();
         element.val(filename).change();
     };

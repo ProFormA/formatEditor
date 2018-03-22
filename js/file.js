@@ -18,23 +18,36 @@
 // class for simpler access to file members from user interface
 class FileWrapper {
 
-    constructFromId(id) {
+    static constructFromId(id) {
         // this._id = id;
-        this._root = $(".xml_file_id[value='" + id + "']").closest(".xml_file");
+        let file = new FileWrapper();
+        file._root = $(".xml_file_id[value='" + id + "']").closest(".xml_file");
+        return file;
     }
 
-    constructFromRoot(root) {
-        this._root = root;
+    static constructFromRoot(root) {
+        let file = new FileWrapper();
+        file._root = root;
+        return file;
     }
 
-    constructFromFilename(filename) {
+    static constructFromFilename(filename) {
+        let file = new FileWrapper();
         $.each($(".xml_file_filename"), function(index, item) {
             if (filename === item.value ) {
-                this._root = $(item).first().parent();
+                file._root = $(item).first().parent();
             }
         });
-        if (!this._root)
+        if (!file._root) {
             console.error('FileWrapper.constructFromFilename cannot find root for ' + filename);
+            return undefined;
+        }
+        return file;
+    }
+
+    // getter
+    get root() {
+        return this._root;
     }
 
     get id() {
@@ -52,27 +65,11 @@ class FileWrapper {
         }
     }
 
-
-    get root() {
-        return this._root;
-    }
     get filename() {
         if (!this._filename) {
             this._filename = this.root.find(".xml_file_filename").first();
         }
         return this._filename.val();
-    }
-
-    set filename(name) {
-        if (!this._filename) {
-            this._filename = this.root.find(".xml_file_filename").first();
-        }
-        this._filename.val(name);
-        filenameHeader(name);
-    }
-
-    set filenameHeader(name) {
-        this._root.find(".xml_filename_header").first().text(name);
     }
 
     get class() {
@@ -89,11 +86,48 @@ class FileWrapper {
         return this._type.val();
     }
 
+    // setter
+    set text(newText) {
+        if (useCodemirror) {
+            codemirror[this.id].setValue(newText);
+        } else {
+            this._root.find(".xml_file_text").val(newText);
+        }
+    }
+
+    set filename(name) {
+        if (!this._filename) {
+            this._filename = this.root.find(".xml_file_filename").first();
+        }
+        this._filename.val(name);
+        this._root.find(".xml_filename_header").first().text(name);
+    }
+
     set type(newType) {
         if (!this._type) {
             this._type = this.root.find(".xml_file_type").first();
         }
         this._type.val(newType);
         this._type.attr('disabled', newType === 'file')
+    }
+
+    // other functions
+    delete() {
+        // const fileroot = $(".xml_file_id[value='" + fileid + "']").closest(".xml_file");
+        this.root.remove();
+        delete fileIDs[this.id];
+        onFilenameChanged(); // update filenames
+    }
+
+    static doesFilenameExist(filename) {
+        let found = false;
+        $.each($(".xml_file_filename"), function(index, item) {
+            if (item.value === filename) {
+                found = true;
+                return false;
+            }
+        });
+
+        return found;
     }
 }
