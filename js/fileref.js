@@ -259,9 +259,8 @@ class FileReference {
             alert("file class will be no longer '" + oldclass + "'");
 
             // iterate through all filerefence objects to find the 'old' one
-            const references = $(".fileref_fileref");
             let found = false;
-            $.each(references, function(index, item) {
+            $.each($(".fileref_fileref"), function(index, item) {
                 if (!found && item.value === fileid) {
                     // file id matches
                     const filenameobject = $(item).closest('tr').find('.fileref_filename');
@@ -385,7 +384,7 @@ class FileReference {
                     // TODO einfacher: einfach setzen und schauen, ob leer???
                     var indexFound = -1;
                     $.each($(".xml_file_filename"), function (indexOpt, item) {
-                        if (item.value.length > 0 && item.value == text) {
+                        if (item.value.length > 0 && item.value === text) {
                             indexFound = indexOpt;
                         }
                     });
