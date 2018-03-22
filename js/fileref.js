@@ -17,13 +17,13 @@
  */
 
 
-
+/*
 let testFileRefSingleton = null;
 let modelSolutionFileRefSingleton = null;
 let templSingleton = null;
 let instructionSingleton = null;
 let librarySingleton = null;
-
+*/
 
 let filenameClassList = [];
 let filerefClassList = [];
@@ -31,11 +31,12 @@ let filerefClassList = [];
 // abstract class for a filename reference input
 class FileReference {
 
-    constructor(classFilename, classFileref, jsClassName, label, mandatory) {
+    constructor(classFilename, classFileref, jsClassName, label, help, mandatory) {
         this.classFilename = classFilename;
         this.classFileref = classFileref;
         this.classAddFileref = classFileref.replace('xml_', 'add_'); // classAddFileref;
         this.classRemoveFileref = classFileref.replace('xml_', 'remove_'); // classRemoveFileref;
+        this.help = help;
 
         this.createTableStrings(jsClassName, label, mandatory);
         this.JsClassname = jsClassName;
@@ -51,8 +52,8 @@ class FileReference {
         this.filenameLabel = "<label for='" + this.classFilename +
             "'>" + label + (mandatory?"<span class='red'>*</span>":"") + ": </label>";
         this.tdFilenameLabel ="<td>" + this.filenameLabel + "</td>";
-        this.tdFilename = "<td><select class='mediuminput fileref_filename " + this.classFilename + "' " + // onfocus = 'updateFilenameList(this)' "+
-            "onchange = 'FileReference.onFileSelectionChanged(this)'></select></td>"+
+        this.tdFilename = "<td><select class='mediuminput fileref_filename " + this.classFilename + "' " +
+            "onchange = 'FileReference.onFileSelectionChanged(this)' title='" + this.help + "'></select></td>"+
             "<td><label for='" + this.classFileref + "'>Fileref: </label>"+ // fileref
             "<input class='tinyinput fileref_fileref " + this.classFileref + "' readonly/></td>";
         this.tdAddButton = "<td><button class='" + this.classAddFileref +
@@ -155,6 +156,9 @@ class FileReference {
         // get associated fileid
         const fileid = tr.find('.fileref_fileref')[0].value;
 
+        // TODO:
+        // if fileclass == library => internal???
+
         // remove line in file table for test
         let table_body = tr.parent();
         let previousRow = tr.prev("tr");
@@ -238,33 +242,54 @@ class FileReference {
 
     // TODO: split for different handling in classes
     static onFileSelectionChanged (tempSelElem) {              // changing a filename in the drop-down
-/*
-        function setJavaClassname(newFilename) {
-            // set classname if file belongs to JUNIT and if exactly one file is assigned
-            var testBox = $(tempSelElem).closest(".xml_test");
-            var ui_classname = $(testBox).find(".xml_ju_mainclass");
-            if (ui_classname.length === 1) {
-                $.each(ui_classname, function(index, element) {
-                    var currentFilename = $(element).val();
-                    if (!readXmlActive)
-                        $(element).val(javaParser.getFullClassnameFromFilename(newFilename)).change();
-                });
+
+        // whenever a file is selected that causes a file class change,
+        // it must be checked whether a reference needs to be removed
+        // (e.g. from template to library)
+        function handleClassChange(fileclassobject, fileid, newClass) {
+            const oldclass = fileclassobject.val();
+            if (oldclass === newClass)
+                return; // ??? TODO: do not add 2nd reference!
+            // set new class
+            fileclassobject.val(newClass);
+            if (oldclass ===  'internal' || oldclass === 'internal-library') {
+                return;
             }
+
+            alert("file class will be no longer '" + oldclass + "'");
+
+            // iterate through all filerefence objects to find the 'old' one
+            const references = $(".fileref_fileref");
+            let found = false;
+            $.each(references, function(index, item) {
+                if (!found && item.value === fileid) {
+                    // file id matches
+                    const filenameobject = $(item).closest('tr').find('.fileref_filename');
+                    switch (oldclass) {
+                        case 'template':
+                            found = filenameobject.hasClass('xml_template_filename');
+                            break;
+                        case 'library':
+                            found = filenameobject.hasClass('xml_library_filename');
+                            break;
+                        case 'instruction':
+                            found = filenameobject.hasClass('xml_instruction_filename');
+                            break;
+                        default:
+                            alert('tbd 1');
+                            break;
+                    }
+
+                    if (found) {
+                        // remove old fileref object
+                        filenameobject.val(emptyFileOption).change();
+                        item.value = '';
+                    }
+                }
+            });
+
         }
 
-        function setJUnitDefaultTitle(newFilename) {
-            // set decsription according to classname
-            var testBox = $(tempSelElem).closest(".xml_test");
-            var ui_title = $(testBox).find(".xml_test_title");
-            if (ui_title.length === 1) {
-                $.each(ui_title, function(index, element) {
-                    var currentTitle = $(element).val();
-                    if (!readXmlActive && currentTitle === JUnit_Default_Title)
-                        $(element).val("Junit Test " + javaParser.getPureClassnameFromFilename(newFilename)).change();
-                });
-            }
-        }
-*/
         var found = false;
         var selectedFilename = $(tempSelElem).val();
         // get old file id
@@ -307,9 +332,12 @@ class FileReference {
             default:
                 // find file id belonging to the filename
                 let fileid = "";
+                let fileclassobject;
                 $.each($(".xml_file_filename"), function(index, item) {
                     if (selectedFilename === item.value ) {
-                        fileid = $(item).first().parent().find(".xml_file_id").val();
+                        const fileroot = $(item).first().parent();
+                        fileid = fileroot.find(".xml_file_id").val();
+                        fileclassobject = fileroot.find(".xml_file_class");
                     }
                 });
                 // set new file id
@@ -322,23 +350,15 @@ class FileReference {
                         config.handleFilenameChangeInTest(selectedFilename, tempSelElem);
                     }
                 } else if ($(tempSelElem).hasClass('xml_template_filename')) {
-                    // set to file class to 'template'
-                    let fileclass = $(".xml_file_id[value='"+fileid+"']").parent().find(".xml_file_class").first();
-                    fileclass.val('template');
-                    // TODO: disable class is easy, but when to enable it??
-                    // fileclass.attr('disabled', true);
-
+                    handleClassChange(fileclassobject, fileid, 'template');
                 } else if ($(tempSelElem).hasClass('xml_instruction_filename')) {
-                    // set to file class to 'instruction'
-                    $(".xml_file_id[value='"+fileid+"']").parent().find(".xml_file_class").first().val('instruction');
-
+                    handleClassChange(fileclassobject, fileid, 'instruction');
                 } else if ($(tempSelElem).hasClass('xml_library_filename')) {
-                    // set to file class to 'library'
-                    $(".xml_file_id[value='"+fileid+"']").parent().find(".xml_file_class").first().val('library');
-
+                    handleClassChange(fileclassobject, fileid, 'library');
                 } else {
                     // model solution, nothing to be done
                 }
+
         }
 
         if (oldFileId !== '') {
@@ -431,7 +451,8 @@ class FileReference {
 class TestFileReference extends FileReference {
 
     constructor() {
-        super('xml_test_filename', 'xml_test_fileref', 'TestFileReference', 'Testscript', true);
+        super('xml_test_filename', 'xml_test_fileref', 'TestFileReference', 'Testscript',
+            'file containing test cases or test specification', true);
     }
 
     static getInstance() {return testFileRefSingleton;}
@@ -451,19 +472,20 @@ class TestFileReference extends FileReference {
         }
     }
 }
-testFileRefSingleton = new TestFileReference();
+let testFileRefSingleton = new TestFileReference();
 
 
 class ModelSolutionFileReference extends FileReference {
 
     constructor() {
         super('xml_model-solution_filename', 'xml_model-solution_fileref',
-            'ModelSolutionFileReference', 'Filename', true);
+            'ModelSolutionFileReference', 'Filename',
+            'file belonging to a model solution', true);
     }
     static getInstance() {return modelSolutionFileRefSingleton;}
     static getClassRoot() { return "xml_model-solution"; }
 }
-modelSolutionFileRefSingleton = new ModelSolutionFileReference();
+let modelSolutionFileRefSingleton = new ModelSolutionFileReference();
 
 
 
@@ -471,27 +493,30 @@ class InstructionFileReference extends FileReference {
 
     constructor() {
         super('xml_instruction_filename', 'xml_instruction_fileref',
-            'InstructionFileReference', 'Attachment', false);
+            'InstructionFileReference', 'Documentation Attachment',
+            'e.g. pdf with further informations, images (file NOT available for grader/tests)', false);
     }
     static getInstance() {return instructionSingleton;}
 }
-instructionSingleton = new InstructionFileReference();
+let instructionSingleton = new InstructionFileReference();
 
 
 class TemplateFileReference extends FileReference {
     constructor() {
         super('xml_template_filename', 'xml_template_fileref',
-            'TemplateFileReference', 'Template', false);
+            'TemplateFileReference', 'Template',
+            'code snippet that the student should use as a starting point for coding', false);
     }
     static getInstance() {return templSingleton;}
 }
-templSingleton = new TemplateFileReference();
+let templSingleton = new TemplateFileReference();
 
 class LibraryFileReference extends FileReference {
     constructor() {
         super('xml_library_filename', 'xml_library_fileref',
-            'LibraryFileReference', 'Library', false);
+            'LibraryFileReference', 'Code Attachment',
+            'e.g. library, interface (file is also available for grader/tests)', false);
     }
     static getInstance() {return librarySingleton;}
 }
-librarySingleton = new LibraryFileReference();
+let librarySingleton = new LibraryFileReference();

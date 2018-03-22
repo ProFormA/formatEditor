@@ -847,7 +847,8 @@ readXML = function(xmlText) {
             }
         });
 
-        // FileReference.updateAllFilenameLists();
+        // fill filename lists in empty file refences
+        FileReference.updateAllFilenameLists();
 
     } else {                                           // end: if there is xml content provided
         setErrorMessage("The textarea is empty.");
