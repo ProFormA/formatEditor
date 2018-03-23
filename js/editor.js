@@ -56,21 +56,7 @@ var modelSolIDs = {};
 var testIDs = {};
 var gradingHintCounter;                                // only 1 grading hint is allowed
 var codemirror = {};
-var fileStorages = [];
 
-class FileStorage {
-    constructor(isBinary, mimetype, content, filename) {
-        this.isBinary = isBinary;
-        this.mimetype = mimetype;
-        this.content = content;
-        this.filename = filename;
-        this.storeAsFile = isBinary;
-    }
-
-    setSize(size) {
-        this.size = size;
-    }
-}
 
 // Codemirror description editor is made global in order to allow access
 // to test environment.
@@ -109,6 +95,7 @@ function getProgLangOptions() {
     return list;
 }
 
+/*
 function showBinaryFile(fileroot, fileObject) {
     fileroot.find(".xml_file_binary").show(); // show binary text
     fileroot.find(".xml_file_non_binary").hide(); // hide editor
@@ -121,35 +108,9 @@ function showTextFile(fileroot) {
     fileroot.find(".xml_file_binary").hide(); // hide binary text
     fileroot.find(".xml_file_non_binary").show(); // show editor
 }
+*/
 
 
-///////////////////////////////////////////////////////// utility functions
-/* Codemirror is a library that provides more sophisticated editor support for textareas.
- * Once it is turned on for a textarea, this textarea can no longer be accessed
- * using normal DOM methods. Instead it must be accessed using codemirror methods.
- * Currently codemirror is only used for xml_file_text.
- * The global codemirror hash above uses the fileID to identify the codemirror element.
- */
-function addCodemirrorElement(cmID) {                     // cmID is determined by setcounter(), starts at 1
-    codemirror[cmID] = CodeMirror.fromTextArea(
-        $(".xml_file_id[value='"+ cmID +"']").parent().parent().find(".xml_file_text")[0],{
-        mode : "text/x-java", indentUnit: 4, lineNumbers: true, matchBrackets: true, tabMode : "shift",
-        styleActiveLine: true, viewportMargin: Infinity, autoCloseBrackets: true, theme: "eclipse",
-            dragDrop: false
-    });
-
-    let editor = codemirror[cmID];
-    $(editor.getWrapperElement()).resizable({
-        handles: 's', // only resize in north-south-direction
-        resize: function() {
-            editor.refresh();
-        }
-    });
-    editor.on("drop",function(editor,e){
-        //uploadFileWhenDropped(e.originalEvent.dataTransfer.files, e.currentTarget);
-        console.log('codemirror drop: ' + e);
-    });
-}
 
 //////////////////////////////////////////////////////////////////////////////
 /* setcounter and deletecounter are only used for fileIDs, modelSolIDs, testIDs
@@ -165,7 +126,7 @@ function setcounter(temphash) {
   temphash[tempcnter] = 1;
   return tempcnter;
 }
-function deletecounter(temphash,tempelement) {         // for fileIDs, modelSolIDs, testIDs
+function deletecounter(temphash,tempelement) {         // for modelSolIDs, testIDs
   //console.log('deletecounter called');
   var tempcnter;
   delete temphash[tempelement.parent().parent().parent().find('.tinyinput')[0].value];
@@ -204,10 +165,12 @@ function clearErrorMessage() {                         // clearing the error con
  * or to create a download link for text from a textarea.
  * These functions are used in click events associated with textareas.
  */
+/*
 function uploadTestTaskFile(inputbutton) {
     // var filenew = inputbutton.files[0];
     // TODO....
 }
+*/
 
 function uploadTaskFile(inputbutton) {                     // upload button for textareas: output, output2
     var filenew = inputbutton.files[0];
@@ -293,6 +256,7 @@ function downloadText3(text, name, type) {
 $(function() {
 
   $('#codeversion').text("Version "+codeversion);
+
   gradingHintCounter = 1;
 
   remP3 = function(bt) {bt.parent().parent().parent().remove();};   // for removing files, etc
@@ -318,23 +282,23 @@ $(function() {
 
 
 
-  readAndCreateFileData = function(file, fileId, callback) {
-      if (!file)
-          return;
-      let filename = file.name;
+    readAndCreateFileData = function(file, fileId, callback) {
+        if (!file)
+            return;
+        let filename = file.name;
 
-      // check if a file with that filename already is stored
-      if (FileWrapper.doesFilenameExist(filename)) {
-          alert("A file named '" + filename + "' already exists.");
-          return;
-      }
+        // check if a file with that filename already is stored
+        if (FileWrapper.doesFilenameExist(filename)) {
+            alert("A file named '" + filename + "' already exists.");
+            return;
+        }
 
-      const size = file.size; //get file size
-      const type = getMimeType(file.type, filename); //get mime type
-      // determine if we have a binary or non-binary file
-      const binaryFile =  config.isBinaryFile(file, type);
-      let reader = new FileReader();
-      reader.onload = function(e) {
+        const size = file.size; //get file size
+        const mimetype = getMimeType(file.type, filename); //get mime type
+        // determine if we have a binary or non-binary file
+        const isBinaryFile =  config.isBinaryFile(file, mimetype);
+        let reader = new FileReader();
+        reader.onload = function(e) {
 
           // special handling for JAVA: extract class name and package name and
           // recalc filename!
@@ -357,40 +321,33 @@ $(function() {
           let ui_file = FileWrapper.constructFromId(fileId);
           ui_file.filename = filename;
 
-          if (binaryFile) {
+          if (isBinaryFile) {
               // binary file
-              ui_file.type = 'file';
-              let fileObject = new FileStorage(binaryFile, type, e.target.result, filename);
+              // at first update fileStorages because
+              // it is needed for changing file type
+              let fileObject = new FileStorage(isBinaryFile, mimetype, e.target.result, filename);
               fileObject.setSize(size);
               fileStorages[fileId] = fileObject;
-              showBinaryFile(ui_file.root, fileObject);
+              ui_file.type = 'file';
           } else {
               // assume non binary file
-              ui_file.type = 'embedded';
-              showTextFile(ui_file.root);
-              var text = e.target.result;
-              let fileObject = new FileStorage(binaryFile, type, 'text is in editor', filename);
+              const text = e.target.result;
+              let fileObject = new FileStorage(isBinaryFile, mimetype, 'text is in editor', filename);
               fileStorages[fileId] = fileObject;
-              if (useCodemirror) {
-                  codemirror[fileId].setValue(text);
-                  codemirror[fileId].setOption("mode", type);
-              } else {
-                  fileroot.find(".xml_file_text").val(text);
-              }
+              ui_file.text = text;
+              ui_file.type = 'embedded';
           }
-          // update filenames in all filename options
-          // onFilenameChanged(ui_file); // filenamebox);
 
           if (callback)
             callback(filename, fileId);
-      };
+        };
 
-      //console.log("read file");
-      if (binaryFile)
-          reader.readAsArrayBuffer(file);
+        //console.log("read file");
+        if (isBinaryFile)
+            reader.readAsArrayBuffer(file);
         else
-        reader.readAsText(file);
-  }
+            reader.readAsText(file);
+    }
 
     newFile = function(tempcounter) {                    // create a new file HTML form element
         let ui_file = FileWrapper.create(tempcounter);
@@ -461,74 +418,74 @@ $(function() {
       */
   };
 
-  newTest = function(tempcounter,TestName, MoreText, TestType, WithFileRef) { // create a new test HTML form element
+    newTest = function(tempcounter,TestName, MoreText, TestType, WithFileRef) { // create a new test HTML form element
 
-    $("#testsection").append("<div "+
-    "class='ui-widget ui-widget-content ui-corner-all xml_test'>"+
-    "<h3 class='ui-widget-header'>" + TestName + " (Test #"+tempcounter+")<span "+
-    "class='rightButton'><button onclick='remP3($(this));deletecounter(testIDs,$(this));'>x</button></span></h3>"+
-    "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
-    "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
-        TestFileReference.getInstance().getTableString() +
-        // "<span class='drop_zone drop_zone_text'>Drop Your File(s) Here!</span>" +
-        //"<br>" +
-//    " <label for='xml_test_validity'>Validity: </label>"+
-//    "<input class='shortinput xml_test_validity'/>"+
-    " <label for='xml_test_type'>Type: </label>"+
-    "<select class='xml_test_type'>"+ testTypes + "</select>"+
+        $("#testsection").append("<div "+
+        "class='ui-widget ui-widget-content ui-corner-all xml_test'>"+
+        "<h3 class='ui-widget-header'>" + TestName + " (Test #"+tempcounter+")<span "+
+        "class='rightButton'><button onclick='remP3($(this));deletecounter(testIDs,$(this));'>x</button></span></h3>"+
+        "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
+        "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
+            TestFileReference.getInstance().getTableString() +
+            // "<span class='drop_zone drop_zone_text'>Drop Your File(s) Here!</span>" +
+            //"<br>" +
+    //    " <label for='xml_test_validity'>Validity: </label>"+
+    //    "<input class='shortinput xml_test_validity'/>"+
+        " <label for='xml_test_type'>Type: </label>"+
+        "<select class='xml_test_type'>"+ testTypes + "</select>"+
 
-    "<p><label for='xml_pr_public'>Public<span class='red'>*</span>: </label>"+
-    "<select class='xml_pr_public'>"+
-    "<option selected='selected'>True</option><option>False</option></select>"+
-    " <label for='xml_pr_required'>Required<span class='red'>*</span>: </label>"+
-    "<select class='xml_pr_required'>"+
-    "<option selected='selected'>True</option><option>False</option></select>"+
-    " <label for='xml_pr_always'>Always: </label>"+
-    "<select class='xml_pr_always'>"+
-    "<option selected='selected'>True</option><option>False</option></select></p>"+
-    "<p><label for='xml_test_title'>Title<span class='red'>*</span>: </label>"+
-    "<input class='largeinput xml_test_title' value='"+ TestName +"'/></p>"+ MoreText + "</div>");
+        "<p><label for='xml_pr_public'>Public<span class='red'>*</span>: </label>"+
+        "<select class='xml_pr_public'>"+
+        "<option selected='selected'>True</option><option>False</option></select>"+
+        " <label for='xml_pr_required'>Required<span class='red'>*</span>: </label>"+
+        "<select class='xml_pr_required'>"+
+        "<option selected='selected'>True</option><option>False</option></select>"+
+        " <label for='xml_pr_always'>Always: </label>"+
+        "<select class='xml_pr_always'>"+
+        "<option selected='selected'>True</option><option>False</option></select></p>"+
+        "<p><label for='xml_test_title'>Title<span class='red'>*</span>: </label>"+
+        "<input class='largeinput xml_test_title' value='"+ TestName +"'/></p>"+ MoreText + "</div>");
 
-      // hide fields that exist only for technical reasons
-    var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent().parent();
-    testroot.find(".xml_test_type").val(TestType);
+          // hide fields that exist only for technical reasons
+        var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent().parent();
+        testroot.find(".xml_test_type").val(TestType);
 
-    FileReference.init(null, null, TestFileReference, testroot);
-    // TestFileReference.getInstance().init(testroot, DEBUG_MODE);
+        FileReference.init(null, null, TestFileReference, testroot);
+        // TestFileReference.getInstance().init(testroot, DEBUG_MODE);
 
-    if (!DEBUG_MODE) {
-      testroot.find(".xml_test_type").hide();
-      testroot.find("label[for='xml_test_type']").hide();
-      testroot.find(".xml_pr_always").hide();
-      testroot.find("label[for='xml_pr_always']").hide();
-      testroot.find(".xml_test_id").hide();
-      testroot.find("label[for='xml_test_id']").hide();
-    }
-    if (!WithFileRef) {
-        testroot.find("table").hide();
-        testroot.find(".drop_zone").hide();
-    }
-    else
-    {
-        // TODO: disable drag & drop!
-/*
-        testroot.on({
-            drop: function(e){
-                if(e.originalEvent.dataTransfer){
-                    if(e.originalEvent.dataTransfer.files.length) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        //UPLOAD FILES HERE
-                        FileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
-                            TestFileReference.getInstance());
+        if (!DEBUG_MODE) {
+          testroot.find(".xml_test_type").hide();
+          testroot.find("label[for='xml_test_type']").hide();
+          testroot.find(".xml_pr_always").hide();
+          testroot.find("label[for='xml_pr_always']").hide();
+          testroot.find(".xml_test_id").hide();
+          testroot.find("label[for='xml_test_id']").hide();
+        }
+        if (!WithFileRef) {
+            testroot.find("table").hide();
+            testroot.find(".drop_zone").hide();
+        }
+        else
+        {
+            // TODO: disable drag & drop!
+    /*
+            testroot.on({
+                drop: function(e){
+                    if(e.originalEvent.dataTransfer){
+                        if(e.originalEvent.dataTransfer.files.length) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            //UPLOAD FILES HERE
+                            FileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
+                                TestFileReference.getInstance());
+                        }
                     }
                 }
-            }
-        });
-*/
-    }
+            });
+    */
+        }
 
-  };
+    };
 
     function uploadFileWhenDropped(files, fileBox){
         if (files.length > 1) {

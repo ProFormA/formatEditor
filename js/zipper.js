@@ -64,7 +64,7 @@ unzipme = function (blob, location, readyCallback) {
                     fileStorages[fileid] = unzippedFiles[filename];
                     unzippedFiles[filename] = undefined;
                     console.log("store filename " + filename + " -> " + fileid + " " + ui_file.type);
-                    showBinaryFile(ui_file.root, fileStorages[fileid]);
+                    //showBinaryFile(ui_file.root, fileStorages[fileid]);
                 } else {
                     if (unzippedFiles[filename] !== undefined && fileStorages[fileid] !== undefined) {
                         // consistency check
@@ -72,8 +72,9 @@ unzipme = function (blob, location, readyCallback) {
                     }
                 }
             } else {
-                showTextFile(ui_file.root);
+                //showTextFile(ui_file.root);
             }
+            ui_file.type = ui_file.type;
         });
     }
 

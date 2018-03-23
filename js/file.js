@@ -15,6 +15,25 @@
  * Known bugs: search the code for the string "ToDo" below and check faq.html and installationFAQ.html
  */
 
+var fileStorages = [];
+
+// todo: merge with FileWrapper
+class FileStorage {
+    constructor(isBinary, mimetype, content, filename) {
+        this.isBinary = isBinary;
+        this.mimetype = mimetype;
+        this.content = content;
+        this.filename = filename;
+        this.storeAsFile = isBinary;
+    }
+
+    setSize(size) {
+        this.size = size;
+    }
+}
+
+
+
 // class for simpler access to file members from user interface
 class FileWrapper {
 
@@ -39,7 +58,7 @@ class FileWrapper {
             }
         });
         if (!file._root) {
-            console.error('FileWrapper.constructFromFilename cannot find root for ' + filename);
+            console.error('FileWrapper.constructFromFilename cannot find root for filename ' + filename);
             return undefined;
         }
         return file;
@@ -60,6 +79,7 @@ class FileWrapper {
     get class() { return this.getValue(this._class,".xml_file_class" ); }
     get type() { return this.getValue(this._type,".xml_file_type" ); }
 
+
     get text() {
         if (useCodemirror) {
             return codemirror[this.id].getValue();
@@ -72,6 +92,8 @@ class FileWrapper {
     set text(newText) {
         if (useCodemirror) {
             codemirror[this.id].setValue(newText);
+            const fileObject = fileStorages[this.id];
+            codemirror[this.id].setOption("mode", fileObject.mimetype);
         } else {
             this._root.find(".xml_file_text").val(newText);
         }
@@ -90,12 +112,31 @@ class FileWrapper {
         this._root.find(".xml_filename_header").first().text(name);
     }
 
+    set class(newClass) {
+        this._root.find(".xml_file_class").val(newClass);
+    }
+
     set type(newType) {
         if (!this._type) {
             this._type = this.root.find(".xml_file_type").first();
         }
         this._type.val(newType);
         this._type.attr('disabled', newType === 'file')
+
+        switch (newType) {
+            case 'file':
+                this.root.find(".xml_file_binary").show(); // show binary text
+                this.root.find(".xml_file_non_binary").hide(); // hide editor
+                let xml_file_size = this.root.find(".xml_file_size");
+                const fileObject = fileStorages[this.id];
+                xml_file_size.first().text('File size: ' + fileObject.size.toLocaleString() + ", " +
+                    'File type: ' + fileObject.mimetype);
+                break;
+            case 'embedded':
+                this.root.find(".xml_file_binary").hide(); // hide binary text
+                this.root.find(".xml_file_non_binary").show(); // show editor
+                break;
+        }
     }
 
     // other functions
@@ -149,7 +190,7 @@ class FileWrapper {
         return found;
     }
 
-    static readSingleFile(inputbutton) {             // read a file and its filename into the HTML form
+    static onReadFile(inputbutton) {             // read a file and its filename into the HTML form
         let filenew = inputbutton.files[0];
         const fileId = $(inputbutton).parent().parent().find(".xml_file_id").val();
         readAndCreateFileData(filenew, fileId);
@@ -189,7 +230,8 @@ class FileWrapper {
             //let fileroot = $(selectfield).closest(".xml_file");
 
             let file = FileWrapper.constructFromRoot($(selectfield).closest(".xml_file"));
-            switch (file.type) { // filetype ) {
+            const newtype = file.type;
+            switch (newtype) { // filetype ) {
                 case 'file':
                     const fileId = file.id;
                     const filename = file.filename;
@@ -213,15 +255,46 @@ class FileWrapper {
                     fileobject.isBinary = true;
                     fileobject.content =  enc.encode(text);
                     fileobject.setSize(text.length);
-                    showBinaryFile(file.root /*fileroot*/, fileobject);
+                    // showBinaryFile(file.root /*fileroot*/, fileobject);
                     break;
                 case 'embedded':
-                    showTextFile(file.root);
+                    // showTextFile(file.root);
                     break;
             }
+            // force default handling for new file type
+            // (ok, that's not so pretty...)
+            file.type = newtype;
         }
     };
 
+
+///////////////////////////////////////////////////////// utility functions
+    /* Codemirror is a library that provides more sophisticated editor support for textareas.
+     * Once it is turned on for a textarea, this textarea can no longer be accessed
+     * using normal DOM methods. Instead it must be accessed using codemirror methods.
+     * Currently codemirror is only used for xml_file_text.
+     * The global codemirror hash above uses the fileID to identify the codemirror element.
+     */
+    static addCodemirrorElement(cmID) {                     // cmID is determined by setcounter(), starts at 1
+        codemirror[cmID] = CodeMirror.fromTextArea(
+            $(".xml_file_id[value='"+ cmID +"']").parent().parent().find(".xml_file_text")[0],{
+                mode : "text/x-java", indentUnit: 4, lineNumbers: true, matchBrackets: true, tabMode : "shift",
+                styleActiveLine: true, viewportMargin: Infinity, autoCloseBrackets: true, theme: "eclipse",
+                dragDrop: false
+            });
+
+        let editor = codemirror[cmID];
+        $(editor.getWrapperElement()).resizable({
+            handles: 's', // only resize in north-south-direction
+            resize: function() {
+                editor.refresh();
+            }
+        });
+        editor.on("drop",function(editor,e){
+            //uploadFileWhenDropped(e.originalEvent.dataTransfer.files, e.currentTarget);
+            console.log('codemirror drop: ' + e);
+        });
+    }
 
     static create(fileid) {
         $("#filesection").append("<div "+
@@ -255,7 +328,7 @@ class FileWrapper {
             "<span class='xml_file_size'>File size: ???</span>" +
             "</span>" +
             "<span class='xml_file_non_binary'>" +
-            "<input type='file' class='largeinput file_input' onchange='FileWrapper.readSingleFile(this)'/>" +
+            "<input type='file' class='largeinput file_input' onchange='FileWrapper.onReadFile(this)'/>" +
             "<textarea rows='3' cols='80' class='xml_file_text'"+
             "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea>" +
             "</span></p>" +
@@ -271,7 +344,7 @@ class FileWrapper {
             ui_file.root.find("label[for='xml_file_id']").hide();
         }
         if (useCodemirror) {
-            addCodemirrorElement(fileid);
+            FileWrapper.addCodemirrorElement(fileid);
         }
         return ui_file;
     }
