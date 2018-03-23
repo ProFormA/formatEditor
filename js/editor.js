@@ -302,35 +302,8 @@ $(function() {
      if (remtemp) { bt.parent().parent().parent().remove(); }
   };
 */
-  removeFile = function(bt) {                                       // ask before removing
-      let root = bt.parent().parent().parent(); // arrgh!
-      let ui_file = FileWrapper.constructFromRoot(root);
 
-      let ok = false;
-      if (FileReference.isFileIdReferenced(ui_file.id)) {
-          // if true: cancel or remove all filenames/filerefs from model solution and test
-          ok = window.confirm("File " + ui_file.id + " '" + ui_file.filename + "' is still referenced!\n" +
-              "Do you really want to delete it?");
-      } else {
-          ok = window.confirm("Do you really want to delete file\n'" + ui_file.filename + "'?");
-      }
-      if (ok) {
-          ui_file.delete();
-      }
-  };
 
-/*
-  doesFilenameExist = function(filename) {
-      var found = false;
-      $.each($(".xml_file_filename"), function(index, item) {
-              if (item.value == filename) {
-                  found = true;
-              }
-      });
-
-      return found;
-  }
-*/
 ///////////////////////////////////////////////////////// creating new HTML form elements
   newGH = function() {                                 // create a new grading hint HTML form element
     $("#gradinghintsection").append("<div "+
@@ -342,24 +315,8 @@ $(function() {
     gradingHintCounter++;
   };
 
-    readSingleFile = function(inputbutton) {             // read a file and its filename into the HTML form
-        let filenew = inputbutton.files[0];
-        const fileId = $(inputbutton).parent().parent().find(".xml_file_id").val();
-        readAndCreateFileData(filenew, fileId);
-    }
 
 
-    // convert to mimetype that can be directely handeled by codemirror
-    function getMimeType(mimetype, filename) {
-        const extension = getExtension(filename);
-        switch (extension.toLowerCase()) {
-            // case 'log':
-            // case 'txt':
-            case 'xml':  return 'application/xml';
-            case 'html':  return 'text/html';
-            default: return config.getMimetype(mimetype, extension);
-        }
-    }
 
   readAndCreateFileData = function(file, fileId, callback) {
       if (!file)
@@ -399,19 +356,9 @@ $(function() {
           // set filename in test
           let ui_file = FileWrapper.constructFromId(fileId);
           ui_file.filename = filename;
-          /*
-          let fileroot = $(".xml_file_id[value='" + fileId + "']").closest(".xml_file");
-          let filenamebox = fileroot.find(".xml_file_filename").first();
-          filenamebox.val(filename);
-          // set file text
-          let filetype = fileroot.find(".xml_file_type").first();
-          filetype.attr('disabled',binaryFile); // disable file/embedded selection in case of binary file
-          */
-
 
           if (binaryFile) {
               // binary file
-              // filetype.val('file');
               ui_file.type = 'file';
               let fileObject = new FileStorage(binaryFile, type, e.target.result, filename);
               fileObject.setSize(size);
@@ -419,7 +366,6 @@ $(function() {
               showBinaryFile(ui_file.root, fileObject);
           } else {
               // assume non binary file
-              // filetype.val('embedded');
               ui_file.type = 'embedded';
               showTextFile(ui_file.root);
               var text = e.target.result;
@@ -433,7 +379,7 @@ $(function() {
               }
           }
           // update filenames in all filename options
-          onFilenameChanged(ui_file); // filenamebox);
+          // onFilenameChanged(ui_file); // filenamebox);
 
           if (callback)
             callback(filename, fileId);
@@ -446,135 +392,11 @@ $(function() {
         reader.readAsText(file);
   }
 
-    onFilenameChangedCallback = function(filenamebox) {
-        let file = FileWrapper.constructFromRoot($(filenamebox).closest(".xml_file"));
-        onFilenameChanged(file);
-    }
-
-    onFilenameChanged = function(ui_file) {
-      // after change of filename update all filelists
-
-      if (ui_file) {
-          // (the user has changed the filename in the filename input field)
-
-          // if the user has changed the filename and the extension is .java
-          // then the filename is recalculated on base of the source code (package class)
-          // and checked against user filename
-          if (getExtension(ui_file.filename) === 'java') {
-              // let filebox = $(textbox).closest(".xml_file");
-              let text = ui_file.text; // "";
-              let expectedFilename = javaParser.getFilenameWithPackage(text, ui_file.filename);
-              if (expectedFilename !== ui_file.filename && expectedFilename !== ".java") {
-                  if (confirm("Java filenames shall consist of the " +
-                      "package name, if any, and the class name.\n" +
-                      "So the expected filename is '" + expectedFilename + "'\n" +
-                      "Do you want to change the filename to '" + expectedFilename + "'?")) {
-                            ui_file.filename = expectedFilename;
-                  }
-              }
-          } else {
-              ui_file.filenameHeader = ui_file.filename;
-          }
-      }
-
-      // update filenames in all file references
-      FileReference.updateAllFilenameLists();
-    };
-
-
-  onFiletypeChanged = function(selectfield) {
-        // after change of filetype change binary
-
-        if (selectfield) {
-
-            // if the user has changed the filename and the extension is .java
-            // then the filename is recalculated on base of the source code (package class)
-            // and checked against user filename
-            //let filetype = $(selectfield).val();
-            //let fileroot = $(selectfield).closest(".xml_file");
-
-            let file = FileWrapper.constructFromRoot($(selectfield).closest(".xml_file"));
-            switch (file.type) { // filetype ) {
-                case 'file':
-                    const fileId = file.id;
-                    const filename = file.filename;
-                    const text = file.text;
-
-                    if (!("TextEncoder" in window))
-                        alert("Sorry, this browser does not support TextEncoder...");
-                    let enc = new TextEncoder("utf-8");
-
-                    // change filestore attributes
-                    fileobject = fileStorages[fileId];
-                    if (!fileobject) {
-                        // create fileobject
-                        fileobject = new FileStorage(true, '', '', filename);
-                        fileStorages[fileId] = fileobject;
-                    }
-                    if (getExtension(fileobject.filename) !== getExtension(filename)) {
-                        fileobject.mimetype = ''; // delete mimetype if filename has changed
-                        fileobject.filename = filename;
-                    }
-                    fileobject.isBinary = true;
-                    fileobject.content =  enc.encode(text);
-                    fileobject.setSize(text.length);
-                    showBinaryFile(file.root /*fileroot*/, fileobject);
-                    break;
-                case 'embedded':
-                    showTextFile(file.root);
-                    break;
-            }
-        }
-    };
-
     newFile = function(tempcounter) {                    // create a new file HTML form element
-        $("#filesection").append("<div "+
-        "class='ui-widget ui-widget-content ui-corner-all xml_file drop_zone'>"+
-        "<h3 class='ui-widget-header'><span class ='xml_filename_header'></span> (File #"+tempcounter+")<span "+
-        "class='rightButton'><button onclick='removeFile($(this));'>x</button></span></h3>"+
-        "<p><label for='xml_file_id'>ID: </label>"+
-        "<input class='tinyinput xml_file_id' value='"+tempcounter+"' readonly/>"+
-        " <label for='xml_file_filename'>Filename<span class='red'>*</span>: </label>"+
-        "<input class='mediuminput xml_file_filename' onchange='onFilenameChangedCallback(this)' title='with extension'/>"+
-            " <label for='xml_file_class'>Class<span class='red'>*</span>: </label>"+
-            "<select class='xml_file_class'>"+
-            "<option selected='selected'>internal</option>"+
-            "<option>template</option>"+
-            "<option>library</option>"+
-        //  "<option>inputdata</option>"+                      // not used at the moment
-            "<option>internal-library</option>"+
-            "<option>instruction</option></select>"+
+        let ui_file = FileWrapper.create(tempcounter);
 
-        " <label for='xml_file_type'>Type: </label>"+
-        "<select class='xml_file_type' onchange='onFiletypeChanged(this)'>"+
-        "<option selected='selected'>embedded</option>"+
-        "<option>file</option></select>"+
-            "<span class='drop_zone_text'>Drop Your File Here!</span>" +
-            "</p>"+
-        "<p><label for='xml_file_comment'>Comment: </label>"+
-        "<input class='largeinput xml_file_comment'/></p>"+
-
-        "<p><label>File content<span class='red'>*</span>: </label>"+
-        "<span class='xml_file_binary'>(Binary file) " +
-            "<span class='xml_file_size'>File size: ???</span>" +
-        "</span>" +
-        "<span class='xml_file_non_binary'>" +
-            "<input type='file' class='largeinput file_input' onchange='readSingleFile(this)'/>" +
-            "<textarea rows='3' cols='80' class='xml_file_text'"+
-            "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea>" +
-        "</span></p>" +
-        "</div>");
-
-        // hide fields that exist only for technical reasons
-        var fileroot = $(".xml_file_id[value='" + tempcounter + "']").closest(".xml_file");
-        fileroot.find(".xml_file_binary").hide(); // hide binary text
-        if (!DEBUG_MODE) {
-          fileroot.find(".xml_file_id").hide();
-          fileroot.find("label[for='xml_file_id']").hide();
-        }
-        if (useCodemirror) { addCodemirrorElement(tempcounter); }
-
-          fileroot.on({
+        // enable drag & drop
+        ui_file.root.on({
               dragover: function(e) {
                   e.preventDefault();
                   e.stopPropagation();
@@ -598,22 +420,6 @@ $(function() {
   };
 
 
-  updateFilenameList = function(tempSelElem) {            // create the drop-down with all possible filenames
-     $(tempSelElem).empty();
-     var tempOption = $("<option>" + emptyFileOption + "</option>");
-     $(tempSelElem).append(tempOption); // empty string
-     $.each($(".xml_file_filename"), function(index, item) {
-        if (item.value.length > 0) {
-            tempOption = $("<option></option>");
-            tempOption[0].textContent = item.value;
-            $(tempSelElem).append(tempOption);
-        }
-     });
-      //tempSelElem.val(""); // preset no filename
-      tempOption = $("<option></option>");
-      tempOption[0].textContent = loadFileOption;
-      $(tempSelElem).append(tempOption);
-  }
 
   newModelsol = function(tempcounter) {                // create a new model solution HTML form element
     $("#modelsolutionsection").append("<div "+
@@ -795,12 +601,8 @@ $(function() {
 
         let ui_file = FileWrapper.constructFromId(fileId);
         ui_file.filename = filename;
-
-        //let filenamebox = $(".xml_file_id[value='"+fileId+"']").parent().find(".xml_file_filename").first();
-        // filenamebox.val(filename);
-        // codemirror[fileId].setValue(content);
         ui_file.text = content;
-        onFilenameChanged(ui_file);
+        // onFilenameChanged(ui_file);
         return fileId;
     }
 

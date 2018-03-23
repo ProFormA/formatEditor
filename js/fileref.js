@@ -81,7 +81,7 @@ class FileReference {
 
     // init table
     init(root, DEBUG_MODE) {
-        updateFilenameList(root.find("." + this.classFilename).last());
+        FileReference.updateFilenameList(root.find("." + this.classFilename).last());
         if (!DEBUG_MODE) {
             root.find("." + this.classFileref).hide();
             root.find("label[for='" + this.classFileref + "']").hide();
@@ -120,7 +120,7 @@ class FileReference {
             this.addFileRef(box.find("." + this.classAddFileref).first());
         }
         let element = box.find("." + this.classFilename);
-        updateFilenameList(element.eq(index));
+        FileReference.updateFilenameList(element.eq(index));
         element.eq(index).val(filename).change();
     }
 
@@ -140,7 +140,7 @@ class FileReference {
         table_body.find("." + this.classRemoveFileref).show(); // show all remove file buttons
 
         // add filelist to new file option
-        updateFilenameList(table_body.find("." + this.classFilename).last());
+        FileReference.updateFilenameList(table_body.find("." + this.classFilename).last());
 
         if (!DEBUG_MODE) {
             // hide new fileref fields
@@ -186,8 +186,12 @@ class FileReference {
         }
     }
 
+    // TODO move to file!
     static deleteFile(fileid) {
-        // check how many references exist
+        // check if there any references
+        if (FileReference.isFileIdReferenced(fileid))
+            return;
+/*
         const references = $(".fileref_fileref");
         let exit = false;
         $.each(references, function(index, item) {
@@ -198,7 +202,7 @@ class FileReference {
         });
         if (exit)
             return;
-
+*/
         // delete file
         let ui_file = FileWrapper.constructFromId(fileid);
         ui_file.delete();
@@ -379,7 +383,7 @@ class FileReference {
                 // store name of currently selected file
                 var text = $("option:selected", item).text(); // selected text
                 //console.log("selected is " + text);
-                updateFilenameList(item); // update filename list in tests and model solutions
+                FileReference.updateFilenameList(item); // update filename list in tests and model solutions
 
                 if (text.length > 0) {
                     // check if previously selected filename is still in list
@@ -407,6 +411,25 @@ class FileReference {
                 }
         });
     }
+
+    // create the drop-down with all possible filenames
+    static updateFilenameList(tempSelElem) {
+        $(tempSelElem).empty();
+        var tempOption = $("<option>" + emptyFileOption + "</option>");
+        $(tempSelElem).append(tempOption); // empty string
+        $.each($(".xml_file_filename"), function(index, item) {
+            if (item.value.length > 0) {
+                tempOption = $("<option></option>");
+                tempOption[0].textContent = item.value;
+                $(tempSelElem).append(tempOption);
+            }
+        });
+        //tempSelElem.val(""); // preset no filename
+        tempOption = $("<option></option>");
+        tempOption[0].textContent = loadFileOption;
+        $(tempSelElem).append(tempOption);
+    }
+
 
     static uploadFiles(files, box, instance) {
         if (files.length > 1) {

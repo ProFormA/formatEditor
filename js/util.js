@@ -32,6 +32,18 @@ function getExtension(filename) {
     return filename.split('.').pop().toLowerCase();
 }
 
+// convert to mimetype that can be directely handeled by codemirror
+function getMimeType(mimetype, filename) {
+    const extension = getExtension(filename);
+    switch (extension.toLowerCase()) {
+        // case 'log':
+        // case 'txt':
+        case 'xml':  return 'application/xml';
+        case 'html':  return 'text/html';
+        default: return config.getMimetype(mimetype, extension);
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////////
 /* Each newly exported task needs its own UUID.
  * This function generates and returns an UUID.
