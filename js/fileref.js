@@ -17,13 +17,9 @@
  */
 
 
-/*
-let testFileRefSingleton = null;
-let modelSolutionFileRefSingleton = null;
-let templSingleton = null;
-let instructionSingleton = null;
-let librarySingleton = null;
-*/
+const loadFileOption = "<load...>";
+const emptyFileOption = " "; // must not be empty!!
+
 
 let filenameClassList = [];
 let filerefClassList = [];
@@ -285,8 +281,8 @@ class FileReference {
 
         }
 
-        var found = false;
-        var selectedFilename = $(tempSelElem).val();
+        // var found = false;
+        const selectedFilename = $(tempSelElem).val();
         // get old file id
         const nextTd = $(tempSelElem).parent().next('td');
         const oldFileId = nextTd.find('.fileref_fileref')[0].value;
@@ -366,7 +362,7 @@ class FileReference {
             const text = $("option:selected", item).text(); // selected text
             //console.log("selected is " + text);
             FileReference.updateFilenameList(item); // update filename list
-            var indexFound = -1;
+            let indexFound = -1;
             if (text.trim().length > 0) {  // always true!
                 // check if previously selected filename is still in list
                 // (ich weiß im Moment nicht, wie man die Einträge aus
@@ -402,7 +398,7 @@ class FileReference {
     // create the drop-down with all possible filenames
     static updateFilenameList(tempSelElem) {
         $(tempSelElem).empty();
-        var tempOption = $("<option>" + emptyFileOption + "</option>");
+        let tempOption = $("<option>" + emptyFileOption + "</option>");
         $(tempSelElem).append(tempOption); // empty string
         $.each($(".xml_file_filename"), function(index, item) {
             if (item.value.length > 0) {
@@ -419,10 +415,11 @@ class FileReference {
 
 
     static uploadFiles(files, box, instance) {
-        if (files.length > 1) {
+        /*if (files.length > 1) {
             alert('You have dragged more than one file. You must drop exactly one file!');
             return;
         }
+        */
         $.each(files, function(index, file) {
             readAndCreateFileData(file, -1, function(filename) {
                 instance.onFileUpload(filename, box);

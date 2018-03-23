@@ -21,31 +21,27 @@
 
 // TAB pages
 const tab_page = {
-  MAIN:   0,
-  MODEL_SOLUTION:  1,
-  TESTS:  2,
-  FILES:  3,
-  DEBUG:  4,
-  MANUAL: 5,
-  FAQ:    6
+    MAIN:   0,
+    MODEL_SOLUTION:  1,
+    TESTS:  2,
+    FILES:  3,
+    DEBUG:  4,
+    MANUAL: 5,
+    FAQ:    6
 };
-
-
-
 
 
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
 
 
-// these variables can be set in the calling HTML file
-var readXmlActive = false;
+// lock
+let readXmlActive = false;
 
 
 
 // string constants
-const loadFileOption = "<load...>";
-const emptyFileOption = " "; // must not be empty!!
+
 const testTypes = getTesttypeOptions();
 
 
@@ -65,8 +61,8 @@ var descriptionEditor;
 
 // create option list string with all test types
 function getTesttypeOptions() {
-    var list = "";
-    var first = true;
+    let list = "";
+    let first = true;
     $.each(config.testInfos, function(index, item) {
         list = list + "<option";
         if (first) {
@@ -81,8 +77,8 @@ function getTesttypeOptions() {
 
 // create option list string with all test types
 function getProgLangOptions() {
-    var list = "";
-    var first = true;
+    let list = "";
+    let first = true;
     $.each(config.proglangInfos, function(index, item) {
         list = list + "<option";
         if (first) {
@@ -119,17 +115,17 @@ function showTextFile(fileroot) {
  * deletecounter deletes an ID from the hash, to be used when deleting an item
  */
 function setcounter(temphash) {
-  var tempcnter = 1;
-  while (temphash.hasOwnProperty(tempcnter)) {         // if the counter is already used, take next one
-    tempcnter++;
-  }
-  temphash[tempcnter] = 1;
-  return tempcnter;
+    let tempcnter = 1;
+    while (temphash.hasOwnProperty(tempcnter)) {         // if the counter is already used, take next one
+        tempcnter++;
+    }
+    temphash[tempcnter] = 1;
+    return tempcnter;
 }
 function deletecounter(temphash,tempelement) {         // for modelSolIDs, testIDs
   //console.log('deletecounter called');
-  var tempcnter;
-  delete temphash[tempelement.parent().parent().parent().find('.tinyinput')[0].value];
+  // let tempcnter;
+    delete temphash[tempelement.parent().parent().parent().find('.tinyinput')[0].value];
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -142,9 +138,9 @@ function setErrorMessageInvalidOption(xmlpath, attribute, value) {              
 }
 
 function setErrorMessage(errormess, exception) {                  // setting the error console
-    var error_output = $("#error-message");
+    let error_output = $("#error-message");
     error_output.append("\n* " + errormess);
-    if (exception != undefined) {
+    if (exception !== undefined) {
         error_output.append("\n  (" + exception.message + ")");
         console.log(exception.stack);
     }
@@ -155,9 +151,9 @@ function setErrorMessage(errormess, exception) {                  // setting the
 }
 
 function clearErrorMessage() {                         // clearing the error console
-  var error_output = $("#error-message");
-  error_output.text("");
-  error_output.css('visibility', 'hidden');
+    let error_output = $("#error-message");
+    error_output.text("");
+    error_output.css('visibility', 'hidden');
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -199,14 +195,14 @@ function uploadTaskFile(inputbutton) {                     // upload button for 
 }
 
 // unused
+/*
 function downloadFile(downloadLink) {                  // download link for textareas: output, output2
   console.log("downloadFile called");
 
   var tempbase64 = "";
   try {
-      /*  tempbase64 = window.btoa($(downloadLink).parent().parent().parent().find("textarea").val());
-      $(downloadLink).attr("href",'data:text/text;base64,'+tempbase64);
-      */
+      // tempbase64 = window.btoa($(downloadLink).parent().parent().parent().find("textarea").val());
+      // $(downloadLink).attr("href",'data:text/text;base64,'+tempbase64);
       var text = $("#output").val();
       /// var text = $(downloadLink).parent().parent().parent().find("textarea").val();
       var text1 = encodeURIComponent(text);
@@ -214,7 +210,7 @@ function downloadFile(downloadLink) {                  // download link for text
       $(downloadLink).attr("href",'data:text/text;charset=utf-8,' + text1); // encodeURIComponent(text));
   } catch(err) { setErrorMessage("File cannot be downloaded because it contains an invalid character.");}
 }
-
+*/
 function downloadTextFile2(textarea, filename, dummybutton) {
     console.log("downloadTextFile2 called");
     var text = textarea.val();
@@ -255,11 +251,11 @@ function downloadText3(text, name, type) {
  */
 $(function() {
 
-  $('#codeversion').text("Version "+codeversion);
+    $('#codeversion').text("Version "+codeversion);
 
-  gradingHintCounter = 1;
+    gradingHintCounter = 1;
 
-  remP3 = function(bt) {bt.parent().parent().parent().remove();};   // for removing files, etc
+    remP3 = function(bt) {bt.parent().parent().parent().remove();};   // for removing model solutions and tests
 
 /*  remP3Check = function(bt) {                                       // ask before removing
      var remtemp = window.confirm("Do you really want to delete this?");
@@ -269,18 +265,15 @@ $(function() {
 
 
 ///////////////////////////////////////////////////////// creating new HTML form elements
-  newGH = function() {                                 // create a new grading hint HTML form element
-    $("#gradinghintsection").append("<div "+
-    "class='ui-widget ui-widget-content ui-corner-all xml_grading-hints'>"+
-    "<h3 class='ui-widget-header'>Grading hints<span class='rightButton'>"+
-    "<button onclick='remP3($(this));gradingHintCounter--;'>x</button></span></h3>"+
-    "<p><textarea rows='3' cols='80' id='xml_grading-hints_text'"+
-    "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea></p></div>");
-    gradingHintCounter++;
-  };
-
-
-
+    newGH = function() {                                 // create a new grading hint HTML form element
+        $("#gradinghintsection").append("<div "+
+        "class='ui-widget ui-widget-content ui-corner-all xml_grading-hints'>"+
+        "<h3 class='ui-widget-header'>Grading hints<span class='rightButton'>"+
+        "<button onclick='remP3($(this));gradingHintCounter--;'>x</button></span></h3>"+
+        "<p><textarea rows='3' cols='80' id='xml_grading-hints_text'"+
+        "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea></p></div>");
+        gradingHintCounter++;
+    };
 
     readAndCreateFileData = function(file, fileId, callback) {
         if (!file)
@@ -331,10 +324,9 @@ $(function() {
               ui_file.type = 'file';
           } else {
               // assume non binary file
-              const text = e.target.result;
               let fileObject = new FileStorage(isBinaryFile, mimetype, 'text is in editor', filename);
               fileStorages[fileId] = fileObject;
-              ui_file.text = text;
+              ui_file.text = e.target.result;
               ui_file.type = 'embedded';
           }
 
@@ -374,32 +366,32 @@ $(function() {
                   }
               }
           });
-  };
+    };
 
 
 
-  newModelsol = function(tempcounter) {                // create a new model solution HTML form element
-    $("#modelsolutionsection").append("<div "+
-    "class='ui-widget ui-widget-content ui-corner-all xml_model-solution'>"+
-    "<h3 class='ui-widget-header'>Model solution #"+tempcounter+"<span "+
-    "class='rightButton'><button onclick='remP3($(this));deletecounter(modelSolIDs,$(this));'>x</button></span></h3>"+
-    "<p><label for='xml_model-solution_id'>ID<span class='red'>*</span>: </label>"+
-    "<input class='tinyinput xml_model-solution_id' value='"+tempcounter+"' readonly/>"+
-        ModelSolutionFileReference.getInstance().getTableString() +
-     //   "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>" +
-    "<p><label for='xml_model-solution_comment'>Comment: </label>"+
-    "<input class='largeinput xml_model-solution_comment'/></p></div>");
+    newModelsol = function(tempcounter) {                // create a new model solution HTML form element
+        $("#modelsolutionsection").append("<div "+
+        "class='ui-widget ui-widget-content ui-corner-all xml_model-solution'>"+
+        "<h3 class='ui-widget-header'>Model solution #"+tempcounter+"<span "+
+        "class='rightButton'><button onclick='remP3($(this));deletecounter(modelSolIDs,$(this));'>x</button></span></h3>"+
+        "<p><label for='xml_model-solution_id'>ID<span class='red'>*</span>: </label>"+
+        "<input class='tinyinput xml_model-solution_id' value='"+tempcounter+"' readonly/>"+
+            ModelSolutionFileReference.getInstance().getTableString() +
+         //   "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>" +
+        "<p><label for='xml_model-solution_comment'>Comment: </label>"+
+        "<input class='largeinput xml_model-solution_comment'/></p></div>");
 
-    const msroot = $(".xml_model-solution_id[value='" + tempcounter + "']").parent().parent();
-    FileReference.init(null, null, ModelSolutionFileReference, msroot);
+        const msroot = $(".xml_model-solution_id[value='" + tempcounter + "']").parent().parent();
+        FileReference.init(null, null, ModelSolutionFileReference, msroot);
 
-    // ModelSolutionFileReference.getInstance().init(msroot, DEBUG_MODE);
+        // ModelSolutionFileReference.getInstance().init(msroot, DEBUG_MODE);
 
-    if (!DEBUG_MODE) {
-        // hide fields that exist only for technical reasons
-        msroot.find(".xml_model-solution_id").hide();
-        msroot.find("label[for='xml_model-solution_id']").hide();
-    }
+        if (!DEBUG_MODE) {
+            // hide fields that exist only for technical reasons
+            msroot.find(".xml_model-solution_id").hide();
+            msroot.find("label[for='xml_model-solution_id']").hide();
+        }
 /*
       msroot.on({
           drop: function(e){
@@ -416,7 +408,7 @@ $(function() {
           }
       });
       */
-  };
+    };
 
     newTest = function(tempcounter,TestName, MoreText, TestType, WithFileRef) { // create a new test HTML form element
 
@@ -576,37 +568,35 @@ $(function() {
 
 
 ///////////////////////////////////////////////////////// jQuery UI settings
-  $("#tabs").tabs();                                   // hide HTML elements when the manual or FAQ are selected
-  $('#tabs').click(function(e) {
-    var curTab = $('.ui-tabs-active');
-    if (curTab.index() == tab_page.MANUAL || curTab.index() == tab_page.FAQ){ // if manual or FAQ selected
-      $("#rightPanel").hide();
-      $("#button-list").hide();
-      $("#end-container").hide();
-      $("#xml-output-input").hide();
-      $("#otherSoftware2").hide();
-    } else {
-      $("#rightPanel").show();
-      $("#button-list").show();
-      $("#end-container").show();
-      $("#xml-output-input").show();
-      $("#otherSoftware2").show();
+    $("#tabs").tabs();                                   // hide HTML elements when the manual or FAQ are selected
+    $('#tabs').click(function(e) {
+        var curTab = $('.ui-tabs-active');
+        if (curTab.index() == tab_page.MANUAL || curTab.index() == tab_page.FAQ){ // if manual or FAQ selected
+            $("#rightPanel").hide();
+            $("#button-list").hide();
+            $("#end-container").hide();
+            $("#xml-output-input").hide();
+            $("#otherSoftware2").hide();
+        } else {
+            $("#rightPanel").show();
+            $("#button-list").show();
+            $("#end-container").show();
+            $("#xml-output-input").show();
+            $("#otherSoftware2").show();
 
-      // refresh codemirror editors  -
-      // otherwise content is visible only after first click in window
-      setTimeout(function () {
-          Object.keys(codemirror).forEach(function(item) {codemirror[item].refresh();});
-      }, 5);
-
-
-    }
-  });
+            // refresh codemirror editors  -
+            // otherwise content is visible only after first click in window
+            setTimeout(function () {
+                Object.keys(codemirror).forEach(function(item) {codemirror[item].refresh();});
+            }, 5);
+        }
+    });
 //   $("#filesection").sortable();
-  $("#modelsolutionsection").sortable();
-  $("#testsection").sortable();
+    $("#modelsolutionsection").sortable();
+    $("#testsection").sortable();
 
-  addTestButtons();
-  $("#xml_programming-language").append(getProgLangOptions());
+    addTestButtons();
+    $("#xml_programming-language").append(getProgLangOptions());
 
   $("#addGH").click(function() {                       // the code for the buttons for adding new elements
     if (gradingHintCounter === 1) {newGH();}            // only one grading hint allowed
@@ -688,7 +678,7 @@ $(function() {
   config.createFurtherUiElements();
 
   // create dummy button for saving task.xml
-  var anchor = document.createElement("a");
+  let anchor = document.createElement("a");
   anchor.style = "display: none";
   //anchor.id = "dummy_save_xml_button";
   document.body.appendChild(anchor);
