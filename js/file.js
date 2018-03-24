@@ -24,7 +24,7 @@ class FileStorage {
         this.isBinary = isBinary;
         this.mimetype = mimetype;
         this.content = content;
-        this.filename = filename;
+        this.originalFilename = this.filename = filename;
         this.storeAsFile = isBinary;
     }
 
@@ -84,6 +84,7 @@ class FileWrapper {
     get storeAsFile() { return fileStorages[this.id].storeAsFile; }
     get content() { return fileStorages[this.id].content; }
     get size() { return fileStorages[this.id].size; }
+    get originalFilename() { return fileStorages[this.id].originalFilename; }
 
     get text() {
         if (useCodemirror) {
@@ -110,7 +111,8 @@ class FileWrapper {
         }
         this._filename.val(name);
         this._root.find(".xml_filename_header").first().text(name);
-        FileWrapper.onFilenameChanged(this); // TODO check for endless recursion!!
+        fileStorages[this.id].filename = name;
+        FileWrapper.onFilenameChanged(); // this); // TODO check for endless recursion!!
     }
 
     set filenameHeader(name) {
@@ -148,6 +150,13 @@ class FileWrapper {
         }
     }
 
+    set content(binaryFileContent) { fileStorages[this.id].content = binaryFileContent; }
+    set mimetype(mimetype) { fileStorages[this.id].mimetype = mimetype; }
+    set storeAsFile(storeAsFile) { fileStorages[this.id].storeAsFile = storeAsFile; }
+    set originalFilename(filename) { fileStorages[this.id].originalFilename = filename; }
+    set size(size) { fileStorages[this.id].size = size; }
+    set isBinary(isBinary) { fileStorages[this.id].isBinary = isBinary; }
+
     // other functions
     delete() {
         this.root.remove();
@@ -157,6 +166,7 @@ class FileWrapper {
 
 
     static onFilenameChanged(ui_file) {
+        console.log('onFilenameChanged');
         // after change of filename update all filelists
 
         if (ui_file) {
@@ -238,13 +248,13 @@ class FileWrapper {
             //let filetype = $(selectfield).val();
             //let fileroot = $(selectfield).closest(".xml_file");
 
-            let file = FileWrapper.constructFromRoot($(selectfield).closest(".xml_file"));
-            const newtype = file.type;
+            let ui_file = FileWrapper.constructFromRoot($(selectfield).closest(".xml_file"));
+            const newtype = ui_file.type;
             switch (newtype) { // filetype ) {
                 case 'file':
-                    const fileId = file.id;
-                    const filename = file.filename;
-                    const text = file.text;
+                    const fileId = ui_file.id;
+                    const filename = ui_file.filename;
+                    const text = ui_file.text;
 
                     if (!("TextEncoder" in window))
                         alert("Sorry, this browser does not support TextEncoder...");
@@ -272,7 +282,7 @@ class FileWrapper {
             }
             // force default handling for new file type
             // (ok, that's not so pretty...)
-            file.type = newtype;
+            ui_file.type = newtype;
         }
     };
 
@@ -358,5 +368,13 @@ class FileWrapper {
             FileWrapper.addCodemirrorElement(fileid);
         }
         return ui_file;
+    }
+
+    static deleteAllFiles() {
+        codemirror = {};
+        fileStorages = []; // empty array
+        fileIDs = {};
+
+        $("#filesection")[0].textContent = "";                     // delete previous content
     }
 }

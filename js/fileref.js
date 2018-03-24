@@ -274,7 +274,19 @@ class FileReference {
                         // remove old fileref object
                         filenameobject.val(emptyFileOption).change();
                         item.value = '';
-                        FileReference.updateAllFilenameLists();
+                        // FileReference.updateAllFilenameLists();
+                        // remove actual numeric fileref value
+                        let td = $(item).parent();
+                        let tr = td.parent();
+                        tr.find('.fileref_fileref').first().val('');
+                        // check if complete row can be deleted
+                        const table_body = tr.parent();
+                        if (table_body.find('tr').length > 1) {
+                            // more than one row => delete row
+                            // (object does not matter)
+                            modelSolutionFileRefSingleton.removeFileRef($(item));
+                        }
+
                     }
                 }
             });
@@ -345,6 +357,7 @@ class FileReference {
                             // model solution, nothing to be done
                         }
                     }
+
                 }
         }
 
@@ -353,6 +366,7 @@ class FileReference {
             FileReference.deleteFile(oldFileId);
         }
     };
+
 
     // update all filename lists
     static updateAllFilenameLists() {
@@ -381,6 +395,8 @@ class FileReference {
                 //console.log("selektiere " + indexFound);
                 item.selectedIndex = indexFound + 1; // +1:weil am Anfang noch ein Leerstring ist
             } else {
+/*
+                // das ist kein guter Ort für so was!!
                 // remove actual numeric fileref value
                 let td = $(item).parent();
                 let tr = td.parent();
@@ -391,6 +407,7 @@ class FileReference {
                     // more than one row => delete row
                     modelSolutionFileRefSingleton.removeFileRef($(item));
                 }
+*/
             }
         });
     }

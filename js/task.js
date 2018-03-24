@@ -557,11 +557,14 @@ readXML = function(xmlText) {
         }                         // proceed only after confirmation
     }
     gradingHintCounter = 1;                            // variable initialisation
-    codemirror = {};
     clearErrorMessage();
+    /* codemirror = {};
     fileStorages = []; // empty array
-
     $("#filesection")[0].textContent = "";                     // delete previous content
+    */
+
+    FileStorage.deleteAllFiles();
+
     $("#modelsolutionsection")[0].textContent = "";
     $("#testsection")[0].textContent = "";
 
@@ -573,29 +576,8 @@ readXML = function(xmlText) {
     const libroot = $("#librarydropzone");
     const instructionroot = $("#instructiondropzone");
 
-/*
-    let template_section = $("#templatesection");
-    template_section[0].textContent = "";
-    template_section.append(TemplateFileReference.getInstance().getTableString());
-    const templateroot = $("#templatedropzone");
-    TemplateFileReference.getInstance().init(templateroot, DEBUG_MODE);
 
-
-    // initialise library section
-    let lib_section = $("#librarysection");
-    lib_section[0].textContent = "";
-    lib_section.append(TemplateFileReference.getInstance().getTableString());
-    const libroot = $("#libraryropzone");
-    LibraryFileReference.getInstance().init(libroot, DEBUG_MODE);
-
-    // initialise instruction section
-    const instructionroot = $("#instructiondropzone");
-    $("#instructionsection")[0].textContent = "";
-    $('#instructionsection').append(InstructionFileReference.getInstance().getTableString());
-    InstructionFileReference.getInstance().init(instructionroot, DEBUG_MODE);
-*/
-
-    fileIDs = {};
+    // fileIDs = {};
     modelSolIDs = {};
     testIDs = {};
 
