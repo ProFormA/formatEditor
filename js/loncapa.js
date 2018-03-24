@@ -80,16 +80,17 @@ function createDownloadLink(fileroot, item) {
     //let fileclass = fileroot.find(".xml_file_class").val();
     //if (fileclass == "library" || fileclass == "instruction") {
 
+    const ui_file = FileWrapper.constructFromRoot(fileroot);
     const megabyte = 1024*1024;
     let tempbase64 = "";
-    let filetype = fileroot.find(".xml_file_type").val();
-    let fileid = fileroot.find(".xml_file_id").val();
+    // const  filetype = fileroot.find(".xml_file_type").val();
+    // let fileid = ui_file.id; // fileroot.find(".xml_file_id").val();
     // create download
-    switch (filetype) {
+    switch (ui_file.type) {
         case 'embedded':
             // read from editor
             try {
-                tempbase64 = window.btoa(codemirror[fileid].getValue());
+                tempbase64 = window.btoa(ui_file.text); // codemirror[fileid].getValue());
                 // tempbase64 = window.btoa(codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue());
             } catch(err) {
                 alert("Files which are to be downloaded by students (i.e. 'library'" +
@@ -99,19 +100,13 @@ function createDownloadLink(fileroot, item) {
             }
             break;
         case 'file':
-            // read from filestorage
-            if (fileStorages[fileid] === undefined || fileStorages[fileid].content === undefined) {
-                alert('internal error: no file stored for id ' + fileid);
-                return "";
-            }
-
-            if (fileStorages[fileid].content.byteLength > megabyte)
-                alert('File ' + fileStorages[fileid].filename + ' is larger than 1MB. ' +
+            if (ui_file.content.byteLength > megabyte)
+                alert('File ' + ui_file.filename + ' is larger than 1MB. ' +
                     'It will be added to the LON CAPA problem file but you should think about using a smaller file.');
-            tempbase64  =_arrayBufferToBase64(fileStorages[fileid].content);
+            tempbase64  =_arrayBufferToBase64(ui_file.content);
             break;
         default:
-            alert('unknown file type: ' + filetype);
+            alert('unknown file type: ' + ui_file.type);
             break;
     }
 

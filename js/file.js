@@ -19,6 +19,7 @@ var fileStorages = [];
 
 // todo: merge with FileWrapper
 class FileStorage {
+
     constructor(isBinary, mimetype, content, filename) {
         this.isBinary = isBinary;
         this.mimetype = mimetype;
@@ -78,7 +79,11 @@ class FileWrapper {
     get filename() { return this.getValue(this._filename,".xml_file_filename" ); }
     get class() { return this.getValue(this._class,".xml_file_class" ); }
     get type() { return this.getValue(this._type,".xml_file_type" ); }
-
+    get mimetype() { return fileStorages[this.id].mimetype; }
+    get isBinary() { return fileStorages[this.id].isBinary; }
+    get storeAsFile() { return fileStorages[this.id].storeAsFile; }
+    get content() { return fileStorages[this.id].content; }
+    get size() { return fileStorages[this.id].size; }
 
     get text() {
         if (useCodemirror) {
@@ -117,20 +122,24 @@ class FileWrapper {
     }
 
     set type(newType) {
+        const oldType = this.type;
         if (!this._type) {
             this._type = this.root.find(".xml_file_type").first();
         }
+
         this._type.val(newType);
-        this._type.attr('disabled', newType === 'file')
+        if (this.isBinaryFile) {
+            // type is set for the first type, then
+            this._type.attr('disabled', newType === 'file');
+        }
 
         switch (newType) {
             case 'file':
                 this.root.find(".xml_file_binary").show(); // show binary text
                 this.root.find(".xml_file_non_binary").hide(); // hide editor
                 let xml_file_size = this.root.find(".xml_file_size");
-                const fileObject = fileStorages[this.id];
-                xml_file_size.first().text('File size: ' + fileObject.size.toLocaleString() + ", " +
-                    'File type: ' + fileObject.mimetype);
+                xml_file_size.first().text('File size: ' + this.size.toLocaleString() + ", " +
+                    'File type: ' + this.mimetype);
                 break;
             case 'embedded':
                 this.root.find(".xml_file_binary").hide(); // hide binary text
@@ -337,6 +346,8 @@ class FileWrapper {
         const fileroot = $(".xml_file_id[value='" + fileid + "']").closest(".xml_file");
 
         let ui_file = FileWrapper.constructFromRoot(fileroot);
+        fileStorages[fileid] = new FileStorage(false, '', '', '');
+
         // hide fields that exist only for technical reasons
         ui_file.root.find(".xml_file_binary").hide(); // hide binary text
         if (!DEBUG_MODE) {

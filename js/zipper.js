@@ -199,19 +199,16 @@ zipme = function() {
     // - if file type is 'file' the file must be added to zip file
     // - if file is non binary it is stored in the editor!
     $.each($(".xml_file_id"), function(index, item) {
-        let fileroot = $(item).closest(".xml_file");
-        const fileId = fileroot.find(".xml_file_id").val();
-        const embedded = fileroot.find(".xml_file_type").val() === 'embedded';
+        const ui_file = FileWrapper.constructFromRoot($(item).closest(".xml_file"));
+        // let fileroot = $(item).closest(".xml_file");
+        // const fileId = fileroot.find(".xml_file_id").val();
+        const embedded = ui_file.type === 'embedded';
         if (!embedded) {
             // copy editor content to file storage
-            fileStorages[fileId].storeAsFile = true;
-            if (!fileStorages[fileId].isBinary) {
+            fileStorages[ui_file.id].storeAsFile = true;
+            if (!ui_file.isBinary) {
                 // copy content from editor if file is non binary
-                if (useCodemirror) {
-                    fileStorages[fileId].content = codemirror[fileId].getValue();
-                } else {
-                    fileStorages[fileId].content = fileroot.find(".xml_file_text").val();
-                }
+                fileStorages[ui_file.id].content = ui_file.text;
             }
         }
     });
