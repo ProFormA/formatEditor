@@ -75,12 +75,12 @@ function _arrayBufferToBase64( buffer ) {
 }
 
 
-function createDownloadLink(fileroot, item) {
+function createDownloadLink(ui_file, item) {
     //let fileroot = $(item).closest(".xml_file");
     //let fileclass = fileroot.find(".xml_file_class").val();
     //if (fileclass == "library" || fileclass == "instruction") {
 
-    const ui_file = FileWrapper.constructFromRoot(fileroot);
+    // const ui_file = FileWrapper.constructFromRoot(fileroot);
     const megabyte = 1024*1024;
     let tempbase64 = "";
     // const  filetype = fileroot.find(".xml_file_type").val();
@@ -93,8 +93,8 @@ function createDownloadLink(fileroot, item) {
                 tempbase64 = window.btoa(ui_file.text); // codemirror[fileid].getValue());
                 // tempbase64 = window.btoa(codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue());
             } catch(err) {
-                alert("Files which are to be downloaded by students (i.e. 'library'" +
-                    " or 'instruction') in LON-CAPA cannot contain raw unicode characters, " +
+                alert("Files which are to be downloaded by students " +
+                    "in LON-CAPA cannot contain raw unicode characters, " +
                     "for example, certain encodings of Umlaute and ß. Please change " +
                     "the file " + item.value + " to 'internal' or remove or change the encoding of such characters.");
             }
@@ -119,30 +119,34 @@ function createDownloadLink(fileroot, item) {
 function createDownloadLinks(/*cmhash*/) {
     let returnvalue = "";
     let templateCounter = 0;
+
     $.each($(".xml_file_filename"), function(index, item) {
-        let fileroot = $(item).closest(".xml_file");
-        let fileclass = fileroot.find(".xml_file_class").val();
-        switch (fileclass) {
+        // todo: use simpler approach (template, library and instruction) section
+        let ui_file = FileWrapper.constructFromRoot($(item).closest(".xml_file"));
+
+        // let fileroot = $(item).closest(".xml_file");
+        // let fileclass = fileroot.find(".xml_file_class").val();
+        switch (ui_file.class) {
             case "template":
-                let filetype = fileroot.find(".xml_file_type").val();
-                switch (filetype) {
+                // let filetype = fileroot.find(".xml_file_type").val();
+                switch (ui_file.type) {
                     case 'file':
                         // first template is binary => do not skip
-                        returnvalue = returnvalue + createDownloadLink(fileroot, item);
+                        returnvalue = returnvalue + createDownloadLink(ui_file, item);
                         break;
                     case 'embedded':
                         // skip first embedded template
                         if (templateCounter === 0) {
                             templateCounter++;
                         } else {
-                            returnvalue = returnvalue + createDownloadLink(fileroot, item);
+                            returnvalue = returnvalue + createDownloadLink(ui_file, item);
                         }
                         break;
                 }
                 break;
             case "library":
             case "instruction":
-                returnvalue = returnvalue + createDownloadLink(fileroot, item);
+                returnvalue = returnvalue + createDownloadLink(ui_file, item);
                 break;
         }
     });
@@ -183,7 +187,7 @@ function getModelSolution(cmhash) {
               returnvalue = codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue();
           } else {
               // file is not embedded
-              alert("The Model Solution will not be shown in LON-CAPA because file type 'file' is used for it.");
+              alert("The Model Solution will not be shown in LON-CAPA because it is stored in zip (not embedded in task).");
               returnvalue = 'A Model Solution is not available.';
           }
      }

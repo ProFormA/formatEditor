@@ -286,7 +286,6 @@ class FileReference {
                             // (object does not matter)
                             modelSolutionFileRefSingleton.removeFileRef($(item));
                         }
-
                     }
                 }
             });
@@ -305,11 +304,11 @@ class FileReference {
                 // reset selection in case choosing a file fails
                 $(tempSelElem).val(emptyFileOption); // do not call change!
                 // change callback
-                var dummybutton = $("#dummy_file_upload_button").first();
+                let dummybutton = $("#dummy_file_upload_button").first();
                 dummybutton.unbind("change");
                 dummybutton.change(function () {
-                    var inputbutton = $("#dummy_file_upload_button")[0];
-                    var filenew = inputbutton.files[0];
+                    let inputbutton = $("#dummy_file_upload_button")[0];
+                    let filenew = inputbutton.files[0];
                     if (!filenew) {
                         console.log("no file selected -> cancel");
                         return;

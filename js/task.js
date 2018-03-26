@@ -563,7 +563,7 @@ readXML = function(xmlText) {
     $("#filesection")[0].textContent = "";                     // delete previous content
     */
 
-    FileStorage.deleteAllFiles();
+    FileWrapper.deleteAllFiles();
 
     $("#modelsolutionsection")[0].textContent = "";
     $("#testsection")[0].textContent = "";
@@ -791,7 +791,7 @@ readXML = function(xmlText) {
         // var templateroot = $("#templatedropzone");
         // var instructionroot = $("#instructiondropzone");
         xmlObject.find('file').each(function (index, element) {    // iterate through all files
-            console.log(index + ' ' + element);
+//            console.log(index + ' ' + element);
             var fileid = element.getAttribute('id');
             var filename = element.getAttribute('filename');
             switch(element.getAttribute('class')) {

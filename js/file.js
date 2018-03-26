@@ -112,7 +112,9 @@ class FileWrapper {
         this._filename.val(name);
         this._root.find(".xml_filename_header").first().text(name);
         fileStorages[this.id].filename = name;
-        FileWrapper.onFilenameChanged(); // this); // TODO check for endless recursion!!
+        // FileWrapper.onFilenameChanged(); // this); // TODO check for endless recursion!!
+        // update filenames in all file references
+        FileReference.updateAllFilenameLists();
     }
 
     set filenameHeader(name) {
@@ -179,8 +181,9 @@ class FileWrapper {
             if (getExtension(ui_file.filename) === 'java') {
                 // let filebox = $(textbox).closest(".xml_file");
                 let text = ui_file.text; // "";
-                let expectedFilename = javaParser.getFilenameWithPackage(text, ui_file.filename);
-                if (expectedFilename !== ui_file.filename && expectedFilename !== ".java") {
+                const actualFilename = ui_file.filename;
+                const expectedFilename = javaParser.getFilenameWithPackage(text, actualFilename);
+                if (expectedFilename !== actualFilename && expectedFilename !== ".java") {
                     if (confirm("Java filenames shall consist of the " +
                             "package name, if any, and the class name.\n" +
                             "So the expected filename is '" + expectedFilename + "'\n" +
@@ -320,25 +323,30 @@ class FileWrapper {
             "class='ui-widget ui-widget-content ui-corner-all xml_file drop_zone'>"+
             "<h3 class='ui-widget-header'><span class ='xml_filename_header'></span> (File #"+fileid+")<span "+
             "class='rightButton'><button onclick='FileWrapper.removeFile($(this));'>x</button></span></h3>"+
+
             "<p><label for='xml_file_id'>ID: </label>"+
             "<input class='tinyinput xml_file_id' value='"+fileid+"' readonly/>"+
+
             " <label for='xml_file_filename'>Filename<span class='red'>*</span>: </label>"+
             "<input class='mediuminput xml_file_filename' onchange='FileWrapper.onFilenameChangedCallback(this)' title='with extension'/>"+
-            " <label for='xml_file_class'>Class<span class='red'>*</span>: </label>"+
-            "<select class='xml_file_class'>"+
-            "<option selected='selected'>internal</option>"+
-            "<option>template</option>"+
-            "<option>library</option>"+
-            //  "<option>inputdata</option>"+                      // not used at the moment
-            "<option>internal-library</option>"+
-            "<option>instruction</option></select>"+
 
-            " <label for='xml_file_type'>Type: </label>"+
+            " <label for='xml_file_class'>Usage<span class='red'>*</span>: </label>"+
+            "<select class='xml_file_class'>"+
+                "<option selected='selected'>internal</option>"+
+                "<option>template</option>"+
+                "<option>library</option>"+
+                //  "<option>inputdata</option>"+                      // not used at the moment
+                "<option>internal-library</option>"+
+                "<option>instruction</option>" +
+            "</select>"+
+
+            " <label for='xml_file_type'>Store  in </label>"+
             "<select class='xml_file_type' onchange='FileWrapper.onFiletypeChanged(this)'>"+
-            "<option selected='selected'>embedded</option>"+
-            "<option>file</option></select>"+
+                "<option value = 'embedded' selected='selected'>task</option>"+
+                "<option value = 'file'>zip</option></select>"+
             "<span class='drop_zone_text'>Drop Your File Here!</span>" +
             "</p>"+
+
             "<p><label for='xml_file_comment'>Comment: </label>"+
             "<input class='largeinput xml_file_comment'/></p>"+
 

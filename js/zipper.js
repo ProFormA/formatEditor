@@ -46,7 +46,7 @@ unzipme = function (blob, location, readyCallback) {
      * is called after every processing of a single file in order to guarantee
      * that all files are handled.
      **/
-    function moveFiles() {
+    function relinkFiles() {
         if (!taskfile_read)
             return; // wait and retry later
 
@@ -57,17 +57,19 @@ unzipme = function (blob, location, readyCallback) {
             // let fileroot = $(item).closest(".xml_file");
             // let filetype = fileroot.find(".xml_file_type").val();
             if (ui_file.type === 'file') {
-                let fileid = ui_file.id; // fileroot.find(".xml_file_id").val();
-                let filename = $(item).val();
-                if (unzippedFiles[filename] != undefined && fileStorages[fileid] === undefined) {
-                    // file is not yet relinked
+                const fileid = ui_file.id; // fileroot.find(".xml_file_id").val();
+                const filename = $(item).val();
+                if (unzippedFiles[filename] && !fileStorages[fileid].filename.length) {
+                    // note that there is always a fileStorage object whenever there is a ui file object!
+                    // file is not yet relinked => link to fileStorage
                     fileStorages[fileid] = unzippedFiles[filename];
                     unzippedFiles[filename] = undefined;
-                    console.log("store filename " + filename + " -> " + fileid + " " + ui_file.type);
+                    /// console.log("store filename " + filename + " -> " + fileid + " " + ui_file.type + " size: " + ui_file.size);
                     //showBinaryFile(ui_file.root, fileStorages[fileid]);
                 } else {
-                    if (unzippedFiles[filename] !== undefined && fileStorages[fileid] !== undefined) {
+                    if (unzippedFiles[filename] && fileStorages[fileid].filename.length) {
                         // consistency check
+                        console.error("internal error: file is already relinked! filename " + filename + " -> " + fileid + " " + ui_file.type);
                         alert('internal error: file is already relinked!');
                     }
                 }
@@ -126,7 +128,7 @@ unzipme = function (blob, location, readyCallback) {
                 if (readyCallback)
                     readyCallback(unzipped_text);
                 taskfile_read = true;
-                moveFiles();
+                relinkFiles();
             };
             readfi.readAsText(unzippedBlob);
         },
@@ -162,14 +164,14 @@ unzipme = function (blob, location, readyCallback) {
                         break;
                 }
 
-                console.log(header + " => " + type);
+                // console.log(header + " => " + type);
 
                 // store file
-                console.log("read binary file " + entry.filename);
+                // console.log("store binary file " + entry.filename + " in unzippedFiles");
                 unzippedFiles[entry.filename] =
                     new FileStorage(true, type, e.target.result, entry.filename);
                 unzippedFiles[entry.filename].setSize(entry.uncompressedSize);
-                moveFiles();
+                relinkFiles();
             };
             readfi.readAsArrayBuffer(unzippedBlob);
         }
