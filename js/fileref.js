@@ -235,6 +235,20 @@ class FileReference {
     // TODO: split for different handling in classes
     static onFileSelectionChanged (tempSelElem) {              // changing a filename in the drop-down
 
+        function isDuplicateId(fileid) {
+            const filerefs = $(tempSelElem).closest('table').find(".fileref_fileref");
+            let found = false;
+            $.each(filerefs, function(index, item) {
+                if (item.value === fileid) {
+                    // fileref already in list!
+                    alert('file is already in this list!');
+                    found = true;
+                    return false;
+                }
+            });
+            return found;
+        }
+
         // whenever a file is selected that causes a file class change,
         // it must be checked whether a reference needs to be removed
         // (e.g. from template to library)
@@ -289,7 +303,6 @@ class FileReference {
                     }
                 }
             });
-
         }
 
         // var found = false;
@@ -336,6 +349,11 @@ class FileReference {
                     let ui_file = FileWrapper.constructFromFilename(selectedFilename);
                     if (ui_file) { // can be undefined when no filename is selected
                         const fileid = ui_file.id;
+                        if (isDuplicateId(fileid)) {
+                            // clean input field
+                            $(tempSelElem).val(emptyFileOption).change();
+                            return;
+                        }
 
                         // set new file id
                         nextTd.find('.fileref_fileref')[0].value = fileid;
