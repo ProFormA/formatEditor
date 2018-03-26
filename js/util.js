@@ -16,8 +16,8 @@
  * Known bugs: search the code for the string "ToDo" below and check faq.html and installationFAQ.html
  */
 
-const DEBUG_MODE = true;
-const TEST_MODE = false;
+const DEBUG_MODE = false;
+const TEST_MODE  = false;
 
 const codeversion   = '2.2.1';                     // current version of this code
 

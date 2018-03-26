@@ -517,8 +517,9 @@ def set_file_class(file_index, option_index):  # 0-based
 def set_file_type(file_index, option):  # 0-based
     elem = driver.find_elements_by_class_name('xml_file_type')
     select = Select(elem[file_index])
-    #select.select_by_value(value) # unfortunately does not work
-    select.select_by_visible_text(option)
+    # select.select_by_value(value) # unfortunately does not work
+    # select.select_by_visible_text(option)
+    select.select_by_value(option)
 
 
 def set_file_text(file_index, text): # 0-based
