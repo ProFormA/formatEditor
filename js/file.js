@@ -34,6 +34,11 @@ class FileStorage {
 }
 
 
+const INTERNAL     = 'internal';
+const TEMPLATE     = 'template';
+const INSTRUCTION  = 'instruction';
+const INTERNAL_LIB = 'internal-library';
+const LIBRARY      = 'library';
 
 // class for simpler access to file members from user interface
 class FileWrapper {
@@ -223,7 +228,7 @@ class FileWrapper {
         let ui_file = FileWrapper.constructFromRoot(root);
 
         let ok = false;
-        if (FileReference.isFileIdReferenced(ui_file.id)) {
+        if (FileReference.getCountFileIdReferenced(ui_file.id)) {
             // if true: cancel or remove all filenames/filerefs from model solution and test
             ok = window.confirm("File " + ui_file.id + " '" + ui_file.filename + "' is still referenced!\n" +
                 "Do you really want to delete it?");
@@ -234,6 +239,21 @@ class FileWrapper {
             ui_file.delete();
         }
     };
+
+    static onFileclassChanged(selectfield) {
+        const text = $("option:selected", selectfield).text(); // selected text
+
+        alert('do not change if old value is template, instruction or library!!!');
+
+/*        switch (text)
+        {
+            case 'internal':
+            case 'internal-library':
+                break;
+
+        }*/
+    }
+
 
     static onFilenameChangedCallback(filenamebox) {
         let ui_file = FileWrapper.constructFromRoot($(filenamebox).closest(".xml_file"));
@@ -325,13 +345,13 @@ class FileWrapper {
             "class='rightButton'><button onclick='FileWrapper.removeFile($(this));'>x</button></span></h3>"+
 
             "<p><label for='xml_file_id'>ID: </label>"+
-            "<input class='tinyinput xml_file_id' value='"+fileid+"' readonly/>"+
+            "<input class='tinyinput xml_file_id' value='"+fileid+"'/>"+
 
             " <label for='xml_file_filename'>Filename<span class='red'>*</span>: </label>"+
             "<input class='mediuminput xml_file_filename' onchange='FileWrapper.onFilenameChangedCallback(this)' title='with extension'/>"+
 
             " <label for='xml_file_class'>Usage<span class='red'>*</span>: </label>"+
-            "<select class='xml_file_class'>"+
+            "<select class='xml_file_class' onchange='FileWrapper.onFileclassChanged(this)' >"+
                 "<option selected='selected'>internal</option>"+
                 "<option>template</option>"+
                 "<option>library</option>"+

@@ -77,39 +77,38 @@ Jede Datei muss einen Namen mit einer entsprechende Endung (z.B. &bdquo;.java&ld
     Drag&Drop geladen, so wird der Original-Dateiname automatisch übernommen.)
 </p>
 <p>
-    Bei Dateien muss immer ein Paramer <code>Class</code> angegeben werden. Dieser hat folgende Bedeutung:</p>
-<ul>
-    <li><b>library</b> (Bibliothek): Eine Bibliothek enthält Funktionen, die benötigt werden,
-      um die studentische Einreichung (das Programm) laufen lassen zu können.<br>
-      Achtung! Die Bibliothek wird dem Lernenden als Download angeboten.
-      Hier darf also kein Code enthalten sein, den die Lernenden nicht sehen sollen.
-      Die Bibliothek ist auch im Grading-System zum Laufenlassen der Tests verfügbar.
-    </li>
-    <li><b>internal-library</b> (interne Bibliothek):
-        wie library, nur wird die Bibliothek dem Lernenden nicht zum Download angeboten.
-      I.allg. enthält die interne Bibliothek Hilfsfunktionen zum Laufenlassen der Tests. </li>
-    <li><b>template</b> (Code-Vorlage/Schablone):
-      Bei Verwendung des Editors (in der studentischen Ansicht) wird dieser beim ersten Darstellen
-      mit der Code-Vorlage vorbelegt. <br>
-      Wird der Filepicker eingesetzt, wird die Code-Vorlage als Download angeboten.<br>
-      Der Lernende kann dann seinen Code direkt in die Code-Vorlage tippen. <br>
-      Eine Code-Vorlage ist immer dann sinnvoll, wenn man sonst lange die
-      erwartete Programmierschnittstelle beschreiben müsste.
-      Sie hilft, Schnittstellenprobleme zu vermeiden.
-      Sind mehrere Templates angegeben, wird in LON-CAPA nur das letzte verwendet.
-    </li>
-    <li><b>instruction</b>: die Instruction-Datei enthält weitere Details zur Aufgabenstellung (description).
-      Dies kann zum Beispiel ein pdf sein oder ein Bild.
-      Die Instruction-Datei wird dem Lernenden zum Download angeboten.
-      Einen Einfluss auf die Tests hat sie nicht.
-    </li>
-    <li><b>internal</b> (Default):
-        Dieser Typ wird verwendet, wenn keiner der anderen Typen passt.
+    Bei Dateien wird immer ein Parameter <code>usage</code> angegeben. Dieser hat folgende Bedeutung:</p>
+<table border="1">
+    <tr><td><b>Wert</b></td><td><b>Bedeutung</b></td><td><b>sichtbar für Grader</b></td><td><b>sichtbar für Studierende</b></td></tr>
+
+    <tr><td><b>library (Bibliothek)</b></td><td>Eine Bibliothek enthält Funktionen, die benötigt werden,
+        um die studentische Einreichung (das Programm) laufen lassen zu können.<br>
+        </td><td>x</td><td>x</td></tr>
+
+    <tr><td><b>internal-library (interne Bibliothek)</b></td><td>wie library, nur wird die Bibliothek dem Lernenden nicht zum Download angeboten.
+        I.allg. enthält die interne Bibliothek Hilfsfunktionen zum Laufenlassen der Tests.<br>
+    </td><td>x</td><td>-</td></tr>
+
+    <tr><td><b>instruction</b></td><td>die Instruction-Datei enthält weitere Details zur Aufgabenstellung (description).
+        Dies kann zum Beispiel ein pdf sein oder ein Bild.<br>
+    </td><td>-</td><td>x</td></tr>
+
+    <tr><td><b>template (Code-Vorlage/Schablone)</b></td><td>Bei Verwendung des Editors (in der studentischen Ansicht) wird dieser beim ersten Darstellen
+        mit der Code-Vorlage vorbelegt. <br>
+        Wird der Filepicker eingesetzt, wird die Code-Vorlage als Download angeboten.<br>
+        Der Lernende kann dann seinen Code direkt in die Code-Vorlage tippen. <br>
+        Eine Code-Vorlage ist immer dann sinnvoll, wenn man sonst lange die
+        erwartete Programmierschnittstelle beschreiben müsste.
+        Sie hilft, Schnittstellenprobleme zu vermeiden.
+        Sind mehrere Templates angegeben, wird in LON-CAPA nur das letzte verwendet.
+    </td><td>-</td><td>x</td></tr>
+
+    <tr><td><b>internal (Default)</b></td><td>Dieser Typ wird verwendet, wenn keiner der anderen Typen passt.
         Hiermit werden die Musterlösung(en) und die Testskripte gekennzeichnet.
-        Die mit internal gekennzeichneten Dateien sind für den Lernenden nicht sichtbar.
-        Sie stehen aber dem Grading-System zur Verfügung.
-    </li>
-</ul>
+    </td><td>x</td><td>-</td></tr>
+
+</table>
+
 <p>
 <!--
 Es kann festgelegt werden, ob Dateien bei

@@ -96,12 +96,15 @@ class JavaTest(zipFileTest.ZipFileTest):
         editor.set_file_comment(5, "comment for file file5.java")
 
         # set file class
-        editor.set_file_class(0, 0)
-        editor.set_file_class(1, 1)
-        editor.set_file_class(2, 2)
-        editor.set_file_class(3, 3)
-        editor.set_file_class(4, 4)
-        editor.set_file_class(5, 0)
+        editor.set_template_file("file1.java", 0)
+        editor.set_library_file("file2.java", 0)
+
+#       editor.set_file_class(0, 0)
+#       editor.set_file_class(1, 1)#
+#       editor.set_file_class(2, 2)
+#       editor.set_file_class(3, 3)
+#       editor.set_file_class(4, 4)
+#       editor.set_file_class(5, 0)
 
         # fill file text
         # does not work yet
@@ -116,6 +119,7 @@ class JavaTest(zipFileTest.ZipFileTest):
         # set filename for actual java code
         # -> expect change of filename
         editor.set_filename(4, "file4.java")
+
         # beim Aufruf der nächsten Funktion verliert die Eingabe zurm Dateinamen den Fokus.
         # Dadurch wird ein Test ausgelöst, der feststellt, dass in der Datei ein Klassenname und
         # ein Packagename vorhanden sind. Daraufhin wird der Dateiname geändert.
@@ -236,6 +240,10 @@ class JavaTest(zipFileTest.ZipFileTest):
         editor.set_cs_max_warnings(1, "0")
         editor.set_test_file(counter_test_index, 3)
         counter_test_index = counter_test_index + 1
+
+        # test environment converts / to \ so that the text is not visible :-(
+        # editor.set_instruction_file("de/test/test1/MyClass.java", 0)
+
 
         zipFileTest.ZipFileTest.saveFilesAndReloadAndSave(self, expectedZipName, False)
 

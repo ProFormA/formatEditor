@@ -34,7 +34,7 @@ class FileReference {
         this.classRemoveFileref = classFileref.replace('xml_', 'remove_'); // classRemoveFileref;
         this.help = help;
 
-        this.createTableStrings(jsClassName, label, mandatory);
+        this.createTableString(jsClassName, label, mandatory);
         this.JsClassname = jsClassName;
 
         filenameClassList.push('.' + this.classFilename);
@@ -43,7 +43,7 @@ class FileReference {
 
     getClassFilename() { return this.classFilename; }
 
-    createTableStrings(className, label, mandatory) {
+    createTableString(className, label, mandatory) {
         label = label + '(s)';
         this.filenameLabel = "<label for='" + this.classFilename +
             "'>" + label + (mandatory?"<span class='red'>*</span>":"") + ": </label>";
@@ -187,28 +187,54 @@ class FileReference {
     // TODO move to file??
     static deleteFile(fileid) {
         // check if there any references
-        if (FileReference.isFileIdReferenced(fileid))
-            return;
-
-        // delete file
         let ui_file = FileWrapper.constructFromId(fileid);
-        ui_file.delete();
+        // check if kind of reference is template, library or instruction
+        if (!FileReference.getCountSpecialReferences(fileid)) {
+            switch(FileReference.getCountFileIdReferenced(fileid)) {
+                case 0:
+                    // no reference at all => delete file
+                    ui_file.delete();
+                    break;
+                case 1:
+                    // change to internal
+                    ui_file.class = INTERNAL;
+                    break;
+                default:
+                    // change to internal-library
+                    ui_file.class = INTERNAL_LIB;
+                    break;
+            }
+        }
     }
 
     // checks if a given file id is used somewhere
     // (needed when file shall be deleted)
-    static isFileIdReferenced(fileId) {
-        let found = false;
+    static getCountFileIdReferenced(fileId) {
+        let count = 0;
         $.each($(".fileref_fileref"), function(index, item) {
             const filerefId = item.value;
             if (filerefId === fileId) {
-                found = true;
-                return false;
+                count++;
             }
         });
 
-        return found;
+        return count;
     }
+
+
+    static getCountSpecialReferences(fileId) {
+        let count = 0;
+        $.each($(".xml_library_fileref, .xml_template_fileref, .xml_instruction_fileref"),
+            function(index, item) {
+                const filerefId = item.value;
+                if (filerefId === fileId) {
+                    count++;
+                }
+        });
+
+        return count;
+    }
+
 
     onFileUpload(filename, uploadBox) {
         // select new filename in first empty filename
@@ -232,7 +258,6 @@ class FileReference {
         }
     }
 
-    // TODO: split for different handling in classes
     static onFileSelectionChanged (tempSelElem) {              // changing a filename in the drop-down
 
         function isDuplicateId(fileid) {
@@ -257,7 +282,7 @@ class FileReference {
                 return;
             const oldclass = ui_file.class;
             ui_file.class = newClass;
-            if (oldclass ===  'internal' || oldclass === 'internal-library') {
+            if (!oldclass || oldclass === INTERNAL || oldclass === INTERNAL_LIB) {
                 return;
             }
 
@@ -365,11 +390,11 @@ class FileReference {
                                 config.handleFilenameChangeInTest(selectedFilename, tempSelElem);
                             }
                         } else if ($(tempSelElem).hasClass('xml_template_filename')) {
-                            handleClassChange(ui_file, fileid, 'template');
+                            handleClassChange(ui_file, fileid, TEMPLATE);
                         } else if ($(tempSelElem).hasClass('xml_instruction_filename')) {
-                            handleClassChange(ui_file, fileid, 'instruction');
+                            handleClassChange(ui_file, fileid, INSTRUCTION);
                         } else if ($(tempSelElem).hasClass('xml_library_filename')) {
-                            handleClassChange(ui_file, fileid, 'library');
+                            handleClassChange(ui_file, fileid, LIBRARY);
                         } else {
                             // model solution, nothing to be done
                         }

@@ -413,6 +413,25 @@ def add_template_file():
     elem = elems[0].click()
 
 
+def set_fileref(filename, index, xml_class):
+    filename = filename.replace("/", "\\") # needed on Windows!!
+
+    elems = driver.find_elements_by_class_name(xml_class)
+    elem = elems[index]
+    select = Select(elem)
+
+    # select <load...>
+#    if browser == 'Chrome':
+        # does not work with Chrome (maybe because of a bug!)
+#        select_chrome_option(elem, select)
+#    else:
+    select.select_by_visible_text(filename)
+
+    # print "wait for dialog"
+
+    time.sleep(1)
+
+
 def load_fileref(filename, index, xml_class):
     the_path = os.path.dirname(os.path.abspath(__file__))
     filename = the_path + "/" + filename
@@ -452,15 +471,33 @@ def load_instruction_file(filename, index):
     change_tab("main_tab")
     load_fileref(filename, index, "xml_instruction_filename")
 
+def set_instruction_file(filename, index):
+    change_tab("main_tab")
+    set_fileref(filename, index, "xml_instruction_filename")
+
+
+def load_library_file(filename, index):
+    change_tab("main_tab")
+    load_fileref(filename, index, "xml_library_filename")
+
+def set_library_file(filename, index):
+    change_tab("main_tab")
+    set_fileref(filename, index, "xml_library_filename")
+
 
 def load_template_file(filename, index):
     change_tab("main_tab")
     load_fileref(filename, index, "xml_template_filename")
 
+def set_template_file(filename, index):
+    change_tab("main_tab")
+    set_fileref(filename, index, "xml_template_filename")
+
 
 def load_test_file(filename, index):
     change_tab("test_tab")
     load_fileref(filename, index, "xml_test_filename")
+
 
 
 
@@ -494,20 +531,24 @@ def add_file():
 
 
 def remove_first_file():
+    change_tab("file_tab")
     elem = driver.find_element_by_class_name('xml_file')
     elem.find_element_by_tag_name('button').click()
     alert = driver.switch_to.alert
     alert.accept()
 
 def set_filename(file_index, filename): # 0-based
+    change_tab("file_tab")
     elem = driver.find_elements_by_class_name('xml_file_filename')
     elem[file_index].send_keys(filename)
 
 def set_file_comment(file_index, text): # 0-based
+    # change_tab("file_tab")
     elem = driver.find_elements_by_class_name('xml_file_comment')
     elem[file_index].send_keys(text)
 
 def set_file_class(file_index, option_index):  # 0-based
+    change_tab("file_tab")
     elem = driver.find_elements_by_class_name('xml_file_class')
     select = Select(elem[file_index])
     #select.select_by_value(value) # unfortunately does not work
@@ -515,6 +556,7 @@ def set_file_class(file_index, option_index):  # 0-based
 
 
 def set_file_type(file_index, option):  # 0-based
+    change_tab("file_tab")
     elem = driver.find_elements_by_class_name('xml_file_type')
     select = Select(elem[file_index])
     # select.select_by_value(value) # unfortunately does not work
@@ -523,6 +565,7 @@ def set_file_type(file_index, option):  # 0-based
 
 
 def set_file_text(file_index, text): # 0-based
+    change_tab("file_tab")
     elem = driver.find_elements_by_class_name('xml_file_text')
     if codemirror:
         command = 'codemirror['+ str(file_index) +'].setValue("' + text + '")'

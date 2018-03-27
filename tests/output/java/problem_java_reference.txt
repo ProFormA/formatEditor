@@ -16,7 +16,6 @@ $modelsolution = '<pre>// TODO: deutsche Umlautein File 3</pre>';
 <startouttext />
 input111
 <a href='data:text/text;base64,Ly8gVE9ETzogZGV1dHNjaGUgVW1sYXV0ZWluIEZpbGUgMw==' download='file2.java'>Download: file2.java</a>
-<a href='data:text/text;base64,cGFja2FnZSBkZS50ZXN0LnRlc3QxOyBjbGFzcyBNeUNsYXNzIHt9' download='de/test/test1/MyClass.java'>Download: de/test/test1/MyClass.java</a>
 <endouttext />
 
 <startouttext />
