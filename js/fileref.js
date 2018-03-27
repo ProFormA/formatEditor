@@ -563,7 +563,7 @@ class InstructionFileReference extends FileReference {
     constructor() {
         super('xml_instruction_filename', 'xml_instruction_fileref',
             'InstructionFileReference', 'Documentation Attachment',
-            'e.g. pdf with further informations, images (file NOT available for grader/tests)', false);
+            'e.g. image or pdf with further information (file is NOT available for grader)', false);
     }
     static getInstance() {return instructionSingleton;}
 }
@@ -574,7 +574,8 @@ class TemplateFileReference extends FileReference {
     constructor() {
         super('xml_template_filename', 'xml_template_fileref',
             'TemplateFileReference', 'Template',
-            'code snippet that the student should use as a starting point for coding', false);
+            'code snippet that the student should use as a starting point for coding\n' +
+            '(file is NOT available for grader)', false);
     }
     static getInstance() {return templSingleton;}
 }
@@ -584,7 +585,7 @@ class LibraryFileReference extends FileReference {
     constructor() {
         super('xml_library_filename', 'xml_library_fileref',
             'LibraryFileReference', 'Code Attachment',
-            'e.g. library, interface (file is also available for grader/tests)', false);
+            'e.g. library, interface (file is available for grader)', false);
     }
     static getInstance() {return librarySingleton;}
 }
