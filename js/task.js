@@ -457,9 +457,15 @@ convertToXML = function() {
         xmlString = xmlString.replace(replacer, "");
         replacer = new RegExp('<task ',"g");                         // insert correct namespace declaration
         xmlString = xmlString.replace(replacer, "<task "+xsdNamespace.namespace);
-        replacer =                                                   // ToDo: this is a hack, set filerefs properly
-            new RegExp(xmlTesttypeJavaComp + '</test-type><test-configuration><filerefs><fileref refid=""/></filerefs>',"g");
-        xmlString = xmlString.replace(replacer, xmlTesttypeJavaComp + "</test-type><test-configuration>");
+        // remove file refs in those tests that do not use them
+        // (more a hack...)
+        $.each(config.testInfos, function(index, testinfo) {
+            if (!testinfo.withFileRef) {
+                replacer =
+                    new RegExp(testinfo.testType + '</test-type><test-configuration><filerefs><fileref refid=""/></filerefs>',"g");
+                xmlString = xmlString.replace(replacer, testinfo.testType + "</test-type><test-configuration>");
+            }
+        })
         if ((xmlString.substring(0, 5) != "<?xml")){
             xmlString = "<?xml version='1.0' encoding='UTF-8'?>" + xmlString;
         }

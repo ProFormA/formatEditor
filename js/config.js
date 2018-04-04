@@ -70,18 +70,6 @@ var xsdNamespace = (function() {
 
 
 
-
-
-
-
-
-// testtypes used
-const xmlTesttypeJavaComp = "java-compilation"; // do not change, is used in task.js (TODO)
-
-
-
-
-
 var config = (function() {
 
     // XML templates for praktomat
@@ -100,7 +88,7 @@ var config = (function() {
     // TESTS
     // -------------------------
 
-// HTML building blocks for the extra input fields in tests
+    // HTML building blocks for the extra input fields in tests
     const htmlJavaComp =
         "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
         "<input class='shortinput xml_pr_CompilerFlags'/>"+
@@ -110,6 +98,17 @@ var config = (function() {
         "<input class='shortinput xml_pr_CompilerLibs' value='JAVA_LIBS'/>"+
         " <label for='xml_pr_CompilerFPatt'>Compiler File Pattern: </label>"+
         "<input class='mediuminput xml_pr_CompilerFPatt' value='^.*\\.[jJ][aA][vV][aA]$' " +
+        "title='Regular expression describing all source files to be passed to the compiler'/></p>";
+
+    const htmlCComp =
+        "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
+        "<input class='shortinput xml_pr_CompilerFlags'/>"+
+        " <label for='xml_pr_CompilerOutputFlags'>Compiler output flags: </label>"+
+        "<input class='shortinput xml_pr_CompilerOutputFlags' title='-o %s (%s will be replaced by program name)'/></p>"+
+        " <p><label for='xml_pr_CompilerLibs'>Compiler libs: </label>"+
+        "<input class='shortinput xml_pr_CompilerLibs' value=''/>"+
+        " <label for='xml_pr_CompilerFPatt'>Compiler File Pattern: </label>"+
+        "<input class='mediuminput xml_pr_CompilerFPatt' value='^.*\\.[cC]$' " +
         "title='Regular expression describing all source files to be passed to the compiler'/></p>";
 
 
@@ -144,8 +143,10 @@ var config = (function() {
     const JUnit_Default_Title = "Java JUnit Test";
 
     // Tests objects
+    const testCComp       = new TestInfo("C Compiler Test", htmlCComp,
+        "c-compilation", xmlPubReqAlways + xmlCompFlags, "", false);
     const testJavaComp    = new TestInfo("Java Compiler Test", htmlJavaComp,
-        xmlTesttypeJavaComp, xmlPubReqAlways + xmlCompFlags, "", false);
+        "java-compilation", xmlPubReqAlways + xmlCompFlags, "", false);
     const testJavaJUnit   = new TestInfo(JUnit_Default_Title, htmlJavaJunit,
         "unittest", xmlPubReqAlways + xmlConfTestDesc, xmlJUnitVer);
     const testCheckStyle  = new TestInfo("CheckStyle Test", htmlCheckstyle,
@@ -182,6 +183,7 @@ var config = (function() {
         new ProglangInfo("java/1.8",   [testJavaComp, testJavaJUnit,   testCheckStyle, testDgSetup, testDGTester]),
         new ProglangInfo("python/2",   [testPython,   testCheckStyle,  testDgSetup,    testDGTester]),
         new ProglangInfo("setlX/2.40", [testSetlX,    testSetlXSyntax, testCheckStyle, testDgSetup, testDGTester]),
+        new ProglangInfo("c",          [testCComp,    testDgSetup,     testDGTester]),
     ];
 
 
@@ -194,6 +196,7 @@ var config = (function() {
         testJavaComp, testJavaJUnit,
         testPython,
         testSetlX, testSetlXSyntax,
+        testCComp,
         testCheckStyle,
         testDgSetup, testDGTester
     ];
@@ -253,10 +256,12 @@ var config = (function() {
 
     function getMimetype(mimetype, extension) {
         switch (extension) {
+            case 'h':    return 'text/x-chdr';
             case 'c':    return 'text/x-csrc';
+            case 'cpp':  return 'text/x-c++src';
             case 'java': return 'text/x-java';
             case 'py':   return 'text/x-python';
-            case 'stlx':   return 'text/x-setlx'; // no actual mode availble
+            case 'stlx': return 'text/x-setlx'; // no actual mode availble
             default: return mimetype;
         }
     }
@@ -267,6 +272,9 @@ var config = (function() {
 
         const extension = file.name.split('.').pop();
         switch (extension.toLowerCase()) {
+            case 'c' :
+            case 'h' :
+            case 'cpp' :
             case 'java' :
             case 'log' :
             case 'txt' :

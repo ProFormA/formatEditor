@@ -562,7 +562,7 @@ class InstructionFileReference extends FileReference {
 
     constructor() {
         super('xml_instruction_filename', 'xml_instruction_fileref',
-            'InstructionFileReference', 'Documentation Attachment',
+            'InstructionFileReference', 'Other Attachment',
             'e.g. image or pdf with further information (file is NOT available for grader)', false);
     }
     static getInstance() {return instructionSingleton;}
