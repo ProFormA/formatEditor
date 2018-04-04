@@ -679,23 +679,50 @@ def add_java_compiler_test():
 
 def set_jct_flags(jct_index, flags): # 0-based
     elem = driver.find_elements_by_class_name('xml_pr_CompilerFlags')
-    elem[jct_index].clear()
-    elem[jct_index].send_keys(flags)
+    # elem[jct_index].clear()
+    # elem[jct_index].send_keys(flags)
+    set_input_value(elem[jct_index], flags)
 
 def set_jct_output_flags(jct_index, flags): # 0-based
     elem = driver.find_elements_by_class_name('xml_pr_CompilerOutputFlags')
-    elem[jct_index].clear()
-    elem[jct_index].send_keys(flags)
+    set_input_value(elem[jct_index], flags)
+    # elem[jct_index].clear()
+    # elem[jct_index].send_keys(flags)
 
 def set_jct_libs(jct_index, libs): # 0-based
     elem = driver.find_elements_by_class_name('xml_pr_CompilerLibs')
-    elem[jct_index].clear()
-    elem[jct_index].send_keys(libs)
+    # elem[jct_index].clear()
+    # elem[jct_index].send_keys(libs)
+    set_input_value(elem[jct_index], libs)
+
 
 def set_jct_file_pattern(jct_index, pattern): # 0-based
     elem = driver.find_elements_by_class_name('xml_pr_CompilerFPatt')
-    elem[jct_index].clear()
-    elem[jct_index].send_keys(pattern)
+    set_input_value(elem[jct_index], pattern)
+
+#    elem[jct_index].clear()
+#    elem[jct_index].send_keys(pattern)
+#    value = elem[jct_index].get_attribute('value')
+#    if value != pattern:
+#        raise Exception('field is not set properly: ' + pattern)
+
+
+def set_input_value(field, value):
+    field.clear()
+    if testconfig.browser == "Chrome":
+        # value1 = value.replace("^", "\^")
+        # Chrome driver does not send ^
+        # solution need to be found...
+        field.send_keys(value)
+    else:
+        field.send_keys(value)
+
+    actual_value = field.get_attribute('value')
+    if actual_value != value:
+        print 'field is not set properly'
+        print 'expected = ' + value
+        print 'actual   = ' + actual_value
+        raise Exception('field is not set properly: ' + value)
 
 
 ####################################################################
@@ -708,11 +735,13 @@ def add_junit_test():
 
 def set_junit_description(junit_index, text): # 0-based
     elem = driver.find_elements_by_class_name('xml_pr_configDescription')
-    elem[junit_index].clear()
-    elem[junit_index].send_keys(text)
+    set_input_value(elem[junit_index], text)
+    # elem[junit_index].clear()
+    # elem[junit_index].send_keys(text)
 
 def set_junit_test_class(junit_index, classtext):
     elem = driver.find_elements_by_class_name('xml_ju_mainclass')
+    # set_input_value(elem[junit_index], classtext)
     elem[junit_index].send_keys(classtext)
 
 
@@ -747,8 +776,9 @@ def set_cs_version(cs_index, version):
 
 def set_cs_max_warnings(cs_index, max_warnings):
     elem = driver.find_elements_by_class_name('xml_pr_CS_warnings')
-    (elem[cs_index]).clear()
-    (elem[cs_index]).send_keys(max_warnings)
+    set_input_value(elem[cs_index], max_warnings)
+    #(elem[cs_index]).clear()
+    #(elem[cs_index]).send_keys(max_warnings)
 
 
 

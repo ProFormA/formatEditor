@@ -2,11 +2,9 @@
 
 import editor
 import time
-
-
-
 import editor
 import zipFileTest
+
 
 expectedZipName = "input222.zip"
 
@@ -180,9 +178,10 @@ class JavaTest(zipFileTest.ZipFileTest):
         editor.set_jct_libs(0, "selenium")
         # editor.set_jct_file_pattern(0, "*.java")
         # test of issue 24
-        editor.set_jct_file_pattern(0, "^.*(?<!(Test|lper)\.[jJ][aA][vV][aA])$")
+        editor.set_jct_file_pattern(0, ".*(?<!(Test|lper)\.[jJ][aA][vV][aA])$")
 
         counter_test_index = counter_test_index + 1
+
 
         # fill compiler test #1
         editor.set_test_title(counter_test_index, "compiler test 1")

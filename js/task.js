@@ -278,12 +278,16 @@ function isInputComplete() {
 convertToXML = function() {
     $("#output").val(""); // empty output so that the old output will not be used in future
     convertFormToXML = function(one,two,cdataBool) {
-        var xmlDoc = $.parseXML('<task></task>');
+        let xmlDoc = $.parseXML('<task></task>');
         one.textContent = "";                              // delete previous content
         if (two) {                                         // check whether replacement value exists
-            if (cdataBool == 1) {
-                var tempCdata = xmlDoc.createCDATASection(two);
+            if (cdataBool === 1) {
+                const tempCdata = xmlDoc.createCDATASection(two);
                 one.appendChild(tempCdata);
+                const content = one.textContent;
+                if (content !== two) {
+                    alert('error creating CDATA section: ' + two);
+                }
             } else {
                 one.textContent = two;
             }
