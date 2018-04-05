@@ -137,7 +137,7 @@ class FileWrapper {
         }
 
         this._type.val(newType);
-        if (this.isBinaryFile) {
+        if (this.isBinary) {
             // type is set for the first type, then
             this._type.attr('disabled', newType === 'file');
         }
@@ -294,7 +294,7 @@ class FileWrapper {
                         fileobject.mimetype = ''; // delete mimetype if filename has changed
                         fileobject.filename = filename;
                     }
-                    fileobject.isBinary = true;
+                    fileobject.storeAsFile = true;
                     fileobject.content =  enc.encode(text);
                     fileobject.setSize(text.length);
                     // showBinaryFile(file.root /*fileroot*/, fileobject);
