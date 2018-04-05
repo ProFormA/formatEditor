@@ -68,9 +68,9 @@ class SetlxDgTest(zipFileTest.ZipFileTest):
         editor.set_file_comment(4, "comment for file file4.stlx")
 
         # set file class
-        editor.set_template_file("file1.stlx", 0)
-        editor.set_library_file("file2.stlx", 0)
-        editor.set_instruction_file("file4.stlx", 0)
+        editor.set_template_filename("file1.stlx", 0)
+        editor.set_library_filename("file2.stlx", 0)
+        editor.set_instruction_filename("file4.stlx", 0)
 
         # editor.set_file_class(0, 0)
         # editor.set_file_class(1, 1)

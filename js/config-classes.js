@@ -27,7 +27,7 @@ function TestInfo(title, extraFields, testType, template1, template2, withFileRe
     this.onCreated = onButtonClicked; // extra function for button clicked callback
 
     // derived member variables
-    var compactName = title.replace(/ /g, "");
+    const compactName = title.replace(/ /g, "");
     this.xmlTemplateName = compactName;
     this.buttonJQueryId = "add" + compactName;
 }

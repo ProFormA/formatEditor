@@ -94,8 +94,8 @@ class JavaTest(zipFileTest.ZipFileTest):
         editor.set_file_comment(5, "comment for file file5.java")
 
         # set file class
-        editor.set_template_file("file1.java", 0)
-        editor.set_library_file("file2.java", 0)
+        editor.set_template_filename("file1.java", 0)
+        editor.set_library_filename("file2.java", 0)
 
 #       editor.set_file_class(0, 0)
 #       editor.set_file_class(1, 1)#

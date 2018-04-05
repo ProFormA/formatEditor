@@ -350,8 +350,10 @@ class FileWrapper {
             " <label for='xml_file_filename'>Filename<span class='red'>*</span>: </label>"+
             "<input class='mediuminput xml_file_filename' onchange='FileWrapper.onFilenameChangedCallback(this)' title='with extension'/>"+
 
-            " <label for='xml_file_class'>Usage<span class='red'>*</span>: </label>"+
-            "<select class='xml_file_class' onchange='FileWrapper.onFileclassChanged(this)' >"+
+            " <label for='xml_file_class'>Usage: " +
+            // "<span class='red'>*</span>: " +
+            "</label>"+
+            "<select class='xml_file_class' disabled onchange='FileWrapper.onFileclassChanged(this)' >"+
                 "<option selected='selected'>internal</option>"+
                 "<option>template</option>"+
                 "<option>library</option>"+

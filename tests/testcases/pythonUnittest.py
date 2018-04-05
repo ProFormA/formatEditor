@@ -76,9 +76,9 @@ class PythonTest(zipFileTest.ZipFileTest):
         editor.set_file_comment(5, "comment for file file5.py")
 
         # set file class
-        editor.set_template_file("file1.py", 0)
-        editor.set_library_file("file2.py", 0)
-        editor.set_instruction_file("file4.py", 0)
+        editor.set_template_filename("file1.py", 0)
+        editor.set_library_filename("file2.py", 0)
+        editor.set_instruction_filename("file4.py", 0)
 
 
         # editor.set_file_class(0, 0)

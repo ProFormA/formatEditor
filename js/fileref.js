@@ -188,7 +188,7 @@ class FileReference {
     static deleteFile(fileid) {
         // check if there any references
         let ui_file = FileWrapper.constructFromId(fileid);
-        // check if kind of reference is template, library or instruction
+        // check if there is still a special kind of reference (template, library or instruction)
         if (!FileReference.getCountSpecialReferences(fileid)) {
             switch(FileReference.getCountFileIdReferenced(fileid)) {
                 case 0:
@@ -288,7 +288,7 @@ class FileReference {
 
             alert("file class for file '" + ui_file.filename + "' will be no longer '" + oldclass + "'");
 
-            // iterate through all filerefence objects to find the 'old' one
+            // iterate through all file reference objects to find the 'old' one
             let found = false;
             $.each($(".fileref_fileref"), function(index, item) {
                 if (!found && item.value === fileid) {

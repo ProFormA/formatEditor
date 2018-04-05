@@ -11,7 +11,6 @@ TODO:
 - Output-Fenster rausnehmen
 
 Ideen für Testfälle:
-- Ermittlung der Klassen aus den fileref-Gruppen inkl. 'Verschieben'
 - Java-Klassen- und Package-Erkennung
 - Programmiersprache C
 

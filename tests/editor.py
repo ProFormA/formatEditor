@@ -405,13 +405,24 @@ def select_chrome_option(elem, select):
 
 
 def add_instruction_file():
+    change_tab("main_tab")
     elems = driver.find_elements_by_class_name("add_instruction_fileref")
     elem = elems[0].click()
 
 def add_template_file():
+    change_tab("main_tab")
     elems = driver.find_elements_by_class_name("add_template_fileref")
     elem = elems[0].click()
 
+def add_library_file():
+    change_tab("main_tab")
+    elems = driver.find_elements_by_class_name("add_library_fileref")
+    elem = elems[0].click()
+
+def add_test_file(index):
+    change_tab("test_tab")
+    elems = driver.find_elements_by_class_name("add_test_fileref")
+    elem = elems[index].click()
 
 def set_fileref(filename, index, xml_class):
     filename = filename.replace("/", "\\") # needed on Windows!!
@@ -429,7 +440,7 @@ def set_fileref(filename, index, xml_class):
 
     # print "wait for dialog"
 
-    time.sleep(1)
+    time.sleep(0.3)
 
 
 def load_fileref(filename, index, xml_class):
@@ -471,7 +482,7 @@ def load_instruction_file(filename, index):
     change_tab("main_tab")
     load_fileref(filename, index, "xml_instruction_filename")
 
-def set_instruction_file(filename, index):
+def set_instruction_filename(filename, index):
     change_tab("main_tab")
     set_fileref(filename, index, "xml_instruction_filename")
 
@@ -480,7 +491,7 @@ def load_library_file(filename, index):
     change_tab("main_tab")
     load_fileref(filename, index, "xml_library_filename")
 
-def set_library_file(filename, index):
+def set_library_filename(filename, index):
     change_tab("main_tab")
     set_fileref(filename, index, "xml_library_filename")
 
@@ -489,16 +500,37 @@ def load_template_file(filename, index):
     change_tab("main_tab")
     load_fileref(filename, index, "xml_template_filename")
 
-def set_template_file(filename, index):
+def set_template_filename(filename, index):
     change_tab("main_tab")
     set_fileref(filename, index, "xml_template_filename")
 
+
+def set_ms_filename(filename, index):
+    change_tab("ms_tab")
+    set_fileref(filename, index, "xml_model-solution_filename")
+
+def set_test_filename(filename, index):
+    change_tab("test_tab")
+    set_fileref(filename, index, "xml_test_filename")
 
 def load_test_file(filename, index):
     change_tab("test_tab")
     load_fileref(filename, index, "xml_test_filename")
 
+def delete_template(index):
+    change_tab("main_tab")
+    elem = driver.find_elements_by_class_name("remove_template_fileref")
+    elem[index].click()
 
+def delete_library(index):
+    change_tab("main_tab")
+    elem = driver.find_elements_by_class_name("remove_library_fileref")
+    elem[index].click()
+
+def delete_instruction(index):
+    change_tab("main_tab")
+    elem = driver.find_elements_by_class_name("remove_instruction_fileref")
+    elem[index].click()
 
 
 ####################################################################
@@ -515,11 +547,42 @@ def get_instruction_file(index):
     elems = driver.find_elements_by_class_name("xml_instruction_filename")
     return elems[index].get_attribute("value")
 
+def get_library_file(index):
+    change_tab("main_tab")
+    elems = driver.find_elements_by_class_name("xml_library_filename")
+    return elems[index].get_attribute("value")
+
+def get_ms_file(index):
+    change_tab("main_tab")
+    elems = driver.find_elements_by_class_name("xml_model-solution_filename")
+    return elems[index].get_attribute("value")
+
+def get_test_file(index):
+    change_tab("test_tab")
+    elems = driver.find_elements_by_class_name("xml_test_filename")
+    return elems[index].get_attribute("value")
+
+def get_file_usage(filename):
+    change_tab("file_tab")
+    elems = driver.find_elements_by_class_name("xml_file_filename")
+    index = 0
+    for elem in elems:
+        if elem.get_attribute("value") == filename:
+            break
+        index = index + 1
+
+    # print ' ' + filename + ' => ' + str(index)
+    usages = driver.find_elements_by_class_name("xml_file_class")
+    # print 'get_file_usage for file ' + filename + ' is "' +  usages[index].get_attribute("value") + '"'
+    return usages[index].get_attribute("value")
+
+
+
 ####################################################################
 # FILE
 ####################################################################
 def add_file():
-    change_tab("file_tab")   
+    change_tab("file_tab")
     elem = driver.find_element_by_id("addFile").click()
 
 # does not work! only first element is found :-(
