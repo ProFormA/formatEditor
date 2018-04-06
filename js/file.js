@@ -16,6 +16,7 @@
  */
 
 var fileStorages = [];
+var fileIDs = {};
 
 // todo: merge with FileWrapper
 class FileStorage {
@@ -90,6 +91,8 @@ class FileWrapper {
     get content() { return fileStorages[this.id].content; }
     get size() { return fileStorages[this.id].size; }
     get originalFilename() { return fileStorages[this.id].originalFilename; }
+    get isLibrary() { return this.root.find(".file_library")[0].checked;}
+
 
     get text() {
         if (config.useCodemirror) {
@@ -119,7 +122,7 @@ class FileWrapper {
         fileStorages[this.id].filename = name;
         // FileWrapper.onFilenameChanged(); // this); // TODO check for endless recursion!!
         // update filenames in all file references
-        FileReference.updateAllFilenameLists();
+        FileReferenceList.updateAllFilenameLists();
     }
 
     set filenameHeader(name) {
@@ -163,12 +166,13 @@ class FileWrapper {
     set originalFilename(filename) { fileStorages[this.id].originalFilename = filename; }
     set size(size) { fileStorages[this.id].size = size; }
     set isBinary(isBinary) { fileStorages[this.id].isBinary = isBinary; }
+    set isLibrary(isLib) {this.root.find(".file_library")[0].checked = isLib;}
 
     // other functions
     delete() {
         this.root.remove();
         delete fileIDs[this.id];
-        FileReference.updateAllFilenameLists();
+        FileReferenceList.updateAllFilenameLists();
     }
 
 
@@ -201,7 +205,7 @@ class FileWrapper {
         }
 
         // update filenames in all file references
-        FileReference.updateAllFilenameLists();
+        FileReferenceList.updateAllFilenameLists();
     };
 
 
@@ -228,7 +232,7 @@ class FileWrapper {
         let ui_file = FileWrapper.constructFromRoot(root);
 
         let ok = false;
-        if (FileReference.getCountFileIdReferenced(ui_file.id)) {
+        if (FileReferenceList.getCountFileIdReferenced(ui_file.id)) {
             // if true: cancel or remove all filenames/filerefs from model solution and test
             ok = window.confirm("File " + ui_file.id + " '" + ui_file.filename + "' is still referenced!\n" +
                 "Do you really want to delete it?");
@@ -342,6 +346,10 @@ class FileWrapper {
         let fileid = id;
         if (!fileid) {
             fileid = setcounter(fileIDs);    // adding a file for the test
+        } else {
+            // this means that it is created with a known id
+            // (from reading task.xml). So we nned to keep the fileIDs in sync!
+            fileIDs[fileid] = 1;
         }
         $("#filesection").append("<div "+
             "class='ui-widget ui-widget-content ui-corner-all xml_file drop_zone'>"+
@@ -365,6 +373,9 @@ class FileWrapper {
                 "<option>internal-library</option>"+
                 "<option>instruction</option>" +
             "</select>"+
+
+            // not nice!!
+            " Library:<input type='checkbox' class='file_library' >" + // onclick='FileWrapper.onLibrary(this)'>"+
 
             " <label for='xml_file_type'>Store </label>"+
             "<select class='xml_file_type' onchange='FileWrapper.onFiletypeChanged(this)'>"+
@@ -397,7 +408,10 @@ class FileWrapper {
         if (!DEBUG_MODE) {
             ui_file.root.find(".xml_file_id").hide();
             ui_file.root.find("label[for='xml_file_id']").hide();
+            ui_file.root.find(".xml_file_class").hide();
+            ui_file.root.find("label[for='xml_file_class']").hide();
         }
+
         if (config.useCodemirror) {
             FileWrapper.addCodemirrorElement(fileid);
         }

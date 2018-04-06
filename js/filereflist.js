@@ -25,7 +25,7 @@ let filenameClassList = [];
 let filerefClassList = [];
 
 // abstract class for a filename reference input
-class FileReference {
+class FileReferenceList {
 
     constructor(classFilename, classFileref, jsClassName, label, help, mandatory) {
         this.classFilename = classFilename;
@@ -49,7 +49,7 @@ class FileReference {
             "'>" + label + (mandatory?"<span class='red'>*</span>":"") + ": </label>";
         this.tdFilenameLabel ="<td>" + this.filenameLabel + "</td>";
         this.tdFilename = "<td><select class='mediuminput fileref_filename " + this.classFilename + "' " +
-            "onchange = 'FileReference.onFileSelectionChanged(this)' title='" + this.help + "'></select></td>"+
+            "onchange = 'FileReferenceList.onFileSelectionChanged(this)' title='" + this.help + "'></select></td>"+
             "<td><label for='" + this.classFileref + "'>Fileref: </label>"+ // fileref
             "<input class='tinyinput fileref_fileref " + this.classFileref + "' readonly/></td>";
         this.tdAddButton = "<td><button class='" + this.classAddFileref +
@@ -77,7 +77,7 @@ class FileReference {
 
     // init table
     init(root, DEBUG_MODE) {
-        FileReference.updateFilenameList(root.find("." + this.classFilename).last());
+        FileReferenceList.updateFilenameList(root.find("." + this.classFilename).last());
         if (!DEBUG_MODE) {
             root.find("." + this.classFileref).hide();
             root.find("label[for='" + this.classFileref + "']").hide();
@@ -116,7 +116,7 @@ class FileReference {
             this.addFileRef(box.find("." + this.classAddFileref).first());
         }
         let element = box.find("." + this.classFilename);
-        FileReference.updateFilenameList(element.eq(index));
+        FileReferenceList.updateFilenameList(element.eq(index));
         element.eq(index).val(filename).change();
     }
 
@@ -136,7 +136,7 @@ class FileReference {
         table_body.find("." + this.classRemoveFileref).show(); // show all remove file buttons
 
         // add filelist to new file option
-        FileReference.updateFilenameList(table_body.find("." + this.classFilename).last());
+        FileReferenceList.updateFilenameList(table_body.find("." + this.classFilename).last());
 
         if (!DEBUG_MODE) {
             // hide new fileref fields
@@ -180,7 +180,7 @@ class FileReference {
         }
 
         if (fileid) {
-            FileReference.deleteFile(fileid);
+            FileReferenceList.deleteFile(fileid);
         }
     }
 
@@ -189,8 +189,8 @@ class FileReference {
         // check if there any references
         let ui_file = FileWrapper.constructFromId(fileid);
         // check if there is still a special kind of reference (template, library or instruction)
-        if (!FileReference.getCountSpecialReferences(fileid)) {
-            switch(FileReference.getCountFileIdReferenced(fileid)) {
+        if (!FileReferenceList.getCountSpecialReferences(fileid)) {
+            switch(FileReferenceList.getCountFileIdReferenced(fileid)) {
                 case 0:
                     // no reference at all => delete file
                     ui_file.delete();
@@ -313,7 +313,7 @@ class FileReference {
                         // remove old fileref object
                         filenameobject.val(emptyFileOption).change();
                         item.value = '';
-                        // FileReference.updateAllFilenameLists();
+                        // FileReferenceList.updateAllFilenameLists();
                         // remove actual numeric fileref value
                         let td = $(item).parent();
                         let tr = td.parent();
@@ -405,7 +405,7 @@ class FileReference {
 
         if (oldFileId !== '') {
             // delete old file
-            FileReference.deleteFile(oldFileId);
+            FileReferenceList.deleteFile(oldFileId);
         }
     };
 
@@ -417,7 +417,7 @@ class FileReference {
             // store name of currently selected file
             const text = $("option:selected", item).text(); // selected text
             //console.log("selected is " + text);
-            FileReference.updateFilenameList(item); // update filename list
+            FileReferenceList.updateFilenameList(item); // update filename list
             let indexFound = -1;
             if (text.trim().length > 0) {  // always true!
                 // check if previously selected filename is still in list
@@ -504,7 +504,7 @@ class FileReference {
                         e.preventDefault();
                         e.stopPropagation();
                         //UPLOAD FILES HERE
-                        FileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
+                        FileReferenceList.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
                             classname.getInstance());
                     }
                 }
@@ -517,7 +517,7 @@ class FileReference {
 
 
 
-class TestFileReference extends FileReference {
+class TestFileReference extends FileReferenceList {
 
     constructor() {
         super('xml_test_filename', 'xml_test_fileref', 'TestFileReference', 'Testscript',
@@ -544,7 +544,7 @@ class TestFileReference extends FileReference {
 let testFileRefSingleton = new TestFileReference();
 
 
-class ModelSolutionFileReference extends FileReference {
+class ModelSolutionFileReference extends FileReferenceList {
 
     constructor() {
         super('xml_model-solution_filename', 'xml_model-solution_fileref',
@@ -558,7 +558,7 @@ let modelSolutionFileRefSingleton = new ModelSolutionFileReference();
 
 
 
-class InstructionFileReference extends FileReference {
+class InstructionFileReference extends FileReferenceList {
 
     constructor() {
         super('xml_instruction_filename', 'xml_instruction_fileref',
@@ -570,7 +570,7 @@ class InstructionFileReference extends FileReference {
 let instructionSingleton = new InstructionFileReference();
 
 
-class TemplateFileReference extends FileReference {
+class TemplateFileReference extends FileReferenceList {
     constructor() {
         super('xml_template_filename', 'xml_template_fileref',
             'TemplateFileReference', 'Template',
@@ -581,7 +581,7 @@ class TemplateFileReference extends FileReference {
 }
 let templSingleton = new TemplateFileReference();
 
-class LibraryFileReference extends FileReference {
+class LibraryFileReference extends FileReferenceList {
     constructor() {
         super('xml_library_filename', 'xml_library_fileref',
             'LibraryFileReference', 'Code Attachment',

@@ -310,6 +310,17 @@ convertToXML = function() {
         return;
     }
 
+    // PRE PROCESSING
+    $.each($(".xml_file_filename"), function(index, item) {
+        const ui_file = FileWrapper.constructFromFilename(item.value); // not nice..
+        const islib = ui_file.isLibrary;
+        if (ui_file.isLibrary && ui_file.class === INTERNAL) {
+            // convert to internal library if class is internal
+            ui_file.class = INTERNAL_LIB;
+        }
+    });
+
+
     $.each(mapSingleElements, function(index, item) {
         try {
             convertFormToXML(xmlObject.find(item.xmlname)[0],$(item.formname).val(),item.cdata);
@@ -579,9 +590,9 @@ readXML = function(xmlText) {
     $("#testsection")[0].textContent = "";
 
     // initialise other sections
-    FileReference.init("#librarydropzone", '#librarysection', LibraryFileReference);
-    FileReference.init("#instructiondropzone", '#instructionsection', InstructionFileReference);
-    FileReference.init("#templatedropzone", '#templatesection', TemplateFileReference);
+    FileReferenceList.init("#librarydropzone", '#librarysection', LibraryFileReference);
+    FileReferenceList.init("#instructiondropzone", '#instructionsection', InstructionFileReference);
+    FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
     const templateroot = $("#templatedropzone");
     const libroot = $("#librarydropzone");
     const instructionroot = $("#instructiondropzone");
@@ -655,7 +666,7 @@ readXML = function(xmlText) {
             xmlObject.find(item.xmlname).each(function (idx1, itm1) {    // loop: file, test, ...
                 if (item.xmlpath == "files") {
                     newFile($(itm1).attr("id"));
-                    fileIDs[$(itm1).attr("id")] = 1;
+                    //fileIDs[$(itm1).attr("id")] = 1;
                 }
                 if (item.xmlpath == "model-solutions") {
                     newModelsol($(itm1).attr("id"));
@@ -759,26 +770,6 @@ readXML = function(xmlText) {
                                 }
                                 // TODO: what is itm2?
                                 object.find(itm2.formname)[index].value = fileid;
-/*
-                                if (item.formname == ".xml_test") {
-                                    // set filename in test
-                                    if (index > 0) {
-                                        TestFileReference.addFileRef(object.find(".add_file_ref_test").first());
-                                    }
-                                    var element = object.find(".xml_test_filename");
-                                    updateFilenameList(element.eq(index));
-                                    element.eq(index).val(filename).change();
-                                    object.find(itm2.formname)[index].value = fileid;
-                                } else if (item.formname == ".xml_model-solution") {
-                                    // set filename in model solution
-                                    if (index > 0) {
-                                        ModelSolutionFileReference.addFileRef(object.find(".add_file_ref_ms").first());
-                                    }
-                                    var element = object.find(".xml_model-solution_filename");
-                                    updateFilenameList(element.eq(index));
-                                    element.eq(index).val(filename).change();
-                                    object.find(itm2.formname)[index].value = fileid;
-                                } */
                             });
                         } catch(err) {setErrorMessage( "problem with reading filerefs", err);}
                     }
@@ -788,7 +779,7 @@ readXML = function(xmlText) {
             });
         });
 
-        // post processing
+        // POST PROCESSING
 
         // copy description into CodeMirror element
         descriptionEditor.setValue($("#xml_description").val());
@@ -802,17 +793,21 @@ readXML = function(xmlText) {
         // var instructionroot = $("#instructiondropzone");
         xmlObject.find('file').each(function (index, element) {    // iterate through all files
 //            console.log(index + ' ' + element);
-            var fileid = element.getAttribute('id');
-            var filename = element.getAttribute('filename');
+            const fileid = element.getAttribute('id');
+            const filename = element.getAttribute('filename');
             switch(element.getAttribute('class')) {
-                case 'template':
+                case TEMPLATE:
                     TemplateFileReference.getInstance().setFilenameOnCreation(templateroot, indexTemplate++, filename);
                     break;
-                case 'instruction':
+                case INSTRUCTION:
                     InstructionFileReference.getInstance().setFilenameOnCreation(instructionroot, indexInstruction++, filename);
                     break;
-                case 'library':
+                case LIBRARY:
                     LibraryFileReference.getInstance().setFilenameOnCreation(libroot, indexLib++, filename);
+                    // break; // fall through!!
+                case INTERNAL_LIB:
+                    let ui_file = FileWrapper.constructFromId(fileid);
+                    ui_file.isLibrary = true;
                     break;
                 default:
                     break;
@@ -840,7 +835,7 @@ readXML = function(xmlText) {
         });
 
         // fill filename lists in empty file refences
-        FileReference.updateAllFilenameLists();
+        FileReferenceList.updateAllFilenameLists();
 
     } else {                                           // end: if there is xml content provided
         setErrorMessage("The textarea is empty.");

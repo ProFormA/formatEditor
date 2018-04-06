@@ -47,7 +47,6 @@ const testTypes = getTesttypeOptions();
 
 //////////////////////////////////////////////////////////////////////////////
 //* These global variables keep track of how many of these elements currently exist.
-var fileIDs = {};
 var modelSolIDs = {};
 var testIDs = {};
 var gradingHintCounter;                                // only 1 grading hint is allowed
@@ -90,21 +89,6 @@ function getProgLangOptions() {
     });
     return list;
 }
-
-/*
-function showBinaryFile(fileroot, fileObject) {
-    fileroot.find(".xml_file_binary").show(); // show binary text
-    fileroot.find(".xml_file_non_binary").hide(); // hide editor
-    let xml_file_size = fileroot.find(".xml_file_size");
-    xml_file_size.first().text('File size: ' + fileObject.size.toLocaleString() + ", " +
-        'File type: ' + fileObject.mimetype);
-}
-
-function showTextFile(fileroot) {
-    fileroot.find(".xml_file_binary").hide(); // hide binary text
-    fileroot.find(".xml_file_non_binary").show(); // show editor
-}
-*/
 
 
 
@@ -307,12 +291,12 @@ $(function() {
           }
 
           let ui_file = undefined;
-          if (!fileId) { // create file box
-              ui_file = newFile(); // add file
+          if (!fileId) {
+              ui_file = newFile(); // create file box
           } else {
-              ui_file = FileWrapper.constructFromId(fileId);
+              ui_file = FileWrapper.constructFromId(fileId); // file box already exists
           }
-          // set filename in test
+          // set filename
           ui_file.filename = filename;
 
           if (isBinaryFile) {
@@ -385,7 +369,7 @@ $(function() {
         "<input class='largeinput xml_model-solution_comment'/></p></div>");
 
         const msroot = $(".xml_model-solution_id[value='" + tempcounter + "']").parent().parent();
-        FileReference.init(null, null, ModelSolutionFileReference, msroot);
+        FileReferenceList.init(null, null, ModelSolutionFileReference, msroot);
 
         // ModelSolutionFileReference.getInstance().init(msroot, DEBUG_MODE);
 
@@ -402,7 +386,7 @@ $(function() {
                       e.preventDefault();
                       e.stopPropagation();
                       //UPLOAD FILES HERE
-                      FileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
+                      FileReferenceList.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
                           ModelSolutionFileReference.getInstance());
                       // ModelSolutionFileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
                   }
@@ -444,7 +428,7 @@ $(function() {
         var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent().parent();
         testroot.find(".xml_test_type").val(TestType);
 
-        FileReference.init(null, null, TestFileReference, testroot);
+        FileReferenceList.init(null, null, TestFileReference, testroot);
         // TestFileReference.getInstance().init(testroot, DEBUG_MODE);
 
         if (!DEBUG_MODE) {
@@ -470,7 +454,7 @@ $(function() {
                             e.preventDefault();
                             e.stopPropagation();
                             //UPLOAD FILES HERE
-                            FileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
+                            FileReferenceList.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
                                 TestFileReference.getInstance());
                         }
                     }
@@ -551,7 +535,7 @@ $(function() {
         ui_file.filename = filename;
         ui_file.text = content;
         // onFilenameChanged(ui_file);
-        return fileId;
+        return ui_file.id;
     }
 
     addFileReferenceToTest = function(testId, filename) {
@@ -601,7 +585,7 @@ $(function() {
     if (gradingHintCounter === 1) {newGH();}            // only one grading hint allowed
     $("#tabs").tabs("option", "active", tab_page.MAIN); });        // where this will be added
   $("#addFile").click(function() {
-    newFile(/*setcounter(fileIDs)*/);
+    newFile();
     $("#tabs").tabs("option", "active", tab_page.FILES); });
   $("#addModelsol").click(function() {
     newModelsol(setcounter(modelSolIDs));
@@ -767,9 +751,9 @@ $(function() {
     });
 
     // add file reference for template, library instruction
-    FileReference.init("#librarydropzone", '#librarysection', LibraryFileReference);
-    FileReference.init("#instructiondropzone", '#instructionsection', InstructionFileReference);
-    FileReference.init("#templatedropzone", '#templatesection', TemplateFileReference);
+    FileReferenceList.init("#librarydropzone", '#librarysection', LibraryFileReference);
+    FileReferenceList.init("#instructiondropzone", '#instructionsection', InstructionFileReference);
+    FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
 
 
 // test

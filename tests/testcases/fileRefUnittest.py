@@ -148,8 +148,8 @@ class JavaTest(zipFileTest.ZipFileTest):
         self.assertTrue('file11.c' == editor.get_test_file(3))
         self.assertTrue('file12.c' == editor.get_test_file(4))
         self.assertTrue('internal' == editor.get_file_usage('file11.c'))
-        #self.assertTrue('internal' == editor.get_file_usage('file12.c'))
-        self.assertTrue('internal-library' == editor.get_file_usage('file12.c'))
+        self.assertTrue('internal' == editor.get_file_usage('file12.c'))
+        # self.assertTrue('internal-library' == editor.get_file_usage('file12.c'))
 
         # actions
 
