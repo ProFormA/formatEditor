@@ -102,13 +102,14 @@ var config = (function() {
 
     const htmlCComp =
         "<p><label for='xml_pr_CompilerFlags'>Compiler Flags: </label>"+
-        "<input class='shortinput xml_pr_CompilerFlags'/>"+
+        "<input class='shortinput xml_pr_CompilerFlags' value='-Wall'/>"+
         " <label for='xml_pr_CompilerOutputFlags'>Compiler output flags: </label>"+
-        "<input class='shortinput xml_pr_CompilerOutputFlags' title='-o %s (%s will be replaced by program name)'/></p>"+
+        "<input class='shortinput xml_pr_CompilerOutputFlags' value='-o %s' " +
+        "title='-o %s (%s will be replaced by program name)'/></p>"+
         " <p><label for='xml_pr_CompilerLibs'>Compiler libs: </label>"+
         "<input class='shortinput xml_pr_CompilerLibs' value=''/>"+
         " <label for='xml_pr_CompilerFPatt'>Compiler File Pattern: </label>"+
-        "<input class='mediuminput xml_pr_CompilerFPatt' value='^.*\\.[cC]$' " +
+        "<input class='mediuminput xml_pr_CompilerFPatt' value='^[a-zA-Z0-9_]*\\.[cC]$' " +
         "title='Regular expression describing all source files to be passed to the compiler'/></p>";
 
 

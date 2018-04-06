@@ -362,10 +362,10 @@ class FileWrapper {
                 "<option>instruction</option>" +
             "</select>"+
 
-            " <label for='xml_file_type'>Store  in </label>"+
+            " <label for='xml_file_type'>Store </label>"+
             "<select class='xml_file_type' onchange='FileWrapper.onFiletypeChanged(this)'>"+
-                "<option value = 'embedded' selected='selected'>task</option>"+
-                "<option value = 'file'>zip</option></select>"+
+                "<option value = 'embedded' selected='selected'>embedded</option>"+
+                "<option value = 'file'>attached</option></select>"+
             "<span class='drop_zone_text'>Drop Your File Here!</span>" +
             "</p>"+
 

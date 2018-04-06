@@ -389,6 +389,7 @@ class FileReference {
                                 // setJUnitDefaultTitle(selectedFilename);
                                 config.handleFilenameChangeInTest(selectedFilename, tempSelElem);
                             }
+                            // TODO: check for internal-library
                         } else if ($(tempSelElem).hasClass('xml_template_filename')) {
                             handleClassChange(ui_file, fileid, TEMPLATE);
                         } else if ($(tempSelElem).hasClass('xml_instruction_filename')) {
@@ -399,7 +400,6 @@ class FileReference {
                             // model solution, nothing to be done
                         }
                     }
-
                 }
         }
 
