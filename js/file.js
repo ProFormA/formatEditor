@@ -92,7 +92,7 @@ class FileWrapper {
     get originalFilename() { return fileStorages[this.id].originalFilename; }
 
     get text() {
-        if (useCodemirror) {
+        if (config.useCodemirror) {
             return codemirror[this.id].getValue();
         } else {
             return this._root.find(".xml_file_text").val();
@@ -101,7 +101,7 @@ class FileWrapper {
 
     // setter
     set text(newText) {
-        if (useCodemirror) {
+        if (config.useCodemirror) {
             codemirror[this.id].setValue(newText);
             const fileObject = fileStorages[this.id];
             codemirror[this.id].setOption("mode", fileObject.mimetype);
@@ -338,7 +338,11 @@ class FileWrapper {
         });
     }
 
-    static create(fileid) {
+    static create(id) {
+        let fileid = id;
+        if (!fileid) {
+            fileid = setcounter(fileIDs);    // adding a file for the test
+        }
         $("#filesection").append("<div "+
             "class='ui-widget ui-widget-content ui-corner-all xml_file drop_zone'>"+
             "<h3 class='ui-widget-header'><span class ='xml_filename_header'></span> (File #"+fileid+")<span "+
@@ -394,7 +398,7 @@ class FileWrapper {
             ui_file.root.find(".xml_file_id").hide();
             ui_file.root.find("label[for='xml_file_id']").hide();
         }
-        if (useCodemirror) {
+        if (config.useCodemirror) {
             FileWrapper.addCodemirrorElement(fileid);
         }
         return ui_file;

@@ -294,8 +294,8 @@ convertToXML = function() {
         }
     };
     clearErrorMessage();
-    createMapping(xsdSchemaFile);
-    var returntemp = createXMLTemplate(xsdSchemaFile);
+    createMapping(config.xsdSchemaFile);
+    var returntemp = createXMLTemplate(config.xsdSchemaFile);
     var xmlDoc = returntemp.xmlDoc;                          // empty XML Template
     var testtemplate = returntemp.testtemplate;              // a hash with test templates
     var xmlObject = $(xmlDoc);                               // convert it into a jQuery object
@@ -362,7 +362,7 @@ convertToXML = function() {
                                 const filetype = $(itm1).find('.xml_file_type').val();
                                 //console.log(filetype);
                                 if (filetype === 'embedded') {
-                                    if (useCodemirror) {
+                                    if (config.useCodemirror) {
                                         //convertFormToXML(xmlObject.find(item.xmlname)[idx1],codemirror[idx1+1].getValue(),itm2.cdata);
                                         var text = codemirror[$(itm1).find('.xml_file_id').val()].getValue();
                                         convertFormToXML(xmlObject.find(item.xmlname)[idx1], text, itm2.cdata);
@@ -444,7 +444,7 @@ convertToXML = function() {
         xmlObject.find("proglang")[0].setAttribute("version",tempvals[1]);
         xmlObject.find("proglang")[0].textContent = tempvals[0];
     } catch(err) { setErrorMessage("missing: proglang");}
-    if (xsdSchemaFile == version101) {
+    if (config.xsdSchemaFile === version101) {
         if ($("#xml_uuid").val() == ''){
             xmlObject.find('task').attr('uuid',generateUUID());
         } else {
@@ -622,7 +622,7 @@ readXML = function(xmlText) {
             setErrorMessage("XSD-Schema " + tempschema + " not found.", errorThrown);
         });
 
-        if (tempschema == xsdSchemaFile) {
+        if (tempschema === config.xsdSchemaFile) {
             // current schema is used => validate all configured xsd files
             $.each(config.xsds, function(index, xsd_file) {       // loop: xsd files for validation
                 $.get(xsd_file, function(data, textStatus, jqXHR) {      // read XSD schema and validate
@@ -680,7 +680,7 @@ readXML = function(xmlText) {
                 $.each(mapTextInElemSequence, function(idx2, itm2) {
                     if (item.xmlname == itm2.xmlname) {                      // relational join
                         try {                                                  // deal with codemirror for file textarea
-                            if ((itm2.formname == '.xml_file_text') && (useCodemirror)) {
+                            if ((itm2.formname == '.xml_file_text') && (config.useCodemirror)) {
                                 codemirror[$(itm1).attr('id')].setValue(itm1.textContent);
                             } else {
                                 $($(item.formname)[idx1cnt]).find('textarea')[0].textContent = itm1.textContent;

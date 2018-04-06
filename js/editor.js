@@ -306,12 +306,13 @@ $(function() {
               return;
           }
 
-          if (fileId < 0 ) { // create file box
-              fileId = setcounter(fileIDs);
-              newFile(fileId); // add file
+          let ui_file = undefined;
+          if (!fileId) { // create file box
+              ui_file = newFile(); // add file
+          } else {
+              ui_file = FileWrapper.constructFromId(fileId);
           }
           // set filename in test
-          let ui_file = FileWrapper.constructFromId(fileId);
           ui_file.filename = filename;
 
           if (isBinaryFile) {
@@ -320,18 +321,18 @@ $(function() {
               // it is needed for changing file type
               let fileObject = new FileStorage(isBinaryFile, mimetype, e.target.result, filename);
               fileObject.setSize(size);
-              fileStorages[fileId] = fileObject;
+              fileStorages[ui_file.id] = fileObject;
               ui_file.type = 'file';
           } else {
               // assume non binary file
               let fileObject = new FileStorage(isBinaryFile, mimetype, 'text is in editor', filename);
-              fileStorages[fileId] = fileObject;
+              fileStorages[ui_file.id] = fileObject;
               ui_file.text = e.target.result;
               ui_file.type = 'embedded';
           }
 
           if (callback)
-            callback(filename, fileId);
+            callback(filename, ui_file.id);
         };
 
         //console.log("read file");
@@ -366,6 +367,7 @@ $(function() {
                   }
               }
           });
+        return ui_file;
     };
 
 
@@ -491,7 +493,7 @@ $(function() {
 
     function uploadFilesWhenDropped(files){
         $.each(files, function(index, file) {
-            readAndCreateFileData(file, -1, function(filename) {
+            readAndCreateFileData(file, undefined /*-1*/, function(filename) {
                 // nothing extra to be done
             });
         });
@@ -545,10 +547,7 @@ $(function() {
 
     // helper function for custom test configuration
     createFileWithContent = function(filename, content) {
-        const fileId = setcounter(fileIDs);    // adding a file for the test
-        newFile(fileId);                     // filename: setlxsyntaxtest.stlx, content: print()
-
-        let ui_file = FileWrapper.constructFromId(fileId);
+        let ui_file = newFile();
         ui_file.filename = filename;
         ui_file.text = content;
         // onFilenameChanged(ui_file);
@@ -602,7 +601,7 @@ $(function() {
     if (gradingHintCounter === 1) {newGH();}            // only one grading hint allowed
     $("#tabs").tabs("option", "active", tab_page.MAIN); });        // where this will be added
   $("#addFile").click(function() {
-    newFile(setcounter(fileIDs));
+    newFile(/*setcounter(fileIDs)*/);
     $("#tabs").tabs("option", "active", tab_page.FILES); });
   $("#addModelsol").click(function() {
     newModelsol(setcounter(modelSolIDs));

@@ -2,9 +2,7 @@
  * Created by KarinBorm on 29.05.2017.
  */
 
-// The values of these variables can be changed as needed.
-const useCodemirror = true;         // setting this to false turns Codemirror off
-const xsdSchemaFile = version101;   // choose version for output
+const configXsdSchemaFile = version101;   // choose version for output
 
 // -------------------------
 // NAMESPACE HANDLING
@@ -37,7 +35,7 @@ var xsdNamespace = (function() {
 
     function init() {
         // not really configuration but ....
-        if (xsdSchemaFile === version094) {
+        if (configXsdSchemaFile === version094) {
             namespace = 'xmlns:'+pfix_unit+'="urn:proforma:unittest" xmlns:'+pfix_prak+'="urn:proforma:praktomat:v0.1" ' +
                 'xmlns="urn:proforma:task:v0.9.4" xmlns:'+pfix_jart+'="urn:proforma:tests:jartest:v1" ';
         } else {
@@ -71,6 +69,7 @@ var xsdNamespace = (function() {
 
 
 var config = (function() {
+
 
     // XML templates for praktomat
     const xmlPrakVer      = '<praktomat:version/>';
@@ -204,14 +203,14 @@ var config = (function() {
 
     // list of XML schema files that shall be used for validation
     const xsds = [
-        xsdSchemaFile, // XSD for task.xml (default)
+        configXsdSchemaFile, // XSD for task.xml (default)
         // "praktomat.xsd"
         // .... TODO
     ];
 
 
     // UI <-> XML mapping
-    function createMappingList(xsdSchemaFile) {
+    function createMappingList(xsdSchema) {
         uiXmlMapList = [
             // JUnit test
             new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_ju_mainclass", xsdNamespace.unit + "main-class", "test-configuration", 0, ".xml_test")),
@@ -233,7 +232,7 @@ var config = (function() {
             new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_version", xsdNamespace.praktomat + "version", "test-configuration", 0, ".xml_test")),
             new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_warnings", xsdNamespace.praktomat + "max-checkstyle-warnings", "test-configuration", 0, ".xml_test")),
         ];
-        if (xsdSchemaFile === version094)
+        if (xsdSchema === version094)
             uiXmlMapList.push(new UiXmlMap(MapType.SINGLE_ELEM, new ValMap("#xml_upload-mime-type",xsdNamespace.praktomat+"allowed-upload-filename-mimetypes","",0)));
 
         return uiXmlMapList;
@@ -248,7 +247,7 @@ var config = (function() {
     }
 
     function createFurtherOutput(tempvals) {
-        if (xsdSchemaFile === version101) {
+        if (configXsdSchemaFile === version101) {
             createLONCAPAOutput(tempvals[0],codemirror,"101");
         } else {
             createLONCAPAOutput(tempvals[0],codemirror,"old");
@@ -331,7 +330,11 @@ var config = (function() {
         // data
         proglangInfos: proglangInfos,
         testInfos: testInfos,
-        xsds: xsds
+        xsds: xsds,
+        // switches, constants...
+        useCodemirror: true,         // setting this to false turns Codemirror off
+        xsdSchemaFile: configXsdSchemaFile
+
     }
 })();
 

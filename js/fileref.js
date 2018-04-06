@@ -351,7 +351,7 @@ class FileReference {
                         console.log("no file selected -> cancel");
                         return;
                     }
-                    readAndCreateFileData(filenew, -1,
+                    readAndCreateFileData(filenew, undefined /*-1*/,
                         function (newFilename, fileId) {
                             if ($(tempSelElem)) {
                                 $(tempSelElem).val(newFilename).change();
@@ -480,7 +480,7 @@ class FileReference {
         }
         */
         $.each(files, function(index, file) {
-            readAndCreateFileData(file, -1, function(filename) {
+            readAndCreateFileData(file, undefined/*-1*/, function(filename) {
                 instance.onFileUpload(filename, box);
             });
         });
