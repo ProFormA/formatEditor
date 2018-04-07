@@ -612,7 +612,7 @@ readXML = function(xmlText) {
     }
 
     const t0 = performance.now();
-    
+
     gradingHintCounter = 1;                            // variable initialisation
     clearErrorMessage();
     /* codemirror = {};

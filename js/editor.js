@@ -405,7 +405,7 @@ $(function() {
 
         "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
         "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
-            TestFileReference.getInstance().getTableString() +
+            // TestFileReference.getInstance().getTableString() +
             // "<span class='drop_zone drop_zone_text'>Drop Your File(s) Here!</span>" +
             //"<br>" +
     //    " <label for='xml_test_validity'>Validity: </label>"+
@@ -433,7 +433,12 @@ $(function() {
             " Required:<input type='checkbox' class='xml_pr_required' checked title='test must be passed in order to pass the task'></p>" +
             //"</p>" +
 
-            "</p>"+ MoreText + "</div>");
+            "</p>"+
+
+            MoreText +
+            "<p>" + TestFileReference.getInstance().getTableString() + "</p>" +
+
+            "</div>");
 
           // hide fields that exist only for technical reasons
         var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent().parent();

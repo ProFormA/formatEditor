@@ -562,7 +562,7 @@ class InstructionFileReference extends FileReferenceList {
 
     constructor() {
         super('xml_instruction_filename', 'xml_instruction_fileref',
-            'InstructionFileReference', 'Other Attachment',
+            'InstructionFileReference', 'Other attachment',
             'e.g. image or pdf with further information (file is NOT available for grader)', false);
     }
     static getInstance() {return instructionSingleton;}
@@ -584,7 +584,7 @@ let templSingleton = new TemplateFileReference();
 class LibraryFileReference extends FileReferenceList {
     constructor() {
         super('xml_library_filename', 'xml_library_fileref',
-            'LibraryFileReference', 'Code Attachment',
+            'LibraryFileReference', 'Code attachment',
             'e.g. library, interface (file is available for grader)', false);
     }
     static getInstance() {return librarySingleton;}
