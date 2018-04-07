@@ -293,6 +293,9 @@ convertToXML = function() {
             }
         }
     };
+
+    const t0 = performance.now();
+
     clearErrorMessage();
     createMapping(config.xsdSchemaFile);
     var returntemp = createXMLTemplate(config.xsdSchemaFile);
@@ -538,6 +541,10 @@ convertToXML = function() {
         }
     }
 */
+
+    const t1 = performance.now();
+    console.log("Call to convertToXML took " + (t1 - t0) + " milliseconds.")
+
     success = true;
 };
 
@@ -594,6 +601,8 @@ readXML = function(xmlText) {
         return somexml;
     }
 
+
+
     var outputValue = $("#output").val();
     if (outputValue.length > 0) {
         var checktemp = window.confirm("All form content will be deleted and replaced.");
@@ -601,6 +610,9 @@ readXML = function(xmlText) {
             return;
         }                         // proceed only after confirmation
     }
+
+    const t0 = performance.now();
+    
     gradingHintCounter = 1;                            // variable initialisation
     clearErrorMessage();
     /* codemirror = {};
@@ -888,4 +900,7 @@ readXML = function(xmlText) {
     } else {                                           // end: if there is xml content provided
         setErrorMessage("The textarea is empty.");
     }
+
+    const t1 = performance.now();
+    console.log("Call to readXML took " + (t1 - t0) + " milliseconds.")
 };
