@@ -280,7 +280,7 @@ convertToXML = function() {
     convertFormToXML = function(one,two,cdataBool) {
         let xmlDoc = $.parseXML('<task></task>');
         one.textContent = "";                              // delete previous content
-        if (two) {                                         // check whether replacement value exists
+        if (two !== 'undefined') {                                         // check whether replacement value exists
             if (cdataBool === 1) {
                 const tempCdata = xmlDoc.createCDATASection(two);
                 one.appendChild(tempCdata);
@@ -375,7 +375,7 @@ convertToXML = function() {
                                 if (filetype === 'embedded') {
                                     if (config.useCodemirror) {
                                         //convertFormToXML(xmlObject.find(item.xmlname)[idx1],codemirror[idx1+1].getValue(),itm2.cdata);
-                                        var text = codemirror[$(itm1).find('.xml_file_id').val()].getValue();
+                                        const text = codemirror[$(itm1).find('.xml_file_id').val()].getValue();
                                         convertFormToXML(xmlObject.find(item.xmlname)[idx1], text, itm2.cdata);
 
                                     } else {
@@ -409,7 +409,31 @@ convertToXML = function() {
                 });
 
                 $.each(mapChildElems, function(idx2, itm2) {             // loop: test-title, ...
-                    if (typeof $(itm1).find(itm2.formname).val() != "undefined") {    // it exists in the form
+                    let form_elem = $(itm1).find(itm2.formname);
+                    if (!form_elem || form_elem.length == 0)
+                        return;
+                    const input_type = form_elem[0].type;
+                    let value = '';
+                    switch (input_type) {
+                        case 'text':
+                        case 'select-one':
+                            value = form_elem.val();
+                            break;
+                        case 'checkbox':
+                            const value1 = form_elem.is(":checked");
+                            // convert to string (default implementation makes lowercase)
+                            if (value1)
+                                value = 'True';
+                            else
+                                value = 'False';
+                            //console.log('checkbox ' + itm2.formname + ' value = ' + value);
+                            break;
+                        default:
+                            console.log('todo: handle input_type = ' + input_type);
+                            value = form_elem.val();
+                            break;
+                    }
+                    if (typeof value /*$(itm1).find(itm2.formname).val()*/ != "undefined") {    // it exists in the form
                         if (item.formname == itm2.formcontainer) {            // relational join
                             try {
 /*                                para_1_1 = $(xmlObject.find(itm2.xmlpath)[idx1]);
@@ -420,7 +444,7 @@ convertToXML = function() {
                                 para3 = itm2.cdata;
                                 convertFormToXML(para1, para2, para3); */
                                 convertFormToXML($(xmlObject.find(itm2.xmlpath)[idx1]).find(itm2.xmlname)[0],
-                                    $(itm1).find(itm2.formname).val(),itm2.cdata);
+                                    value /*$(itm1).find(itm2.formname).val()*/,itm2.cdata);
 //                                setErrorMessage("mapChildElems: OK: "+itm2.xmlpath+"["+idx1+"] "+itm2.xmlname, null);
                             } catch(err) { setErrorMessage("mapChildElems: missing: "+itm2.xmlpath+"["+idx1+"] "+itm2.xmlname, err);}
                         }
@@ -454,7 +478,7 @@ convertToXML = function() {
     try {                                                           // deal with proglang
         xmlObject.find("proglang")[0].setAttribute("version",tempvals[1]);
         xmlObject.find("proglang")[0].textContent = tempvals[0];
-    } catch(err) { setErrorMessage("missing: proglang");}
+    } catch(err) { setErrorMessage("missing: proglang", err);}
     if (config.xsdSchemaFile === version101) {
         if ($("#xml_uuid").val() == ''){
             xmlObject.find('task').attr('uuid',generateUUID());
@@ -502,7 +526,7 @@ convertToXML = function() {
             });
         });
 
-    } catch(err) { setErrorMessage("Problem with the XML serialisation.");}
+    } catch(err) { setErrorMessage("Problem with the XML serialisation.", err);}
 
     config.createFurtherOutput(tempvals);
 /*
@@ -696,7 +720,7 @@ readXML = function(xmlText) {
                             } else {
                                 $($(item.formname)[idx1cnt]).find('textarea')[0].textContent = itm1.textContent;
                             }
-                        } catch(err) { setErrorMessage("problem with: "+item.xmlname+idx1+itm1);}
+                        } catch(err) { setErrorMessage("problem with: "+item.xmlname+idx1+itm1, err);}
                     }
                 });
                 $.each(mapAttrInSequence, function(idx2, itm2) {          // loop: attributes
@@ -704,7 +728,7 @@ readXML = function(xmlText) {
                         try {
                             $($(item.formname)[idx1cnt]).find(itm2.formname)[0].value=
                                 xmlObject.find(itm2.xmlpath)[idx1].getAttribute(itm2.xmlname);
-                        } catch(err) {setErrorMessage("problem with "+itm2.formname+idx1);}
+                        } catch(err) {setErrorMessage("problem with "+itm2.formname+idx1, err);}
                     }
                 });
                 $.each(mapAttrOfTestElems, function(idx2, itm2) {         // loop: framework and version
@@ -723,7 +747,7 @@ readXML = function(xmlText) {
                                 setErrorMessageInvalidOption(itm2.xmlpath, itm2.xmlname, ui_value);
                                 //setErrorMessage("'"+$(itm1).find(itm2.xmlpath)[0].getAttribute(itm2.xmlname)+"' is not an option for "+itm2.xmlname);
                             }
-                        } catch(err) {setErrorMessage("problem with "+itm2.formname+idx1);}
+                        } catch(err) {setErrorMessage("problem with "+itm2.formname+idx1, err);}
                     }
                 });
                 $.each(mapChildElems, function(idx2, itm2) {              // loop: test-title, ...
@@ -731,14 +755,38 @@ readXML = function(xmlText) {
                         try {
                             //$($(item.formname)[idx1cnt]).find(itm2.formname)[0].value=
                             //    $(itm1).find(itm2.xmlname)[0].textContent;
-                            const ui_element = $($($(item.formname)[idx1cnt]).find(itm2.formname)[0]);
+                            let ui_element = $($(item.formname)[idx1cnt]).find(itm2.formname)[0];
                             const ui_value = $(itm1).find(itm2.xmlname)[0].textContent;
-                            ui_element.val(ui_value);
-                            if (ui_element.val() === null) {   // check selected
+                            const input_type = ui_element.type;
+                            let jquery_ui_element = $(ui_element);
+                            switch (input_type) {
+                                case 'text':
+                                case 'select-one':
+                                    jquery_ui_element.val(ui_value);
+                                    break;
+                                case 'checkbox':
+                                    console.log('checked: ui_value ' + ui_value);
+                                    if (ui_value.toLowerCase() === 'true') {
+                                        console.log('checked = true');
+                                        ui_element.checked = true;
+                                    } else {
+                                        console.log('checked = false');
+                                        ui_element.checked = false;
+                                    }
+                                    break;
+                                default:
+                                    console.log('todo: handle input_type = ' + input_type);
+                                    jquery_ui_element.val(ui_value);
+                                    break;
+                            }
+
+
+
+                            if (ui_value === null) { // ui_element.val() === null) {   // check selected
                                 setErrorMessageInvalidOption(itm2.xmlpath, itm2.xmlname, ui_value);
                                 //setErrorMessage("'"+ui_value+"' is not an option for "+itm2.xmlname);
                             }
-                        } catch(err) {setErrorMessage( "problem with "+itm2.formname+idx1);}
+                        } catch(err) {setErrorMessage( "problem with "+itm2.formname+idx1, err);}
                     }
                 });
 

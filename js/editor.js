@@ -126,7 +126,7 @@ function setErrorMessage(errormess, exception) {                  // setting the
     error_output.append("\n* " + errormess);
     if (exception !== undefined) {
         error_output.append("\n  (" + exception.message + ")");
-        console.log(exception.stack);
+        console.error(exception.stack);
     }
 
     error_output.css('visibility', 'visible');
@@ -402,6 +402,7 @@ $(function() {
         "class='ui-widget ui-widget-content ui-corner-all xml_test'>"+
         "<h3 class='ui-widget-header'>" + TestName + " (Test #"+tempcounter+")<span "+
         "class='rightButton'><button onclick='remP3($(this));deletecounter(testIDs,$(this));'>x</button></span></h3>"+
+
         "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
         "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
             TestFileReference.getInstance().getTableString() +
@@ -409,20 +410,30 @@ $(function() {
             //"<br>" +
     //    " <label for='xml_test_validity'>Validity: </label>"+
     //    "<input class='shortinput xml_test_validity'/>"+
-        " <label for='xml_test_type'>Type: </label>"+
+        "<p><label for='xml_test_type'>Type: </label>"+
         "<select class='xml_test_type'>"+ testTypes + "</select>"+
 
-        "<p><label for='xml_pr_public'>Public<span class='red'>*</span>: </label>"+
-        "<select class='xml_pr_public'>"+
-        "<option selected='selected'>True</option><option>False</option></select>"+
-        " <label for='xml_pr_required'>Required<span class='red'>*</span>: </label>"+
-        "<select class='xml_pr_required'>"+
-        "<option selected='selected'>True</option><option>False</option></select>"+
+            /*        "<p><label for='xml_pr_public'>Public<span class='red'>*</span>: </label>"+
+                    "<select class='xml_pr_public'>"+
+                    "<option selected='selected'>True</option><option>False</option></select>"+
+
+                    " <label for='xml_pr_required'>Required<span class='red'>*</span>: </label>"+
+                    "<select class='xml_pr_required'>"+
+                    "<option selected='selected'>True</option><option>False</option></select>"+
+            */
         " <label for='xml_pr_always'>Always: </label>"+
         "<select class='xml_pr_always'>"+
-        "<option selected='selected'>True</option><option>False</option></select></p>"+
-        "<p><label for='xml_test_title'>Title<span class='red'>*</span>: </label>"+
-        "<input class='largeinput xml_test_title' value='"+ TestName +"'/></p>"+ MoreText + "</div>");
+        "<option selected='selected'>True</option><option>False</option></select>" +
+            "</p>" +
+
+            "<p><label for='xml_test_title'>Title<span class='red'>*</span>: </label>"+
+        "<input class='mediuminput xml_test_title' value='"+ TestName +"'/>" +
+            //"<p>" +
+            " Public:<input type='checkbox' class='xml_pr_public' checked title='results are shown to the students'>" +
+            " Required:<input type='checkbox' class='xml_pr_required' checked title='test must be passed in order to pass the task'></p>" +
+            //"</p>" +
+
+            "</p>"+ MoreText + "</div>");
 
           // hide fields that exist only for technical reasons
         var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent().parent();

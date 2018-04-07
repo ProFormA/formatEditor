@@ -696,18 +696,42 @@ def set_test_title(jct_index, text): # 0-based
     elem[jct_index].clear()
     elem[jct_index].send_keys(text)
 
+def set_checkbox_value(elem, value):
+    is_checked = elem.get_attribute('checked')
+    # convert from string to bool
+    bool_is_checked = False
+    if is_checked == 'true':
+        bool_is_checked = True
+    if bool_is_checked != value:
+        elem.click()
+
 def set_test_public(test_index, public):
     elem = driver.find_elements_by_class_name('xml_pr_public')
-    select = Select(elem[test_index])
-    #select.select_by_value(value) # unfortunately does not work
-    select.select_by_visible_text(public)
+    #select = Select(elem[test_index])
+    #select.select_by_visible_text(public)
+    ###select.select_by_value(value) # unfortunately does not work
+    set_checkbox_value(elem[test_index], public == 'True')
+    #is_checked = elem[test_index].get_attribute('checked')
+    ## convert
+    #bool_is_checked = False
+    #if is_checked == 'true':
+    #    bool_is_checked = True
+    #shall_be_checked = (public == 'True')
+    #if bool_is_checked != shall_be_checked:
+    #    elem[test_index].click()
 
 
 def set_test_required(test_index, required):
     elem = driver.find_elements_by_class_name('xml_pr_required')
-    select = Select(elem[test_index])
-    #select.select_by_value(value) # unfortunately does not work
-    select.select_by_visible_text(required)
+    #select = Select(elem[test_index])
+    #####select.select_by_value(value) # unfortunately does not work
+    #select.select_by_visible_text(required)
+    set_checkbox_value(elem[test_index], required == 'True')
+
+    #is_checked = elem[test_index].get_attribute('checked')
+    #shall_be_checked = (required == 'True')
+    #if is_checked != shall_be_checked:
+    #    elem[test_index].click()
 
 
 # Achtung! Index!
