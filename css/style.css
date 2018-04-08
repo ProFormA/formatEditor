@@ -91,6 +91,8 @@ table, th, td {
 
 /********************** right panel *******************/
 #rightPanel{
+    position:fixed;
+    right:0px;
 	float:right;
 	width:20%;
 }
