@@ -333,7 +333,8 @@ var config = (function() {
         xsds: xsds,
         // switches, constants...
         useCodemirror: true,         // setting this to false turns Codemirror off
-        xsdSchemaFile: configXsdSchemaFile
+        xsdSchemaFile: configXsdSchemaFile,
+        maxSizeForEditor: 100000, // maximum file size to enable editing
 
     }
 })();

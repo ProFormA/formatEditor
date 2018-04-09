@@ -273,7 +273,7 @@ $(function() {
         const size = file.size; //get file size
         const mimetype = getMimeType(file.type, filename); //get mime type
         // determine if we have a binary or non-binary file
-        const isBinaryFile =  config.isBinaryFile(file, mimetype);
+        let isBinaryFile =  config.isBinaryFile(file, mimetype);
         let reader = new FileReader();
         reader.onload = function(e) {
 
@@ -298,6 +298,11 @@ $(function() {
           }
           // set filename
           ui_file.filename = filename;
+
+          if (size > config.maxSizeForEditor) {
+              console.log('file '+ filename + ' is too large => no editor support');
+              isBinaryFile = true;
+          }
 
           if (isBinaryFile) {
               // binary file
