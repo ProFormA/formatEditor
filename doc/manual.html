@@ -8,103 +8,171 @@
 (einschließlich einer Problem-Datei für LON-CAPA). Außerdem kann eine XML-Datei
 im entsprechenden Format eingelesen, um gewünschte Tests oder
 zusätzliche Dateien erweitert und wieder exportiert werden.
-Das XML-Format muss dem <a href="https://github.com/ProFormA/taskxml" target="new">
+Das XML-Format entspricht dem <a href="https://github.com/ProFormA/taskxml" target="new">
 Standard für den Austausch von Programmieraufgaben
 entsprechen</a>.</p>
 
-<b style="color:red"> Der Export nutzt eine Funktionalität, die nicht jeder Browser in
+<p>
+Die Programmieraufgaben bestehen im Wesentlichen aus einer Aufgabenbeschreibung und geeigneten Testfällen. Diese
+sollen üblicherweise die Funktionaität der studentischen Einreichung überprüfen. Es können aber je nach Zielsetzung
+auch andere Kriterien hinzugezogen werden (Compilierbarkeit, Stil, Robustheit, Performance...).
+</p>
+
+<p>
+    Die Testfälle nutzen bekannte Standards, die je nach gewählten Programmiersprache zur Verfügung stehen
+    (z.B. JUNIT und Checkstyle bei Java).
+</p>
+
+<b style="color:red"> Der Editor nutzt Funktionen, die nicht jeder Browser in
   der benötigten Form unterstützt.
-  Chrome (getestet mit Version 64.0.3282.167 (64-bit)) und Firefox (getestet mit 51.0.1 (64-Bit)) sind hier die Browser der Wahl.
+  Chrome (getestet mit Version 65.0.3325.181 (64-bit)) und Firefox (getestet mit 59.0.1 (64-Bit)) sind hier die Browser der Wahl.
     </b>
 <br>
-In Internet Explorer (Version 11.576), Edge (Version 38.14393) und Safari funktioniert der Export gar nicht oder nur eingeschränkt. Hier besteht allerdings noch die Möglichkeit, die Dateien aus den Textfeldern im Output-Reiter zu kopieren und die Dateien (UTF-8-Kodierung) von Hand zu erzeugen.
-
+In Internet Explorer, Edge (Version 38.14393) und Safari funktioniert der Export nicht.
 
 
 <h3>Aufbau des Editors</h3>
-Der Editor gliedert sich in mehrere Reiter, die jeweils unterschiedliche Bestandteile einer Aufgabe beinhalten:
+Der Editor gliedert sich in mehrere Reiter (auch als Tabs oder Registerkarten bezeichnet), die jeweils unterschiedliche Bestandteile einer Aufgabe beinhalten:
 <ul>
     <li><b>Main:</b> Beschreibung und wichtige Parameter der Aufgabe</li>
     <li><b>Model Solutions:</b> enthält eine oder (in Ausnahmefällen auch) mehrere Musterlösungen </li>
     <li><b>Tests:</b> enthält Angaben zu Tests, mit denen überprüft wird, ob eine Einreichung korrekt oder fehlerhaft ist</li>
-    <li><b>Files:</b> enthält die Dateien, die für die Musterlösung und Tests genutzt werden</li>
+    <li><b>Files:</b> listet alle Dateien auf, die eingesetzt werden</li>
     <li><b>Output:</b> Anzeige der Ergebnisdatei (nur zu Debugzwecken)</li>
 
 </ul>
 
 <h3>Erstellen einer neuen Aufgabe</h3>
 
-<p>Zunächst werden unter dem Main-Reiter der Aufgabentext (Description), der Titel der
-Aufgabe, die Programmiersprache, die maximale Dateigröße der studentischen
-Einreichung und der Dateityp (als MimeType) eingegeben. Der LON-CAPA-Pfad
-muss geändert werden, so dass er den Benutzernamen und eventuell die
-Namen der Unterordner enthält.</p>
+<p>Zunächst wird unter dem Main-Reiter die Aufgabenbeschreibung erstellt.
+Damit wird vor allem die studentische Sicht auf die Aufgabe festgelegt. Sie besteht aus:
+<ul>
+    <li>dem Titel</li>
+    <li>der eigentlichen Beschreibung in html</li>
+    <li>ggf. Anhänge, die die Beschreibung der Aufgabe ergänzen (Bilder, pdfs, ...)</li>
+    <li>ggf. Dateien, die der Studierende zum Lösen der Aufgabe benötigt (Bibliotheken, Interface-Dateien, ...)</li>
+    <li>und der Sprache, in der die Aufabe gestellt ist</li>
+</ul>
+
+<p>
+Dazu muss weiterhin die Programmiersprache aus einer Liste ausgewählt werden.
+</p>
+
+<p>
+In einem weiteren Abschnitt kann die studentische Einreichung eingeschränkt werden, um bereits auf Client-Seite
+einige Fehler abfangen zu können (maximale Dateigröße, Dateityp (als MimeType)).
+</p>
+
+<p>
+Hier können auch ein oder mehrere Templates (Code-Schablonen) angegeben werden. Diese erleichtern dem Studierenden den Einstieg
+in die Aufgabe und helfen, lange Schnittstellenbeschreibungen zu vermeiden.
+    <br>
+    Bei Verwendung des Editors im Lernmanagementsystem wird dieser beim ersten Darstellen der Aufgabe
+    mit der Schablone vorbelegt.
+    Der Lernende kann dann seinen Code direkt in die Schablone tippen. <br>
+
+    Wird der Filepicker eingesetzt, wird die Code-Vorlage als Download angeboten.<br>
+
+</p><p>
+Bei Nutzung von LON-CAPA muss der Pfad zur Aufgabe relativ zur Problem-Datei angegeben werden.
+</p><p>
+Beispiel: Wenn die LON-CAPA-Problem-Datei in LON-CAP im Ordner
+
+    <code> https://vita.ostfalia.de/res/fhwf/ecult/Java/</code>
+
+    liegt und die Aufgaben-Datei (zip-Datei)
+    in den Unterordner Ordner <code>zip</code> abgelegt werden soll, dann kann der LON-CAPA-Pfad entweder mit
+
+    <code>zip/</code>
+
+    oder aber absolut mit
+
+    <code>/res/fhwf/ecult/Java/zip/</code>
+
+    angegeben werden.
+</p>
 
 <p>Wichtig ist im gesamten Formular: Alle mit einem roten Stern (*) gekennzeichneten
 Felder müssen ausgefüllt sein, damit eine Aufgabe exportiert werden kann.</p>
 
-<!--<p><img alt="doku1" src="images/doku1.png" /></p>-->
-
-<p>Danach müssen mindestens eine Musterlösung und geeignete Tests erstellt werden. </p>
-
 <h4>Musterlösung</h4>
 <p> Die Musterlösung wird im Reiter Musterlösung eingegeben. Sie besteht aus dem Quellcode, der sinnvollerweise
 in einem externen Editor bzw. einer entsprechenden Entwicklungsumgebung erstellt und vorab getestet wird.
-    Die Datei wird entweder über die &ltload...&gt-Option der Filename-Auswahlliste oder per Drag&Drop
+
+</p><p>
+    Die Datei wird entweder über die &ltload...&gt-Option der Filename-Auswahlliste oder am einfachsten per Drag&Drop
 in den Editor geladen. Alternativ kann auch von Hand in dem Files-Reiter eine Datei erstellt und anschließend mit der
 Musterlösung verknüpft werden.
+
+</p><p>
+    Wichtig: Wenn die studentische Eireichung nur aus Text in einem Editor (im Gegensatz zu einer
+    hochgeladenen Datei) besteht, so wird dieser Text im Grader in einer Datei gespeichert, die
+    denselben Namen wie die Musterlösung trägt. Es ist daher auf den korrekten Namen der Musterlösung zu achten.
+    (In Planung: eigenes Feld für den Dateinamen)
+
 </p>
 <h4>Tests</h4>
-<p>
 
-    Analog zur Musterlösung wird mit den Tests verfahren. Hier müssen entprechend der Programmiersprache und der Aufgabenstellung
+<p>
+    Die Tests bilden den Kern der Aufgabe. Sie werden vom Grader ausgeführt, um eine Bewertung der
+    studentischen Einreichung zu ermitteln. Hier müssen entprechend der Programmiersprache und der Aufgabenstellung
     geeignete Tests definiert werden.
+
     Der Editor bietet abhängig von der Programmiersprache unterschiedliche Testmöglichkeiten an:
     Bei Java gibt es z.B. JUnit- oder Compiler-Tests.
-    Innerhalb der Testfelder
-    gibt es mehrere einstellbare Optionen. Es kann festgelegt werden, ob ein
-    Testergebnis für Studierende sichtbar (public) ist oder nicht. Die Auswahl
-    &bdquo;required&ldquo; legt fest, ob ein Test bestanden werden muss, um eine Aufgabe zu
-    bestehen oder nicht. Normalerweise muss dieser Wert auf <code>True</code> gesetzt werden.
-    Anhand der verschiedenen Knöpfe unten auf der Test-Seite können weitere Tests hinzugefügt werden.
 
+
+</p><p>
+    Innerhalb der Tests gibt es unterschiedliche einstellbare Optionen. Es kann festgelegt werden, ob ein
+    Testergebnis für Studierende sichtbar (<code>public</code>) ist oder nicht.
+
+    Die Auswahl <code>required</code> legt fest, ob ein Test bestanden werden muss, um eine Aufgabe zu
+    bestehen oder nicht. Dieser Schalter ist üblicherweise zu setzen.
+
+</p><p>
+    Testskripte werden analog zur Musterlösung hinzugefügt.
+
+</p><p>
+    Anhand der verschiedenen Knöpfe unten auf der Test-Seite können weitere Tests hinzugefügt werden.
 </p>
 
 <h4>Dateien</h4>
 <p>
-Jede Datei muss einen Namen mit einer entsprechende Endung (z.B. &bdquo;.java&ldquo;) erhalten.
+    Jede Datei muss einen Namen mit einer entsprechende Endung (z.B. <code>.java</code>) erhalten.
     (Werden die Dateien über die &ltload...&gt-Option oder per
     Drag&Drop geladen, so wird der Original-Dateiname automatisch übernommen.)
+</p><p>
+    Eine Besonderheit gibt es für Java-Dateien.
+    Hier wird der Dateiname aus dem Dateiinhalt ermittelt (Package und Klassenname). Stimmt er nicht mit dem
+    echten Dateinamen überein, so erscheint eine Warnung.
+</p><p>
+    Alle Dateien sollten mit Tests, der Musterlösung oder auf der Hauptseite (Template, ...) verknüpft sein.
 </p>
 <p>
-    Bei Dateien wird immer ein Parameter <code>usage</code> angegeben. Dieser hat folgende Bedeutung:</p>
+    Dateien haben je nach Anwendungszweck eine unterschiedliche Sichtbarkeit:</p>
 <table border="1">
-    <tr><td><b>Wert</b></td><td><b>Bedeutung</b></td><td><b>sichtbar für Grader</b></td><td><b>sichtbar für Studierende</b></td></tr>
+    <tr><td><b>Anzeige<br>(interne Bezeichnung)</b></td><td><b>Bedeutung</b></td><td><b>sichtbar für Grader</b></td><td><b>sichtbar für Studierende</b></td></tr>
 
-    <tr><td><b>library (Bibliothek)</b></td><td>Eine Bibliothek enthält Funktionen, die benötigt werden,
-        um die studentische Einreichung (das Programm) laufen lassen zu können.<br>
+    <tr><td><b>Code attachment<br>(library)</b></td><td>enthält Funktionen, die benötigt werden,
+        um die studentische Einreichung laufen lassen zu können.<br>
         </td><td>x</td><td>x</td></tr>
 
-    <tr><td><b>internal-library (interne Bibliothek)</b></td><td>wie library, nur wird die Bibliothek dem Lernenden nicht zum Download angeboten.
-        I.allg. enthält die interne Bibliothek Hilfsfunktionen zum Laufenlassen der Tests.<br>
-    </td><td>x</td><td>-</td></tr>
-
-    <tr><td><b>instruction</b></td><td>die Instruction-Datei enthält weitere Details zur Aufgabenstellung (description).
+    <tr><td><b>Other attachment<br>(instruction)</b></td><td>enthält weitere Details zur Aufgabenstellung.
         Dies kann zum Beispiel ein pdf sein oder ein Bild.<br>
     </td><td>-</td><td>x</td></tr>
 
-    <tr><td><b>template (Code-Vorlage/Schablone)</b></td><td>Bei Verwendung des Editors (in der studentischen Ansicht) wird dieser beim ersten Darstellen
-        mit der Code-Vorlage vorbelegt. <br>
-        Wird der Filepicker eingesetzt, wird die Code-Vorlage als Download angeboten.<br>
-        Der Lernende kann dann seinen Code direkt in die Code-Vorlage tippen. <br>
-        Eine Code-Vorlage ist immer dann sinnvoll, wenn man sonst lange die
-        erwartete Programmierschnittstelle beschreiben müsste.
-        Sie hilft, Schnittstellenprobleme zu vermeiden.
-        Sind mehrere Templates angegeben, wird in LON-CAPA nur das letzte verwendet.
+    <tr><td><b>Code-Schablone<br>(template)</b></td><td>
+
+        Code-Schnipsel, der vom Studierenden bis zur vollständigen Lösung ergänzt werden soll.
+
+        Sind mehrere Templates angegeben, wird in LON-CAPA das erste genommen, was 'embedded' (Angabe bei der Datei) ist.
     </td><td>-</td><td>x</td></tr>
 
-    <tr><td><b>internal (Default)</b></td><td>Dieser Typ wird verwendet, wenn keiner der anderen Typen passt.
-        Hiermit werden die Musterlösung(en) und die Testskripte gekennzeichnet.
+    <tr><td><b>Test, Musterlösung<br>(internal)</b></td><td>Musterlösung(en) und die Testskripte
+    </td><td>x</td><td>-</td></tr>
+
+    <tr><td><b>Library-Flag bei Datei gesetzt<br>(internal-library)</b></td>
+        <td>Datei wird grader- und programmiersprachenabhängig als Bibliothek betrachtet<br>
     </td><td>x</td><td>-</td></tr>
 
 </table>
