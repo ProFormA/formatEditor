@@ -36,28 +36,13 @@ exercises, not all features are supported by all tools. The editor can therefore
 configured for specific tools.
 
 <ul>
-<li>Several variables (such as version094, xsdSchemaFile,
-codemirrorOnOrOff and loncapaOnOrOff) can be set within the HTML file
-that invokes the editor in order to turn such features on or off.
-<li>If new tool-specific features are added to the code, further
-variables should be added to turn these features on or off.
+<li>Several variables (such as useCodemirror) can be set within the config.js
+in order to turn such features on or off.
+<li>Tests can be added or removed in config.js as well.
+    Even the list of supported programming languages can be modified.
+    Look at config.js for details.
 <li>Larger tool-specific code should be placed in separate files (such
 as loncapa.js).
-<li>The main data structure of the editor are arrays of objects which
-map the HTML form elements onto the XML elements of the ProFormA
-format. In order to add a new HTML and form element, this needs to be
-placed in 3 places:
-<ul>
-<li>Within the <font color="blue">createMapping</font> function, a ValMap
-object needs to be created. This should be placed inside the array
-that describes how this element occurs in the XML file: whether it occurs once, as a
-list, as an attribute, etc.
-<li>Within the <font color="blue">createXMLTemplate</font> function, an
-XML template for this new element needs to be created.
-<li>An HTML form element needs to be created in the HTML file or in
-the relevant section "#filesection", "#modelsolutionsection",
-"#testsection".
-</ul>
 </ul>
 
 <h4>Known Bugs and Missing Features</h4>
@@ -80,10 +65,7 @@ Gitlab issue tracking is available
 
 <h4>Testing</h4>
 
-A rudimentary Python/Selenium script is
-provided: <font color="blue">tests/testsuite.py</font>.  It is not
-complete and only works for some settings. It is mostly a suggestion
-for future testing development.
+A set of python/selenium tests that cover basic features is provided for regression testing.
 
 </body>
 </html>

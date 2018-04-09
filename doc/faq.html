@@ -13,9 +13,6 @@ Why is no output produced?</h4>
 These are error messages. They are generated when form elements are missing
 or when an XML file is read that contains missing information or incorrect tags.
 A task should only be uploaded to LON-CAPA if there are no error messages.
-Apart from missing information, another source of errors are duplicate IDs:
-each file, test and model solution must have a unique ID. Model solutions and most tests
-must reference a file.
 
 <h4>How do I reload/start a new task?</h4>
 
@@ -29,9 +26,7 @@ See the explanation for file/class below.
 <h4>How do I specify a path for a file to be uploaded?</h4>
 
 The filename can contain a path (in Unix notation using backslashes). <br />
-If a file is needed as a library in a subdirecty, it is important that this
-file is of class 'library' or 'internal-library'. In that case the subdirectory
-will be created as needed by the system.
+If a file is needed as a library, it is important that the library flag is set.
 
 <h4>How do I check static details about the code? How do I prohibit students from using
 (or require them to use) a construct?</h4>
@@ -41,9 +36,7 @@ Examples can be found <a href="beispiel.html" target="new">here</a>.
 
 <h4>I have a question about model solutions:</h4>
 
-At least one model solution must be provided. It should be uploaded as a file
-which is referenced using Fileref1 from a model solution element. The file
-should probably be of class 'internal' so that the students cannot see it.
+At least one model solution must be provided. It should be uploaded as a file.
 The reason for requiring a model solution is because it makes it easier to
 reuse a task at a later point. Some tools (but not LON-CAPA) use the model solution
 for comparison with the students' submissions. (If it is really not feasible
@@ -96,24 +89,11 @@ The version of the editor's output format can be set via the internal xsdSchemaF
 <li><b>Submission/max filesize</b>: of the file that is uploaded by the students in kilobytes.
 <li><b>Submission/mimetype</b>: what types of files can be uploaded. For Java the exact filename
 could be used.
-<li><b>LON-CAPA/path to zip file</b>: should be "/res/fhwf/..." and not "/priv/..." because that is where
+<li><b>LON-CAPA/path to zip file</b>: should be the name of the subfolder where the zip file will be located (or an absolute path).
+  For absolute paths use "/res/fhwf/..." and not "/priv/..." because that is where
 it will be after publication. The filename of the zip file is not part of the path. When uploading the
 zip file to LON-CAPA its default name is the task title minus any non-alphanumeric characters.
 
-<li><b>File/class</b>: <br>
-  An <b>internal</b> file is not visible to the students. <br />
-  A <b>template</b> file
-should be a piece of code which the students can use as a starting point for their program. It is shown
-to the students within the input textarea in LON-CAPA.
-If more than one file is specified as "template", then only the last one is used and
-the others are ignored. <br />
-A <b>library</b> file can have the same functionality as an internal file (i.e.
-can contain tests which are used by the system) but it is also shown to the students.
-A library filename can contain a path.<br />
-An <b>internal-library</b> file is not shown to the students.
-An internal-library filename can contain a path.<br />
-An <b>instruction</b> file is shown to the students but not executed in any manner. It could,
-for example, contain a more detailed description of the task.
 <li>For tests: <b>public</b>: The students will see the test result.
 <li>For tests: <b>required</b>: This test must be passed in order to pass the whole task.
 </ul>
@@ -121,12 +101,13 @@ for example, contain a more detailed description of the task.
 <h4>What has not yet been implemented/does not work?</h4>
 
 <ul>
-<li><b>Export zip</b>: only works in some browsers (such as Firefox). In other browsers the
-xml file needs to be downloaded and then zipped manually.
+<li><b>Export zip</b>: only works in some browsers (such as Firefox and Chrome).
+
 <li><b>Reading files with the same filename</b> one after the other: this does not work
 in some browsers. Some browsers will not reload if the file has the same name as the one
 before. Refreshing the browser solves this problem.
-<li>There must be <b>at least one file, one model solution and one test</b>. (Without a test there is
+
+<li>There must be <b>at least one model solution and one test</b>. (Without a test there is
 no reason to use this editor. The existence of a model solution is required by the exchange
 format which is implemented by this editor.)
 <li><b>Special characters (such as German umlauts)</b> may not work properly in all fields.
@@ -163,13 +144,16 @@ the path to the zip file.
 
 <h4>Can I install and configure the editor myself?</h4>
 
-It is possible to turn off LON-CAPA support and Codemirror in the source code of the editor
-using the codemirrorOnOrOff and loncapaOnOrOff variables. Different versions of the exchange
-format can be set via the xsdSchemaFile variable. There is more information about
+Look at config.js to change configuration settings. You can remove/add tests or add support for other programming
+languages. You can also switch on/off LON-CAPA support and CodeMirror use.
+
+There is more information about
 <a href="installationFAQ.html" target="new">installation and configuration</a>.
+
 The current version of the editor can be found on
 <a href="https://github.com/ProFormA/formatEditor" target="new">GitHub</a>.
 
 <h4>My question has not been answered/I found a bug:</h4>
 
-Please send us an email: zell-proforma@ostfalia.de
+Please send us an email: <code>zell-proforma@ostfalia.de</code>
+
