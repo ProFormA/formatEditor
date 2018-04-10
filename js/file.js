@@ -48,6 +48,8 @@ class FileWrapper {
         // this._id = id;
         let file = new FileWrapper();
         file._root = $(".xml_file_id[value='" + id + "']").closest(".xml_file");
+        if (file.root.length === 0)
+            return undefined; // no element with id found
         return file;
     }
 
@@ -243,6 +245,13 @@ class FileWrapper {
             ui_file.delete();
         }
     };
+
+    static doOnAllFiles(callback) {
+        // todo: iterate through all files in variable
+        $.each($(".xml_file_id"), function (indexOpt, item) {
+            callback(item.value);
+        });
+    }
 
     static onFileclassChanged(selectfield) {
         const text = $("option:selected", selectfield).text(); // selected text

@@ -713,7 +713,7 @@ readXML = function(xmlText) {
 
                     found = false;
                     $.each(config.testInfos, function(index, item) {
-                        if (!found && $(itm1).find('test-type')[0].textContent == item.testType) {
+                        if (!found && $(itm1).find('test-type')[0].textContent === item.testType) {
                             newTest($(itm1).attr("id"), item.title, item.htmlExtraFields, item.testType, item.withFileRef);
                             found = true;
                         }
@@ -725,10 +725,31 @@ readXML = function(xmlText) {
                     }
                 }
                 $.each(mapTextInElemSequence, function(idx2, itm2) {
-                    if (item.xmlname == itm2.xmlname) {                      // relational join
+                    if (item.xmlname === itm2.xmlname) {                      // relational join
                         try {                                                  // deal with codemirror for file textarea
-                            if ((itm2.formname == '.xml_file_text') && (config.useCodemirror)) {
-                                codemirror[$(itm1).attr('id')].setValue(itm1.textContent);
+                            if (itm2.formname === '.xml_file_text') {
+                                // check text length
+                                const text = itm1.textContent;
+                                const id = $(itm1).attr('id');
+                                let ui_file = FileWrapper.constructFromId(id);
+                                if (text.length > config.maxSizeForEditor) {
+                                    if (!("TextEncoder" in window))
+                                        alert("Sorry, this browser does not support TextEncoder...");
+                                    let enc = new TextEncoder("utf-8");
+                                    ui_file.storeAsFile = true;
+                                    ui_file.content =  enc.encode(text);
+                                    ui_file.size = text.length;
+                                    ui_file.mimetype = '';
+                                } else {
+                                    ui_file.text = text;
+                                }
+/*
+                                if (config.useCodemirror) {
+                                    codemirror[id].setValue(text);
+                                } else {
+                                    $($(item.formname)[idx1cnt]).find('textarea')[0].textContent = text;
+                                }
+*/
                             } else {
                                 $($(item.formname)[idx1cnt]).find('textarea')[0].textContent = itm1.textContent;
                             }
@@ -736,7 +757,7 @@ readXML = function(xmlText) {
                     }
                 });
                 $.each(mapAttrInSequence, function(idx2, itm2) {          // loop: attributes
-                    if (item.xmlname == itm2.xmlpath) {                    // only relevant attributes
+                    if (item.xmlname === itm2.xmlpath) {                    // only relevant attributes
                         try {
                             $($(item.formname)[idx1cnt]).find(itm2.formname)[0].value=
                                 xmlObject.find(itm2.xmlpath)[idx1].getAttribute(itm2.xmlname);
@@ -855,6 +876,7 @@ readXML = function(xmlText) {
 //            console.log(index + ' ' + element);
             const fileid = element.getAttribute('id');
             const filename = element.getAttribute('filename');
+            let ui_file = FileWrapper.constructFromId(fileid);
             switch(element.getAttribute('class')) {
                 case TEMPLATE:
                     TemplateFileReference.getInstance().setFilenameOnCreation(templateroot, indexTemplate++, filename);
@@ -866,11 +888,16 @@ readXML = function(xmlText) {
                     LibraryFileReference.getInstance().setFilenameOnCreation(libroot, indexLib++, filename);
                     // break; // fall through!!
                 case INTERNAL_LIB:
-                    let ui_file = FileWrapper.constructFromId(fileid);
                     ui_file.isLibrary = true;
                     break;
                 default:
                     break;
+            }
+            if (ui_file.storeAsFile) {
+                // switch type to file if storeAsFile is set
+                ui_file.type = 'file';
+                ui_file.isBinary = true;
+
             }
         });
 
@@ -904,3 +931,4 @@ readXML = function(xmlText) {
     const t1 = performance.now();
     console.log("Call to readXML took " + (t1 - t0) + " milliseconds.")
 };
+

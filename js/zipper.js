@@ -204,13 +204,13 @@ zipme = function() {
         const ui_file = FileWrapper.constructFromRoot($(item).closest(".xml_file"));
         // let fileroot = $(item).closest(".xml_file");
         // const fileId = fileroot.find(".xml_file_id").val();
-        const embedded = ui_file.type === 'embedded';
-        if (!embedded) {
+        if (!ui_file.type === 'embedded') {
             // copy editor content to file storage
-            fileStorages[ui_file.id].storeAsFile = true;
+            ui_file.storeAsFile = true; // fileStorages[ui_file.id].storeAsFile = true;
             if (!ui_file.isBinary) {
                 // copy content from editor if file is non binary
-                fileStorages[ui_file.id].content = ui_file.text;
+                ui_file.content = ui_file.text;
+                // fileStorages[ui_file.id].content = ui_file.text;
             }
         }
     });
@@ -227,13 +227,23 @@ zipme = function() {
             // bom: new
             let f = 0;
             function nextFile(f) {
-                const fs = fileStorages[f];
                 if (f >= fileStorages.length) {
                     // end of recursion => write task.xml
                     zipWriter.add(FILENAME, new zip.BlobReader(blob), function () {
                         zipWriter.close(callback);
                     });
                 } else {
+                    const ui_file = FileWrapper.constructFromId(f);
+                    if (ui_file && ui_file.storeAsFile) {
+                        fblob = new Blob([ui_file.content], {type: ui_file.mimetype});
+                        zipWriter.add(ui_file.filename, new zip.BlobReader(fblob), function () {
+                            // callback
+                            f++;
+                            nextFile(f);
+                        });
+
+/*
+                    const fs = fileStorages[f];
                     if (fs !== undefined && fs.storeAsFile) {
                         fblob = new Blob([fs.content], {type: fs.mimetype});
                         zipWriter.add(fs.filename, new zip.BlobReader(fblob), function () {
@@ -241,6 +251,7 @@ zipme = function() {
                             f++;
                             nextFile(f);
                         });
+                        */
                     } else {
                         f++;
                         nextFile(f);

@@ -197,8 +197,8 @@ function downloadFile(downloadLink) {                  // download link for text
 */
 function downloadTextFile2(textarea, filename, dummybutton) {
     console.log("downloadTextFile2 called");
-    var text = textarea.val();
-    if (text.length == 0) {
+    const text = textarea.val();
+    if (text.length === 0) {
         console.log("downloadTextFile2 called with empty output");
         return;
     }
@@ -207,7 +207,7 @@ function downloadTextFile2(textarea, filename, dummybutton) {
 //    downloadText3(text, filename, 'text/plain');
 //    return;
 
-     var text1 = encodeURIComponent(text);
+    const text1 = encodeURIComponent(text);
     // create dummy button for saving task.xml
     dummybutton.href = "data:text/text;charset=utf-8," + text1;
     dummybutton.download = filename;
