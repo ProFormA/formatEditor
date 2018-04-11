@@ -1,3 +1,25 @@
+Release Notes for 2.2.1
+
+remove output tab
+#12: empty input for LON-CAPA zip path will be converted to '.'
+update documentation
+turn large files to attached files when reading xml and on upload
+make rightPanel fixed
+use checkboxes instead of True/False-options
+#25: support for C programming language
+#24: change testcase because Chrome Selenium driver does not send ^ to input field
+allow multiple file upload for filerefs
+add code attachment section in main tab
+#11: Bugfix mimetype conversion from 0.94, minor changes
+bugfix java classname evaluation
+code refacturing
+show filename in file header
+#13: use syntax highlighting depending on filename extension (mime type)
+#24: use CDATA for compiler file pattern in Java Compiler test
+#18: add some help texts concerning Java compiler test
+#26: support for version 5.4 and 7.6 of Checkstyle
+#5: ask user if he or she wants to delete a file if it is still referenced
+
 Release Notes for 2.2.0
 
 #23: special JUnit-version
