@@ -163,32 +163,37 @@ Musterlösung verknüpft werden.
     <col align="center">
     <col align="center">
 
-    <tr><td><b>Anzeige<br>(interne Bezeichnung)</b></td><td><b>Bedeutung</b></td><td><b>sichtbar für Grader</b></td><td><b>sichtbar für Studierende</b></td></tr>
+    <tr><th>Anzeige (interne Bezeichnung)</th><th>Bedeutung</th><th>Beispiel</th><th>sichtbar für Grader</th><th>sichtbar für Studierende</th></tr>
 
-    <tr><td><b>Code attachment<br>(library)</b></td><td>enthält Funktionen, die benötigt werden,
-        um die studentische Einreichung laufen lassen zu können.<br>
-        </td><td>x</td><td>x</td></tr>
+    <tr><td><b>Code attachment zu Description</b><br>(library)</td><td>enthält Code, den der Studierende benötigt,
+        um seine Lösung zu entwickeln<br></td>
+        <td>Java-Interface-Klasse, jar-Datei, c-Header</td>
+        <td>x</td><td>x</td></tr>
 
-    <tr><td><b>Other attachment<br>(instruction)</b></td><td>enthält weitere Details zur Aufgabenstellung.
-        Dies kann zum Beispiel ein pdf sein oder ein Bild.<br>
-    </td><td>-</td><td>x</td></tr>
+    <tr><td><b>Other attachment zu Description</b><br>(instruction)</td><td>enthält weitere Details zur Aufgabenstellung<br></td>
+        <td>Diagramme, Fotos, Bilder, pdf</td>
+        <td>-</td><td>x</td></tr>
 
-    <tr><td><b>Code-Schablone<br>(template)</b></td><td>
+    <tr><td><b>Code-Schablone</b><br>(template)</td><td>
 
-        Code-Schnipsel, der vom Studierenden bis zur vollständigen Lösung ergänzt werden soll.
+        Code-Schnipsel (skeleton), der vom Studierenden bis zur vollständigen Lösung ergänzt werden soll.
 
-        Sind mehrere Templates angegeben, wird in LON-CAPA das erste genommen, was 'embedded' (Angabe bei der Datei) ist.
-    </td><td>-</td><td>x</td></tr>
+        Sind mehrere Templates angegeben, wird in LON-CAPA das erste genommen, das 'embedded' (Angabe bei der Datei) ist</td>
+        <td>Klassenrahmen mit Funktionsrümpfen</td>
+        <td>-</td><td>x</td></tr>
 
-    <tr><td><b>Test<br>(internal)</b></td><td>Testskripte
-    </td><td>x</td><td>-</td></tr>
+    <tr><td><b>Test</b><br>(internal)</td><td>Testskripte</td>
+        <td>JUNIT-Dateien, Checkstyle-Dateien</td>
+        <td>x</td><td>-</td></tr>
 
-    <tr><td><b>Musterlösung<br>(internal)</b></td><td>Musterlösung(en)
-    </td><td>(x)</td><td>(x)</td></tr>
+    <tr><td><b>Musterlösung</b><br>(internal)</td><td>Musterlösung(en)</td>
+        <td></td>
+        <td>(x)</td><td>(x)</td></tr>
 
-    <tr><td><b>Library-Flag bei Datei gesetzt<br>(internal-library)</b></td>
-        <td>Datei wird grader- und programmiersprachenabhängig als Bibliothek betrachtet<br>
-    </td><td>x</td><td>-</td></tr>
+    <tr><td><b>Library-Flag bei Datei gesetzt</b><br>(internal-library)</td>
+        <td>Datei wird grader- und programmiersprachenabhängig als Bibliothek betrachtet<br></td>
+        <td>jar-Datei</td>
+        <td>x</td><td>-</td></tr>
 
 </table>
 
