@@ -175,12 +175,22 @@ function getModelSolution(cmhash) {
 createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimetype,cmhash,versionchck) {
   var template = getEditorTemplate(cmhash);
   var downloadable = createDownloadLinks(cmhash);
-  if ($("#lczip").val().slice(-1) != "/") { $("#lczip").val($("#lczip").val()+ "/"); }  // add / to path if missing
-  if (typeof template == "undefined") { template = ""; }
-  if (typeof downloadable == "undefined") { downloadable = ""; }
+  const lc_zip = $("#lczip").val().trim();
+  if (!lc_zip) {
+      // empty => set to .
+      $("#lczip").val('.');
+  } else {
+      if (lc_zip !== '.' && lc_zip.slice(-1) !== "/") {
+          // add / to path if missing
+          $("#lczip").val(lc_zip + "/");
+      }
+  }
+
+  if (typeof template === "undefined") { template = ""; }
+  if (typeof downloadable === "undefined") { downloadable = ""; }
 //  lc_path = "/res/fhwf/ecult/Java/zip/";
   lc_path = "/res/fhwf/ecult";
-  lc_user_path = $("#lczip").val();
+  lc_user_path = $("#lczip").val().trim();
   lc_codeMHeader = "/lib/SyntaxHighlighter/CodeMirror_Header.library";
   lc_codeMFooter = "/lib/SyntaxHighlighter/CodeMirror_Footer.library";
   if (lc_mimetype == "java") {lc_mimetype = "x-java";}
