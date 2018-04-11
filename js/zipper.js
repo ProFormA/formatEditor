@@ -31,10 +31,11 @@ var unzippedFiles = {};
  * @param readyCallback: callback for 'task.xml' file
  * @returns {string}
  */
-unzipme = function (blob, location, readyCallback) {
+unzipme = function (blob, /*location, */readyCallback) {
     var unzipped_text = "???";
     unzippedFiles = {};
     var taskfile_read = false;
+
 
 
     /**
@@ -125,11 +126,15 @@ unzipme = function (blob, location, readyCallback) {
             readfi.onload = function(e) {
                 unzipped_text = e.target.result;
                 // callback for task.xml
-                location.val(unzipped_text);
+                // location = unzipped_text;
+                // todo: check for racing
+                // muss man zum Auswerten der task.xml bereits Daten haben aus den
+                // attached files? Falls ja, dann muss hier etwas geändert werden!!
                 if (readyCallback)
                     readyCallback(unzipped_text);
                 taskfile_read = true;
                 relinkFiles();
+
             };
             readfi.readAsText(unzippedBlob);
         },
@@ -187,7 +192,7 @@ unzipme = function (blob, location, readyCallback) {
  */
 zipme = function() {
     // get task.xml content from user interface
-    var TEXT_CONTENT = $("#output").val();
+    var TEXT_CONTENT = taskXml; // $("#output").val();
     if (TEXT_CONTENT.length == 0) {
         console.log("zipme called with empty output");
         return;

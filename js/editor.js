@@ -25,9 +25,9 @@ const tab_page = {
     MODEL_SOLUTION:  1,
     TESTS:  2,
     FILES:  3,
-    DEBUG:  4,
+/*    DEBUG:  4,
     MANUAL: 5,
-    FAQ:    6
+    FAQ:    6*/
 };
 
 
@@ -57,6 +57,8 @@ var codemirror = {};
 // to test environment.
 var descriptionEditor;
 
+// string that holds the task.xml content
+var taskXml;
 
 // create option list string with all test types
 function getTesttypeOptions() {
@@ -157,7 +159,8 @@ function uploadTaskFile(inputbutton) {                     // upload button for 
     switch (filenew.type) {
         case 'application/zip':
         case 'application/x-zip-compressed':
-            var text = unzipme(filenew, $("#output"), function (text) {
+            var text = unzipme(filenew /*, taskXml *//*$("#output")*/, function (text) {
+                taskXml = text;
                 readXMLWithLock(text);
             });
             break;
@@ -166,7 +169,7 @@ function uploadTaskFile(inputbutton) {                     // upload button for 
                 var readfi = new FileReader();
                 readfi.onload = function (e) {
                     var text = e.target.result;
-                    $("#output").val(text);
+                    taskXml = text; // $("#output").val(text);
                     readXMLWithLock(text);
                 }
                 readfi.readAsText(filenew);
@@ -195,9 +198,9 @@ function downloadFile(downloadLink) {                  // download link for text
   } catch(err) { setErrorMessage("File cannot be downloaded because it contains an invalid character.");}
 }
 */
-function downloadTextFile2(textarea, filename, dummybutton) {
+function downloadTextFile2(text, filename, dummybutton) {
     console.log("downloadTextFile2 called");
-    const text = textarea.val();
+    //const text = textarea.val();
     if (text.length === 0) {
         console.log("downloadTextFile2 called with empty output");
         return;

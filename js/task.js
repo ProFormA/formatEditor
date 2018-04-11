@@ -276,6 +276,8 @@ function isInputComplete() {
  * The XML file is validated against the schema.
  */
 convertToXML = function() {
+    taskXml = undefined;
+
     $("#output").val(""); // empty output so that the old output will not be used in future
     convertFormToXML = function(one,two,cdataBool) {
         let xmlDoc = $.parseXML('<task></task>');
@@ -508,7 +510,8 @@ convertToXML = function() {
         if ((xmlString.substring(0, 5) != "<?xml")){
             xmlString = "<?xml version='1.0' encoding='UTF-8'?>" + xmlString;
         }
-        $("#output").val(xmlString);
+        taskXml = xmlString;
+        // $("#output").val(xmlString);
 /*
         $.get(xsdSchemaFile, function(data, textStatus, jqXHR) {      // read XSD schema
             var valid = xmllint.validateXML({xml: xmlString, schema: jqXHR.responseText});
@@ -604,7 +607,7 @@ readXML = function(xmlText) {
 
 
 
-    var outputValue = $("#output").val();
+    var outputValue = taskXml; // $("#output").val();
     if (outputValue.length > 0) {
         var checktemp = window.confirm("All form content will be deleted and replaced.");
         if (!checktemp) {

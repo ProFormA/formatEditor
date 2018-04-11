@@ -14,6 +14,9 @@
  * The version number of this software is in the file js/editor.js.
  */
 
+// string that contains the LON CAPA problem file content
+var LcProblem;
+
 function insertLCformelements () {
   var loncapaTextarea = " <div id='exportProblemXML' class=' ui-corner-all'>" +
     "<h3 class='ui-widget-header'>LON-CAPA problem file: " +
@@ -58,7 +61,7 @@ function insertLCformelements () {
 
   $("#button_save_lon_capa").click(function(){
       convertToXML();
-      downloadTextFile2($("#output2"), "task.problem", anchorLC);
+      downloadTextFile2(LcProblem /*$("#output2")*/, "task.problem", anchorLC);
   })
 
 }
@@ -232,6 +235,9 @@ createLONCAPAOutput = function (prgrlang,cmhash,versionchck) {
       }
   });
 
-  $("#output2").val(createLONCAPAproblemFile($("#xml_description").val(),loncapa_filename,
-					     $("#xml_meta-data_title").val(),prgrlang,cmhash,versionchck));
+  LcProblem =  createLONCAPAproblemFile($("#xml_description").val(),loncapa_filename,
+      $("#xml_meta-data_title").val(),prgrlang,cmhash,versionchck);
+
+  //$("#output2").val(createLONCAPAproblemFile($("#xml_description").val(),loncapa_filename,
+	//				     $("#xml_meta-data_title").val(),prgrlang,cmhash,versionchck));
 };
