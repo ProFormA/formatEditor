@@ -799,12 +799,12 @@ readXML = function(xmlText) {
                                     jquery_ui_element.val(ui_value);
                                     break;
                                 case 'checkbox':
-                                    console.log('checked: ui_value ' + ui_value);
+                                    //console.log('checked: ui_value ' + ui_value);
                                     if (ui_value.toLowerCase() === 'true') {
-                                        console.log('checked = true');
+                                        // console.log('checked = true');
                                         ui_element.checked = true;
                                     } else {
-                                        console.log('checked = false');
+                                        // console.log('checked = false');
                                         ui_element.checked = false;
                                     }
                                     break;

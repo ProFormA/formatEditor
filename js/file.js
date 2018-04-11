@@ -42,6 +42,8 @@ const INTERNAL_LIB = 'internal-library';
 const LIBRARY      = 'library';
 
 // class for simpler access to file members from user interface
+// todo: store 'data' in variables not in html
+// => store data in html only in setter
 class FileWrapper {
 
     static constructFromId(id) {
@@ -225,7 +227,7 @@ class FileWrapper {
 
     static onReadFile(inputbutton) {             // read a file and its filename into the HTML form
         let filenew = inputbutton.files[0];
-        const fileId = $(inputbutton).parent().parent().find(".xml_file_id").val();
+        const fileId = $(inputbutton).closest('.xml_file').find(".xml_file_id").val();
         readAndCreateFileData(filenew, fileId);
     }
 
