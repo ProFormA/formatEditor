@@ -51,14 +51,15 @@ unzipme = function (blob, location, readyCallback) {
             return; // wait and retry later
 
         // store not-embedded files in correct location in fileStorages array
-        $.each($(".xml_file_filename"), function(index, item) {
-            ui_file = FileWrapper.constructFromRoot($(item).closest(".xml_file"));
+        FileWrapper.doOnAllFiles(function(ui_file) {
+        //$.each($(".xml_file_filename"), function(index, item) {
+            //ui_file = FileWrapper.constructFromRoot($(item).closest(".xml_file"));
 
             // let fileroot = $(item).closest(".xml_file");
             // let filetype = fileroot.find(".xml_file_type").val();
             if (ui_file.type === 'file') {
                 const fileid = ui_file.id; // fileroot.find(".xml_file_id").val();
-                const filename = $(item).val();
+                const filename = ui_file.filename; //$(item).val();
                 if (unzippedFiles[filename] && !fileStorages[fileid].filename.length) {
                     // note that there is always a fileStorage object whenever there is a ui file object!
                     // file is not yet relinked => link to fileStorage
@@ -200,8 +201,9 @@ zipme = function() {
     // iterate through all files:
     // - if file type is 'file' the file must be added to zip file
     // - if file is non binary it is stored in the editor!
-    $.each($(".xml_file_id"), function(index, item) {
-        const ui_file = FileWrapper.constructFromRoot($(item).closest(".xml_file"));
+    FileWrapper.doOnAllFiles(function(ui_file) {
+    //$.each($(".xml_file_id"), function(index, item) {
+        //const ui_file = FileWrapper.constructFromRoot($(item).closest(".xml_file"));
         // let fileroot = $(item).closest(".xml_file");
         // const fileId = fileroot.find(".xml_file_id").val();
         if (!ui_file.type === 'embedded') {

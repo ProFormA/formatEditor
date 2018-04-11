@@ -314,9 +314,10 @@ convertToXML = function() {
     }
 
     // PRE PROCESSING
-    $.each($(".xml_file_filename"), function(index, item) {
-        const ui_file = FileWrapper.constructFromFilename(item.value); // not nice..
-        const islib = ui_file.isLibrary;
+    FileWrapper.doOnAllFiles(function(ui_file) {
+    //$.each($(".xml_file_filename"), function(index, item) {
+        //const ui_file = FileWrapper.constructFromFilename(item.value); // not nice..
+        // const islib = ui_file.isLibrary;
         if (ui_file.isLibrary && ui_file.class === INTERNAL) {
             // convert to internal library if class is internal
             ui_file.class = INTERNAL_LIB;

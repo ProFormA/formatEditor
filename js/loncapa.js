@@ -63,7 +63,7 @@ function insertLCformelements () {
 
 }
 
-// very slow!
+// slow!
 function _arrayBufferToBase64( buffer ) {
     let binary = '';
     const bytes = new Uint8Array( buffer );
@@ -75,16 +75,9 @@ function _arrayBufferToBase64( buffer ) {
 }
 
 
-function createDownloadLink(ui_file, item) {
-    //let fileroot = $(item).closest(".xml_file");
-    //let fileclass = fileroot.find(".xml_file_class").val();
-    //if (fileclass == "library" || fileclass == "instruction") {
-
-    // const ui_file = FileWrapper.constructFromRoot(fileroot);
+function createDownloadLink(ui_file) {
     const megabyte = 1024*1024;
     let tempbase64 = "";
-    // const  filetype = fileroot.find(".xml_file_type").val();
-    // let fileid = ui_file.id; // fileroot.find(".xml_file_id").val();
     // create download
     switch (ui_file.type) {
         case 'embedded':
@@ -96,7 +89,7 @@ function createDownloadLink(ui_file, item) {
                 alert("Files which are to be downloaded by students " +
                     "in LON-CAPA cannot contain raw unicode characters, " +
                     "for example, certain encodings of Umlaute and ß. Please change " +
-                    "the file " + item.value + " to 'internal' or remove or change the encoding of such characters.");
+                    "the file " + ui_file.filename + " to 'internal' or remove or change the encoding of such characters.");
             }
             break;
         case 'file':
@@ -110,43 +103,36 @@ function createDownloadLink(ui_file, item) {
             break;
     }
 
-    //      if ($(item).first().parent().find(".xml_file_class").val() == "library" ||
-    //        $(item).first().parent().find(".xml_file_class").val() == "instruction") {
     return "<a href='data:text/text;base64,"+ tempbase64 +
-        "' download='" + item.value + "'>Download: " + item.value +"</a>\n";
+        "' download='" + ui_file.filename + "'>Download: " + ui_file.filename +"</a>\n";
 }
 
 function createDownloadLinks(/*cmhash*/) {
     let returnvalue = "";
     let templateCounter = 0;
 
-    $.each($(".xml_file_filename"), function(index, item) {
-        // todo: use simpler approach (template, library and instruction) section
-        let ui_file = FileWrapper.constructFromRoot($(item).closest(".xml_file"));
-
-        // let fileroot = $(item).closest(".xml_file");
-        // let fileclass = fileroot.find(".xml_file_class").val();
+    FileWrapper.doOnAllFiles(function(ui_file) {
         switch (ui_file.class) {
             case "template":
                 // let filetype = fileroot.find(".xml_file_type").val();
                 switch (ui_file.type) {
                     case 'file':
                         // first template is binary => do not skip
-                        returnvalue = returnvalue + createDownloadLink(ui_file, item);
+                        returnvalue = returnvalue + createDownloadLink(ui_file);
                         break;
                     case 'embedded':
                         // skip first embedded template
                         if (templateCounter === 0) {
                             templateCounter++;
                         } else {
-                            returnvalue = returnvalue + createDownloadLink(ui_file, item);
+                            returnvalue = returnvalue + createDownloadLink(ui_file);
                         }
                         break;
                 }
                 break;
             case "library":
             case "instruction":
-                returnvalue = returnvalue + createDownloadLink(ui_file, item);
+                returnvalue = returnvalue + createDownloadLink(ui_file);
                 break;
         }
     });
@@ -156,42 +142,33 @@ function createDownloadLinks(/*cmhash*/) {
 
 // returns the first 'embedded file' template
 function getEditorTemplate(cmhash) {
-    var returnvalue = "";
-    $.each($(".xml_file_filename"), function(index, item) {
-        let fileroot = $(item).closest(".xml_file");
-        let fileclass = fileroot.find(".xml_file_class").val();
-        if (fileclass == "template") {
-            let filetype = fileroot.find(".xml_file_type").val();
-            if (filetype == 'embedded') {
-                let fileid = fileroot.find(".xml_file_id").val();
-                if (returnvalue === "")
-                    returnvalue = codemirror[fileid].getValue();
+    let returnvalue = "";
+    FileWrapper.doOnAllFiles(function(ui_file) {
+        if (ui_file.class === "template" && ui_file.type === 'embedded') {
+            if (returnvalue === "") {
+                returnvalue = ui_file.text;
+                return false;
             }
         }
-//     if ($(item).first().parent().find(".xml_file_class").val() == "template") {
-//       returnvalue = codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue();
-//     }
     });
     return returnvalue;
 };
 
 function getModelSolution(cmhash) {
-  var returnvalue;
-  $.each($(".xml_file_id"), function(index, item) {
-	  if (item.value == $(".xml_model-solution_fileref").first().val()) {
-          // file is first model solution
-          let fileroot = $(item).closest(".xml_file");
-          let filetype = fileroot.find(".xml_file_type").val();
-          if (filetype == 'embedded') {
-              // file is embedded
-              returnvalue = codemirror[$(item).first().parent().find(".xml_file_id").val()].getValue();
-          } else {
-              // file is not embedded
-              alert("The Model Solution will not be shown in LON-CAPA because it is stored in zip (not embedded in task).");
-              returnvalue = 'A Model Solution is not available.';
-          }
-     }
-   });
+    let returnvalue = "";
+    FileWrapper.doOnAllFiles(function(ui_file) {
+        if (ui_file.id === $(".xml_model-solution_fileref").first().val()) {
+            if (ui_file.type !== 'embedded') {
+                // file is not embedded
+                alert("The Model Solution will not be shown in LON-CAPA because it is stored in zip (not embedded in task).");
+                returnvalue = 'A Model Solution is not available.';
+            } else {
+                returnvalue = ui_file.text;
+            }
+            return false;
+        }
+    });
+
   return returnvalue;
 };
 
@@ -238,11 +215,13 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
 
 createLONCAPAOutput = function (prgrlang,cmhash,versionchck) {
   loncapa_filename = "input.txt";
-  $.each($(".xml_file_id"),function(idx4,itm4) {
-   if (itm4.value == $(".xml_model-solution_fileref")[0].value ) {
-     loncapa_filename = $(itm4).parent().find(".xml_file_filename").val();
-   }
+
+  FileWrapper.doOnAllFiles(function(ui_file) {
+      if (ui_file.id === $(".xml_model-solution_fileref")[0].value) {
+          loncapa_filename = ui_file.filename;
+      }
   });
+
   $("#output2").val(createLONCAPAproblemFile($("#xml_description").val(),loncapa_filename,
 					     $("#xml_meta-data_title").val(),prgrlang,cmhash,versionchck));
 };

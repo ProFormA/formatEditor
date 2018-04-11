@@ -281,7 +281,7 @@ def save_lon_capa_problem(expected_file_name, modelSolution_alert):
         lastname = filename
         # print filename
 
-    print "rename " + lastname + " to " +expected_file_name
+    # print "rename " + lastname + " to " +expected_file_name
     shutil.move(lastname, expected_file_name)
 
 

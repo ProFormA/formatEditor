@@ -249,7 +249,8 @@ class FileWrapper {
     static doOnAllFiles(callback) {
         // todo: iterate through all files in variable
         $.each($(".xml_file_id"), function (indexOpt, item) {
-            callback(item.value);
+            let uifile = FileWrapper.constructFromId(item.value);
+            callback(uifile);
         });
     }
 
