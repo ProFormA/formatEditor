@@ -19,7 +19,7 @@
 const DEBUG_MODE = false;
 const TEST_MODE  = false;
 
-const codeversion   = '2.2.1';                     // current version of this code
+const codeversion   = '2.2.2';                     // current version of this code
 
 
 const version094    = 'taskxml0.9.4.xsd';                // name of schema files
