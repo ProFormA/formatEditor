@@ -118,7 +118,9 @@ class ZipFileTest(unittest.TestCase):
         self.ProblemFileNo = self.ProblemFileNo + 1
         editor.save_lon_capa_problem(self.getProblemFile(self.ProblemFileNo), modelSolution_alert) # self.filename_problem_1)
 
-        self.assertTrue(editor.is_file1_equal_to_file2(self.filename_problem_reference, self.getProblemFile(self.ProblemFileNo)),
+        # < !-- generated with ProFormA editor version 2.2.1 -->
+
+        self.assertTrue(editor.is_problem_file1_equal_to_file2_except_for_version(self.filename_problem_reference, self.getProblemFile(self.ProblemFileNo)),
                         "problem file output mismatch " + str(self.ProblemFileNo))
 
         return self.ProblemFileNo

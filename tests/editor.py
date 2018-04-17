@@ -1055,6 +1055,36 @@ def is_file1_equal_to_file2_except_for_uuid(file1, file2):
 
     return True
 
+
+
+
+
+def is_problem_file1_equal_to_file2_except_for_version(file1, file2):
+
+    f1 = open(file1)
+    line1 = f1.readline()
+    f2 = open(file2)
+    line2 = f2.readline()
+    while line1:
+        line1 = f1.readline()
+        line2 = f2.readline()
+        if line1.startswith('<!-- generated with ProFormA editor version'):
+            continue
+        if line1 != line2:
+            print 'problem file line diff'
+            print line1
+            print line2
+            f1.close()
+            f2.close()
+            return False
+
+    f1.close()
+    f2.close()
+
+    return True
+
+
+
 def perform_xml_lint_check(task_xml):
     filename = "xmllint.exe"
     if os.path.isfile(filename):
