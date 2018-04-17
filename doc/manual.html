@@ -166,7 +166,8 @@ Musterlösung verknüpft werden.
     <tr><th>Anzeige (interne Bezeichnung)</th><th>Bedeutung</th><th>Beispiel</th><th>sichtbar für Grader</th><th>sichtbar für Studierende</th></tr>
 
     <tr><td><b>Code attachment zu Description</b><br>(library)</td><td>enthält Code, den der Studierende benötigt,
-        um seine Lösung zu entwickeln<br></td>
+        um seine Lösung zu entwickeln.<br>
+        Gleichzeitig kann die Datei auch in einem der Tests beim Compilieren/ Linken eingebunden werden.</td>
         <td>Java-Interface-Klasse, jar-Datei, c-Header</td>
         <td>x</td><td>x</td></tr>
 
@@ -182,7 +183,7 @@ Musterlösung verknüpft werden.
         <td>Klassenrahmen mit Funktionsrümpfen</td>
         <td>-</td><td>x</td></tr>
 
-    <tr><td><b>Test</b><br>(internal)</td><td>Testskripte</td>
+    <tr><td><b>Test</b><br>(internal)</td><td>Testskripte, die entsprechend dem Testtyp in der Sandbox oder aber ausgeführt werden</td>
         <td>JUNIT-Dateien, Checkstyle-Dateien</td>
         <td>x</td><td>-</td></tr>
 
@@ -192,17 +193,20 @@ Musterlösung verknüpft werden.
 
     <tr><td><b>Library-Flag bei Datei gesetzt</b><br>(internal-library)</td>
         <td>Datei wird grader- und programmiersprachenabhängig als Bibliothek betrachtet und
-            entsprechend den Regeln der Programmiersprache bei der Compilierung eingebunden<br></td>
+            entsprechend den Regeln der Programmiersprache bei der Compilierung/ beim Liniken eingebunden<br></td>
         <td>jar-Datei</td>
         <td>x</td><td>-</td></tr>
 
 </table>
+</p><p>
+
+Sichtbar für Studierende bedeutet, dass sie die Dateien zumeist als Download angeboten bekommen.
+
+</p><p>
 
 Die Musterlösung wird dem Studierenden nur nach der Einreichung angezeigt und auch nur dann,
 wenn der Lehrende dies im LMS einschaltet. Der Grader sieht die Musterlösung, nutzt sie im Normalfall aber nicht.
-
-
-<p>
+</p><p>
 <!--
 Es kann festgelegt werden, ob Dateien bei
 der späteren Nutzung für die Studierenden sichtbar (library) oder unsichtbar
