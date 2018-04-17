@@ -16,8 +16,7 @@
 
 zip.workerScriptsPath = "./js/";
 
-// dictionary with files (name -> FileStorage)
-var unzippedFiles = {};
+//var unzippedFiles = {};
 
 
 /**
@@ -33,8 +32,10 @@ var unzippedFiles = {};
  */
 unzipme = function (blob, /*location, */readyCallback) {
     var unzipped_text = "???";
-    unzippedFiles = {};
-    var taskfile_read = false;
+    // dictionary with files (name -> FileStorage)
+    let unzippedFiles = {};
+    let taskfile_read = false;
+    let filesRead = 0;
 
 
 
@@ -43,7 +44,7 @@ unzipme = function (blob, /*location, */readyCallback) {
      *
      * This must be done after reading all files.
      * Unfortunately file reading is performed asynchrously. So it is not clear
-     * in which order the files are read. Because of this the moveFiles function
+     * in which order the files are read. Because of this the relinkFiles function
      * is called after every processing of a single file in order to guarantee
      * that all files are handled.
      **/
@@ -53,32 +54,36 @@ unzipme = function (blob, /*location, */readyCallback) {
 
         // store not-embedded files in correct location in fileStorages array
         FileWrapper.doOnAllFiles(function(ui_file) {
-        //$.each($(".xml_file_filename"), function(index, item) {
-            //ui_file = FileWrapper.constructFromRoot($(item).closest(".xml_file"));
+            // console.log("relink " + ui_file.filename + " type: " + ui_file.type);
 
-            // let fileroot = $(item).closest(".xml_file");
-            // let filetype = fileroot.find(".xml_file_type").val();
             if (ui_file.type === 'file') {
                 const fileid = ui_file.id; // fileroot.find(".xml_file_id").val();
                 const filename = ui_file.filename; //$(item).val();
+                // console.log("relink attached file '" + ui_file.filename + "'");
                 if (unzippedFiles[filename] && !fileStorages[fileid].filename.length) {
                     // note that there is always a fileStorage object whenever there is a ui file object!
                     // file is not yet relinked => link to fileStorage
                     fileStorages[fileid] = unzippedFiles[filename];
                     unzippedFiles[filename] = undefined;
-                    /// console.log("store filename " + filename + " -> " + fileid + " " + ui_file.type + " size: " + ui_file.size);
+                    console.log("relinkFiles " + filename + " -> " + fileid + " " + ui_file.type + " size: " + ui_file.size);
                     //showBinaryFile(ui_file.root, fileStorages[fileid]);
+                    ui_file.type = ui_file.type;
                 } else {
                     if (unzippedFiles[filename] && fileStorages[fileid].filename.length) {
                         // consistency check
                         console.error("internal error: file is already relinked! filename " + filename + " -> " + fileid + " " + ui_file.type);
                         alert('internal error: file is already relinked!');
+                    } else {
+                        /*if (!unzippedFiles[filename])
+                            console.error("unzippedFiles[ " + filename + "] is missing");
+                        if (fileStorages[fileid].filename.length)
+                            console.error("fileStorages[ " + fileid + "] already mapped");
+                        */
                     }
                 }
             } else {
                 //showTextFile(ui_file.root);
             }
-            ui_file.type = ui_file.type;
         });
     }
 
@@ -86,27 +91,34 @@ unzipme = function (blob, /*location, */readyCallback) {
           try {
               zip.createReader(new zip.BlobReader(blob), function (zipReader) {
                   zipReader.getEntries(function (entries) {
+                      filesToBeRead = entries.length;
 
                       $.each(entries, function(index, entry) {
                           if (entry.filename === 'task.xml') {
                               console.log('unzip taks.xml');
                               entry.getData(new zip.BlobWriter("text/plain"), function (data) {
+                                  // console.log('call callback For task.xml');
                                   callbackForTaskXml(data, entry);
-                                  if (index === entries.length -1) {
+                                  filesRead++;
+                                  if (filesRead === entries.length) {
+                                      // console.log('close zipReader task.xml');
                                       zipReader.close();
                                   }
 
                               });
                           }
                           else {
-                              // handle not embedded files'
+                              // handle attached files'
                               console.log('unzip ' + entry.filename);
                               // store file
                               //unzippedFiles[entry.filename] =
                               //    new FileStorage(true, entry.type, content, entry.filename);
                               entry.getData(new zip.BlobWriter(), function (data) {
+                                  // console.log('call callbackForFile ' + entry.filename);
                                   callbackForFile(data, entry);
-                                  if (index === entries.length -1) {
+                                  filesRead++;
+                                  if (filesRead === entries.length) {
+                                      // console.log('close zipReader ' + entry.filename);
                                       zipReader.close();
                                   }
                               });
@@ -138,7 +150,7 @@ unzipme = function (blob, /*location, */readyCallback) {
             };
             readfi.readAsText(unzippedBlob);
         },
-        // callback for files
+        // callback for attached files
         function (unzippedBlob, entry) {
             let readfi = new FileReader();
             readfi.onload = function (e) {
