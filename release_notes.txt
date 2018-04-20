@@ -1,3 +1,11 @@
+Release Notes for 2.2.2
+
+do not force large files to be attached
+edit/close button for editor
+test: ignore version in LON CAPA-problem file
+bugfix: reading large attached files took so long that filereader was closed in the meantime (racing)
+update documentation
+
 Release Notes for 2.2.1
 
 remove output tab
