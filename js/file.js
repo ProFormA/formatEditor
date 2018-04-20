@@ -172,6 +172,12 @@ class FileWrapper {
     set isBinary(isBinary) { fileStorages[this.id].isBinary = isBinary; }
     set isLibrary(isLib) {this.root.find(".file_library")[0].checked = isLib;}
 
+    disableTypeChange() {
+        if (!this._type) {
+            this._type = this.root.find(".xml_file_type").first();
+        }
+        this._type.attr('disabled', true);
+    }
     // other functions
     delete() {
         this.root.remove();
@@ -231,8 +237,8 @@ class FileWrapper {
         readAndCreateFileData(filenew, fileId);
     }
 
-    static removeFile(bt) {                                       // ask before removing
-        let root = bt.parent().parent().parent(); // arrgh!
+    static removeFile(button) {                                       // ask before removing
+        let root = button.parent().parent().parent(); // arrgh!
         let ui_file = FileWrapper.constructFromRoot(root);
 
         let ok = false;
@@ -247,6 +253,46 @@ class FileWrapper {
             ui_file.delete();
         }
     };
+
+
+    static showEditor(button, ui_file_no_button) {
+        let ui_file = undefined;
+        if (ui_file_no_button)
+            ui_file = ui_file_no_button;
+        else
+            ui_file = FileWrapper.constructFromRoot(button.closest('.xml_file'));
+
+        if (config.useCodemirror) {
+            let editor = codemirror[ui_file.id];
+            $(editor.getWrapperElement()).show();
+        } else {
+            root.find('.xml_file_text').show();
+        }
+
+
+        ui_file.root.find('.xml_file_editor_close').show();
+        ui_file.root.find('.xml_file_edit').hide();
+    };
+
+    static hideEditor(button, ui_file_no_button) {
+        let ui_file = undefined;
+        if (ui_file_no_button)
+            ui_file = ui_file_no_button;
+        else
+            ui_file = FileWrapper.constructFromRoot(button.closest('.xml_file'));
+
+        if (config.useCodemirror) {
+            const id = ui_file.id;
+            let editor = codemirror[ui_file.id];
+            $(editor.getWrapperElement()).hide();
+        } else {
+            root.find('.xml_file_text').hide();
+        }
+
+        ui_file.root.find('.xml_file_editor_close').hide();
+        ui_file.root.find('.xml_file_edit').show();
+    };
+
 
     static doOnAllFiles(callback) {
         // todo: iterate through all files in variable
@@ -404,7 +450,10 @@ class FileWrapper {
             "<span class='xml_file_size'>File size: ???</span>" +
             "</span>" +
             "<span class='xml_file_non_binary'>" +
-            "<input type='file' class='largeinput file_input' onchange='FileWrapper.onReadFile(this)'/>" +
+            "<input type='file' class='largeinput file_input' onchange='FileWrapper.onReadFile(this)'/> " +
+
+            "<button class='xml_file_edit' onclick='FileWrapper.showEditor($(this));'>Edit</button>" +
+            "<button class='xml_file_editor_close' onclick='FileWrapper.hideEditor($(this));'>Close editor</button>" +
             "<textarea rows='3' cols='80' class='xml_file_text'"+
             "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea>" +
             "</span></p>" +
@@ -427,6 +476,8 @@ class FileWrapper {
         if (config.useCodemirror) {
             FileWrapper.addCodemirrorElement(fileid);
         }
+
+        FileWrapper.hideEditor(undefined, ui_file);
         return ui_file;
     }
 

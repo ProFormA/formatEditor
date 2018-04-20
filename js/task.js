@@ -896,12 +896,14 @@ readXML = function() {
                 default:
                     break;
             }
+/*
             if (ui_file.storeAsFile) {
                 // switch type to file if storeAsFile is set
                 ui_file.type = 'file';
                 ui_file.isBinary = true;
 
             }
+*/
         });
 
 

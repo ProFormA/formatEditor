@@ -159,7 +159,7 @@ function uploadTaskFile(inputbutton) {                     // upload button for 
     switch (filenew.type) {
         case 'application/zip':
         case 'application/x-zip-compressed':
-            var text = unzipme(filenew /*, taskXml *//*$("#output")*/, function (text) {
+            var text = unzipme(filenew, function (text) {
                 taskXml = text;
                 readXMLWithLock();
             });
@@ -617,8 +617,10 @@ $(function() {
     if (gradingHintCounter === 1) {newGH();}            // only one grading hint allowed
     $("#tabs").tabs("option", "active", tab_page.MAIN); });        // where this will be added
   $("#addFile").click(function() {
-    newFile();
+    let ui_file = newFile();
+    FileWrapper.showEditor(undefined, ui_file);
     $("#tabs").tabs("option", "active", tab_page.FILES); });
+
   $("#addModelsol").click(function() {
     newModelsol(setcounter(modelSolIDs));
     $("#tabs").tabs("option", "active", tab_page.MODEL_SOLUTION); });
