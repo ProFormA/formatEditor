@@ -16,9 +16,7 @@
 
 zip.workerScriptsPath = "./js/";
 
-//var unzippedFiles = {};
-
-
+const debug_unzip = false;
 /**
  * unzips the {task}.zip file
  * - store files temporarily in unzippedFiles
@@ -52,27 +50,25 @@ unzipme = function (blob, readyCallback) {
     function relinkFiles() {
         if (!taskfile_read)
             return; // wait and retry later
-        console.log("relinkFiles ");
+        if (debug_unzip) console.log("relinkFiles ");
 
         // store not-embedded files in correct location in fileStorages array
         FileWrapper.doOnAllFiles(function(ui_file) {
-            console.log("relink " + ui_file.filename + " type: " + ui_file.type);
+            if (debug_unzip) console.log("relink " + ui_file.filename + " type: " + ui_file.type);
 
             if (ui_file.type === 'file') {
                 const fileid = ui_file.id; // fileroot.find(".xml_file_id").val();
                 const filename = ui_file.filename; //$(item).val();
-                // console.log("relink attached file '" + ui_file.filename + "'");
                 if (unzippedFiles[filename] && !fileStorages[fileid].filename.length) {
                     // note that there is always a fileStorage object whenever there is a ui file object!
                     // file is not yet relinked => link to fileStorage
                     fileStorages[fileid] = unzippedFiles[filename];
                     unzippedFiles[filename] = undefined;
-                    console.log("relinkFiles " + filename + " -> " + fileid + " " + ui_file.type + " size: " + ui_file.size);
-                    //showBinaryFile(ui_file.root, fileStorages[fileid]);
-                    ui_file.isBinary = true;
-                    ui_file.storeAsFile = true;
+                    if (debug_unzip) console.log("relinkFiles " + filename + " -> " + fileid + " " + ui_file.type + " size: " + ui_file.size);
+                    //ui_file.isBinary = true;
+                    //ui_file.storeAsFile = true;
                     ui_file.type = ui_file.type;
-                    ui_file.disableTypeChange();
+                    //ui_file.disableTypeChange();
                 } else {
                     if (unzippedFiles[filename] && fileStorages[fileid].filename.length) {
                         // consistency check
@@ -86,8 +82,6 @@ unzipme = function (blob, readyCallback) {
                         */
                     }
                 }
-            } else {
-                //showTextFile(ui_file.root);
             }
         });
     }
@@ -109,16 +103,8 @@ unzipme = function (blob, readyCallback) {
                           if (entry.filename === 'task.xml') {
                               console.log('unzip taks.xml');
                               entry.getData(new zip.BlobWriter("text/plain"), function (data) {
-                                  console.log('call callback For task.xml');
+                                  if (debug_unzip) console.log('call callback For task.xml');
                                   callbackForTaskXml(data, entry, zipReader);
-                                  /*filesRead++;
-                                  console.log('filesRead value: ' + filesRead + ' entries.length=' + entries.length);
-                                  if (filesRead === filesToBeRead) {
-                                      console.log('close zipReader task.xml');
-                                      onFilesRead();
-                                  }
-                                  */
-
                               });
                           }
                           else {
@@ -126,14 +112,8 @@ unzipme = function (blob, readyCallback) {
                               console.log('unzip ' + entry.filename);
                               // store file
                               entry.getData(new zip.BlobWriter(), function (data) {
-                                  console.log('call callbackForFile ' + entry.filename);
+                                  if (debug_unzip) console.log('call callbackForFile ' + entry.filename);
                                   callbackForFile(data, entry, zipReader);
-                                  /*filesRead++;
-                                  console.log('filesRead value: ' + filesRead + ' entries.length=' + entries.length);
-                                  if (filesRead === entries.length) {
-                                      console.log('close zipReader ' + entry.filename);
-                                      onFilesRead();
-                                  }*/
                               });
                           }
                       });
@@ -153,18 +133,17 @@ unzipme = function (blob, readyCallback) {
             readfi.onload = function(e) {
                 unzipped_text = e.target.result;
                 // callback for task.xml
-                // location = unzipped_text;
                 // todo: check for racing
                 // muss man zum Auswerten der task.xml bereits Daten haben aus den
                 // attached files? Falls ja, dann muss hier etwas geändert werden!!
-                console.log('call readyCallback');
+                if (debug_unzip) console.log('call readyCallback');
                 if (readyCallback)
                     readyCallback(unzipped_text);
 
-                console.log('set taskfile_read = true');
+                if (debug_unzip) console.log('set taskfile_read = true');
                 taskfile_read = true;
                 filesRead++;
-                console.log('filesRead value: ' + filesRead + ' filesToBeRead=' + filesToBeRead);
+                if (debug_unzip) console.log('filesRead value: ' + filesRead + ' filesToBeRead=' + filesToBeRead);
                 if (filesRead === filesToBeRead) {
                     onFilesRead(zipReader);
                 }
@@ -184,7 +163,6 @@ unzipme = function (blob, readyCallback) {
                     if (number.length === 1) {
                         number = '0' + number;
                     }
-
                     header += number;
                 }
 
@@ -207,13 +185,11 @@ unzipme = function (blob, readyCallback) {
                 // console.log(header + " => " + type);
 
                 // store file
-                // console.log("store binary file " + entry.filename + " in unzippedFiles");
                 unzippedFiles[entry.filename] =
                     new FileStorage(true, type, e.target.result, entry.filename);
                 unzippedFiles[entry.filename].setSize(entry.uncompressedSize);
-                //relinkFiles();
                 filesRead++
-                console.log('filesRead value: ' + filesRead + ' filesToBeRead=' + filesToBeRead);
+                if (debug_unzip) console.log('filesRead value: ' + filesRead + ' filesToBeRead=' + filesToBeRead);
                 if (filesRead === filesToBeRead) {
                     onFilesRead(zipReader);
                 }

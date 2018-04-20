@@ -172,12 +172,13 @@ class FileWrapper {
     set isBinary(isBinary) { fileStorages[this.id].isBinary = isBinary; }
     set isLibrary(isLib) {this.root.find(".file_library")[0].checked = isLib;}
 
-    disableTypeChange() {
+/*    disableTypeChange() {
         if (!this._type) {
             this._type = this.root.find(".xml_file_type").first();
         }
         this._type.attr('disabled', true);
     }
+*/
     // other functions
     delete() {
         this.root.remove();
