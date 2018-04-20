@@ -279,6 +279,7 @@ var config = (function() {
             case 'log' :
             case 'txt' :
             case 'xml' :
+            case 'csv' :
                 return false;
             default: break;
         }

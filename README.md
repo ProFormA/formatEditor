@@ -6,9 +6,12 @@ Needs Firefox or Chrome
 
 
 TODO:
-- bei den Files: die class sperren (=> Klasse wird nur üebr filerefs bestimmt, nicht mehr direkt)
+Folgende Änderungen Kommunizieren:
+- csv als Textdatei werten (anstelle von Binärdatei)
+- Entscheidung, dass große Dateien automatisch als Binärdateien gewertet werden, rausnehmen
+- codemirror=false setzen (ggf. auch andere Lösung)
+
 - Bei den Filerefs auch einen edit-Button einbauen, damit dort auch editiert werden kann
-- Output-Fenster rausnehmen
 
 Ideen für Testfälle:
 - Java-Klassen- und Package-Erkennung

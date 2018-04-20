@@ -161,7 +161,7 @@ function uploadTaskFile(inputbutton) {                     // upload button for 
         case 'application/x-zip-compressed':
             var text = unzipme(filenew /*, taskXml *//*$("#output")*/, function (text) {
                 taskXml = text;
-                readXMLWithLock(text);
+                readXMLWithLock();
             });
             break;
         case "text/xml":
@@ -170,7 +170,7 @@ function uploadTaskFile(inputbutton) {                     // upload button for 
                 readfi.onload = function (e) {
                     var text = e.target.result;
                     taskXml = text; // $("#output").val(text);
-                    readXMLWithLock(text);
+                    readXMLWithLock();
                 }
                 readfi.readAsText(filenew);
             }
@@ -303,8 +303,8 @@ $(function() {
           ui_file.filename = filename;
 
           if (size > config.maxSizeForEditor) {
-              console.log('file '+ filename + ' is too large => no editor support');
-              isBinaryFile = true;
+              //console.log('file '+ filename + ' is too large => no editor support');
+              //isBinaryFile = true;
           }
 
           if (isBinaryFile) {
@@ -578,13 +578,16 @@ $(function() {
     $("#tabs").tabs();                                   // hide HTML elements when the manual or FAQ are selected
     $('#tabs').click(function(e) {
         var curTab = $('.ui-tabs-active');
+        /*
         if (curTab.index() == tab_page.MANUAL || curTab.index() == tab_page.FAQ){ // if manual or FAQ selected
             $("#rightPanel").hide();
             $("#button-list").hide();
             $("#end-container").hide();
             $("#xml-output-input").hide();
             $("#otherSoftware2").hide();
-        } else {
+        } else
+        */
+        {
             $("#rightPanel").show();
             $("#button-list").show();
             $("#end-container").show();
@@ -598,6 +601,11 @@ $(function() {
             }, 5);
         }
     });
+
+
+
+    // $( "#tabs" ).on( "tabsactivate", function( event, ui ) {alert('tabsactivate');} );
+
 //   $("#filesection").sortable();
     $("#modelsolutionsection").sortable();
     $("#testsection").sortable();
@@ -629,10 +637,10 @@ $(function() {
 
 ///////////////////////////////////////////////////////// function: readXML
 
-   readXMLWithLock =  function(xmlText) {
+   readXMLWithLock =  function() {
        readXmlActive = true; // lock automatic input field update
        try {
-           readXML(xmlText);
+           readXML();
        }
        catch(err) {
            setErrorMessage("uncaught exception", err);
@@ -702,6 +710,17 @@ $(function() {
     $("#upload_xml_file").click();
   })
 
+/*
+    $("#tabs-2").click(function(e){
+        alert('tab switched');
+        //$(this).tab('show');
+    });
+
+    $('#tabs-2').click(function (link) {
+        alert('tab switched');
+        //console.log(link.currentTarget.innerText);
+    })
+*/
 /*
   $("#button_save_xml").click(function(){
     console.log("button_save_xml clicked");

@@ -110,13 +110,14 @@ def openEditorPageFile():
     editor_path = the_path + "/../proformaEditor101.html"
     # print editor_path
     driver.get("file:///" + editor_path)
-    driver.execute_script('enableTestMode();')
+    # driver.execute_script('enableTestMode();')
 
 
 def openEditorPage():
 #    driver.get("https://media.elan-ev.de/proforma/editor/releases/preview/proformaEditor101.html")
     driver.get("http://127.0.0.1:8000/proformaEditor101.html")
-    driver.execute_script('enableTestMode();')
+    driver.set_window_size(1024,768)
+    # driver.execute_script('enableTestMode();')
 
 
 def init(the_driver):

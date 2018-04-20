@@ -560,7 +560,7 @@ convertToXML = function() {
  * Proglang is dealt with separately.
  */
 
-readXML = function(xmlText) {
+readXML = function() {
     changeNamespaces = function(somexml) {
         replaceNamespace = function(smxml,tempstr,tempnsprefix,tempcl) {
             if (tempstr) { tempstr = tempstr[1] }
@@ -607,15 +607,13 @@ readXML = function(xmlText) {
 
 
 
-    var outputValue = taskXml; // $("#output").val();
-    if (outputValue.length > 0) {
-        var checktemp = window.confirm("All form content will be deleted and replaced.");
-        if (!checktemp) {
+    //const outputValue = taskXml; // $("#output").val();
+    if (taskXml.length > 0) {
+        // ask user
+        if (!window.confirm("All form content will be deleted and replaced.")) {
             return;
         }                         // proceed only after confirmation
     }
-
-    const t0 = performance.now();
 
     gradingHintCounter = 1;                            // variable initialisation
     clearErrorMessage();
@@ -643,9 +641,9 @@ readXML = function(xmlText) {
     testIDs = {};
 
 
-    var xmlTemplate = xmlText; // copy text from variable if available
-    if (xmlTemplate == undefined)
-        xmlTemplate = outputValue;              // read textarea
+    let xmlTemplate = taskXml; // copy text from variable if available
+    //if (xmlTemplate === undefined)
+    //    xmlTemplate = outputValue;              // read textarea
 
     if (xmlTemplate !== "") {
         xmlTemplate = changeNamespaces(xmlTemplate);     // rename namespaces if necessary
@@ -736,7 +734,7 @@ readXML = function(xmlText) {
                                 const text = itm1.textContent;
                                 const id = $(itm1).attr('id');
                                 let ui_file = FileWrapper.constructFromId(id);
-                                if (text.length > config.maxSizeForEditor) {
+                                /*if (text.length > config.maxSizeForEditor) {
                                     if (!("TextEncoder" in window))
                                         alert("Sorry, this browser does not support TextEncoder...");
                                     let enc = new TextEncoder("utf-8");
@@ -744,7 +742,8 @@ readXML = function(xmlText) {
                                     ui_file.content =  enc.encode(text);
                                     ui_file.size = text.length;
                                     ui_file.mimetype = '';
-                                } else {
+                                } else */
+                                    {
                                     ui_file.text = text;
                                 }
 /*
@@ -932,7 +931,6 @@ readXML = function(xmlText) {
         setErrorMessage("The textarea is empty.");
     }
 
-    const t1 = performance.now();
-    console.log("Call to readXML took " + (t1 - t0) + " milliseconds.")
+
 };
 

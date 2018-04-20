@@ -51,10 +51,11 @@ unzipme = function (blob, /*location, */readyCallback) {
     function relinkFiles() {
         if (!taskfile_read)
             return; // wait and retry later
+        console.log("relinkFiles ");
 
         // store not-embedded files in correct location in fileStorages array
         FileWrapper.doOnAllFiles(function(ui_file) {
-            // console.log("relink " + ui_file.filename + " type: " + ui_file.type);
+            console.log("relink " + ui_file.filename + " type: " + ui_file.type);
 
             if (ui_file.type === 'file') {
                 const fileid = ui_file.id; // fileroot.find(".xml_file_id").val();
@@ -88,8 +89,18 @@ unzipme = function (blob, /*location, */readyCallback) {
     }
 
     function unzipBlob(blob, callbackForTaskXml, callbackForFile) {
+
+
           try {
               zip.createReader(new zip.BlobReader(blob), function (zipReader) {
+                  function onFilesRead() {
+                      relinkFiles();
+                      zipReader.close();
+                      const t1 = performance.now();
+                      console.log("Call to unzipme took " + (t1 - t0) + " milliseconds.")
+
+                  }
+
                   zipReader.getEntries(function (entries) {
                       filesToBeRead = entries.length;
 
@@ -97,12 +108,18 @@ unzipme = function (blob, /*location, */readyCallback) {
                           if (entry.filename === 'task.xml') {
                               console.log('unzip taks.xml');
                               entry.getData(new zip.BlobWriter("text/plain"), function (data) {
-                                  // console.log('call callback For task.xml');
+                                  console.log('call callback For task.xml');
                                   callbackForTaskXml(data, entry);
                                   filesRead++;
                                   if (filesRead === entries.length) {
                                       // console.log('close zipReader task.xml');
+                                      onFilesRead();
+                                      /*
+                                      relinkFiles();
                                       zipReader.close();
+                                      const t1 = performance.now();
+                                      console.log("Call to unzipme took " + (t1 - t0) + " milliseconds.")
+*/
                                   }
 
                               });
@@ -114,12 +131,18 @@ unzipme = function (blob, /*location, */readyCallback) {
                               //unzippedFiles[entry.filename] =
                               //    new FileStorage(true, entry.type, content, entry.filename);
                               entry.getData(new zip.BlobWriter(), function (data) {
-                                  // console.log('call callbackForFile ' + entry.filename);
+                                  console.log('call callbackForFile ' + entry.filename);
                                   callbackForFile(data, entry);
                                   filesRead++;
                                   if (filesRead === entries.length) {
                                       // console.log('close zipReader ' + entry.filename);
+                                      onFilesRead();
+                                      /*
+                                      relinkFiles();
                                       zipReader.close();
+                                      const t1 = performance.now();
+                                      console.log("Call to unzipme took " + (t1 - t0) + " milliseconds.")
+    */
                                   }
                               });
                           }
@@ -130,6 +153,8 @@ unzipme = function (blob, /*location, */readyCallback) {
               console.log(e);
           }
     }
+
+    const t0 = performance.now();
 
     unzipBlob(blob,
         // callback for task.xml
@@ -145,8 +170,6 @@ unzipme = function (blob, /*location, */readyCallback) {
                 if (readyCallback)
                     readyCallback(unzipped_text);
                 taskfile_read = true;
-                relinkFiles();
-
             };
             readfi.readAsText(unzippedBlob);
         },
@@ -189,13 +212,14 @@ unzipme = function (blob, /*location, */readyCallback) {
                 unzippedFiles[entry.filename] =
                     new FileStorage(true, type, e.target.result, entry.filename);
                 unzippedFiles[entry.filename].setSize(entry.uncompressedSize);
-                relinkFiles();
+                //relinkFiles();
             };
             readfi.readAsArrayBuffer(unzippedBlob);
         }
         );
 
-  return unzipped_text;
+
+    return unzipped_text;
 };
 
 
