@@ -1,3 +1,7 @@
+Release Notes for 2.2.3
+
+Remove DejaGnu test buttons (shall be no longer supported)
+
 Release Notes for 2.2.2
 
 do not force large files to be attached

@@ -179,11 +179,11 @@ var config = (function() {
     // SUPPORTED PROGRAMMING LANGUAGES
     // -------------------------------
     const proglangInfos = [
-        new ProglangInfo("java/1.6",   [testJavaComp, testJavaJUnit,   testCheckStyle, testDgSetup, testDGTester]),
-        new ProglangInfo("java/1.8",   [testJavaComp, testJavaJUnit,   testCheckStyle, testDgSetup, testDGTester]),
-        new ProglangInfo("python/2",   [testPython,   testCheckStyle,  testDgSetup,    testDGTester]),
-        new ProglangInfo("setlX/2.40", [testSetlX,    testSetlXSyntax, testCheckStyle, testDgSetup, testDGTester]),
-        new ProglangInfo("c",          [testCComp,    testDgSetup,     testDGTester]),
+        new ProglangInfo("java/1.6",   [testJavaComp, testJavaJUnit,   testCheckStyle]),
+        new ProglangInfo("java/1.8",   [testJavaComp, testJavaJUnit,   testCheckStyle]),
+        new ProglangInfo("python/2",   [testPython,   testCheckStyle ]),
+        new ProglangInfo("setlX/2.40", [testSetlX,    testSetlXSyntax, testCheckStyle]),
+        new ProglangInfo("c",          [testCComp]),
     ];
 
 
