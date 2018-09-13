@@ -2,32 +2,9 @@
  * Created by karin on 01.06.2017.
  */
 
-/*
-var version094;                                        // names of the xsd schema files
-var version101;
-var xsdSchemaFile;                                     // choose version
 
-if (version094 === undefined || version094 === null) { version094 = 'taskxml0.9.4.xsd'; }
-if (version101 === undefined || version101 === null) { version101 = 'taskxml1.0.1.xsd'; }
-if (xsdSchemaFile === undefined || xsdSchemaFile === null) { xsdSchemaFile = version094; }
-*/
-/*
-const pfix_unit = "unit";                                // fixing namespace prefixes because of
-const pfix_jart = "jartest";                             // browser compatibility and jquery limitations
-const pfix_prak = "praktomat";
-*/
 
-/*
-if (xsdSchemaFile == version094) {
-    var namespace = 'xmlns:'+pfix_unit+'="urn:proforma:unittest" xmlns:'+pfix_prak+'="urn:proforma:praktomat:v0.1" ' +
-        'xmlns="urn:proforma:task:v0.9.4" xmlns:'+pfix_jart+'="urn:proforma:tests:jartest:v1" ';
-} else {
-    var namespace = 'xmlns:'+pfix_unit+'="urn:proforma:tests:unittest:v1" xmlns:'+pfix_prak+'="urn:proforma:praktomat:v0.2" '
-        + 'xmlns="urn:proforma:task:v1.0.1" xmlns:'+pfix_jart+'="urn:proforma:tests:jartest:v1" ';
-}
-*/
 
-//var isFirefox = typeof InstallTrigger !== 'undefined'; // Firefox 1.0+
 
 
 ///////////////////////////////////////////////////////// mapping HTML form names and XML names
@@ -38,27 +15,13 @@ if (xsdSchemaFile == version094) {
  * The arrays can be looped through in order to process the XML file.
  */
 function createMapping(schemaversion) {                // note: the maps are global variables
-/*
-    if (usePraktomat) { var ns_praktomat = ""; }
-    var ns_unit = "";
-    if (isFirefox) {
-        if (usePraktomat) { var ns_praktomat = pfix_prak + "\\:"; }
-        var ns_unit = pfix_unit + "\\:";
-        var ns_jartest = pfix_jart + "\\:";
-    }
-*/
+
     mapSingleElements = [                                // single XML elements
         new ValMap("#xml_description","description","",1),
         new ValMap("#xml_meta-data_title","meta-data > title","",0),
         new ValMap("#xml_grading-hints_text","grading-hints","",0)
     ];
 
-    // moved to config.js
-    /*
-    if (schemaversion == version094 && usePraktomat) {
-        mapSingleElements[3] =  new ValMap("#xml_upload-mime-type",ns_praktomat+"allowed-upload-filename-mimetypes","",0);
-    }
-    */
     mapSingleAttrs = [                                   // single XML attributes
         new ValMap("#xml_lang","lang","task",0)
 //    new ValMap("#xml_subm_unpackArchiveRegExp","unpack-files-from-archive-regexp","submission-restrictions",0),
@@ -85,7 +48,6 @@ function createMapping(schemaversion) {                // note: the maps are glo
         new ValMap(".xml_test_title","title","test",0,".xml_test"),
         new ValMap(".xml_test_type","test-type","test",0,".xml_test"),
         // moved to config.js
-        // new ValMap(".xml_ju_mainclass",ns_unit+"main-class","test-configuration",0,".xml_test"),
     ];
 
 
@@ -106,12 +68,7 @@ function createMapping(schemaversion) {                // note: the maps are glo
     ];
     mapAttrOfTestElems = [                               // attributes of elements in sequences
         // moved to config.js
-/*
-        new ValMap(".xml_ju_framew","framework",ns_unit+"unittest",0,".xml_test","test"),
-        new ValMap(".xml_ju_version","version",ns_unit+"unittest",0,".xml_test","test"),
-        new ValMap(".xml_jt_framew","framework",ns_jartest+"jartest",0,".xml_test","test"),
-        new ValMap(".xml_jt_version","version",ns_jartest+"jartest",0,".xml_test","test")
-*/
+
     ];
 
     // add configured extra mapping
@@ -607,6 +564,7 @@ readXML = function() {
 
 
 
+
     //const outputValue = taskXml; // $("#output").val();
     if (taskXml.length > 0) {
         // ask user
@@ -639,6 +597,8 @@ readXML = function() {
     // fileIDs = {};
     modelSolIDs = {};
     testIDs = {};
+
+
 
 
     let xmlTemplate = taskXml; // copy text from variable if available

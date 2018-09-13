@@ -238,6 +238,89 @@ function downloadText3(text, name, type) {
  */
 $(function() {
 
+    let xmltext1 = '<?xml version=\'1.0\' encoding=\'UTF-8\'?>\n' +
+        '<task xmlns:unit="urn:proforma:tests:unittest:v1" xmlns:praktomat="urn:proforma:praktomat:v0.2" xmlns="urn:proforma:task:v1.0.1" xmlns:jartest="urn:proforma:tests:jartest:v1" uuid="bebfb08a-b042-4e97-b40d-73f999ad403a" lang="de">\n' +
+        '\t<description>\n' +
+        '\t\t<![CDATA[Implementieren Sie eine Methode namens \'flip\', die einen String übergeben bekommt und ihn verkehrt herum wieder zurückgibt.\n' +
+        '\n' +
+        'Die Signatur der Funktion soll also wie folgt aussehen:\n' +
+        '    static public String flip(String aString);\n' +
+        '    \n' +
+        'und innerhalb einer Klasse \'MyString\' implementiert werden.\n' +
+        '\n' +
+        'Die Funktion soll selbst geschrieben werden, d.h. es darf keine passende Methode der Java-Bibliothek aufgerufen werden (insbesondere nicht reverse).]]>\n' +
+        '\t</description><proglang version="1.6">java</proglang><submission-restrictions><regexp-restriction max-size="1000" mime-type-regexp="^(text/.*)$"/></submission-restrictions><files><file class="internal" filename="MyString.java" id="1" type="embedded" comment="Musterlösung"><![CDATA[public class MyString \n' +
+        '{\n' +
+        '\tstatic public String flip( String aString)\n' +
+        '\t{\t\n' +
+        '\t\tStringBuilder sb = new StringBuilder();\n' +
+        '\t\t\n' +
+        '\t\tfor (int i = 0; i < aString.length(); i++)\n' +
+        '\t\t\tsb.append(aString.charAt(aString.length()-1-i));\n' +
+        '\n' +
+        '\t\treturn sb.toString();\n' +
+        '\t}\n' +
+        '}\n' +
+        '\n' +
+        ']]></file><file class="internal" filename="MyStringTest.java" id="2" type="embedded" comment="JUnit-Test-Klasse"><![CDATA[import static org.junit.Assert.*;\n' +
+        '\n' +
+        'import org.junit.Test;\n' +
+        '\n' +
+        'public class MyStringTest {\n' +
+        '\n' +
+        '\t@Test\n' +
+        '\tpublic void testOddNumberOfCharacters() {\n' +
+        '\t\tassertEquals("ollah", MyString.flip("hallo"));\n' +
+        '\t}\n' +
+        '\n' +
+        '\t@Test\n' +
+        '\tpublic void testEvenNumberOfCharacters() {\n' +
+        '\t\tassertEquals("4321", MyString.flip("1234"));\n' +
+        '\t}\n' +
+        '\t\n' +
+        '\t\n' +
+        '\t@Test\n' +
+        '\tpublic void testEmptyString() {\n' +
+        '\t\tassertEquals("", MyString.flip(""));\n' +
+        '\t}\n' +
+        '\n' +
+        '}]]></file><file class="internal" filename="checkstyle.xml" id="3" type="embedded" comment="Verbieten der Funktion reverse"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>\n' +
+        '<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">\n' +
+        '\n' +
+        '<!--\n' +
+        '    This configuration file was written by the eclipse-cs plugin configuration editor\n' +
+        '-->\n' +
+        '<!--\n' +
+        '    Checkstyle-Configuration: forbidden_reverse\n' +
+        '    Description: \n' +
+        'do not use the function reverse \n' +
+        '-->\n' +
+        '<module name="Checker">\n' +
+        '  <property name="severity" value="warning"/>\n' +
+        '  <module name="RegexpSingleline">\n' +
+        '    <property name="severity" value="error"/>\n' +
+        '    <property name="format" value="reverse"/>\n' +
+        '    <property name="message" value="reverse darf nicht verwendet werden"/>\n' +
+        '    <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="error"/>\n' +
+        '  </module>\n' +
+        '</module>]]></file></files><model-solutions><model-solution id="1" comment="Musterlösung"><filerefs><fileref refid="1"/></filerefs></model-solution></model-solutions><tests><test id="1"><title>Java JUnit Test</title><test-type>unittest</test-type><test-configuration><filerefs><fileref refid="2"/></filerefs><unit:unittest framework="JUnit" version="4.10"><unit:main-class>MyStringTest</unit:main-class></unit:unittest><test-meta-data><praktomat:public>True</praktomat:public><praktomat:required>True</praktomat:required><praktomat:always>True</praktomat:always><praktomat:config-testDescription>testet, ob die Funktion das macht, was sie machen soll</praktomat:config-testDescription></test-meta-data></test-configuration></test><test id="2"><title>CheckStyle Test</title><test-type>java-checkstyle</test-type><test-configuration><filerefs><fileref refid="3"/></filerefs><praktomat:version>6.2</praktomat:version><test-meta-data><praktomat:public>True</praktomat:public><praktomat:required>True</praktomat:required><praktomat:always>True</praktomat:always><praktomat:max-checkstyle-warnings>0</praktomat:max-checkstyle-warnings></test-meta-data></test-configuration></test></tests><grading-hints/><meta-data><title>reverse string</title><praktomat:allowed-upload-filename-mimetypes>(text/.*)</praktomat:allowed-upload-filename-mimetypes></meta-data></task>';
+
+    let xmltext2 = '<?xml version=\'1.0\' encoding=\'UTF-8\'?>' +
+        '<task xmlns:unit="urn:proforma:tests:unittest:v1" xmlns:praktomat="urn:proforma:praktomat:v0.2" xmlns="urn:proforma:task:v1.0.1" xmlns:jartest="urn:proforma:tests:jartest:v1" uuid="bebfb08a-b042-4e97-b40d-73f999ad403a" lang="de">' +
+        '<description><![CDATA[Implementieren Sie eine Methode namens \'flip\', die einen String übergeben bekommt und ihn verkehrt herum wieder zurückgibt.\n' +
+        '\n' +
+        'Die Signatur der Funktion soll also wie folgt aussehen:\n' +
+        '    static public String flip(String aString);\n' +
+        '    \n' +
+        'und innerhalb einer Klasse \'MyString\' implementiert werden.\n' +
+        '\n' +
+        'Die Funktion soll selbst geschrieben werden, d.h. es darf keine passende Methode der Java-Bibliothek aufgerufen werden (insbesondere nicht reverse).]]>' +
+        '</description>' +
+        '</task>';
+
+    let task = new TaskClass();
+    task.readXml(xmltext1);
+
     $('#codeversion').text("Version "+codeversion);
 
     gradingHintCounter = 1;
