@@ -63,7 +63,23 @@ class TaskFile {
         this.comment = null;
         this.content = null;
     }
+}
 
+class TaskModelSolution {
+    constructor() {
+        this.id = null;
+        this.comment = null;
+        this.filerefs = [];
+    }
+}
+
+class TaskTest {
+    constructor() {
+        this.id = null;
+        this.title = null;
+        this.testtype = null;
+        this.filerefs = [];
+    }
 }
 
 class TaskClass {
@@ -101,19 +117,10 @@ class TaskClass {
             this.lang = xmlReader.readSingleText("/dns:task/@lang");
             this.sizeSubmission = xmlReader.readSingleText("/dns:task/dns:submission-restrictions/dns:regexp-restriction/@max-size");
             this.mimeTypeRegExpSubmission = xmlReader.readSingleText("/dns:task/dns:submission-restrictions/dns:regexp-restriction/@mime-type-regexp");
-/*
-            alert(this.title);
-            alert(this.description);
-            alert(this.proglang + '/' + this.proglangVersion);
-            alert(this.uuid);
-            alert(this.lang);
-            alert(this.sizeSubmission);
-            alert(this.mimeTypeRegExpSubmission);
 
-*/
             // read files
             let iterator = xmlReader.readNodes("/dns:task/dns:files/dns:file");
-            var thisNode = iterator.iterateNext();
+            let thisNode = iterator.iterateNext();
             while (thisNode) {
                 let taskfile = new TaskFile();
                 taskfile.filename = xmlReader.readSingleText("@filename", thisNode);
@@ -125,6 +132,32 @@ class TaskClass {
                 this.files[taskfile.id] = taskfile;
                 thisNode = iterator.iterateNext();
             }
+
+            // read model solutions(s)
+            iterator = xmlReader.readNodes("/dns:task/dns:model-solutions/dns:model-solution");
+            thisNode = iterator.iterateNext();
+            while (thisNode) {
+                let modelSolution = new TaskModelSolution();
+                modelSolution.id = xmlReader.readSingleText("@id", thisNode);
+                modelSolution.comment = xmlReader.readSingleText("@comment", thisNode);
+                // TODO: read filerefs
+                this.modelsolutions[modelSolution.id] = modelSolution;
+                thisNode = iterator.iterateNext();
+            }
+
+            // read tests
+            iterator = xmlReader.readNodes("/dns:task/dns:tests/dns:test");
+            thisNode = iterator.iterateNext();
+            while (thisNode) {
+                let test = new TaskTest();
+                test.id = xmlReader.readSingleText("@id", thisNode);
+                test.title = xmlReader.readSingleText("dns:title", thisNode);
+                test.testtype = xmlReader.readSingleText("dns:test-type", thisNode);
+                // TODO: read filerefs
+                this.tests[test.id] = test;
+                thisNode = iterator.iterateNext();
+            }
+
 
 
        } catch (err){
