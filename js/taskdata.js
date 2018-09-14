@@ -157,13 +157,72 @@ class TaskClass {
                 this.tests[test.id] = test;
                 thisNode = iterator.iterateNext();
             }
-
-
-
        } catch (err){
            alert (err);
            setErrorMessage("Error while parsing the xml file. The file has not been imported.". err);
            return; // Stop. Do not make any further changes.
        }
+    }
+
+    writeXml() {
+        let xmlDoc = null;
+        let files = null;
+        let modelsolutions = null;
+        let tests = null;
+
+        function writeFile(item, index) {
+            let fileElem = xmlDoc.createElement("file");
+            fileElem.setAttribute("class", item.fileclass);
+            fileElem.setAttribute("filename", item.filename);
+            fileElem.setAttribute("id", item.id);
+            fileElem.setAttribute("type", item.filetype);
+            fileElem.setAttribute("comment", item.comment);
+            files.appendChild(fileElem);
+            fileElem.appendChild(xmlDoc.createCDATASection(item.content));
+        }
+
+        function writeModelSolution(item, index) {
+            let msElem = xmlDoc.createElement("model-solution");
+            msElem.setAttribute("id", item.id);
+            msElem.setAttribute("comment", item.comment);
+            modelsolutions.appendChild(msElem);
+        }
+
+        function writeTest(item, index) {
+            let testElem = xmlDoc.createElement("test");
+            testElem.setAttribute("id", item.id);
+            testElem.appendChild(xmlDoc.createTextNode('title', item.title));
+            testElem.appendChild(xmlDoc.createTextNode('test-type', item.testtype));
+
+            tests.appendChild(testElem);
+        }
+
+        try {
+
+            let fruitDocType = document.implementation.createDocumentType ("fruit", "SYSTEM", "<!ENTITY tf 'tropical fruit'>");
+
+            xmlDoc = document.implementation.createDocument("", "task", null);
+            //var body = document.createElementNS('http://www.w3.org/1999/xhtml', 'body');
+
+            tests = xmlDoc.createElement("tests");
+            xmlDoc.documentElement.appendChild(tests);
+            this.tests.forEach(writeTest);
+
+            modelsolutions = xmlDoc.createElement("model-solutions");
+            xmlDoc.documentElement.appendChild(modelsolutions);
+            this.modelsolutions.forEach(writeModelSolution);
+
+            files = xmlDoc.createElement("files");
+            xmlDoc.documentElement.appendChild(files);
+            this.files.forEach(writeFile);
+
+
+            var serializer = new XMLSerializer();
+            return serializer.serializeToString (xmlDoc);
+        } catch (err){
+            alert (err);
+            setErrorMessage("Error while parsing the xml file. The file has not been imported.". err);
+            return; // Stop. Do not make any further changes.
+        }
     }
 }

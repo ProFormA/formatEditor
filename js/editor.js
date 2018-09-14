@@ -320,6 +320,8 @@ $(function() {
 
     let task = new TaskClass();
     task.readXml(xmltext1);
+    let resultXml = task.writeXml();
+    alert(resultXml);
 
     $('#codeversion').text("Version "+codeversion);
 
