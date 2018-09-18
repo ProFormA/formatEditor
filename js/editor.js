@@ -450,7 +450,7 @@ $(function() {
 
 
 
-    newModelsol = function(tempcounter) {                // create a new model solution HTML form element
+    newModelsol = function(tempcounter, comment = '') {                // create a new model solution HTML form element
         $("#modelsolutionsection").append("<div "+
         "class='ui-widget ui-widget-content ui-corner-all xml_model-solution'>"+
         "<h3 class='ui-widget-header'>Model solution #"+tempcounter+"<span "+
@@ -460,7 +460,8 @@ $(function() {
             ModelSolutionFileReference.getInstance().getTableString() +
          //   "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>" +
         "<p><label for='xml_model-solution_comment'>Comment: </label>"+
-        "<input class='largeinput xml_model-solution_comment'/></p></div>");
+        "<input class='largeinput xml_model-solution_comment' value ='"+ comment+"'/>" +
+            "</p></div>");
 
         const msroot = $(".xml_model-solution_id[value='" + tempcounter + "']").parent().parent();
         FileReferenceList.init(null, null, ModelSolutionFileReference, msroot);
@@ -488,6 +489,8 @@ $(function() {
           }
       });
       */
+
+        return msroot;
     };
 
     newTest = function(tempcounter,TestName, MoreText, TestType, WithFileRef) { // create a new test HTML form element
@@ -573,6 +576,7 @@ $(function() {
     */
         }
 
+        return testroot;
     };
 
     function uploadFileWhenDropped(files, fileBox){

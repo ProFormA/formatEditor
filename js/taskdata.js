@@ -1,5 +1,6 @@
 
 
+// helper class
 class XmlReader {
     constructor(xmlText) {
         this.xmlDoc = new DOMParser().parseFromString(xmlText,'text/xml');
@@ -52,6 +53,7 @@ class XmlReader {
     }
 }
 
+// task data structures
 class TaskFileRef {
     constructor() {
         this.refid = null;
@@ -131,6 +133,15 @@ class TaskClass {
     }
 
 
+    findFilenameForId(id) {
+        let filename = undefined;
+        this.files.forEach(function(item) {
+            if (item.id === id) {
+                filename = item.filename;
+            }
+        });
+        return filename;
+    }
 
     readXml(xmlfile) {
 
@@ -139,7 +150,7 @@ class TaskClass {
             let fileRefNode = fileRefIterator.iterateNext();
             while (fileRefNode) {
                 let fileRef = new TaskFileRef();
-                fileRef.refid = xmlReader.readSingleText("@refid", thisNode);
+                fileRef.refid = xmlReader.readSingleText("@refid", fileRefNode);
                 let counter = 0;
                 element.filerefs[counter++] = fileRef;
                 fileRefNode = fileRefIterator.iterateNext();
