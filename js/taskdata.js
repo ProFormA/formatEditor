@@ -26,17 +26,6 @@ class XmlReader {
                     return '';
             }
         };
-
-        /*
-                        var resolver = null;
-                        var ns = (new window.DOMParser).parseFromString(xmlfile, "text/xml").children[0].getAttribute("xmlns");
-                        if (ns) {
-                            resolver = function() {
-                                return ns;
-                            }
-                            xpath = "defaultNamespace:" + xpath;
-                        }
-        */
     }
 
     setRootNode(node) {
@@ -58,19 +47,9 @@ class XmlReader {
             return null;
     }
 
-
-
     readNodes(xpath, node) {
         return this.xmlDoc.evaluate(xpath, node?node:this.rootNode, this.nsResolver, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
-
-/*        var thisNode = iterator.iterateNext();
-        while (thisNode) {
-            alert( thisNode.textContent );
-            thisNode = iterator.iterateNext();
-        }
-*/
     }
-
 }
 
 class TaskFileRef {

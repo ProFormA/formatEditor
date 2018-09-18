@@ -318,10 +318,11 @@ $(function() {
         '</description>' +
         '</task>';
 
-    let task = new TaskClass();
+/*    let task = new TaskClass();
     task.readXml(xmltext1);
     let resultXml = task.writeXml();
     alert(resultXml);
+*/
 
     $('#codeversion').text("Version "+codeversion);
 
@@ -727,7 +728,7 @@ $(function() {
    readXMLWithLock =  function() {
        readXmlActive = true; // lock automatic input field update
        try {
-           readXML();
+           readXML2();
        }
        catch(err) {
            setErrorMessage("uncaught exception", err);

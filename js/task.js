@@ -896,3 +896,275 @@ readXML = function() {
 
 };
 
+readXML2 = function() {
+
+    function createMs(item, index) {
+        newModelsol(item.id);
+        modelSolIDs[item.id];
+
+        /*
+            msElem.setAttribute("comment", item.comment);
+            // filerefs
+        */
+    }
+
+    function createFile(item, index) {
+        newFile(item.id);
+        let ui_file = FileWrapper.constructFromId(item.id);
+        ui_file.filename = item.filename;
+        ui_file.class = item.fileclass;
+        ui_file.type = item.filetype;
+        // ui_file.comment = item.filetype;
+
+/*
+          if (isBinaryFile) {
+              // binary file
+              // at first update fileStorages because
+              // it is needed for changing file type
+              let fileObject = new FileStorage(isBinaryFile, mimetype, e.target.result, filename);
+              fileObject.setSize(size);
+              fileStorages[ui_file.id] = fileObject;
+              ui_file.type = 'file';
+          } else {
+              // assume non binary file
+              let fileObject = new FileStorage(isBinaryFile, mimetype, 'text is in editor', filename);
+              fileStorages[ui_file.id] = fileObject;
+              ui_file.text = e.target.result;
+              ui_file.type = 'embedded';
+          }
+ */
+
+    }
+
+    function createTest(item, index) {
+        testIDs[item.id] = 1;
+        newTest(item.id, item.title, '' /*item.htmlExtraFields*/, item.testtype,
+            item.filerefs.count>0?true:false);
+
+        /*
+            let testElem = xmlDoc.createElement("test");
+            testElem.setAttribute("id", item.id);
+            testElem.appendChild(xmlDoc.createTextNode('title', item.title));
+            testElem.appendChild(xmlDoc.createTextNode('test-type', item.testtype));
+
+            tests.appendChild(testElem);
+        */
+    }
+
+    if (taskXml.length > 0) {
+        // ask user
+        if (!window.confirm("All form content will be deleted and replaced.")) {
+            return;
+        }                         // proceed only after confirmation
+    }
+
+    gradingHintCounter = 1;                            // variable initialisation
+    clearErrorMessage();
+    FileWrapper.deleteAllFiles();
+
+    $("#modelsolutionsection")[0].textContent = "";
+    $("#testsection")[0].textContent = "";
+
+    // initialise other sections
+    FileReferenceList.init("#librarydropzone", '#librarysection', LibraryFileReference);
+    FileReferenceList.init("#instructiondropzone", '#instructionsection', InstructionFileReference);
+    FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
+    const templateroot = $("#templatedropzone");
+    const libroot = $("#librarydropzone");
+    const instructionroot = $("#instructiondropzone");
+
+    // fileIDs = {};
+    modelSolIDs = {};
+    testIDs = {};
+
+    if (taskXml === "") {
+        setErrorMessage("The textarea is empty.");
+        return;
+    }
+
+    let task = new TaskClass();
+    // TODO: check version
+    // TODO: validate??
+    task.readXml(taskXml);
+
+
+    descriptionEditor.setValue(task.description);
+    $("#xml_meta-data_title").val(task.title);
+    $("#xml_uuid").val(task.uuid);
+    $("#xml_subm_max-size").val(task.sizeSubmission);
+    $("#xml_upload-mime-type").val(task.mimeTypeRegExpSubmission);
+    $("#xml_programming-language").val(task.proglang + '/' + task.proglangVersion); // TODO
+    $("#xml_lang").val(task.lang);
+
+
+    task.files.forEach(createFile);
+    task.modelsolutions.forEach(createMs);
+    task.tests.forEach(createTest);
+
+
+
+/*
+        $.each(mapElemSequence, function(index, item) {
+            idx1cnt = 0;                                                 // differs from idx1 if wrong test-type
+            xmlObject.find(item.xmlname).each(function (idx1, itm1) {    // loop: file, test, ...
+                if (item.xmlpath == "files") {
+                    newFile($(itm1).attr("id"));
+                    //fileIDs[$(itm1).attr("id")] = 1;
+                }
+                if (item.xmlpath == "model-solutions") {
+                    newModelsol($(itm1).attr("id"));
+                    modelSolIDs[$(itm1).attr("id")];
+                }
+                if (item.xmlpath == "tests") {
+                    testIDs[$(itm1).attr("id")] = 1;
+
+                    found = false;
+                    $.each(config.testInfos, function(index, item) {
+                        if (!found && $(itm1).find('test-type')[0].textContent === item.testType) {
+                            newTest($(itm1).attr("id"), item.title, item.htmlExtraFields, item.testType, item.withFileRef);
+                            found = true;
+                        }
+                    });
+                    if (!found) {
+                        setErrorMessage("Test "+$(itm1).find('test-type')[0].textContent+" not imported");
+                        testIDs[$(itm1).attr("id")] = 0;
+                        return true;                                        // next iteration because wrong test-type
+                    }
+                }
+                $.each(mapTextInElemSequence, function(idx2, itm2) {
+                    if (item.xmlname === itm2.xmlname) {                      // relational join
+                        try {                                                  // deal with codemirror for file textarea
+                            if (itm2.formname === '.xml_file_text') {
+                                // check text length
+                                const text = itm1.textContent;
+                                const id = $(itm1).attr('id');
+                                let ui_file = FileWrapper.constructFromId(id);
+                                {
+                                    ui_file.text = text;
+                                }
+                            } else {
+                                $($(item.formname)[idx1cnt]).find('textarea')[0].textContent = itm1.textContent;
+                            }
+                        } catch(err) { setErrorMessage("problem with: "+item.xmlname+idx1+itm1, err);}
+                    }
+                });
+                $.each(mapChildElems, function(idx2, itm2) {              // loop: test-title, ...
+                    if ($(itm1).find(itm2.xmlname).length > 0) {           // is it defined in this case?
+                        try {
+                            let ui_element = $($(item.formname)[idx1cnt]).find(itm2.formname)[0];
+                            const ui_value = $(itm1).find(itm2.xmlname)[0].textContent;
+                            const input_type = ui_element.type;
+                            let jquery_ui_element = $(ui_element);
+                            switch (input_type) {
+                                case 'text':
+                                case 'select-one':
+                                    jquery_ui_element.val(ui_value);
+                                    break;
+                                case 'checkbox':
+                                    //console.log('checked: ui_value ' + ui_value);
+                                    if (ui_value.toLowerCase() === 'true') {
+                                        // console.log('checked = true');
+                                        ui_element.checked = true;
+                                    } else {
+                                        // console.log('checked = false');
+                                        ui_element.checked = false;
+                                    }
+                                    break;
+                                default:
+                                    console.log('todo: handle input_type = ' + input_type);
+                                    jquery_ui_element.val(ui_value);
+                                    break;
+                            }
+
+
+
+                            if (ui_value === null) { // ui_element.val() === null) {   // check selected
+                                setErrorMessageInvalidOption(itm2.xmlpath, itm2.xmlname, ui_value);
+                                //setErrorMessage("'"+ui_value+"' is not an option for "+itm2.xmlname);
+                            }
+                        } catch(err) {setErrorMessage( "problem with "+itm2.formname+idx1, err);}
+                    }
+                });
+
+                $.each(mapListOfChildElems, function(idx2, itm2) {        // loop: fileref (and filenames)
+                    if ($(itm1).find(itm2.xmlname).length > 0 && item.formname == itm2.formcontainer) {
+                        try {
+                            // retrieve filename from fileid
+                            var itm1_itm2_xmlname = $(itm1).find(itm2.xmlname);
+
+                            $.each(itm1_itm2_xmlname, function(index, refid_tag) {
+                                var fileid = refid_tag.getAttribute(itm2.listattr);
+                                var fileid_obj = $("#filesection").find(".xml_file_id[value='"+ fileid +"']");
+                                var filename = fileid_obj.parent().find(".xml_file_filename").val();
+
+                                if ("" == fileid && !filename && version094 == tempschema ) {
+                                    // accept empty fileids in version 0.9.4 and ignore
+                                    return false;
+                                }
+                                // set filename in item
+                                var object = $($(item.formname)[idx1cnt]);
+                                switch (item.formname) {
+                                    case "." + TestFileReference.getClassRoot():
+                                        TestFileReference.getInstance().setFilenameOnCreation(object, index, filename, itm2); break;
+                                    case "." + ModelSolutionFileReference.getClassRoot():
+                                        ModelSolutionFileReference.getInstance().setFilenameOnCreation(object, index, filename, itm2); break;
+                                    default:
+                                        alert('invalid item.formname ' + item.formname);
+                                        break;
+                                }
+                                // TODO: what is itm2?
+                                object.find(itm2.formname)[index].value = fileid;
+                            });
+                        } catch(err) {setErrorMessage( "problem with reading filerefs", err);}
+                    }
+                });
+
+                idx1cnt++;
+            });
+        });
+*/
+    // POST PROCESSING
+/*
+
+
+    // special handling for template, library and instruction file class:
+    // add dummy file references
+    var indexTemplate = 0;
+    var indexInstruction = 0;
+    var indexLib = 0;
+    // var templateroot = $("#templatedropzone");
+    // var instructionroot = $("#instructiondropzone");
+    xmlObject.find('file').each(function (index, element) {    // iterate through all files
+//            console.log(index + ' ' + element);
+        const fileid = element.getAttribute('id');
+        const filename = element.getAttribute('filename');
+        let ui_file = FileWrapper.constructFromId(fileid);
+        switch(element.getAttribute('class')) {
+            case TEMPLATE:
+                TemplateFileReference.getInstance().setFilenameOnCreation(templateroot, indexTemplate++, filename);
+                break;
+            case INSTRUCTION:
+                InstructionFileReference.getInstance().setFilenameOnCreation(instructionroot, indexInstruction++, filename);
+                break;
+            case LIBRARY:
+                LibraryFileReference.getInstance().setFilenameOnCreation(libroot, indexLib++, filename);
+            // break; // fall through!!
+            case INTERNAL_LIB:
+                ui_file.isLibrary = true;
+                break;
+            default:
+                break;
+        }
+    });
+
+*/
+
+    // deal with proglang
+    if ($("#xml_programming-language").val() === null) {
+        setErrorMessage("This combination of programming language and version is not supported.");
+    }
+
+    // fill filename lists in empty file refences
+    FileReferenceList.updateAllFilenameLists();
+
+};
