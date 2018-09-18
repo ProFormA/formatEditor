@@ -8,12 +8,20 @@ class XmlReader {
             return;
         }
 
+        this.rootNode = this.xmlDoc;
+
         this.nsResolver = function (prefix) {
             switch (prefix) {
                 case 'unit':
                     return 'urn:proforma:tests:unittest:v1';
                 case 'dns':
                     return 'urn:proforma:task:v1.0.1';
+                case 'unit':
+                    return 'urn:proforma:tests:unittest:v1';
+                case 'jartest':
+                    return 'urn:proforma:tests:jartest:v1';
+                case 'praktomat':
+                    return 'urn:proforma:praktomat:v0.2';
                 default:
                     return '';
             }
@@ -31,8 +39,19 @@ class XmlReader {
         */
     }
 
+    setRootNode(node) {
+        this.rootNode = node;
+    }
+
+    readSingleNode(xpath, node) {
+        const nodes = this.xmlDoc.evaluate(xpath, node?node:this.rootNode, this.nsResolver,
+            XPathResult.UNORDERED_NODE_ITERATOR_TYPE /*FIRST_ORDERED_NODE_TYPE*/, null);
+        return nodes.iterateNext(); // .singleNodeValue;
+    }
+
+
     readSingleText(xpath, node) {
-        const nodes = this.xmlDoc.evaluate(xpath, node?node:this.xmlDoc, this.nsResolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+        const nodes = this.xmlDoc.evaluate(xpath, node?node:this.rootNode, this.nsResolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
         if (nodes.singleNodeValue)
             return nodes.singleNodeValue.textContent;
         else
@@ -41,8 +60,8 @@ class XmlReader {
 
 
 
-    readNodes(xpath) {
-        return this.xmlDoc.evaluate(xpath, this.xmlDoc, this.nsResolver, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
+    readNodes(xpath, node) {
+        return this.xmlDoc.evaluate(xpath, node?node:this.rootNode, this.nsResolver, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
 
 /*        var thisNode = iterator.iterateNext();
         while (thisNode) {
@@ -52,6 +71,12 @@ class XmlReader {
 */
     }
 
+}
+
+class TaskFileRef {
+    constructor() {
+        this.refid = null;
+    }
 }
 
 class TaskFile {
@@ -73,12 +98,36 @@ class TaskModelSolution {
     }
 }
 
+class TaskPraktomatTest {
+    constructor() {
+        this.version = null;
+
+        this.public = true;
+        this.required = true;
+        this.always = true;
+        this.description= null;
+        this.maxCheckstyleWarnings = 0;
+    }
+}
+
+class TaskUnitTest {
+    constructor() {
+        this.version = null;
+        this.framework = null;
+        this.mainClass = '';
+    }
+}
+
+
 class TaskTest {
     constructor() {
         this.id = null;
         this.title = null;
         this.testtype = null;
         this.filerefs = [];
+        this.praktomatTest = null;
+        this.unitTest = null;
+
     }
 }
 
@@ -105,21 +154,35 @@ class TaskClass {
 
 
     readXml(xmlfile) {
+
+        function readFileRefs(xmlReader, element, thisNode) {
+            let fileRefIterator = xmlReader.readNodes("./dns:filerefs/dns:fileref", thisNode);
+            let fileRefNode = fileRefIterator.iterateNext();
+            while (fileRefNode) {
+                let fileRef = new TaskFileRef();
+                fileRef.refid = xmlReader.readSingleText("@refid", thisNode);
+                let counter = 0;
+                element.filerefs[counter++] = fileRef;
+                fileRefNode = fileRefIterator.iterateNext();
+            }
+        }
+
         try {
 
             let xmlReader = new XmlReader(xmlfile);
+            xmlReader.setRootNode(xmlReader.readSingleNode("/dns:task")); // => shorter xpaths
 
-            this.title = xmlReader.readSingleText("/dns:task/dns:meta-data/dns:title");
-            this.description = xmlReader.readSingleText("/dns:task/dns:description");
-            this.proglang = xmlReader.readSingleText("/dns:task/dns:proglang");
-            this.proglangVersion = xmlReader.readSingleText("/dns:task/dns:proglang/@version");
-            this.uuid = xmlReader.readSingleText("/dns:task/@uuid");
-            this.lang = xmlReader.readSingleText("/dns:task/@lang");
-            this.sizeSubmission = xmlReader.readSingleText("/dns:task/dns:submission-restrictions/dns:regexp-restriction/@max-size");
-            this.mimeTypeRegExpSubmission = xmlReader.readSingleText("/dns:task/dns:submission-restrictions/dns:regexp-restriction/@mime-type-regexp");
+            this.title = xmlReader.readSingleText("./dns:meta-data/dns:title");
+            this.description = xmlReader.readSingleText("./dns:description");
+            this.proglang = xmlReader.readSingleText("./dns:proglang");
+            this.proglangVersion = xmlReader.readSingleText("./dns:proglang/@version");
+            this.uuid = xmlReader.readSingleText("./@uuid");
+            this.lang = xmlReader.readSingleText("./@lang");
+            this.sizeSubmission = xmlReader.readSingleText("./dns:submission-restrictions/dns:regexp-restriction/@max-size");
+            this.mimeTypeRegExpSubmission = xmlReader.readSingleText("./dns:submission-restrictions/dns:regexp-restriction/@mime-type-regexp");
 
             // read files
-            let iterator = xmlReader.readNodes("/dns:task/dns:files/dns:file");
+            let iterator = xmlReader.readNodes("./dns:files/dns:file");
             let thisNode = iterator.iterateNext();
             while (thisNode) {
                 let taskfile = new TaskFile();
@@ -134,29 +197,50 @@ class TaskClass {
             }
 
             // read model solutions(s)
-            iterator = xmlReader.readNodes("/dns:task/dns:model-solutions/dns:model-solution");
+            iterator = xmlReader.readNodes("./dns:model-solutions/dns:model-solution");
             thisNode = iterator.iterateNext();
             while (thisNode) {
                 let modelSolution = new TaskModelSolution();
                 modelSolution.id = xmlReader.readSingleText("@id", thisNode);
                 modelSolution.comment = xmlReader.readSingleText("@comment", thisNode);
-                // TODO: read filerefs
+                readFileRefs(xmlReader, modelSolution, thisNode);
                 this.modelsolutions[modelSolution.id] = modelSolution;
                 thisNode = iterator.iterateNext();
             }
 
-            // read tests
-            iterator = xmlReader.readNodes("/dns:task/dns:tests/dns:test");
+            // read test(s)
+            iterator = xmlReader.readNodes("./dns:tests/dns:test");
             thisNode = iterator.iterateNext();
             while (thisNode) {
                 let test = new TaskTest();
                 test.id = xmlReader.readSingleText("@id", thisNode);
                 test.title = xmlReader.readSingleText("dns:title", thisNode);
                 test.testtype = xmlReader.readSingleText("dns:test-type", thisNode);
-                // TODO: read filerefs
+
+                let configIterator = xmlReader.readNodes("./dns:test-configuration", thisNode);
+                let configNode = configIterator.iterateNext();
+                readFileRefs(xmlReader, test, configNode);
+
+                let unitIterator = xmlReader.readNodes("unit:unittest", configNode);
+                let unitNode = unitIterator.iterateNext();
+                test.unitTest = new TaskUnitTest();
+                test.unitTest.framework = xmlReader.readSingleText("@framework", unitNode);
+                test.unitTest.version = xmlReader.readSingleText("@version", unitNode);
+                test.unitTest.mainClass = xmlReader.readSingleText("unit:main-class", unitNode);
+
+                let praktomatIterator = xmlReader.readNodes("dns:test-meta-data", configNode);
+                let praktomatNode = unitIterator.iterateNext();
+                test.praktomatTest = new TaskPraktomatTest();
+                test.praktomatTest.public = xmlReader.readSingleText("praktomat:public", praktomatNode);
+                test.praktomatTest.required = xmlReader.readSingleText("praktomat:required", praktomatNode);
+                test.praktomatTest.always = xmlReader.readSingleText("praktomat:always", praktomatNode);
+                test.praktomatTest.description = xmlReader.readSingleText("praktomat:config-testDescription", praktomatNode);
+                test.praktomatTest.maxCheckstyleWarnings = xmlReader.readSingleText("max-checkstyle-warnings", praktomatNode);
+
                 this.tests[test.id] = test;
                 thisNode = iterator.iterateNext();
             }
+
        } catch (err){
            alert (err);
            setErrorMessage("Error while parsing the xml file. The file has not been imported.". err);
