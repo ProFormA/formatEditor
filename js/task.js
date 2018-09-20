@@ -510,7 +510,7 @@ convertToXML = function() {
 };
 
 
-readXML2 = function() {
+readAndDisplayXml = function() {
     let task = new TaskClass();
 
     function createMs(item, index) {
@@ -531,25 +531,8 @@ readXML2 = function() {
         ui_file.class = item.fileclass;
         ui_file.type = item.filetype;
         ui_file.comment = item.comment;
-
-/*
-          if (isBinaryFile) {
-              // binary file
-              // at first update fileStorages because
-              // it is needed for changing file type
-              let fileObject = new FileStorage(isBinaryFile, mimetype, e.target.result, filename);
-              fileObject.setSize(size);
-              fileStorages[ui_file.id] = fileObject;
-              ui_file.type = 'file';
-          } else {
-              // assume non binary file
-              let fileObject = new FileStorage(isBinaryFile, mimetype, 'text is in editor', filename);
-              fileStorages[ui_file.id] = fileObject;
-              ui_file.text = e.target.result;
-              ui_file.type = 'embedded';
-          }
- */
-
+        if (ui_file.type = 'embedded')
+            ui_file.text = item.content;
     }
 
     function createTest(item, index) {
@@ -558,7 +541,11 @@ readXML2 = function() {
         let testroot = undefined;
         $.each(config.testInfos, function(index, configItem) {
             if (!testroot && item.testtype === configItem.testType) {
-                testroot = newTest(item.id, configItem.title /* item.title */, configItem.htmlExtraFields, configItem.testType, configItem.withFileRef);
+                testroot = newTest(item.id, /* configItem.title */item.title, configItem.htmlExtraFields,
+                    configItem.testType, configItem.withFileRef);
+                if (configItem.readXml) {
+                    task.readTestConfig(taskXml, item.id, configItem.readXml, testroot);
+                }
             }
         });
         if (!testroot) {
@@ -580,7 +567,11 @@ readXML2 = function() {
         if (!window.confirm("All form content will be deleted and replaced.")) {
             return;
         }                         // proceed only after confirmation
+    } else {
+        setErrorMessage("Task.xml is empty.");
+        return;
     }
+
 
     gradingHintCounter = 1;                            // variable initialisation
     clearErrorMessage();
@@ -601,11 +592,6 @@ readXML2 = function() {
     modelSolIDs = {};
     testIDs = {};
 
-    if (taskXml === "") {
-        setErrorMessage("The textarea is empty.");
-        return;
-    }
-
 
     // TODO: check version
     // TODO: validate??
@@ -617,78 +603,58 @@ readXML2 = function() {
     $("#xml_uuid").val(task.uuid);
     $("#xml_subm_max-size").val(task.sizeSubmission);
     $("#xml_upload-mime-type").val(task.mimeTypeRegExpSubmission);
-    $("#xml_programming-language").val(task.proglang + '/' + task.proglangVersion); // TODO
+    $("#xml_programming-language").val(task.proglang + '/' + task.proglangVersion);
     $("#xml_lang").val(task.lang);
 
+    // check proglang
+    if ($("#xml_programming-language").val() === null) {
+        setErrorMessage("This combination of programming language and version is not supported.");
+    }
 
     task.files.forEach(createFile);
     task.modelsolutions.forEach(createMs);
     task.tests.forEach(createTest);
 
-
-
 /*
-        $.each(mapElemSequence, function(index, item) {
-            idx1cnt = 0;                                                 // differs from idx1 if wrong test-type
-                $.each(mapTextInElemSequence, function(idx2, itm2) {
-                    if (item.xmlname === itm2.xmlname) {                      // relational join
-                        try {                                                  // deal with codemirror for file textarea
-                            if (itm2.formname === '.xml_file_text') {
-                                // check text length
-                                const text = itm1.textContent;
-                                const id = $(itm1).attr('id');
-                                let ui_file = FileWrapper.constructFromId(id);
-                                {
-                                    ui_file.text = text;
-                                }
+                                            // differs from idx1 if wrong test-type
+        $.each(mapChildElems, function(idx2, itm2) {              // loop: test-title, ...
+            if ($(itm1).find(itm2.xmlname).length > 0) {           // is it defined in this case?
+                try {
+                    let ui_element = $($(item.formname)[idx1cnt]).find(itm2.formname)[0];
+                    const ui_value = $(itm1).find(itm2.xmlname)[0].textContent;
+                    const input_type = ui_element.type;
+                    let jquery_ui_element = $(ui_element);
+                    switch (input_type) {
+                        case 'text':
+                        case 'select-one':
+                            jquery_ui_element.val(ui_value);
+                            break;
+                        case 'checkbox':
+                            //console.log('checked: ui_value ' + ui_value);
+                            if (ui_value.toLowerCase() === 'true') {
+                                // console.log('checked = true');
+                                ui_element.checked = true;
                             } else {
-                                $($(item.formname)[idx1cnt]).find('textarea')[0].textContent = itm1.textContent;
+                                // console.log('checked = false');
+                                ui_element.checked = false;
                             }
-                        } catch(err) { setErrorMessage("problem with: "+item.xmlname+idx1+itm1, err);}
+                            break;
+                        default:
+                            console.log('todo: handle input_type = ' + input_type);
+                            jquery_ui_element.val(ui_value);
+                            break;
                     }
-                });
-                $.each(mapChildElems, function(idx2, itm2) {              // loop: test-title, ...
-                    if ($(itm1).find(itm2.xmlname).length > 0) {           // is it defined in this case?
-                        try {
-                            let ui_element = $($(item.formname)[idx1cnt]).find(itm2.formname)[0];
-                            const ui_value = $(itm1).find(itm2.xmlname)[0].textContent;
-                            const input_type = ui_element.type;
-                            let jquery_ui_element = $(ui_element);
-                            switch (input_type) {
-                                case 'text':
-                                case 'select-one':
-                                    jquery_ui_element.val(ui_value);
-                                    break;
-                                case 'checkbox':
-                                    //console.log('checked: ui_value ' + ui_value);
-                                    if (ui_value.toLowerCase() === 'true') {
-                                        // console.log('checked = true');
-                                        ui_element.checked = true;
-                                    } else {
-                                        // console.log('checked = false');
-                                        ui_element.checked = false;
-                                    }
-                                    break;
-                                default:
-                                    console.log('todo: handle input_type = ' + input_type);
-                                    jquery_ui_element.val(ui_value);
-                                    break;
-                            }
 
 
 
-                            if (ui_value === null) { // ui_element.val() === null) {   // check selected
-                                setErrorMessageInvalidOption(itm2.xmlpath, itm2.xmlname, ui_value);
-                                //setErrorMessage("'"+ui_value+"' is not an option for "+itm2.xmlname);
-                            }
-                        } catch(err) {setErrorMessage( "problem with "+itm2.formname+idx1, err);}
+                    if (ui_value === null) { // ui_element.val() === null) {   // check selected
+                        setErrorMessageInvalidOption(itm2.xmlpath, itm2.xmlname, ui_value);
+                        //setErrorMessage("'"+ui_value+"' is not an option for "+itm2.xmlname);
                     }
-                });
-
-
-                idx1cnt++;
-            });
+                } catch(err) {setErrorMessage( "problem with "+itm2.formname+idx1, err);}
+            }
         });
+
 */
     // POST PROCESSING
 
@@ -717,12 +683,6 @@ readXML2 = function() {
         }
     });
 
-    // check proglang
-    if ($("#xml_programming-language").val() === null) {
-        setErrorMessage("This combination of programming language and version is not supported.");
-    }
-
     // fill filename lists in empty file refences
     FileReferenceList.updateAllFilenameLists();
-
 };

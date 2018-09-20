@@ -79,25 +79,7 @@ class TaskModelSolution {
     }
 }
 
-class TaskPraktomatTest {
-    constructor() {
-        this.version = null;
 
-        this.public = true;
-        this.required = true;
-        this.always = true;
-        this.description= null;
-        this.maxCheckstyleWarnings = 0;
-    }
-}
-
-class TaskUnitTest {
-    constructor() {
-        this.version = null;
-        this.framework = null;
-        this.mainClass = '';
-    }
-}
 
 
 class TaskTest {
@@ -141,6 +123,20 @@ class TaskClass {
             }
         });
         return filename;
+    }
+
+    readTestConfig(xmlfile, testid, callback, testroot) {
+        try {
+
+            let xmlReader = new XmlReader(xmlfile);
+            xmlReader.setRootNode(xmlReader.readSingleNode("/dns:task/dns:tests/dns:test[@id="+testid+"]"));
+            let configNodeNode = xmlReader.readSingleNode("dns:test-configuration");
+            callback(this.tests[testid], xmlReader, configNodeNode, testroot);
+        } catch (err){
+            alert (err);
+            setErrorMessage("Error while parsing the test configuration in xml file. ". err);
+            return; // Stop. Do not make any further changes.
+        }
     }
 
     readXml(xmlfile) {
@@ -211,22 +207,21 @@ class TaskClass {
                 let configNode = configIterator.iterateNext();
                 readFileRefs(xmlReader, test, configNode);
 
-                let unitIterator = xmlReader.readNodes("unit:unittest", configNode);
-                let unitNode = unitIterator.iterateNext();
+/*                let unitNode = xmlReader.readSingleNode("unit:unittest", configNode);
                 test.unitTest = new TaskUnitTest();
                 test.unitTest.framework = xmlReader.readSingleText("@framework", unitNode);
                 test.unitTest.version = xmlReader.readSingleText("@version", unitNode);
                 test.unitTest.mainClass = xmlReader.readSingleText("unit:main-class", unitNode);
-
-                let praktomatIterator = xmlReader.readNodes("dns:test-meta-data", configNode);
-                let praktomatNode = unitIterator.iterateNext();
+*/
+/*
+                let praktomatNode = xmlReader.readSingleNode("unit:unittest", configNode);
                 test.praktomatTest = new TaskPraktomatTest();
                 test.praktomatTest.public = xmlReader.readSingleText("praktomat:public", praktomatNode);
                 test.praktomatTest.required = xmlReader.readSingleText("praktomat:required", praktomatNode);
                 test.praktomatTest.always = xmlReader.readSingleText("praktomat:always", praktomatNode);
                 test.praktomatTest.description = xmlReader.readSingleText("praktomat:config-testDescription", praktomatNode);
                 test.praktomatTest.maxCheckstyleWarnings = xmlReader.readSingleText("max-checkstyle-warnings", praktomatNode);
-
+*/
                 this.tests[test.id] = test;
                 thisNode = iterator.iterateNext();
             }

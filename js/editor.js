@@ -732,7 +732,7 @@ $(function() {
    readXMLWithLock =  function() {
        readXmlActive = true; // lock automatic input field update
        try {
-           readXML2();
+           readAndDisplayXml();
        }
        catch(err) {
            setErrorMessage("uncaught exception", err);
