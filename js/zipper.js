@@ -59,7 +59,7 @@ unzipme = function (blob, readyCallback) {
             if (ui_file.type === 'file') {
                 const fileid = ui_file.id; // fileroot.find(".xml_file_id").val();
                 const filename = ui_file.filename; //$(item).val();
-                if (unzippedFiles[filename] && !fileStorages[fileid].filename.length) {
+                if (unzippedFiles[filename] && !fileStorages[fileid].byZipper) {//!fileStorages[fileid].filename.length) {
                     // note that there is always a fileStorage object whenever there is a ui file object!
                     // file is not yet relinked => link to fileStorage
                     fileStorages[fileid] = unzippedFiles[filename];
@@ -70,10 +70,10 @@ unzipme = function (blob, readyCallback) {
                     ui_file.type = ui_file.type;
                     //ui_file.disableTypeChange();
                 } else {
-                    if (unzippedFiles[filename] && fileStorages[fileid].filename.length) {
+                    if (unzippedFiles[filename] && fileStorages[fileid].byZipper) { // fileStorages[fileid].filename.length) {
                         // consistency check
                         console.error("internal error: file is already relinked! filename " + filename + " -> " + fileid + " " + ui_file.type);
-                        alert('internal error: file is already relinked!');
+                        alert('internal error: file ' + filename + ' is already relinked!');
                     } else {
                         /*if (!unzippedFiles[filename])
                             console.error("unzippedFiles[ " + filename + "] is missing");
@@ -187,6 +187,7 @@ unzipme = function (blob, readyCallback) {
                 // store file
                 unzippedFiles[entry.filename] =
                     new FileStorage(true, type, e.target.result, entry.filename);
+                unzippedFiles[entry.filename].setZipperFlag();
                 unzippedFiles[entry.filename].setSize(entry.uncompressedSize);
                 filesRead++
                 if (debug_unzip) console.log('filesRead value: ' + filesRead + ' filesToBeRead=' + filesToBeRead);

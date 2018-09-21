@@ -157,7 +157,8 @@ class BinaryFilesTest(zipFileTest.ZipFileTest):
 
         zipFileTest.ZipFileTest.saveLonCapaFile(self, True)
 
-        # check for visible template and instruction files
+        # check for visible template and instruction filesD:\users\karin\Code\zell\git\formatEditor\tests\output\java\binary.zip
+
         self.assertTrue('instruction.txt', editor.get_instruction_file(0))
         self.assertTrue('instruction.zip', editor.get_instruction_file(1))
         self.assertTrue('template.txt', editor.get_template_file(0))

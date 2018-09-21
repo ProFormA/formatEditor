@@ -21,7 +21,7 @@ suite = loader.discover(start_dir, "*test*.py")
 
 runner = unittest.TextTestRunner(verbosity=2)
 
-editor.browser = "Chrome"
+editor.browser = "Firefox" #"Chrome"
 print "----------------------------------------------------"
 print "run test with * " + editor.browser + " * "
 print "----------------------------------------------------"
@@ -31,7 +31,7 @@ if not only_one_browser:
 
     time.sleep(3);
 
-    editor.browser = "Firefox"
+    editor.browser = "Chrome" # "Firefox"
     print "----------------------------------------------------"
     print "run test with * " + editor.browser + " * "
     print "----------------------------------------------------"

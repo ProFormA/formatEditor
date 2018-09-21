@@ -266,7 +266,8 @@ var config = (function(testConfigNode) {
         new ProglangInfo("java/1.8",   [testJavaComp, testJavaJUnit,   testCheckStyle]),
         new ProglangInfo("python/2",   [testPython,   testCheckStyle ]),
         new ProglangInfo("setlX/2.40", [testSetlX,    testSetlXSyntax, testCheckStyle]),
-        new ProglangInfo("c",          [testCComp]),
+        // TODO
+        new ProglangInfo("c",          [testCComp, testDgSetup, testDGTester]),
     ];
 
 

@@ -27,10 +27,15 @@ class FileStorage {
         this.content = content;
         this.originalFilename = this.filename = filename;
         this.storeAsFile = isBinary;
+        this.byZipper=false;
     }
 
     setSize(size) {
         this.size = size;
+    }
+
+    setZipperFlag() {
+        this.byZipper=true;
     }
 }
 
@@ -159,8 +164,16 @@ class FileWrapper {
                 this.root.find(".xml_file_binary").show(); // show binary text
                 this.root.find(".xml_file_non_binary").hide(); // hide editor
                 let xml_file_size = this.root.find(".xml_file_size");
-                xml_file_size.first().text('File size: ' + this.size.toLocaleString() + ", " +
+                let filesize = this.size;
+                if (filesize)
+                    filesize = filesize.toLocaleString();
+                else
+                    filesize = '???';
+
+                xml_file_size.first().text('File size: ' + filesize + ", " +
                     'File type: ' + this.mimetype);
+//                xml_file_size.first().text('File size: ' + this.size.toLocaleString() + ", " +
+//                    'File type: ' + this.mimetype);
                 break;
             case 'embedded':
                 this.root.find(".xml_file_binary").hide(); // hide binary text

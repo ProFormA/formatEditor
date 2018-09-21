@@ -531,7 +531,7 @@ readAndDisplayXml = function() {
         ui_file.class = item.fileclass;
         ui_file.type = item.filetype;
         ui_file.comment = item.comment;
-        if (ui_file.type = 'embedded')
+        if (ui_file.type === 'embedded')
             ui_file.text = item.content;
     }
 
