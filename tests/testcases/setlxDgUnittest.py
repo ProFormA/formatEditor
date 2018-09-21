@@ -169,34 +169,34 @@ class SetlxDgTest(zipFileTest.ZipFileTest):
         # editor.set_test_fileref2(counter_test_index, "1")
         counter_test_index = counter_test_index + 1
 
-        ####################################################################
-        # add DEJAGNU tester
-        ####################################################################
-        editor.add_dejagnu_tester()
-        editor.add_dejagnu_tester()
-
-        editor.set_test_title(counter_test_index, "dejagnu tester title #0")
-        editor.set_test_public(counter_test_index, "False")
-        editor.set_test_required(counter_test_index, "False")
-        editor.set_test_file(counter_test_index, 3)
-        counter_test_index = counter_test_index + 1
-
-        editor.set_test_title(counter_test_index, "dejagnu tester title #1")
-        editor.set_test_public(counter_test_index, "True")
-        editor.set_test_required(counter_test_index, "True")
-        editor.set_test_file(counter_test_index, 4)
-        counter_test_index = counter_test_index + 1
-
-        ####################################################################
-        # add DEJAGNU setup
-        ####################################################################
-        editor.add_dejagnu_setup()
-
-        editor.set_test_title(counter_test_index, "dejagnu setup title #0")
-        editor.set_test_public(counter_test_index, "False")
-        editor.set_test_required(counter_test_index, "False")
-        editor.set_test_file(counter_test_index, 3)
-        counter_test_index = counter_test_index + 1
+        # ####################################################################
+        # # add DEJAGNU tester
+        # ####################################################################
+        # editor.add_dejagnu_tester()
+        # editor.add_dejagnu_tester()
+        #
+        # editor.set_test_title(counter_test_index, "dejagnu tester title #0")
+        # editor.set_test_public(counter_test_index, "False")
+        # editor.set_test_required(counter_test_index, "False")
+        # editor.set_test_file(counter_test_index, 3)
+        # counter_test_index = counter_test_index + 1
+        #
+        # editor.set_test_title(counter_test_index, "dejagnu tester title #1")
+        # editor.set_test_public(counter_test_index, "True")
+        # editor.set_test_required(counter_test_index, "True")
+        # editor.set_test_file(counter_test_index, 4)
+        # counter_test_index = counter_test_index + 1
+        #
+        # ####################################################################
+        # # add DEJAGNU setup
+        # ####################################################################
+        # editor.add_dejagnu_setup()
+        #
+        # editor.set_test_title(counter_test_index, "dejagnu setup title #0")
+        # editor.set_test_public(counter_test_index, "False")
+        # editor.set_test_required(counter_test_index, "False")
+        # editor.set_test_file(counter_test_index, 3)
+        # counter_test_index = counter_test_index + 1
 
         zipFileTest.ZipFileTest.saveFilesAndReloadAndSave(self, expectedZipName, False)
 

@@ -9,7 +9,7 @@ title = "fileUsage"
 expectedZipName = title + ".zip"
 
 
-class JavaTest(zipFileTest.ZipFileTest):
+class FileRefAndCTest(zipFileTest.ZipFileTest):
 
     def setUp(self):
         print "setup CTest"
