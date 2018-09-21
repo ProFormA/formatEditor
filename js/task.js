@@ -520,7 +520,7 @@ readAndDisplayXml = function() {
         let counter = 0;
         item.filerefs.forEach(function(itemFileref, indexFileref) {
             let filename = task.findFilenameForId(itemFileref.refid);
-            ModelSolutionFileReference.getInstance().setFilenameOnCreation(root, counter, filename);
+            ModelSolutionFileReference.getInstance().setFilenameOnCreation(root, counter++, filename);
         });
     }
 
@@ -558,7 +558,7 @@ readAndDisplayXml = function() {
         let counter = 0;
         item.filerefs.forEach(function(itemFileref, indexFileref) {
             let filename = task.findFilenameForId(itemFileref.refid);
-            TestFileReference.getInstance().setFilenameOnCreation(testroot, counter, filename);
+            TestFileReference.getInstance().setFilenameOnCreation(testroot, counter++, filename);
         });
     }
 

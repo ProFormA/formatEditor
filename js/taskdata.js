@@ -144,10 +144,10 @@ class TaskClass {
         function readFileRefs(xmlReader, element, thisNode) {
             let fileRefIterator = xmlReader.readNodes("./dns:filerefs/dns:fileref", thisNode);
             let fileRefNode = fileRefIterator.iterateNext();
+            let counter = 0;
             while (fileRefNode) {
                 let fileRef = new TaskFileRef();
                 fileRef.refid = xmlReader.readSingleText("@refid", fileRefNode);
-                let counter = 0;
                 element.filerefs[counter++] = fileRef;
                 fileRefNode = fileRefIterator.iterateNext();
             }
