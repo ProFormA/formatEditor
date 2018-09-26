@@ -135,8 +135,14 @@ var config = (function(testConfigNode) {
             xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerLibs", $(root).find(".xml_pr_CompilerLibs").val());
             xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerFilePattern", $(root).find(".xml_pr_CompilerFPatt").val(), true);
         }
+        // remove description
+        let x = childs[0].getElementsByTagName("praktomat:config-testDescription")[0];
+        childs[0].removeChild(x);
     }
 
+    function writeXmlExtra(metaDataNode, xmlDoc, xmlWriter) {
+        xmlWriter.createTextElement(metaDataNode, 'praktomat:allowed-upload-filename-mimetypes', '(text/.*)');
+    }
 
     // xml test reader
     function readPraktomat(test, xmlReader, testConfigNode, testroot) {
@@ -456,6 +462,7 @@ var config = (function(testConfigNode) {
         getMimetype: getMimetype,
         isBinaryFile: isBinaryFile,
         handleFilenameChangeInTest: handleFilenameChangeInTest,
+        writeXmlExtra: writeXmlExtra,
         // data
         proglangInfos: proglangInfos,
         testInfos: testInfos,

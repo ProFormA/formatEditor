@@ -255,26 +255,50 @@ class TaskClass {
 
         function writeModelSolution(item, index) {
             function writeFileref(item, index) {
-                let filerefs = xmlDoc.createElement("filerefs");
-                msElem.appendChild(filerefs);
-                let fileref = xmlDoc.createElement("fileref");
-                fileref.setAttribute("refid", item.refid);
-                filerefs.appendChild(fileref);
+                if (item.refid) {
+                    let fileref = xmlDoc.createElement("fileref");
+                    fileref.setAttribute("refid", item.refid);
+                    filerefs.appendChild(fileref);
+                }
             }
             let msElem = xmlDoc.createElement("model-solution");
             msElem.setAttribute("comment", item.comment);
             msElem.setAttribute("id", item.id);
             modelsolutions.appendChild(msElem);
+            let filerefs = xmlDoc.createElement("filerefs");
+            msElem.appendChild(filerefs);
             item.filerefs.forEach(writeFileref);
+            // remove filerefs is no fileref available
+            let childs = filerefs.getElementsByTagName('fileref');
+            if (childs.length === 0) {
+                msElem.removeChild(filerefs);
+            }
+
         }
 
         function writeTest(item, index) {
+            function writeFileref(item, index) {
+                if (item.refid) {
+                    let fileref = xmlDoc.createElement("fileref");
+                    fileref.setAttribute("refid", item.refid);
+                    filerefs.appendChild(fileref);
+                }
+            }
             let testElem = xmlDoc.createElement("test");
             testElem.setAttribute("id", item.id);
             xmlWriter.createTextElement(testElem, 'title', item.title);
             xmlWriter.createTextElement(testElem, 'test-type', item.testtype);
             let config = xmlDoc.createElement("test-configuration");
             testElem.appendChild(config);
+            let filerefs = xmlDoc.createElement("filerefs");
+            config.appendChild(filerefs);
+            item.filerefs.forEach(writeFileref);
+            // remove filerefs is no fileref available
+            let childs = filerefs.getElementsByTagName('fileref');
+            if (childs.length === 0) {
+                config.removeChild(filerefs);
+            }
+
             tests.appendChild(testElem);
             if (item.writeCallback) {
                 item.writeCallback(item, item.uiElement, config, xmlDoc, xmlWriter);
@@ -290,6 +314,7 @@ class TaskClass {
             //xmlDoc.appendChild(task);
 
             xmlDoc = document.implementation.createDocument("", "task", null);
+            //var xmlns = document.createElementNS("urn:proforma:task:v1.0.1", 'xmlns');
             //xmlDoc = document.implementation.createDocument("urn:proforma:task:v1.0.1", "task", null);
             let task = xmlDoc.documentElement;
 
@@ -347,7 +372,8 @@ class TaskClass {
             let metadata = xmlDoc.createElement("meta-data");
             task.appendChild(metadata);
             xmlWriter.createTextElement(metadata, 'title', this.title);
-
+            config.writeXmlExtra(metadata, xmlDoc, xmlWriter);
+            //xmlWriter.createTextElement(metadata, 'praktomat:allowed-upload-filename-mimetypes', '(text/.*)');
 
             let serializer = new XMLSerializer();
             let result = serializer.serializeToString (xmlDoc);
