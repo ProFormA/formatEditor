@@ -449,7 +449,7 @@ $(function() {
     };
 
 
-
+/*
     newModelsol = function(tempcounter, comment = '') {                // create a new model solution HTML form element
         $("#modelsolutionsection").append("<div "+
         "class='ui-widget ui-widget-content ui-corner-all xml_model-solution'>"+
@@ -473,111 +473,12 @@ $(function() {
             msroot.find(".xml_model-solution_id").hide();
             msroot.find("label[for='xml_model-solution_id']").hide();
         }
-/*
-      msroot.on({
-          drop: function(e){
-              if(e.originalEvent.dataTransfer){
-                  if(e.originalEvent.dataTransfer.files.length) {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      //UPLOAD FILES HERE
-                      FileReferenceList.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
-                          ModelSolutionFileReference.getInstance());
-                      // ModelSolutionFileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
-                  }
-              }
-          }
-      });
-      */
 
         return msroot;
     };
+*/
 
-    newTest = function(tempcounter,TestName, MoreText, TestType, WithFileRef) { // create a new test HTML form element
 
-        $("#testsection").append("<div "+
-        "class='ui-widget ui-widget-content ui-corner-all xml_test'>"+
-        "<h3 class='ui-widget-header'>" + TestName + " (Test #"+tempcounter+")<span "+
-        "class='rightButton'><button onclick='remP3($(this));deletecounter(testIDs,$(this));'>x</button></span></h3>"+
-
-        "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
-        "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
-            // TestFileReference.getInstance().getTableString() +
-            // "<span class='drop_zone drop_zone_text'>Drop Your File(s) Here!</span>" +
-            //"<br>" +
-    //    " <label for='xml_test_validity'>Validity: </label>"+
-    //    "<input class='shortinput xml_test_validity'/>"+
-        "<p><label for='xml_test_type'>Type: </label>"+
-        "<select class='xml_test_type'>"+ testTypes + "</select>"+
-
-            /*        "<p><label for='xml_pr_public'>Public<span class='red'>*</span>: </label>"+
-                    "<select class='xml_pr_public'>"+
-                    "<option selected='selected'>True</option><option>False</option></select>"+
-
-                    " <label for='xml_pr_required'>Required<span class='red'>*</span>: </label>"+
-                    "<select class='xml_pr_required'>"+
-                    "<option selected='selected'>True</option><option>False</option></select>"+
-            */
-        " <label for='xml_pr_always'>Always: </label>"+
-        "<select class='xml_pr_always'>"+
-        "<option selected='selected'>True</option><option>False</option></select>" +
-            "</p>" +
-
-            "<p><label for='xml_test_title'>Title<span class='red'>*</span>: </label>"+
-        "<input class='mediuminput xml_test_title' value='"+ TestName +"'/>" +
-            //"<p>" +
-            " Public:<input type='checkbox' class='xml_pr_public' checked title='results are shown to the students'>" +
-            " Required:<input type='checkbox' class='xml_pr_required' checked title='test must be passed in order to pass the task'></p>" +
-            //"</p>" +
-
-            "</p>"+
-
-            MoreText +
-            "<p>" + TestFileReference.getInstance().getTableString() + "</p>" +
-
-            "</div>");
-
-          // hide fields that exist only for technical reasons
-        var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent().parent();
-        testroot.find(".xml_test_type").val(TestType);
-
-        FileReferenceList.init(null, null, TestFileReference, testroot);
-        // TestFileReference.getInstance().init(testroot, DEBUG_MODE);
-
-        if (!DEBUG_MODE) {
-          testroot.find(".xml_test_type").hide();
-          testroot.find("label[for='xml_test_type']").hide();
-          testroot.find(".xml_pr_always").hide();
-          testroot.find("label[for='xml_pr_always']").hide();
-          testroot.find(".xml_test_id").hide();
-          testroot.find("label[for='xml_test_id']").hide();
-        }
-        if (!WithFileRef) {
-            testroot.find("table").hide();
-            testroot.find(".drop_zone").hide();
-        }
-        else
-        {
-            // TODO: disable drag & drop!
-    /*
-            testroot.on({
-                drop: function(e){
-                    if(e.originalEvent.dataTransfer){
-                        if(e.originalEvent.dataTransfer.files.length) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            //UPLOAD FILES HERE
-                            FileReferenceList.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
-                                TestFileReference.getInstance());
-                        }
-                    }
-                }
-            });
-    */
-        }
-
-        return testroot;
-    };
 
     function uploadFileWhenDropped(files, fileBox){
         if (files.length > 1) {
@@ -606,7 +507,7 @@ $(function() {
             $("#" + item.buttonJQueryId).click(function() {
 
                 var testNo = setcounter(testIDs);    // sets the corresponding fileref, filename and title "SetlX-Syntax-Test"
-                newTest(testNo,item.title, item.htmlExtraFields, item.testType, item.withFileRef);
+                TestWrapper.create(testNo,item.title, item.htmlExtraFields, item.testType, item.withFileRef);
                 if (item.onCreated) {
                     item.onCreated(testNo);
                 }
@@ -712,8 +613,9 @@ $(function() {
     $("#tabs").tabs("option", "active", tab_page.FILES); });
 
   $("#addModelsol").click(function() {
-    newModelsol(setcounter(modelSolIDs));
-    $("#tabs").tabs("option", "active", tab_page.MODEL_SOLUTION); });
+      ModelSolutionWrapper.create();
+      //newModelsol(setcounter(modelSolIDs));
+      $("#tabs").tabs("option", "active", tab_page.MODEL_SOLUTION); });
 
 
     $("#load_xml_file").click(function() {
@@ -792,7 +694,8 @@ $(function() {
 
   // There must be at least one model solution
   // newFile(setcounter(fileIDs));
-  newModelsol(setcounter(modelSolIDs));
+    ModelSolutionWrapper.create();
+  //newModelsol(setcounter(modelSolIDs));
   // show/hide buttons according to programming language
   switchProgLang();
 

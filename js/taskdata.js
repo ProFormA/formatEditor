@@ -13,16 +13,10 @@ class XmlReader {
 
         this.nsResolver = function (prefix) {
             switch (prefix) {
-                case 'unit':
-                    return 'urn:proforma:tests:unittest:v1';
-                case 'dns':
-                    return 'urn:proforma:task:v1.0.1';
-                case 'unit':
-                    return 'urn:proforma:tests:unittest:v1';
-                case 'jartest':
-                    return 'urn:proforma:tests:jartest:v1';
-                case 'praktomat':
-                    return 'urn:proforma:praktomat:v0.2';
+                case 'unit':      return 'urn:proforma:tests:unittest:v1';
+                case 'dns':       return 'urn:proforma:task:v1.0.1';
+                case 'jartest':   return 'urn:proforma:tests:jartest:v1';
+                case 'praktomat': return 'urn:proforma:praktomat:v0.2';
                 default:
                     return '';
             }
@@ -53,10 +47,28 @@ class XmlReader {
     }
 }
 
+
+class XmlWriter {
+    constructor(xmlDoc) {
+        this.xmlDoc = xmlDoc;
+
+    }
+
+    createTextElement(node, tag, value, cdata = false) {
+        let newTag = this.xmlDoc.createElement(tag);
+        if (cdata)
+            newTag.appendChild(this.xmlDoc.createCDATASection(value));
+        else
+            newTag.appendChild(this.xmlDoc.createTextNode(value));
+        node.appendChild(newTag);
+        return newTag;
+    }
+}
+
 // task data structures
 class TaskFileRef {
-    constructor() {
-        this.refid = null;
+    constructor(id) {
+        this.refid = id;
     }
 }
 
@@ -80,16 +92,18 @@ class TaskModelSolution {
 }
 
 
-
-
 class TaskTest {
     constructor() {
         this.id = null;
         this.title = null;
         this.testtype = null;
         this.filerefs = [];
+
         this.praktomatTest = null;
         this.unitTest = null;
+
+        this.writeCallback = null;
+        this.uiElement = null;
 
     }
 }
@@ -135,7 +149,6 @@ class TaskClass {
         } catch (err){
             alert (err);
             setErrorMessage("Error while parsing the test configuration in xml file. ". err);
-            return; // Stop. Do not make any further changes.
         }
     }
 
@@ -207,21 +220,6 @@ class TaskClass {
                 let configNode = configIterator.iterateNext();
                 readFileRefs(xmlReader, test, configNode);
 
-/*                let unitNode = xmlReader.readSingleNode("unit:unittest", configNode);
-                test.unitTest = new TaskUnitTest();
-                test.unitTest.framework = xmlReader.readSingleText("@framework", unitNode);
-                test.unitTest.version = xmlReader.readSingleText("@version", unitNode);
-                test.unitTest.mainClass = xmlReader.readSingleText("unit:main-class", unitNode);
-*/
-/*
-                let praktomatNode = xmlReader.readSingleNode("unit:unittest", configNode);
-                test.praktomatTest = new TaskPraktomatTest();
-                test.praktomatTest.public = xmlReader.readSingleText("praktomat:public", praktomatNode);
-                test.praktomatTest.required = xmlReader.readSingleText("praktomat:required", praktomatNode);
-                test.praktomatTest.always = xmlReader.readSingleText("praktomat:always", praktomatNode);
-                test.praktomatTest.description = xmlReader.readSingleText("praktomat:config-testDescription", praktomatNode);
-                test.praktomatTest.maxCheckstyleWarnings = xmlReader.readSingleText("max-checkstyle-warnings", praktomatNode);
-*/
                 this.tests[test.id] = test;
                 thisNode = iterator.iterateNext();
             }
@@ -233,65 +231,136 @@ class TaskClass {
        }
     }
 
+
     writeXml() {
         let xmlDoc = null;
         let files = null;
         let modelsolutions = null;
         let tests = null;
+        let xmlWriter = null;
 
         function writeFile(item, index) {
             let fileElem = xmlDoc.createElement("file");
             fileElem.setAttribute("class", item.fileclass);
+            fileElem.setAttribute("comment", item.comment);
             fileElem.setAttribute("filename", item.filename);
             fileElem.setAttribute("id", item.id);
             fileElem.setAttribute("type", item.filetype);
-            fileElem.setAttribute("comment", item.comment);
             files.appendChild(fileElem);
-            fileElem.appendChild(xmlDoc.createCDATASection(item.content));
+            if (item.filetype === 'embedded')
+                fileElem.appendChild(xmlDoc.createCDATASection(item.content));
         }
 
+
+
         function writeModelSolution(item, index) {
+            function writeFileref(item, index) {
+                let filerefs = xmlDoc.createElement("filerefs");
+                msElem.appendChild(filerefs);
+                let fileref = xmlDoc.createElement("fileref");
+                fileref.setAttribute("refid", item.refid);
+                filerefs.appendChild(fileref);
+            }
             let msElem = xmlDoc.createElement("model-solution");
-            msElem.setAttribute("id", item.id);
             msElem.setAttribute("comment", item.comment);
+            msElem.setAttribute("id", item.id);
             modelsolutions.appendChild(msElem);
+            item.filerefs.forEach(writeFileref);
         }
 
         function writeTest(item, index) {
             let testElem = xmlDoc.createElement("test");
             testElem.setAttribute("id", item.id);
-            testElem.appendChild(xmlDoc.createTextNode('title', item.title));
-            testElem.appendChild(xmlDoc.createTextNode('test-type', item.testtype));
-
+            xmlWriter.createTextElement(testElem, 'title', item.title);
+            xmlWriter.createTextElement(testElem, 'test-type', item.testtype);
+            let config = xmlDoc.createElement("test-configuration");
+            testElem.appendChild(config);
             tests.appendChild(testElem);
+            if (item.writeCallback) {
+                item.writeCallback(item, item.uiElement, config, xmlDoc, xmlWriter);
+            }
         }
 
         try {
 
             let fruitDocType = document.implementation.createDocumentType ("fruit", "SYSTEM", "<!ENTITY tf 'tropical fruit'>");
 
+            //xmlDoc = document.implementation.createDocument("", "", null);
+            //let task = xmlDoc.createElement("task"); // documentElement;
+            //xmlDoc.appendChild(task);
+
             xmlDoc = document.implementation.createDocument("", "task", null);
+            //xmlDoc = document.implementation.createDocument("urn:proforma:task:v1.0.1", "task", null);
+            let task = xmlDoc.documentElement;
+
+            let jartest = "urn:proforma:tests:jartest:v1";
+            //task.setAttributeNS(jartest, 'xsi:schemaLocation', 'http://example.com/n1 schema.xsd');
+
+
+            // let task = xmlDoc.documentElement;
+            task.setAttribute("lang", this.lang);
+            task.setAttribute("uuid", this.uuid);
+            task.setAttribute("xmlns", "urn:proforma:task:v1.0.1");
+            task.setAttribute("xmlns:jartest", jartest);
+            task.setAttribute("xmlns:praktomat", "urn:proforma:praktomat:v0.2");
+            task.setAttribute("xmlns:unit", "urn:proforma:tests:unittest:v1");
+
+            xmlWriter = new XmlWriter(xmlDoc);
             //var body = document.createElementNS('http://www.w3.org/1999/xhtml', 'body');
 
-            tests = xmlDoc.createElement("tests");
-            xmlDoc.documentElement.appendChild(tests);
-            this.tests.forEach(writeTest);
+            xmlWriter.createTextElement(task, 'description', this.description, true);
+            let proglang = xmlWriter.createTextElement(task, 'proglang', this.proglang);
+            proglang.setAttribute("version", this.proglangVersion);
 
-            modelsolutions = xmlDoc.createElement("model-solutions");
-            xmlDoc.documentElement.appendChild(modelsolutions);
-            this.modelsolutions.forEach(writeModelSolution);
+            let submission = xmlDoc.createElement("submission-restrictions");
+            task.appendChild(submission);
+            let regexp = xmlDoc.createElement("regexp-restriction");
+            submission.appendChild(regexp);
+            regexp.setAttribute("max-size", this.sizeSubmission);
+            regexp.setAttribute("mime-type-regexp", this.mimeTypeRegExpSubmission);
+
+/*
+            this.title = xmlReader.readSingleText("./dns:meta-data/dns:title");
+            this.description = xmlReader.readSingleText("./dns:description");
+            this.proglang = xmlReader.readSingleText("./dns:proglang");
+            this.proglangVersion = xmlReader.readSingleText("./dns:proglang/@version");
+            this.uuid = xmlReader.readSingleText("./@uuid");
+            this.lang = xmlReader.readSingleText("./@lang");
+            this.sizeSubmission = xmlReader.readSingleText("./dns:submission-restrictions/dns:regexp-restriction/@max-size");
+            this.mimeTypeRegExpSubmission = xmlReader.readSingleText("./dns:submission-restrictions/dns:regexp-restriction/@mime-type-regexp");
+*/
 
             files = xmlDoc.createElement("files");
-            xmlDoc.documentElement.appendChild(files);
+            task.appendChild(files);
             this.files.forEach(writeFile);
 
+            modelsolutions = xmlDoc.createElement("model-solutions");
+            task.appendChild(modelsolutions);
+            this.modelsolutions.forEach(writeModelSolution);
 
-            var serializer = new XMLSerializer();
-            return serializer.serializeToString (xmlDoc);
+            tests = xmlDoc.createElement("tests");
+            task.appendChild(tests);
+            this.tests.forEach(writeTest);
+
+            task.appendChild(xmlDoc.createElement("grading-hints")); // dummy
+
+            let metadata = xmlDoc.createElement("meta-data");
+            task.appendChild(metadata);
+            xmlWriter.createTextElement(metadata, 'title', this.title);
+
+
+            let serializer = new XMLSerializer();
+            let result = serializer.serializeToString (xmlDoc);
+
+            if ((result.substring(0, 5) != "<?xml")){
+                result = '<?xml version="1.0"?>' + result;
+                // result = "<?xml version='1.0' encoding='UTF-8'?>" + result;
+            }
+            return result;
         } catch (err){
             alert (err);
-            setErrorMessage("Error while parsing the xml file. The file has not been imported.". err);
-            return; // Stop. Do not make any further changes.
+            setErrorMessage("Error while parsing the xml file. The file has not been imported.". err, err);
+            return '';
         }
     }
 }

@@ -12,12 +12,13 @@
  * @param onButtonClicked
  * @constructor
  */
-function TestInfo(title, extraFields, testType, template1, template2, withFileRef, readXml, onButtonClicked) {
+function TestInfo(title, extraFields, testType, template1, template2, withFileRef, readXml, writeXml, onButtonClicked) {
     this.title = title; // title in html output
     this.htmlExtraFields = extraFields; // html extra input elements
     // XML
     this.testType = testType; // test type in XML
     this.readXml = readXml;
+    this.writeXml = writeXml;
     this.xmlTemplate1 = template1; // XML template for new sub elements of test-meta-data
     this.xmlTemplate2 = template2; // XML template for new elements(s) between
         // filerefs and test-meta-data

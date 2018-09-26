@@ -232,7 +232,7 @@ function isInputComplete() {
  * An XML file is created and placed in the textarea.
  * The XML file is validated against the schema.
  */
-convertToXML = function() {
+convertToXMLAlt = function() {
     taskXml = undefined;
 
     $("#output").val(""); // empty output so that the old output will not be used in future
@@ -510,17 +510,110 @@ convertToXML = function() {
 };
 
 
+convertToXML = function() {
+
+    const t0 = performance.now();
+    clearErrorMessage();
+    taskXml = undefined;
+    descriptionEditor.save();
+
+    // check input
+    if (!isInputComplete()) {
+        return;
+    }
+
+    // PRE PROCESSING
+    FileWrapper.doOnAllFiles(function(ui_file) {
+        if (ui_file.isLibrary && ui_file.class === INTERNAL) {
+            // convert to internal library if class is internal
+            ui_file.class = INTERNAL_LIB;
+        }
+    });
+
+    // copy data to task class
+    let task = new TaskClass();
+    task.title = $("#xml_meta-data_title").val();
+    task.description = descriptionEditor.getValue();
+    let proglangAndVersion = $("#xml_programming-language").val();
+    task.proglang = proglangAndVersion.substr(0, proglangAndVersion.indexOf("/"));
+    task.proglangVersion = proglangAndVersion.substr(proglangAndVersion.indexOf("/")+1);
+    task.parentuuid = null;
+    task.uuid = $("#xml_uuid").val();
+    task.lang = $("#xml_lang").val();
+    task.sizeSubmission = $("#xml_subm_max-size").val();
+    task.mimeTypeRegExpSubmission = $("#xml_upload-mime-type").val();
+
+    // read files
+    FileWrapper.doOnAllFiles(function(ui_file) {
+        let taskfile = new TaskFile();
+        taskfile.filename = ui_file.filename;
+        taskfile.fileclass = ui_file.class;
+        taskfile.id = ui_file.id;
+        taskfile.filetype = ui_file.type;
+        taskfile.comment = ui_file.comment;
+        taskfile.content = ui_file.text;
+        task.files[taskfile.id] = taskfile;
+    });
+
+    // read model solutions
+    ModelSolutionWrapper.doOnAll(function(ms) {
+        let modelSolution = new TaskModelSolution();
+        modelSolution.id = ms.id;
+        modelSolution.comment = ms.comment;
+        let counter = 0;
+        ModelSolutionFileReference.getInstance().doOnAll(ms.root, function(id) {
+            modelSolution.filerefs[counter++] = new TaskFileRef(id);
+        });
+
+        //readFileRefs(xmlReader, modelSolution, thisNode);
+        task.modelsolutions[modelSolution.id] = modelSolution;
+    })
+
+    // read tests
+    TestWrapper.doOnAll(function(uiTest) {
+        let test = new TaskTest();
+        test.id = uiTest.id;
+        test.title = uiTest.title;
+        test.testtype = uiTest.testtype;
+        let counter = 0;
+        TestFileReference.getInstance().doOnAll(uiTest.root, function(id) {
+            test.filerefs[counter++] = new TaskFileRef(id);
+        });
+
+        $.each(config.testInfos, function(index, configItem) {
+            // search for appropriate writexml function
+            if (configItem.testType === test.testtype) {
+                if (configItem.writeXml) {
+                    test.writeCallback = configItem.writeXml;
+                    test.uiElement = uiTest;
+                }
+            }
+        });
+
+
+        //readFileRefs(xmlReader, modelSolution, thisNode);
+        task.tests[test.id] = test;
+    })
+
+
+    taskXml = task.writeXml();
+
+};
+
+
+
 readAndDisplayXml = function() {
     let task = new TaskClass();
 
     function createMs(item, index) {
-        let root = newModelsol(item.id, item.comment);
-        modelSolIDs[item.id];
+        let ms = ModelSolutionWrapper.create(item.id, item.comment);
+        //let root = newModelsol(item.id, item.comment);
+        //modelSolIDs[item.id];
 
         let counter = 0;
         item.filerefs.forEach(function(itemFileref, indexFileref) {
             let filename = task.findFilenameForId(itemFileref.refid);
-            ModelSolutionFileReference.getInstance().setFilenameOnCreation(root, counter++, filename);
+            ModelSolutionFileReference.getInstance().setFilenameOnCreation(ms.root, counter++, filename);
         });
     }
 
@@ -541,8 +634,8 @@ readAndDisplayXml = function() {
         let testroot = undefined;
         $.each(config.testInfos, function(index, configItem) {
             if (!testroot && item.testtype === configItem.testType) {
-                testroot = newTest(item.id, /* configItem.title */item.title, configItem.htmlExtraFields,
-                    configItem.testType, configItem.withFileRef);
+                testroot = TestWrapper.create(item.id, /* configItem.title */item.title, configItem.htmlExtraFields,
+                    configItem.testType, configItem.withFileRef).root;
                 if (configItem.readXml) {
                     task.readTestConfig(taskXml, item.id, configItem.readXml, testroot);
                 }
@@ -615,47 +708,6 @@ readAndDisplayXml = function() {
     task.modelsolutions.forEach(createMs);
     task.tests.forEach(createTest);
 
-/*
-                                            // differs from idx1 if wrong test-type
-        $.each(mapChildElems, function(idx2, itm2) {              // loop: test-title, ...
-            if ($(itm1).find(itm2.xmlname).length > 0) {           // is it defined in this case?
-                try {
-                    let ui_element = $($(item.formname)[idx1cnt]).find(itm2.formname)[0];
-                    const ui_value = $(itm1).find(itm2.xmlname)[0].textContent;
-                    const input_type = ui_element.type;
-                    let jquery_ui_element = $(ui_element);
-                    switch (input_type) {
-                        case 'text':
-                        case 'select-one':
-                            jquery_ui_element.val(ui_value);
-                            break;
-                        case 'checkbox':
-                            //console.log('checked: ui_value ' + ui_value);
-                            if (ui_value.toLowerCase() === 'true') {
-                                // console.log('checked = true');
-                                ui_element.checked = true;
-                            } else {
-                                // console.log('checked = false');
-                                ui_element.checked = false;
-                            }
-                            break;
-                        default:
-                            console.log('todo: handle input_type = ' + input_type);
-                            jquery_ui_element.val(ui_value);
-                            break;
-                    }
-
-
-
-                    if (ui_value === null) { // ui_element.val() === null) {   // check selected
-                        setErrorMessageInvalidOption(itm2.xmlpath, itm2.xmlname, ui_value);
-                        //setErrorMessage("'"+ui_value+"' is not an option for "+itm2.xmlname);
-                    }
-                } catch(err) {setErrorMessage( "problem with "+itm2.formname+idx1, err);}
-            }
-        });
-
-*/
     // POST PROCESSING
 
     // special handling for template, library and instruction file class:

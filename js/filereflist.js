@@ -75,6 +75,13 @@ class FileReferenceList {
         return this.table;
     }
 
+    doOnAll(root, callback) {
+        $.each(root.find(".fileref_fileref"), function(index, item) {
+            const filerefId = item.value;
+            callback(filerefId);
+        });
+    }
+
     // init table
     init(root, DEBUG_MODE) {
         FileReferenceList.updateFilenameList(root.find("." + this.classFilename).last());
@@ -220,6 +227,7 @@ class FileReferenceList {
 
         return count;
     }
+
 
 
     static getCountSpecialReferences(fileId) {
