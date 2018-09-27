@@ -49,13 +49,13 @@ class XmlReader {
 
 
 class XmlWriter {
-    constructor(xmlDoc) {
+    constructor(xmlDoc, ns) {
         this.xmlDoc = xmlDoc;
-
+        this.ns = ns;
     }
 
     createTextElement(node, tag, value, cdata = false) {
-        let newTag = this.xmlDoc.createElement(tag);
+        let newTag = this.xmlDoc.createElementNS(this.ns, tag);
         if (cdata)
             newTag.appendChild(this.xmlDoc.createCDATASection(value));
         else
@@ -238,9 +238,10 @@ class TaskClass {
         let modelsolutions = null;
         let tests = null;
         let xmlWriter = null;
+        const xmlns = "urn:proforma:task:v1.0.1";
 
         function writeFile(item, index) {
-            let fileElem = xmlDoc.createElement("file");
+            let fileElem = xmlDoc.createElementNS(xmlns, "file");
             fileElem.setAttribute("class", item.fileclass);
             fileElem.setAttribute("comment", item.comment);
             fileElem.setAttribute("filename", item.filename);
@@ -256,16 +257,16 @@ class TaskClass {
         function writeModelSolution(item, index) {
             function writeFileref(item, index) {
                 if (item.refid) {
-                    let fileref = xmlDoc.createElement("fileref");
+                    let fileref = xmlDoc.createElementNS(xmlns, "fileref");
                     fileref.setAttribute("refid", item.refid);
                     filerefs.appendChild(fileref);
                 }
             }
-            let msElem = xmlDoc.createElement("model-solution");
+            let msElem = xmlDoc.createElementNS(xmlns, "model-solution");
             msElem.setAttribute("comment", item.comment);
             msElem.setAttribute("id", item.id);
             modelsolutions.appendChild(msElem);
-            let filerefs = xmlDoc.createElement("filerefs");
+            let filerefs = xmlDoc.createElementNS(xmlns, "filerefs");
             msElem.appendChild(filerefs);
             item.filerefs.forEach(writeFileref);
             // remove filerefs is no fileref available
@@ -279,18 +280,18 @@ class TaskClass {
         function writeTest(item, index) {
             function writeFileref(item, index) {
                 if (item.refid) {
-                    let fileref = xmlDoc.createElement("fileref");
+                    let fileref = xmlDoc.createElementNS(xmlns, "fileref");
                     fileref.setAttribute("refid", item.refid);
                     filerefs.appendChild(fileref);
                 }
             }
-            let testElem = xmlDoc.createElement("test");
+            let testElem = xmlDoc.createElementNS(xmlns, "test");
             testElem.setAttribute("id", item.id);
             xmlWriter.createTextElement(testElem, 'title', item.title);
             xmlWriter.createTextElement(testElem, 'test-type', item.testtype);
-            let config = xmlDoc.createElement("test-configuration");
+            let config = xmlDoc.createElementNS(xmlns, "test-configuration");
             testElem.appendChild(config);
-            let filerefs = xmlDoc.createElement("filerefs");
+            let filerefs = xmlDoc.createElementNS(xmlns, "filerefs");
             config.appendChild(filerefs);
             item.filerefs.forEach(writeFileref);
             // remove filerefs is no fileref available
@@ -307,14 +308,15 @@ class TaskClass {
 
         try {
 
-            let fruitDocType = document.implementation.createDocumentType ("fruit", "SYSTEM", "<!ENTITY tf 'tropical fruit'>");
+            // let fruitDocType = document.implementation.createDocumentType ("fruit", "SYSTEM", "<!ENTITY tf 'tropical fruit'>");
 
             //xmlDoc = document.implementation.createDocument("", "", null);
             //let task = xmlDoc.createElement("task"); // documentElement;
             //xmlDoc.appendChild(task);
 
-            xmlDoc = document.implementation.createDocument("", "task", null);
-            //var xmlns = document.createElementNS("urn:proforma:task:v1.0.1", 'xmlns');
+
+            //var xmlns = document.createElementNS("urn:proforma:task:v1.0.1", null);
+            xmlDoc = document.implementation.createDocument(xmlns, "task", null);
             //xmlDoc = document.implementation.createDocument("urn:proforma:task:v1.0.1", "task", null);
             let task = xmlDoc.documentElement;
 
@@ -325,21 +327,21 @@ class TaskClass {
             // let task = xmlDoc.documentElement;
             task.setAttribute("lang", this.lang);
             task.setAttribute("uuid", this.uuid);
-            task.setAttribute("xmlns", "urn:proforma:task:v1.0.1");
+            //task.setAttribute("xmlns", "urn:proforma:task:v1.0.1");
             task.setAttribute("xmlns:jartest", jartest);
             task.setAttribute("xmlns:praktomat", "urn:proforma:praktomat:v0.2");
             task.setAttribute("xmlns:unit", "urn:proforma:tests:unittest:v1");
 
-            xmlWriter = new XmlWriter(xmlDoc);
+            xmlWriter = new XmlWriter(xmlDoc, xmlns);
             //var body = document.createElementNS('http://www.w3.org/1999/xhtml', 'body');
 
             xmlWriter.createTextElement(task, 'description', this.description, true);
             let proglang = xmlWriter.createTextElement(task, 'proglang', this.proglang);
             proglang.setAttribute("version", this.proglangVersion);
 
-            let submission = xmlDoc.createElement("submission-restrictions");
+            let submission = xmlDoc.createElementNS(xmlns, "submission-restrictions");
             task.appendChild(submission);
-            let regexp = xmlDoc.createElement("regexp-restriction");
+            let regexp = xmlDoc.createElementNS(xmlns, "regexp-restriction");
             submission.appendChild(regexp);
             regexp.setAttribute("max-size", this.sizeSubmission);
             regexp.setAttribute("mime-type-regexp", this.mimeTypeRegExpSubmission);
@@ -355,21 +357,21 @@ class TaskClass {
             this.mimeTypeRegExpSubmission = xmlReader.readSingleText("./dns:submission-restrictions/dns:regexp-restriction/@mime-type-regexp");
 */
 
-            files = xmlDoc.createElement("files");
+            files = xmlDoc.createElementNS(xmlns, "files");
             task.appendChild(files);
             this.files.forEach(writeFile);
 
-            modelsolutions = xmlDoc.createElement("model-solutions");
+            modelsolutions = xmlDoc.createElementNS(xmlns, "model-solutions");
             task.appendChild(modelsolutions);
             this.modelsolutions.forEach(writeModelSolution);
 
-            tests = xmlDoc.createElement("tests");
+            tests = xmlDoc.createElementNS(xmlns, "tests");
             task.appendChild(tests);
             this.tests.forEach(writeTest);
 
-            task.appendChild(xmlDoc.createElement("grading-hints")); // dummy
+            task.appendChild(xmlDoc.createElementNS(xmlns, "grading-hints")); // dummy
 
-            let metadata = xmlDoc.createElement("meta-data");
+            let metadata = xmlDoc.createElementNS(xmlns, "meta-data");
             task.appendChild(metadata);
             xmlWriter.createTextElement(metadata, 'title', this.title);
             config.writeXmlExtra(metadata, xmlDoc, xmlWriter);

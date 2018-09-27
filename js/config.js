@@ -94,7 +94,7 @@ var config = (function(testConfigNode) {
     function writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
         let root = uiElement.root;
 
-        let metaDataNode = xmlDoc.createElement("test-meta-data");
+        let metaDataNode = xmlDoc.createElementNS(xmlWriter.ns, "test-meta-data");
         testConfigNode.appendChild(metaDataNode);
 
         xmlWriter.createTextElement(metaDataNode, 'praktomat:public', $(root).find(".xml_pr_public")[0].checked?'True':'False');
@@ -106,7 +106,7 @@ var config = (function(testConfigNode) {
     function writeUnitTest(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
         let root = uiElement.root;
 
-        let unittestNode = xmlDoc.createElement("unit:unittest");
+        let unittestNode = xmlDoc.createElementNS(xmlWriter.ns, "unit:unittest");
         testConfigNode.appendChild(unittestNode);
 
         xmlWriter.createTextElement(unittestNode, 'unit:main-class', $(root).find(".xml_ju_mainclass").val());
