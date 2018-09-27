@@ -8,31 +8,6 @@ const configXsdSchemaFile = version101;   // choose version for output
 // NAMESPACE HANDLING
 // -------------------------
 var xsdNamespace = (function() {
-
-    // XSD namespaces
-    const pfix_unit = "unit";        // fixing namespace prefixes because of
-    const pfix_jart = "jartest";     // browser compatibility and jquery limitations
-    const pfix_prak = "praktomat";
-
-
-    var ns_unit = "";
-    var ns_praktomat = "";
-// if (isFirefox) // this code must be include for newer version os Chrome!
-    {
-        ns_praktomat = pfix_prak + "\\:";
-        ns_unit = pfix_unit + "\\:";
-        var ns_jartest = pfix_jart + "\\:";
-    }
-
-    var namespace;
-
-    function getNamespace() {
-        if (namespace)
-            return namespace;
-        init();
-        return namespace;
-    }
-
     function init() {
         // not really configuration but ....
         if (configXsdSchemaFile === version094) {
@@ -43,50 +18,8 @@ var xsdNamespace = (function() {
                 + 'xmlns="urn:proforma:task:v1.0.1" xmlns:'+pfix_jart+'="urn:proforma:tests:jartest:v1" ';
         }
     }
-
-    // nötig, um die Namespaces in den Griff zukriegen. Mehr weiß ich auch nicht...
-    const tNsREUnittest  = 'urn:proforma:(tests:)?unittest';
-    const tNsREJartest   = 'urn:proforma:tests:jartest';
-    const tNsREPraktomat = 'urn:proforma:praktomat';
-
-    namespaceRE = [
-        [tNsREUnittest,  pfix_unit],
-        [tNsREJartest,   pfix_jart],
-        [tNsREPraktomat, pfix_prak],
-    ];
-
-
-    return {
-        unit: ns_unit,
-        praktomat: ns_praktomat,
-        jartest: ns_jartest,
-        namespaceRE: namespaceRE,
-        namespace: getNamespace()
-    }
-
 })();
 */
-
-
-class TaskUnitTest {
-    constructor() {
-        this.version = null;
-        this.framework = null;
-        this.mainClass = '';
-    }
-}
-
-class TaskPraktomatTest {
-    constructor() {
-        this.version = null;
-
-        this.public = true;
-        this.required = true;
-        this.always = true;
-        this.description= null;
-        this.maxCheckstyleWarnings = 0;
-    }
-}
 
 
 var config = (function(testConfigNode) {
@@ -162,75 +95,43 @@ var config = (function(testConfigNode) {
 
     // xml test reader
     function readPraktomat(test, xmlReader, testConfigNode, testroot) {
-        // todo: copy data from xml directly to jquery objects
         let praktomatNode = xmlReader.readSingleNode("dns:test-meta-data", testConfigNode);
-        test.praktomatTest = new TaskPraktomatTest();
-        test.praktomatTest.public = xmlReader.readSingleText("praktomat:public", praktomatNode);
-        test.praktomatTest.required = xmlReader.readSingleText("praktomat:required", praktomatNode);
-        test.praktomatTest.always = xmlReader.readSingleText("praktomat:always", praktomatNode);
-        test.praktomatTest.description = xmlReader.readSingleText("praktomat:config-testDescription", praktomatNode);
 
-        $(testroot).find(".xml_pr_always").val(test.praktomatTest.always);
-        $(testroot).find(".xml_pr_public")[0].checked = (test.praktomatTest.public==='True');
-        $(testroot).find(".xml_pr_required")[0].checked = (test.praktomatTest.required==='True');
-        $(testroot).find(".xml_pr_configDescription").val(test.praktomatTest.description);
+        $(testroot).find(".xml_pr_always").val(xmlReader.readSingleText("praktomat:always", praktomatNode));
+        $(testroot).find(".xml_pr_public")[0].checked = (xmlReader.readSingleText("praktomat:public", praktomatNode)==='True');
+        $(testroot).find(".xml_pr_required")[0].checked = (xmlReader.readSingleText("praktomat:required", praktomatNode)==='True');
+        $(testroot).find(".xml_pr_configDescription").val(xmlReader.readSingleText("praktomat:config-testDescription", praktomatNode));
     }
 
     function readUnitTest(test, xmlReader, testConfigNode, testroot) {
-        // todo: copy data from xml directly to jquery objects
         let unitNode = xmlReader.readSingleNode("unit:unittest", testConfigNode);
-        test.unitTest = new TaskUnitTest();
-        test.unitTest.framework = xmlReader.readSingleText("@framework", unitNode);
-        test.unitTest.version = xmlReader.readSingleText("@version", unitNode);
-        test.unitTest.mainClass = xmlReader.readSingleText("unit:main-class", unitNode);
 
-        $(testroot).find(".xml_ju_mainclass").val(test.unitTest.mainClass);
-        $(testroot).find(".xml_ju_version").val(test.unitTest.version);
-        $(testroot).find(".xml_ju_framew").val(test.unitTest.framework);
+        $(testroot).find(".xml_ju_mainclass").val(xmlReader.readSingleText("unit:main-class", unitNode));
+        $(testroot).find(".xml_ju_version").val(xmlReader.readSingleText("@version", unitNode));
+        $(testroot).find(".xml_ju_framew").val(xmlReader.readSingleText("@framework", unitNode));
 
         readPraktomat(test, xmlReader, testConfigNode, testroot);
     }
 
     function readPraktomatCheckStyle(test, xmlReader, testConfigNode, testroot) {
-        // todo: copy data from xml directly to jquery objects
         readPraktomat(test, xmlReader, testConfigNode, testroot);
 
-        test.praktomatTest.version = xmlReader.readSingleText("praktomat:version", testConfigNode);
         let praktomatNode = xmlReader.readSingleNode("dns:test-meta-data", testConfigNode);
-        test.praktomatTest.maxCheckstyleWarnings = xmlReader.readSingleText("praktomat:max-checkstyle-warnings", praktomatNode);
-
-        $(testroot).find(".xml_pr_CS_warnings").val(test.praktomatTest.maxCheckstyleWarnings);
-        $(testroot).find(".xml_pr_CS_version").val(test.praktomatTest.version);
+        $(testroot).find(".xml_pr_CS_warnings").val(xmlReader.readSingleText("praktomat:max-checkstyle-warnings", praktomatNode));
+        $(testroot).find(".xml_pr_CS_version").val(xmlReader.readSingleText("praktomat:version", testConfigNode));
     }
 
     function readPraktomatCompiler(test, xmlReader, testConfigNode, testroot) {
-        // todo: copy data from xml directly to jquery objects
         readPraktomat(test, xmlReader, testConfigNode, testroot);
 
         let praktomatNode = xmlReader.readSingleNode("dns:test-meta-data", testConfigNode);
-        test.praktomatTest.compilerFlags = xmlReader.readSingleText("praktomat:config-CompilerFlags", praktomatNode);
-        test.praktomatTest.CompilerOutputFlags = xmlReader.readSingleText("praktomat:config-CompilerOutputFlags", praktomatNode);
-        test.praktomatTest.CompilerLibs = xmlReader.readSingleText("praktomat:config-CompilerLibs", praktomatNode);
-        test.praktomatTest.CompilerFilePattern = xmlReader.readSingleText("praktomat:config-CompilerFilePattern", praktomatNode);
 
-        $(testroot).find(".xml_pr_CompilerFlags").val(test.praktomatTest.compilerFlags);
-        $(testroot).find(".xml_pr_CompilerOutputFlags").val(test.praktomatTest.CompilerOutputFlags);
-        $(testroot).find(".xml_pr_CompilerLibs").val(test.praktomatTest.CompilerLibs);
-        $(testroot).find(".xml_pr_CompilerFPatt").val(test.praktomatTest.CompilerFilePattern);
+        $(testroot).find(".xml_pr_CompilerFlags").val(xmlReader.readSingleText("praktomat:config-CompilerFlags", praktomatNode));
+        $(testroot).find(".xml_pr_CompilerOutputFlags").val(xmlReader.readSingleText("praktomat:config-CompilerOutputFlags", praktomatNode));
+        $(testroot).find(".xml_pr_CompilerLibs").val(xmlReader.readSingleText("praktomat:config-CompilerLibs", praktomatNode));
+        $(testroot).find(".xml_pr_CompilerFPatt").val(xmlReader.readSingleText("praktomat:config-CompilerFilePattern", praktomatNode));
     }
 
-    // XML templates for praktomat
-    const xmlPrakVer      = '<praktomat:version/>';
-    const xmlPubReqAlways = '<praktomat:public>True</praktomat:public>'+
-        '<praktomat:required>True</praktomat:required>'+
-        '<praktomat:always>True</praktomat:always>';
-    const xmlCompFlags    = '<praktomat:config-CompilerFlags/><praktomat:config-CompilerOutputFlags/>' +
-        '<praktomat:config-CompilerLibs/><praktomat:config-CompilerFilePattern/>';
-    const xmlConfTestDesc = '<praktomat:config-testDescription/>';
-    const xmlCSWarnings   = '<praktomat:max-checkstyle-warnings/>';
-    // other XML templates
-    const xmlJUnitVer = '<unit:unittest framework="junit" version="4.10"><unit:main-class></unit:main-class></unit:unittest>';
-    const xmlSetLxVer = '<jartest:jartest framework="setlX" version ="2.40"></jartest:jartest>';
     // -------------------------
     // TESTS
     // -------------------------
@@ -292,24 +193,24 @@ var config = (function(testConfigNode) {
 
     // Tests objects
     const testCComp       = new TestInfo("C Compiler Test", htmlCComp,
-        "c-compilation", xmlPubReqAlways + xmlCompFlags, "", false, readPraktomatCompiler, writePraktomatCompiler);
+        "c-compilation", false, readPraktomatCompiler, writePraktomatCompiler);
     const testJavaComp    = new TestInfo("Java Compiler Test", htmlJavaComp,
-        "java-compilation", xmlPubReqAlways + xmlCompFlags, "", false, readPraktomatCompiler, writePraktomatCompiler);
+        "java-compilation", false, readPraktomatCompiler, writePraktomatCompiler);
     const testJavaJUnit   = new TestInfo(JUnit_Default_Title, htmlJavaJunit,
-        "unittest", xmlPubReqAlways + xmlConfTestDesc, xmlJUnitVer, true, readUnitTest, writeUnitTest);
+        "unittest", true, readUnitTest, writeUnitTest);
     const testCheckStyle  = new TestInfo("CheckStyle Test", htmlCheckstyle,
-        "java-checkstyle", xmlPubReqAlways + xmlCSWarnings, xmlPrakVer, true, readPraktomatCheckStyle,
+        "java-checkstyle", true, readPraktomatCheckStyle,
         writePraktomatCheckStyle);
     const testPython      = new TestInfo("Python Test", "",
-        "python", xmlPubReqAlways, "", true, readPraktomat, writePraktomat);
+        "python", true, readPraktomat, writePraktomat);
     const testDgSetup     = new TestInfo("DejaGnu Setup", "",
-        "dejagnu-setup", xmlPubReqAlways, "", true, readPraktomat, writePraktomat);
+        "dejagnu-setup", true, readPraktomat, writePraktomat);
     const testDGTester    = new TestInfo("DejaGnu Tester", "",
-        "dejagnu-tester", xmlPubReqAlways, "", true, readPraktomat, writePraktomat);
+        "dejagnu-tester", true, readPraktomat, writePraktomat);
     const testSetlX       = new TestInfo("SetlX Test", htmlSetlX,
-        "jartest", xmlPubReqAlways, xmlSetLxVer, true, readPraktomat, writePraktomatJar);
+        "jartest", true, readPraktomat, writePraktomatJar);
     const testSetlXSyntax = new TestInfo("SetlX Syntax Test", htmlSetlX,
-        "jartest" , xmlPubReqAlways, xmlSetLxVer, true, readPraktomat, writePraktomatJar,
+        "jartest" , true, readPraktomat, writePraktomatJar,
         function(testId) {
             // add file for the test
             const filename = 'setlxsyntaxtest.stlx';
