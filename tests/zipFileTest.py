@@ -136,6 +136,7 @@ class ZipFileTest(unittest.TestCase):
 
         self.saveZipFile(expectedFilename, modelSolution_alert)
         self.saveLonCapaFile(modelSolution_alert)
+
         self.reimportZipFile()
         self.saveZipFile(expectedFilename, modelSolution_alert)
         self.saveLonCapaFile(modelSolution_alert)

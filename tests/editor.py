@@ -203,6 +203,7 @@ def save_task_file_plain(modelSolution_alert):
     if browser == "Firefox":
         confirmDownloadSaveDialog('zip')
 
+
     # wait for download to complete
     time.sleep(2)
 
@@ -278,9 +279,13 @@ def save_lon_capa_problem(expected_file_name, modelSolution_alert):
 
     import glob
     listing = glob.glob(testconfig.download_path + "/task*.problem")
+    lastname = None
     for filename in listing:
         lastname = filename
         # print filename
+
+    if lastname == None:
+        raise Exception('expected LON-CAPA-problem file ' + testconfig.download_path + "/task*.problem does not exist")
 
     # print "rename " + lastname + " to " +expected_file_name
     shutil.move(lastname, expected_file_name)

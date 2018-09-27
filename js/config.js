@@ -90,58 +90,85 @@ class TaskPraktomatTest {
 
 
 var config = (function(testConfigNode) {
+    const praktomatns = "urn:proforma:praktomat:v0.2";
+    const jartestns = "urn:proforma:tests:jartest:v1";
+    const unittestns = "urn:proforma:tests:unittest:v1";
+
+    function writeNamespaces(task) {
+
+        //task.setAttributeNS(jartest, null, null);
+        task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:jartest', jartestns);
+        task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:praktomat', praktomatns);
+        //task.setAttribute("xmlns:jartest", jartest);
+        //task.setAttribute("xmlns:praktomat", "urn:proforma:praktomat:v0.2");
+        task.setAttributeNS('http://www.w3.org/2000/xmlns/', "xmlns:unit", unittestns);
+    }
     // xml test writer
     function writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
         let root = uiElement.root;
 
-        let metaDataNode = xmlDoc.createElementNS(xmlWriter.ns, "test-meta-data");
-        testConfigNode.appendChild(metaDataNode);
+        let metaData = xmlDoc.createElementNS(xmlWriter.ns, "test-meta-data");
+        testConfigNode.appendChild(metaData);
 
-        xmlWriter.createTextElement(metaDataNode, 'praktomat:public', $(root).find(".xml_pr_public")[0].checked?'True':'False');
-        xmlWriter.createTextElement(metaDataNode, 'praktomat:required', $(root).find(".xml_pr_required")[0].checked?'True':'False');
-        xmlWriter.createTextElement(metaDataNode, 'praktomat:always', $(root).find(".xml_pr_always").val());
-        xmlWriter.createTextElement(metaDataNode, 'praktomat:config-testDescription', $(root).find(".xml_pr_configDescription").val());
+        xmlWriter.createTextElement(metaData, 'praktomat:public', $(root).find(".xml_pr_public")[0].checked?'True':'False', praktomatns);
+        xmlWriter.createTextElement(metaData, 'praktomat:required', $(root).find(".xml_pr_required")[0].checked?'True':'False', praktomatns);
+        xmlWriter.createTextElement(metaData, 'praktomat:always', $(root).find(".xml_pr_always").val(), praktomatns);
     }
 
     function writeUnitTest(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
         let root = uiElement.root;
 
-        let unittestNode = xmlDoc.createElementNS(xmlWriter.ns, "unit:unittest");
+        let unittestNode = xmlDoc.createElementNS(unittestns, "unit:unittest");
         testConfigNode.appendChild(unittestNode);
 
-        xmlWriter.createTextElement(unittestNode, 'unit:main-class', $(root).find(".xml_ju_mainclass").val());
+        xmlWriter.createTextElement(unittestNode, 'unit:main-class', $(root).find(".xml_ju_mainclass").val(), unittestns);
         unittestNode.setAttribute("framework", $(root).find(".xml_ju_framew").val());
         unittestNode.setAttribute("version", $(root).find(".xml_ju_version").val());
 
         writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
+        let childs = testConfigNode.getElementsByTagName('test-meta-data');
+        xmlWriter.createTextElement(childs[0], 'praktomat:config-testDescription', $(root).find(".xml_pr_configDescription").val(), praktomatns);
     }
     function writePraktomatCheckStyle(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
         let root = uiElement.root;
 
-        xmlWriter.createTextElement(testConfigNode, 'praktomat:version', $(root).find(".xml_pr_CS_version").val());
+        xmlWriter.createTextElement(testConfigNode, 'praktomat:version', $(root).find(".xml_pr_CS_version").val(), praktomatns);
 
         writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
         let childs = testConfigNode.getElementsByTagName('test-meta-data');
-        xmlWriter.createTextElement(childs[0], "praktomat:max-checkstyle-warnings", $(root).find(".xml_pr_CS_warnings").val());
+        xmlWriter.createTextElement(childs[0], "praktomat:max-checkstyle-warnings", $(root).find(".xml_pr_CS_warnings").val(), praktomatns);
     }
     function writePraktomatCompiler(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
         let root = uiElement.root;
 
         writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
         let childs = testConfigNode.getElementsByTagName('test-meta-data');
-        for (i = 0; i < childs.length; i++) {
-            xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerFlags", $(root).find(".xml_pr_CompilerFlags").val());
-            xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerOutputFlags", $(root).find(".xml_pr_CompilerOutputFlags").val());
-            xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerLibs", $(root).find(".xml_pr_CompilerLibs").val());
-            xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerFilePattern", $(root).find(".xml_pr_CompilerFPatt").val(), true);
-        }
+        xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerFlags", $(root).find(".xml_pr_CompilerFlags").val(), praktomatns);
+        xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerOutputFlags", $(root).find(".xml_pr_CompilerOutputFlags").val(), praktomatns);
+        xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerLibs", $(root).find(".xml_pr_CompilerLibs").val(), praktomatns);
+        xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerFilePattern", $(root).find(".xml_pr_CompilerFPatt").val(), praktomatns, true);
         // remove description
+/*
+        //let x = childs[0].getElementsByTagNameNS(praktomatns, "praktomat:config-testDescription")[0]; // geht nicht
         let x = childs[0].getElementsByTagName("praktomat:config-testDescription")[0];
-        childs[0].removeChild(x);
+        let removedChild = childs[0].removeChild(x);
+        if (!removedChild)
+            alert('child could not be removed');
+*/
+    }
+
+    function writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+        let root = uiElement.root;
+        let jartest = xmlDoc.createElementNS(jartestns, "jartest:jartest");
+        testConfigNode.appendChild(jartest);
+        jartest.setAttribute("framework", $(root).find(".xml_jt_framew").val());
+        jartest.setAttribute("version", $(root).find(".xml_jt_version").val());
+
+        writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
     }
 
     function writeXmlExtra(metaDataNode, xmlDoc, xmlWriter) {
-        xmlWriter.createTextElement(metaDataNode, 'praktomat:allowed-upload-filename-mimetypes', '(text/.*)');
+        xmlWriter.createTextElement(metaDataNode, 'praktomat:allowed-upload-filename-mimetypes', '(text/.*)', praktomatns);
     }
 
     // xml test reader
@@ -291,9 +318,9 @@ var config = (function(testConfigNode) {
     const testDGTester    = new TestInfo("DejaGnu Tester", "",
         "dejagnu-tester", xmlPubReqAlways, "", true, readPraktomat, writePraktomat);
     const testSetlX       = new TestInfo("SetlX Test", htmlSetlX,
-        "jartest", xmlPubReqAlways, xmlSetLxVer, true, readPraktomat, writePraktomat);
+        "jartest", xmlPubReqAlways, xmlSetLxVer, true, readPraktomat, writePraktomatJar);
     const testSetlXSyntax = new TestInfo("SetlX Syntax Test", htmlSetlX,
-        "jartest" , xmlPubReqAlways, xmlSetLxVer, true, readPraktomat, writePraktomat,
+        "jartest" , xmlPubReqAlways, xmlSetLxVer, true, readPraktomat, writePraktomatJar,
         function(testId) {
             // add file for the test
             const filename = 'setlxsyntaxtest.stlx';
@@ -380,11 +407,11 @@ var config = (function(testConfigNode) {
         insertLCformelements();
     }
 
-    function createFurtherOutput(tempvals) {
+    function createFurtherOutput(proglang) {
         if (configXsdSchemaFile === version101) {
-            createLONCAPAOutput(tempvals[0],codemirror,"101");
+            createLONCAPAOutput(proglang,codemirror,"101");
         } else {
-            createLONCAPAOutput(tempvals[0],codemirror,"old");
+            createLONCAPAOutput(proglang,codemirror,"old");
         }
     }
 
@@ -463,6 +490,7 @@ var config = (function(testConfigNode) {
         isBinaryFile: isBinaryFile,
         handleFilenameChangeInTest: handleFilenameChangeInTest,
         writeXmlExtra: writeXmlExtra,
+        writeNamespaces: writeNamespaces,
         // data
         proglangInfos: proglangInfos,
         testInfos: testInfos,

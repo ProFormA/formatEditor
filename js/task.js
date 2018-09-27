@@ -492,7 +492,7 @@ convertToXMLAlt = function() {
 
     } catch(err) { setErrorMessage("Problem with the XML serialisation.", err);}
 
-    config.createFurtherOutput(tempvals);
+    config.createFurtherOutput(tempvals[0]);
 /*
     if (useLoncapa) {                                      // only if LON-CAPA is being used
         if (xsdSchemaFile == version101) {
@@ -535,10 +535,14 @@ convertToXML = function() {
     task.title = $("#xml_meta-data_title").val();
     task.description = descriptionEditor.getValue();
     let proglangAndVersion = $("#xml_programming-language").val();
-    task.proglang = proglangAndVersion.substr(0, proglangAndVersion.indexOf("/"));
-    task.proglangVersion = proglangAndVersion.substr(proglangAndVersion.indexOf("/")+1);
+    var proglangSplit = proglangAndVersion.split("/");
+
+    task.proglang = proglangSplit[0]; // proglangAndVersion.substr(0, proglangAndVersion.indexOf("/"));
+    task.proglangVersion = proglangSplit[1]; // proglangAndVersion.substr(proglangAndVersion.indexOf("/")+1);
     task.parentuuid = null;
-    task.uuid = $("#xml_uuid").val();
+    //task.uuid = $("#xml_uuid").val();
+    //if (!task.uuid)
+        task.uuid = generateUUID();
     task.lang = $("#xml_lang").val();
     task.sizeSubmission = $("#xml_subm_max-size").val();
     task.mimeTypeRegExpSubmission = $("#xml_upload-mime-type").val();
@@ -598,6 +602,10 @@ convertToXML = function() {
 
     taskXml = task.writeXml();
 
+    config.createFurtherOutput(task.proglang);
+
+    const t1 = performance.now();
+    console.log("Call to convertToXML took " + (t1 - t0) + " milliseconds.")
 };
 
 

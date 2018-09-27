@@ -54,8 +54,8 @@ class XmlWriter {
         this.ns = ns;
     }
 
-    createTextElement(node, tag, value, cdata = false) {
-        let newTag = this.xmlDoc.createElementNS(this.ns, tag);
+    createTextElement(node, tag, value, ns = undefined, cdata = false) {
+        let newTag = this.xmlDoc.createElementNS(ns?ns:this.ns, tag);
         if (cdata)
             newTag.appendChild(this.xmlDoc.createCDATASection(value));
         else
@@ -239,6 +239,7 @@ class TaskClass {
         let tests = null;
         let xmlWriter = null;
         const xmlns = "urn:proforma:task:v1.0.1";
+        //const praktomatns = "urn:proforma:praktomat:v0.2";
 
         function writeFile(item, index) {
             let fileElem = xmlDoc.createElementNS(xmlns, "file");
@@ -320,22 +321,20 @@ class TaskClass {
             //xmlDoc = document.implementation.createDocument("urn:proforma:task:v1.0.1", "task", null);
             let task = xmlDoc.documentElement;
 
-            let jartest = "urn:proforma:tests:jartest:v1";
-            //task.setAttributeNS(jartest, 'xsi:schemaLocation', 'http://example.com/n1 schema.xsd');
-
-
-            // let task = xmlDoc.documentElement;
             task.setAttribute("lang", this.lang);
             task.setAttribute("uuid", this.uuid);
+            config.writeNamespaces(task);
+
+
             //task.setAttribute("xmlns", "urn:proforma:task:v1.0.1");
-            task.setAttribute("xmlns:jartest", jartest);
-            task.setAttribute("xmlns:praktomat", "urn:proforma:praktomat:v0.2");
-            task.setAttribute("xmlns:unit", "urn:proforma:tests:unittest:v1");
+            //task.setAttributeNS(config.praktomatns, 'xsi:schemaLocation', 'http://example.com/n1 schema.xsd');
+
+
 
             xmlWriter = new XmlWriter(xmlDoc, xmlns);
             //var body = document.createElementNS('http://www.w3.org/1999/xhtml', 'body');
 
-            xmlWriter.createTextElement(task, 'description', this.description, true);
+            xmlWriter.createTextElement(task, 'description', this.description, undefined, true);
             let proglang = xmlWriter.createTextElement(task, 'proglang', this.proglang);
             proglang.setAttribute("version", this.proglangVersion);
 
