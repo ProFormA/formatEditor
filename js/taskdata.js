@@ -171,17 +171,17 @@ class TaskClass {
             let xmlReader = new XmlReader(xmlfile);
             xmlReader.setRootNode(xmlReader.readSingleNode("/dns:task")); // => shorter xpaths
 
-            this.title = xmlReader.readSingleText("./dns:meta-data/dns:title");
-            this.description = xmlReader.readSingleText("./dns:description");
-            this.proglang = xmlReader.readSingleText("./dns:proglang");
-            this.proglangVersion = xmlReader.readSingleText("./dns:proglang/@version");
-            this.uuid = xmlReader.readSingleText("./@uuid");
-            this.lang = xmlReader.readSingleText("./@lang");
-            this.sizeSubmission = xmlReader.readSingleText("./dns:submission-restrictions/dns:regexp-restriction/@max-size");
-            this.mimeTypeRegExpSubmission = xmlReader.readSingleText("./dns:submission-restrictions/dns:regexp-restriction/@mime-type-regexp");
+            this.title = xmlReader.readSingleText("dns:meta-data/dns:title");
+            this.description = xmlReader.readSingleText("dns:description");
+            this.proglang = xmlReader.readSingleText("dns:proglang");
+            this.proglangVersion = xmlReader.readSingleText("dns:proglang/@version");
+            this.uuid = xmlReader.readSingleText("@uuid");
+            this.lang = xmlReader.readSingleText("@lang");
+            this.sizeSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@max-size");
+            this.mimeTypeRegExpSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@mime-type-regexp");
 
             // read files
-            let iterator = xmlReader.readNodes("./dns:files/dns:file");
+            let iterator = xmlReader.readNodes("dns:files/dns:file");
             let thisNode = iterator.iterateNext();
             while (thisNode) {
                 let taskfile = new TaskFile();
@@ -196,7 +196,7 @@ class TaskClass {
             }
 
             // read model solutions(s)
-            iterator = xmlReader.readNodes("./dns:model-solutions/dns:model-solution");
+            iterator = xmlReader.readNodes("dns:model-solutions/dns:model-solution");
             thisNode = iterator.iterateNext();
             while (thisNode) {
                 let modelSolution = new TaskModelSolution();
@@ -208,7 +208,7 @@ class TaskClass {
             }
 
             // read test(s)
-            iterator = xmlReader.readNodes("./dns:tests/dns:test");
+            iterator = xmlReader.readNodes("dns:tests/dns:test");
             thisNode = iterator.iterateNext();
             while (thisNode) {
                 let test = new TaskTest();
@@ -216,7 +216,7 @@ class TaskClass {
                 test.title = xmlReader.readSingleText("dns:title", thisNode);
                 test.testtype = xmlReader.readSingleText("dns:test-type", thisNode);
 
-                let configIterator = xmlReader.readNodes("./dns:test-configuration", thisNode);
+                let configIterator = xmlReader.readNodes("dns:test-configuration", thisNode);
                 let configNode = configIterator.iterateNext();
                 readFileRefs(xmlReader, test, configNode);
 
@@ -253,8 +253,6 @@ class TaskClass {
                 fileElem.appendChild(xmlDoc.createCDATASection(item.content));
         }
 
-
-
         function writeModelSolution(item, index) {
             function writeFileref(item, index) {
                 if (item.refid) {
@@ -275,7 +273,6 @@ class TaskClass {
             if (childs.length === 0) {
                 msElem.removeChild(filerefs);
             }
-
         }
 
         function writeTest(item, index) {
@@ -308,31 +305,14 @@ class TaskClass {
         }
 
         try {
-
-            // let fruitDocType = document.implementation.createDocumentType ("fruit", "SYSTEM", "<!ENTITY tf 'tropical fruit'>");
-
-            //xmlDoc = document.implementation.createDocument("", "", null);
-            //let task = xmlDoc.createElement("task"); // documentElement;
-            //xmlDoc.appendChild(task);
-
-
-            //var xmlns = document.createElementNS("urn:proforma:task:v1.0.1", null);
             xmlDoc = document.implementation.createDocument(xmlns, "task", null);
-            //xmlDoc = document.implementation.createDocument("urn:proforma:task:v1.0.1", "task", null);
             let task = xmlDoc.documentElement;
 
             task.setAttribute("lang", this.lang);
             task.setAttribute("uuid", this.uuid);
             config.writeNamespaces(task);
 
-
-            //task.setAttribute("xmlns", "urn:proforma:task:v1.0.1");
-            //task.setAttributeNS(config.praktomatns, 'xsi:schemaLocation', 'http://example.com/n1 schema.xsd');
-
-
-
             xmlWriter = new XmlWriter(xmlDoc, xmlns);
-            //var body = document.createElementNS('http://www.w3.org/1999/xhtml', 'body');
 
             xmlWriter.createTextElement(task, 'description', this.description, undefined, true);
             let proglang = xmlWriter.createTextElement(task, 'proglang', this.proglang);
@@ -344,17 +324,6 @@ class TaskClass {
             submission.appendChild(regexp);
             regexp.setAttribute("max-size", this.sizeSubmission);
             regexp.setAttribute("mime-type-regexp", this.mimeTypeRegExpSubmission);
-
-/*
-            this.title = xmlReader.readSingleText("./dns:meta-data/dns:title");
-            this.description = xmlReader.readSingleText("./dns:description");
-            this.proglang = xmlReader.readSingleText("./dns:proglang");
-            this.proglangVersion = xmlReader.readSingleText("./dns:proglang/@version");
-            this.uuid = xmlReader.readSingleText("./@uuid");
-            this.lang = xmlReader.readSingleText("./@lang");
-            this.sizeSubmission = xmlReader.readSingleText("./dns:submission-restrictions/dns:regexp-restriction/@max-size");
-            this.mimeTypeRegExpSubmission = xmlReader.readSingleText("./dns:submission-restrictions/dns:regexp-restriction/@mime-type-regexp");
-*/
 
             files = xmlDoc.createElementNS(xmlns, "files");
             task.appendChild(files);
@@ -395,22 +364,6 @@ class TaskClass {
                     setErrorMessage("XSD-Schema " + xsd_file + " not found.", errorThrown);
                 });
             });
-            /*
-            $.each(config.xsds, function(index, xsd_file) {       // loop: xsd files for validation
-                $.get(xsd_file, function(data, textStatus, jqXHR) {      // read XSD schema
-                    const valid = xmllint.validateXML({xml: xmlString, schema: jqXHR.responseText});
-                    if (valid.errors !== null) {                                // does not conform to schema
-                        setErrorMessage("Errors in XSD-Validation: " + valid.errors[0]);
-                    }
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    setErrorMessage("XSD-Schema " + xsd_file + " not found.", errorThrown);
-                });
-            });
-            */
-
-
-
-
 
             return result;
         } catch (err){

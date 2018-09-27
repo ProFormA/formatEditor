@@ -96,11 +96,8 @@ var config = (function(testConfigNode) {
 
     function writeNamespaces(task) {
 
-        //task.setAttributeNS(jartest, null, null);
         task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:jartest', jartestns);
         task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:praktomat', praktomatns);
-        //task.setAttribute("xmlns:jartest", jartest);
-        //task.setAttribute("xmlns:praktomat", "urn:proforma:praktomat:v0.2");
         task.setAttributeNS('http://www.w3.org/2000/xmlns/', "xmlns:unit", unittestns);
     }
     // xml test writer
@@ -147,14 +144,6 @@ var config = (function(testConfigNode) {
         xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerOutputFlags", $(root).find(".xml_pr_CompilerOutputFlags").val(), praktomatns);
         xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerLibs", $(root).find(".xml_pr_CompilerLibs").val(), praktomatns);
         xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerFilePattern", $(root).find(".xml_pr_CompilerFPatt").val(), praktomatns, true);
-        // remove description
-/*
-        //let x = childs[0].getElementsByTagNameNS(praktomatns, "praktomat:config-testDescription")[0]; // geht nicht
-        let x = childs[0].getElementsByTagName("praktomat:config-testDescription")[0];
-        let removedChild = childs[0].removeChild(x);
-        if (!removedChild)
-            alert('child could not be removed');
-*/
     }
 
     function writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
@@ -368,37 +357,7 @@ var config = (function(testConfigNode) {
         // "praktomat.xsd"
         // .... TODO
     ];
-/*
 
-    // UI <-> XML mapping
-    function createMappingList(xsdSchema) {
-        uiXmlMapList = [
-            // JUnit test
-            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_ju_mainclass", xsdNamespace.unit + "main-class", "test-configuration", 0, ".xml_test")),
-            new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_ju_framew", "framework", xsdNamespace.unit + "unittest", 0, ".xml_test", "test")),
-            new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_ju_version", "version", xsdNamespace.unit + "unittest", 0, ".xml_test", "test")),
-            // Jatest
-            new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_jt_framew", "framework", xsdNamespace.jartest + "jartest", 0, ".xml_test", "test")),
-            new UiXmlMap(MapType.ATTR_TEST_ELEMS, new ValMap(".xml_jt_version", "version", xsdNamespace.jartest + "jartest", 0, ".xml_test", "test")),
-
-            // Praktomat
-            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFlags", xsdNamespace.praktomat + "config-CompilerFlags", "test test-meta-data", 0, ".xml_test")),
-            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerOutputFlags", xsdNamespace.praktomat + "config-CompilerOutputFlags", "test-meta-data", 0, ".xml_test")),
-            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerLibs", xsdNamespace.praktomat + "config-CompilerLibs", "test-meta-data", 0, ".xml_test")),
-            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CompilerFPatt", xsdNamespace.praktomat + "config-CompilerFilePattern", "test-meta-data", 1, ".xml_test")), // use CDATA
-            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_configDescription", xsdNamespace.praktomat + "config-testDescription", "test-meta-data", 0, ".xml_test")),
-            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_public", xsdNamespace.praktomat + "public", "test-meta-data", 0, ".xml_test")),
-            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_required", xsdNamespace.praktomat + "required", "test-meta-data", 0, ".xml_test")),
-            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_always", xsdNamespace.praktomat + "always", "test-meta-data", 0, ".xml_test")),
-            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_version", xsdNamespace.praktomat + "version", "test-configuration", 0, ".xml_test")),
-            new UiXmlMap(MapType.CHILD_ELEM, new ValMap(".xml_pr_CS_warnings", xsdNamespace.praktomat + "max-checkstyle-warnings", "test-configuration", 0, ".xml_test")),
-        ];
-        if (xsdSchema === version094)
-            uiXmlMapList.push(new UiXmlMap(MapType.SINGLE_ELEM, new ValMap("#xml_upload-mime-type",xsdNamespace.praktomat+"allowed-upload-filename-mimetypes","",0)));
-
-        return uiXmlMapList;
-    }
-*/
 
     // -------------------------
     // overload functions for further activities
@@ -483,7 +442,6 @@ var config = (function(testConfigNode) {
     // -------------------------
     return {
         // methods
-        //createMappingList: createMappingList,
         createFurtherUiElements: createFurtherUiElements,
         createFurtherOutput: createFurtherOutput,
         getMimetype: getMimetype,
@@ -499,7 +457,6 @@ var config = (function(testConfigNode) {
         useCodemirror: true,         // setting this to false turns Codemirror off
         xsdSchemaFile: configXsdSchemaFile,
         maxSizeForEditor: 100000, // maximum file size to enable editing
-
     }
 })();
 
