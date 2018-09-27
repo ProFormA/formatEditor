@@ -3,7 +3,7 @@
  */
 
 const configXsdSchemaFile = version101;   // choose version for output
-
+/*
 // -------------------------
 // NAMESPACE HANDLING
 // -------------------------
@@ -65,7 +65,7 @@ var xsdNamespace = (function() {
     }
 
 })();
-
+*/
 
 
 class TaskUnitTest {
@@ -368,7 +368,7 @@ var config = (function(testConfigNode) {
         // "praktomat.xsd"
         // .... TODO
     ];
-
+/*
 
     // UI <-> XML mapping
     function createMappingList(xsdSchema) {
@@ -398,7 +398,7 @@ var config = (function(testConfigNode) {
 
         return uiXmlMapList;
     }
-
+*/
 
     // -------------------------
     // overload functions for further activities
@@ -483,7 +483,7 @@ var config = (function(testConfigNode) {
     // -------------------------
     return {
         // methods
-        createMappingList: createMappingList,
+        //createMappingList: createMappingList,
         createFurtherUiElements: createFurtherUiElements,
         createFurtherOutput: createFurtherOutput,
         getMimetype: getMimetype,
@@ -512,6 +512,6 @@ var config = (function(testConfigNode) {
 // -------------------------
 
 // do not rename!
-const tExtraTemplateTopLevel = '<praktomat:allowed-upload-filename-mimetypes>(text/.*)</praktomat:allowed-upload-filename-mimetypes>';
+//const tExtraTemplateTopLevel = '<praktomat:allowed-upload-filename-mimetypes>(text/.*)</praktomat:allowed-upload-filename-mimetypes>';
 
 

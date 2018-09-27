@@ -383,6 +383,35 @@ class TaskClass {
                 result = '<?xml version="1.0"?>' + result;
                 // result = "<?xml version='1.0' encoding='UTF-8'?>" + result;
             }
+
+            // validate output
+            config.xsds.forEach(function(xsd_file, index) {
+                $.get(xsd_file, function(data, textStatus, jqXHR) {      // read XSD schema
+                    const valid = xmllint.validateXML({xml: result /*xmlString*/, schema: jqXHR.responseText});
+                    if (valid.errors !== null) {                                // does not conform to schema
+                        setErrorMessage("Errors in XSD-Validation: " + valid.errors[0]);
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    setErrorMessage("XSD-Schema " + xsd_file + " not found.", errorThrown);
+                });
+            });
+            /*
+            $.each(config.xsds, function(index, xsd_file) {       // loop: xsd files for validation
+                $.get(xsd_file, function(data, textStatus, jqXHR) {      // read XSD schema
+                    const valid = xmllint.validateXML({xml: xmlString, schema: jqXHR.responseText});
+                    if (valid.errors !== null) {                                // does not conform to schema
+                        setErrorMessage("Errors in XSD-Validation: " + valid.errors[0]);
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    setErrorMessage("XSD-Schema " + xsd_file + " not found.", errorThrown);
+                });
+            });
+            */
+
+
+
+
+
             return result;
         } catch (err){
             alert (err);
