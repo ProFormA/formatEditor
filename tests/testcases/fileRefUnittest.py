@@ -205,7 +205,7 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
 
 
 
-        # zipFileTest.ZipFileTest.saveFilesAndReloadAndSave(self, expectedZipName, False)
+        zipFileTest.ZipFileTest.saveFilesAndReloadAndSave(self, expectedZipName, False)
 
 
 
