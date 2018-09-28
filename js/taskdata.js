@@ -209,7 +209,7 @@ class TaskClass {
                                 break;
                             case "attached-bin-file":
                                 taskfile.filetype = 'file';
-                                taskfile.filename = xmlReader.readSingleText("@filename", content);
+                                taskfile.filename = content.textContent;
                                 break;
                             default:
                                 setErrorMessage("Unknown file type for file #". taskfile.id);
@@ -304,15 +304,15 @@ class TaskClass {
             fileElem.setAttribute("class", item.fileclass);
             fileElem.setAttribute("comment", item.comment);
             files.appendChild(fileElem);
-            let fileContentElem = undefined;
             if (item.filetype === 'embedded') {
-                fileContentElem = xmlDoc.createElementNS(xmlns, "embedded-txt-file");
+                let fileContentElem = xmlDoc.createElementNS(xmlns, "embedded-txt-file");
+                fileContentElem.setAttribute("filename", item.filename);
                 fileContentElem.appendChild(xmlDoc.createCDATASection(item.content));
+                fileElem.appendChild(fileContentElem);
             } else {
-                fileContentElem = xmlDoc.createElementNS(xmlns, "attached-bin-file");
+                xmlWriter.createTextElement(fileElem, 'attached-bin-file', item.filename);
             }
-            fileContentElem.setAttribute("filename", item.filename);
-            fileElem.appendChild(fileContentElem);
+
         }
 
         function writeModelSolution(item, index) {
