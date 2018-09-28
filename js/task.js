@@ -354,7 +354,7 @@ readAndDisplayXml = function() {
     let indexTemplate = 0;
     let indexInstruction = 0;
     let indexLib = 0;
-    task.files.forEach(function(item, index) {
+    task.files.forEach(function(item) {
         switch(item.fileclass) {
             case TEMPLATE:
                 TemplateFileReference.getInstance().setFilenameOnCreation(templateroot, indexTemplate++, item.filename);

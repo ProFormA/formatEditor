@@ -4,8 +4,6 @@ A Javascript editor for the exchange format for programming exercises
 
 Needs Firefox or Chrome
 
-TODO:
-- Validation der xml-Datei beim Schreiben
 
 TODO:
 Folgende Änderungen Kommunizieren:

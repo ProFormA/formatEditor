@@ -28,11 +28,20 @@ var config = (function(testConfigNode) {
     const unittestns = "urn:proforma:tests:unittest:v1";
 
     function writeNamespaces(task) {
-
         task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:jartest', jartestns);
         task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:praktomat', praktomatns);
         task.setAttributeNS('http://www.w3.org/2000/xmlns/', "xmlns:unit", unittestns);
     }
+
+    function resolveNamespace(prefix) {
+        switch (prefix) {
+            case 'unit':      return unittestns;
+            case 'jartest':   return jartestns;
+            case 'praktomat': return praktomatns;
+            default: return '';
+        }
+    }
+
     // xml test writer
     function writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
         let root = uiElement.root;
@@ -254,7 +263,9 @@ var config = (function(testConfigNode) {
 
     // list of XML schema files that shall be used for validation
     const xsds = [
-        configXsdSchemaFile, // XSD for task.xml (default)
+        // TODO: this is not configuration! XSD for task.xml (default)
+        'proforma.xsd'
+        // configXsdSchemaFile,
         // "praktomat.xsd"
         // .... TODO
     ];
@@ -350,6 +361,7 @@ var config = (function(testConfigNode) {
         handleFilenameChangeInTest: handleFilenameChangeInTest,
         writeXmlExtra: writeXmlExtra,
         writeNamespaces: writeNamespaces,
+        resolveNamespace: resolveNamespace,
         // data
         proglangInfos: proglangInfos,
         testInfos: testInfos,

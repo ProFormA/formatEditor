@@ -9,16 +9,28 @@ class XmlReader {
             return;
         }
 
+        /*
+        var parser = new DOMParser();
+        [
+            '<task xmlns="urn:proforma:v2.0" lang="en"/>',
+            '<task xmlns="urn:proforma:task:v1.0.1" lang="en" uuid="e7a50a36-e0b7-486f-be80-0f217e7bcb80" xmlns:jartest="urn:proforma:tests:jartest:v1" xmlns:praktomat="urn:proforma:praktomat:v0.2" xmlns:unit="urn:proforma:tests:unittest:v1"/>',
+            '<ns:root xmlns:ns="example.com/ns2"/>'
+        ].forEach(function(item) {
+            var doc = parser.parseFromString(item, "application/xml");
+            alert('result of doc.lookupNamespaceURI(null): |' + doc.lookupNamespaceURI(null) + '|');
+        });
+
+*/
+        this.defaultns = this.xmlDoc.lookupNamespaceURI(null);
+        //alert('result of doc.lookupNamespaceURI(null): |' + doc.lookupNamespaceURI(null) + '|');
+
         this.rootNode = this.xmlDoc;
 
+        const defaultns = this.defaultns;
         this.nsResolver = function (prefix) {
             switch (prefix) {
-                case 'unit':      return 'urn:proforma:tests:unittest:v1';
-                case 'dns':       return 'urn:proforma:task:v1.0.1';
-                case 'jartest':   return 'urn:proforma:tests:jartest:v1';
-                case 'praktomat': return 'urn:proforma:praktomat:v0.2';
-                default:
-                    return '';
+                case 'dns': return defaultns; // 'urn:proforma:task:v1.0.1';
+                default:    return config.resolveNamespace(prefix);
             }
         };
     }
@@ -98,13 +110,8 @@ class TaskTest {
         this.title = null;
         this.testtype = null;
         this.filerefs = [];
-
-        this.praktomatTest = null;
-        this.unitTest = null;
-
         this.writeCallback = null;
         this.uiElement = null;
-
     }
 }
 
@@ -148,14 +155,14 @@ class TaskClass {
             callback(this.tests[testid], xmlReader, configNodeNode, testroot);
         } catch (err){
             alert (err);
-            setErrorMessage("Error while parsing the test configuration in xml file. ". err);
+            setErrorMessage("Error while parsing the test configuration in xml file. ". err, err);
         }
     }
 
     readXml(xmlfile) {
 
         function readFileRefs(xmlReader, element, thisNode) {
-            let fileRefIterator = xmlReader.readNodes("./dns:filerefs/dns:fileref", thisNode);
+            let fileRefIterator = xmlReader.readNodes("dns:filerefs/dns:fileref", thisNode);
             let fileRefNode = fileRefIterator.iterateNext();
             let counter = 0;
             while (fileRefNode) {
@@ -167,7 +174,6 @@ class TaskClass {
         }
 
         try {
-
             let xmlReader = new XmlReader(xmlfile);
             xmlReader.setRootNode(xmlReader.readSingleNode("/dns:task")); // => shorter xpaths
 
@@ -185,12 +191,50 @@ class TaskClass {
             let thisNode = iterator.iterateNext();
             while (thisNode) {
                 let taskfile = new TaskFile();
-                taskfile.filename = xmlReader.readSingleText("@filename", thisNode);
-                taskfile.fileclass = xmlReader.readSingleText("@class", thisNode);
                 taskfile.id = xmlReader.readSingleText("@id", thisNode);
-                taskfile.filetype = xmlReader.readSingleText("@type", thisNode);
+                taskfile.fileclass = xmlReader.readSingleText("@class", thisNode);
                 taskfile.comment = xmlReader.readSingleText("@comment", thisNode);
-                taskfile.content = thisNode.textContent;
+                if (xmlReader.defaultns === 'urn:proforma:task:v1.0.1') {
+                    taskfile.filetype = xmlReader.readSingleText("@type", thisNode);
+                    taskfile.filename = xmlReader.readSingleText("@filename", thisNode);
+                    taskfile.content = thisNode.textContent;
+                } else {
+                    let content = xmlReader.readSingleNode('*', thisNode); // nodeValue
+                    if (content) {
+                        switch (content.nodeName) {
+                            case "embedded-txt-file":
+                                taskfile.filetype = 'embedded';
+                                taskfile.filename = xmlReader.readSingleText("@filename", content);
+                                taskfile.content = content.textContent;
+                                break;
+                            case "attached-bin-file":
+                                taskfile.filetype = 'file';
+                                taskfile.filename = xmlReader.readSingleText("@filename", content);
+                                break;
+                            default:
+                                setErrorMessage("Unknown file type for file #". taskfile.id);
+                        }
+                    } else {
+                        setErrorMessage("No file content for file #". taskfile.id);
+                    }
+
+/*
+                    let embeddedTextFile = xmlReader.readSingleNode("embedded-txt-file");
+                    if (embeddedTextFile) {
+                        taskfile.filetype = 'embedded';
+                        taskfile.filename = xmlReader.readSingleText("@filename", embeddedTextFile);
+                        taskfile.content = embeddedTextFile.textContent;
+                    } else {
+                        let attachedBinFile = xmlReader.readSingleNode("attached-bin-file");
+                        if (attachedBinFile) {
+                            taskfile.filetype = 'file';
+                            taskfile.filename = xmlReader.readSingleText("@filename", attachedBinFile);
+                        } else {
+                            setErrorMessage("Unknown file type for file #". taskfile.id);
+                        }
+                    }
+*/
+                }
                 this.files[taskfile.id] = taskfile;
                 thisNode = iterator.iterateNext();
             }
@@ -225,9 +269,8 @@ class TaskClass {
             }
 
        } catch (err){
-           alert (err);
-           setErrorMessage("Error while parsing the xml file. The file has not been imported.". err);
-           return; // Stop. Do not make any further changes.
+           //alert (err);
+           setErrorMessage("Error while parsing the xml file. The file has not been imported.". err, err);
        }
     }
 
@@ -238,9 +281,9 @@ class TaskClass {
         let modelsolutions = null;
         let tests = null;
         let xmlWriter = null;
-        const xmlns = "urn:proforma:task:v1.0.1";
-        //const praktomatns = "urn:proforma:praktomat:v0.2";
+        const xmlns = "urn:proforma:v2.0";
 
+        /* Version 1.0.1
         function writeFile(item, index) {
             let fileElem = xmlDoc.createElementNS(xmlns, "file");
             fileElem.setAttribute("class", item.fileclass);
@@ -252,12 +295,31 @@ class TaskClass {
             if (item.filetype === 'embedded')
                 fileElem.appendChild(xmlDoc.createCDATASection(item.content));
         }
+        */
+
+        // version 2.0
+        function writeFile(item, index) {
+            let fileElem = xmlDoc.createElementNS(xmlns, "file");
+            fileElem.setAttribute("id", item.id);
+            fileElem.setAttribute("class", item.fileclass);
+            fileElem.setAttribute("comment", item.comment);
+            files.appendChild(fileElem);
+            let fileContentElem = undefined;
+            if (item.filetype === 'embedded') {
+                fileContentElem = xmlDoc.createElementNS(xmlns, "embedded-txt-file");
+                fileContentElem.appendChild(xmlDoc.createCDATASection(item.content));
+            } else {
+                fileContentElem = xmlDoc.createElementNS(xmlns, "attached-bin-file");
+            }
+            fileContentElem.setAttribute("filename", item.filename);
+            fileElem.appendChild(fileContentElem);
+        }
 
         function writeModelSolution(item, index) {
-            function writeFileref(item, index) {
-                if (item.refid) {
+            function writeFileref(file, index) {
+                if (file.refid) {
                     let fileref = xmlDoc.createElementNS(xmlns, "fileref");
-                    fileref.setAttribute("refid", item.refid);
+                    fileref.setAttribute("refid", file.refid);
                     filerefs.appendChild(fileref);
                 }
             }
@@ -276,10 +338,10 @@ class TaskClass {
         }
 
         function writeTest(item, index) {
-            function writeFileref(item, index) {
-                if (item.refid) {
+            function writeFileref(file, index) {
+                if (file.refid) {
                     let fileref = xmlDoc.createElementNS(xmlns, "fileref");
-                    fileref.setAttribute("refid", item.refid);
+                    fileref.setAttribute("refid", file.refid);
                     filerefs.appendChild(fileref);
                 }
             }
@@ -337,7 +399,12 @@ class TaskClass {
             task.appendChild(tests);
             this.tests.forEach(writeTest);
 
-            task.appendChild(xmlDoc.createElementNS(xmlns, "grading-hints")); // dummy
+            // dummy
+            let gradinghints = xmlDoc.createElementNS(xmlns, "grading-hints");
+            task.appendChild(gradinghints);
+            // new for 2.0
+            gradinghints.appendChild(xmlDoc.createElementNS(xmlns, "root"));
+
 
             let metadata = xmlDoc.createElementNS(xmlns, "meta-data");
             task.appendChild(metadata);
@@ -348,7 +415,7 @@ class TaskClass {
             let serializer = new XMLSerializer();
             let result = serializer.serializeToString (xmlDoc);
 
-            if ((result.substring(0, 5) != "<?xml")){
+            if ((result.substring(0, 5) !== "<?xml")){
                 result = '<?xml version="1.0"?>' + result;
                 // result = "<?xml version='1.0' encoding='UTF-8'?>" + result;
             }
@@ -358,7 +425,12 @@ class TaskClass {
                 $.get(xsd_file, function(data, textStatus, jqXHR) {      // read XSD schema
                     const valid = xmllint.validateXML({xml: result /*xmlString*/, schema: jqXHR.responseText});
                     if (valid.errors !== null) {                                // does not conform to schema
-                        setErrorMessage("Errors in XSD-Validation: " + valid.errors[0]);
+                        setErrorMessage("Errors in XSD-Validation: ");
+                        valid.errors.some(function(error, index) {
+                            setErrorMessage(error);
+                            return index > 10;
+                        })
+
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     setErrorMessage("XSD-Schema " + xsd_file + " not found.", errorThrown);
@@ -367,7 +439,6 @@ class TaskClass {
 
             return result;
         } catch (err){
-            alert (err);
             setErrorMessage("Error while parsing the xml file. The file has not been imported.". err, err);
             return '';
         }
