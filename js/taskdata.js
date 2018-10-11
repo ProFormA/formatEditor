@@ -148,7 +148,6 @@ class TaskClass {
 
     readTestConfig(xmlfile, testid, callback, testroot) {
         try {
-
             let xmlReader = new XmlReader(xmlfile);
             xmlReader.setRootNode(xmlReader.readSingleNode("/dns:task/dns:tests/dns:test[@id="+testid+"]"));
             let configNodeNode = xmlReader.readSingleNode("dns:test-configuration");
@@ -159,7 +158,7 @@ class TaskClass {
         }
     }
 
-    readXml(xmlfile) {
+    readXmlVersion101(xmlfile) {
 
         function readFileRefs(xmlReader, element, thisNode) {
             let fileRefIterator = xmlReader.readNodes("dns:filerefs/dns:fileref", thisNode);
@@ -194,47 +193,123 @@ class TaskClass {
                 taskfile.id = xmlReader.readSingleText("@id", thisNode);
                 taskfile.fileclass = xmlReader.readSingleText("@class", thisNode);
                 taskfile.comment = xmlReader.readSingleText("@comment", thisNode);
-                if (xmlReader.defaultns === 'urn:proforma:task:v1.0.1') {
-                    taskfile.filetype = xmlReader.readSingleText("@type", thisNode);
-                    taskfile.filename = xmlReader.readSingleText("@filename", thisNode);
-                    taskfile.content = thisNode.textContent;
-                } else {
-                    let content = xmlReader.readSingleNode('*', thisNode); // nodeValue
-                    if (content) {
-                        switch (content.nodeName) {
-                            case "embedded-txt-file":
-                                taskfile.filetype = 'embedded';
-                                taskfile.filename = xmlReader.readSingleText("@filename", content);
-                                taskfile.content = content.textContent;
-                                break;
-                            case "attached-bin-file":
-                                taskfile.filetype = 'file';
-                                taskfile.filename = content.textContent;
-                                break;
-                            default:
-                                setErrorMessage("Unknown file type for file #". taskfile.id);
-                        }
-                    } else {
-                        setErrorMessage("No file content for file #". taskfile.id);
+                taskfile.filetype = xmlReader.readSingleText("@type", thisNode);
+                taskfile.filename = xmlReader.readSingleText("@filename", thisNode);
+                taskfile.content = thisNode.textContent;
+                this.files[taskfile.id] = taskfile;
+                thisNode = iterator.iterateNext();
+            }
+
+            // read model solutions(s)
+            iterator = xmlReader.readNodes("dns:model-solutions/dns:model-solution");
+            thisNode = iterator.iterateNext();
+            while (thisNode) {
+                let modelSolution = new TaskModelSolution();
+                modelSolution.id = xmlReader.readSingleText("@id", thisNode);
+                modelSolution.comment = xmlReader.readSingleText("@comment", thisNode);
+                readFileRefs(xmlReader, modelSolution, thisNode);
+                this.modelsolutions[modelSolution.id] = modelSolution;
+                thisNode = iterator.iterateNext();
+            }
+
+            // read test(s)
+            iterator = xmlReader.readNodes("dns:tests/dns:test");
+            thisNode = iterator.iterateNext();
+            while (thisNode) {
+                let test = new TaskTest();
+                test.id = xmlReader.readSingleText("@id", thisNode);
+                test.title = xmlReader.readSingleText("dns:title", thisNode);
+                test.testtype = xmlReader.readSingleText("dns:test-type", thisNode);
+
+                let configIterator = xmlReader.readNodes("dns:test-configuration", thisNode);
+                let configNode = configIterator.iterateNext();
+                readFileRefs(xmlReader, test, configNode);
+
+                this.tests[test.id] = test;
+                thisNode = iterator.iterateNext();
+            }
+
+        } catch (err){
+            //alert (err);
+            setErrorMessage("Error while parsing the xml file. The file has not been imported.". err, err);
+        }
+    }
+
+
+    readXmlVersion2(xmlfile) {
+
+        function readFileRefs(xmlReader, element, thisNode) {
+            let fileRefIterator = xmlReader.readNodes("dns:filerefs/dns:fileref", thisNode);
+            let fileRefNode = fileRefIterator.iterateNext();
+            let counter = 0;
+            while (fileRefNode) {
+                let fileRef = new TaskFileRef();
+                fileRef.refid = xmlReader.readSingleText("@refid", fileRefNode);
+                element.filerefs[counter++] = fileRef;
+                fileRefNode = fileRefIterator.iterateNext();
+            }
+        }
+
+        try {
+            let xmlReader = new XmlReader(xmlfile);
+            xmlReader.setRootNode(xmlReader.readSingleNode("/dns:task")); // => shorter xpaths
+
+            this.title = xmlReader.readSingleText("dns:meta-data/dns:title");
+            this.description = xmlReader.readSingleText("dns:description");
+            this.proglang = xmlReader.readSingleText("dns:proglang");
+            this.proglangVersion = xmlReader.readSingleText("dns:proglang/@version");
+            this.uuid = xmlReader.readSingleText("@uuid");
+            this.lang = xmlReader.readSingleText("@lang");
+            this.sizeSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@max-size");
+            this.mimeTypeRegExpSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@mime-type-regexp");
+
+            // read files
+            let iterator = xmlReader.readNodes("dns:files/dns:file");
+            let thisNode = iterator.iterateNext();
+            while (thisNode) {
+                let taskfile = new TaskFile();
+                taskfile.id = xmlReader.readSingleText("@id", thisNode);
+                taskfile.fileclass = xmlReader.readSingleText("@class", thisNode);
+
+                // todo:
+                taskfile.comment = xmlReader.readSingleText("@comment", thisNode);
+                let content = xmlReader.readSingleNode('*', thisNode); // nodeValue
+                if (content) {
+                    switch (content.nodeName) {
+                        case "embedded-txt-file":
+                            taskfile.filetype = 'embedded';
+                            taskfile.filename = xmlReader.readSingleText("@filename", content);
+                            taskfile.content = content.textContent;
+                            break;
+                        case "attached-bin-file":
+                            taskfile.filetype = 'file';
+                            taskfile.filename = content.textContent;
+                            break;
+                        default:
+                            setErrorMessage("Unknown file type for file #". taskfile.id);
                     }
+                } else {
+                    setErrorMessage("No file content for file #". taskfile.id);
+                }
 
 /*
-                    let embeddedTextFile = xmlReader.readSingleNode("embedded-txt-file");
-                    if (embeddedTextFile) {
-                        taskfile.filetype = 'embedded';
-                        taskfile.filename = xmlReader.readSingleText("@filename", embeddedTextFile);
-                        taskfile.content = embeddedTextFile.textContent;
+                let embeddedTextFile = xmlReader.readSingleNode("embedded-txt-file");
+                if (embeddedTextFile) {
+                    taskfile.filetype = 'embedded';
+                    taskfile.filename = xmlReader.readSingleText("@filename", embeddedTextFile);
+                    taskfile.content = embeddedTextFile.textContent;
+                } else {
+                    let attachedBinFile = xmlReader.readSingleNode("attached-bin-file");
+                    if (attachedBinFile) {
+                        taskfile.filetype = 'file';
+                        taskfile.filename = xmlReader.readSingleText("@filename", attachedBinFile);
                     } else {
-                        let attachedBinFile = xmlReader.readSingleNode("attached-bin-file");
-                        if (attachedBinFile) {
-                            taskfile.filetype = 'file';
-                            taskfile.filename = xmlReader.readSingleText("@filename", attachedBinFile);
-                        } else {
-                            setErrorMessage("Unknown file type for file #". taskfile.id);
-                        }
+                        setErrorMessage("Unknown file type for file #". taskfile.id);
                     }
-*/
                 }
+*/
+
+
                 this.files[taskfile.id] = taskfile;
                 thisNode = iterator.iterateNext();
             }
@@ -274,6 +349,16 @@ class TaskClass {
        }
     }
 
+    readXml(xmlfile) {
+        let xmlReader = new XmlReader(xmlfile);
+        switch (xmlReader.defaultns) {
+            case 'urn:proforma:task:v1.0.1': return this.readXmlVersion101(xmlfile);
+            case 'urn:proforma:v2.0': return this.readXmlVersion2(xmlfile);
+            default:
+                setErrorMessage("Unsupported ProFormA version " + xmlReader.defaultns);
+        }
+    }
+
 
     writeXml() {
         let xmlDoc = null;
@@ -302,7 +387,7 @@ class TaskClass {
             let fileElem = xmlDoc.createElementNS(xmlns, "file");
             fileElem.setAttribute("id", item.id);
             fileElem.setAttribute("class", item.fileclass);
-            fileElem.setAttribute("comment", item.comment);
+            // fileElem.setAttribute("comment", item.comment);
             files.appendChild(fileElem);
             if (item.filetype === 'embedded') {
                 let fileContentElem = xmlDoc.createElementNS(xmlns, "embedded-txt-file");
@@ -312,6 +397,7 @@ class TaskClass {
             } else {
                 xmlWriter.createTextElement(fileElem, 'attached-bin-file', item.filename);
             }
+            xmlWriter.createTextElement(fileElem, 'internal-description', item.comment);
 
         }
 
@@ -324,7 +410,7 @@ class TaskClass {
                 }
             }
             let msElem = xmlDoc.createElementNS(xmlns, "model-solution");
-            msElem.setAttribute("comment", item.comment);
+            // msElem.setAttribute("description", item.comment); // alt
             msElem.setAttribute("id", item.id);
             modelsolutions.appendChild(msElem);
             let filerefs = xmlDoc.createElementNS(xmlns, "filerefs");
@@ -335,6 +421,7 @@ class TaskClass {
             if (childs.length === 0) {
                 msElem.removeChild(filerefs);
             }
+            xmlWriter.createTextElement(msElem, 'description', item.comment);
         }
 
         function writeTest(item, index) {
@@ -428,7 +515,7 @@ class TaskClass {
                         setErrorMessage("Errors in XSD-Validation: ");
                         valid.errors.some(function(error, index) {
                             setErrorMessage(error);
-                            return index > 10;
+                            return index > 15;
                         })
 
                     }
