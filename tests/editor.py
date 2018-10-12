@@ -26,6 +26,22 @@ codemirror = True
 firstTimeDialogs = {'zip': True, 'loncapa': True}
 
 
+
+timeoutSave = 4
+timeoutSaveLonCapa = 4
+timeoutSelectChrome = 1
+timeoutSetFileref = 0.3
+timeoutLoadFileref = 1.5
+timeoutTypeFilename = 1
+timeoutSetFileref = 1.5
+timeoutAddFileToMs = 1
+timeoutSetFileTest = 1
+timeoutOpenLoadDialog = 2
+timeoutReadXml = 2
+timeoutConfirmSave = 3
+timeoutSwitchToSave = 1
+
+
 ####################################################################
 # open browser window
 ####################################################################
@@ -141,7 +157,7 @@ def load_task_file(task_file, content_will_be_deleted):
     elem.click() # .... Edge kommt erst wieder, wenn man den Dialog beendet hat :-(D:\users\karin\Code\zell\git\formatEditor\tests\input\Hello_World_094.zip
 
     # print "wait for dialog"
-    time.sleep(2)
+    time.sleep(timeoutOpenLoadDialog)
 
     # print "type text into dialog"
     # control the modal window with pynpy (not selenium!)
@@ -149,13 +165,13 @@ def load_task_file(task_file, content_will_be_deleted):
     keyboard = Controller()
     keyboard.type(filename)
     # Press and release enterD:\users\karin\Code\zell\git\formatEditor\tests\input\Hello_World_094.zip
-    time.sleep(1)
+    time.sleep(timeoutTypeFilename)
 
     keyboard.press(Key.enter)
     keyboard.release(Key.enter)
 
     # print "wait for rendering to complete"
-    time.sleep(3)
+    time.sleep(timeoutReadXml)
 
     if content_will_be_deleted:
         alert = driver.switch_to.alert
@@ -171,7 +187,7 @@ def getFilenameWithWildcard(file_name):
 
 def confirmDownloadSaveDialog(dialogkey):
 
-    time.sleep(3)
+    time.sleep(timeoutConfirmSave)
     # a new window is opened asking what to do with the download
     # print "confirm dialog"
     keyboard = Controller()
@@ -183,10 +199,11 @@ def confirmDownloadSaveDialog(dialogkey):
         print "cursor down"
         keyboard.press(Key.down)
         keyboard.release(Key.down)
-        time.sleep(1)
+        time.sleep(timeoutSwitchToSave)
         firstTimeDialogs[dialogkey] = False
 
     print "enter"
+
     keyboard.press(Key.enter)
     keyboard.release(Key.enter)
 
@@ -205,7 +222,7 @@ def save_task_file_plain(modelSolution_alert):
 
 
     # wait for download to complete
-    time.sleep(2)
+    time.sleep(timeoutSave)
 
 
 def save_task_file(expected_file_name, move_to_folder, move_to_filename_xml):
@@ -217,7 +234,7 @@ def save_task_file(expected_file_name, move_to_folder, move_to_filename_xml):
         confirmDownloadSaveDialog('zip')
 
     # wait for download to complete
-    time.sleep(2)
+    time.sleep(timeoutSave)
 
 
 
@@ -275,7 +292,7 @@ def save_lon_capa_problem(expected_file_name, modelSolution_alert):
         confirmDownloadSaveDialog('loncapa')
 
     # wait for download to complete
-    time.sleep(2)
+    time.sleep(timeoutSaveLonCapa)
 
     import glob
     listing = glob.glob(testconfig.download_path + "/task*.problem")
@@ -396,7 +413,7 @@ def select_chrome_option(elem, select):
 
     # print "index of <load...> is " + str(opt_index)
     elem.click()
-    time.sleep(1)
+    time.sleep(timeoutSelectChrome)
     keyboard = Controller()
 
     for i in range (0, opt_index):
@@ -446,7 +463,7 @@ def set_fileref(filename, index, xml_class):
 
     # print "wait for dialog"
 
-    time.sleep(0.3)
+    time.sleep(timeoutSetFileref)
 
 
 def load_fileref(filename, index, xml_class):
@@ -468,20 +485,20 @@ def load_fileref(filename, index, xml_class):
 
     # print "wait for dialog"
 
-    time.sleep(2)
+    time.sleep(timeoutLoadFileref)
 
     # print "type text into dialog"
     # control the modal window with pynpy (not selenium!)
     # type filename in input field
     keyboard = Controller()
     keyboard.type(filename)
-    time.sleep(1)
+    time.sleep(timeoutTypeFilename)
 
     keyboard.press(Key.enter)
     keyboard.release(Key.enter)
 
     # print "wait for rendering to complete"
-    time.sleep(3)
+    time.sleep(timeoutSetFileref)
 
 
 def load_instruction_file(filename, index):
@@ -671,7 +688,7 @@ def add_file_to_model_solution(ms_index, file_index):
 
     # the option has to get the focus in order to fill the list!
     (elem[ms_index]).send_keys(Keys.NULL)
-    time.sleep(1);
+    time.sleep(timeoutAddFileToMs);
     showModalWindow()
 
     # elem = driver.find_elements_by_class_name('mediuminput xml_model-solution_filename')
@@ -751,7 +768,7 @@ def set_test_file(test_index, file_index):  # 0-based
 
     # the option has to get the focus in order to fill the list!
     (elem[test_index]).send_keys(Keys.NULL)
-    time.sleep(1);
+    time.sleep(timeoutSetFileTest);
     showModalWindow()
 
     # elem = driver.find_elements_by_class_name('mediuminput xml_model-solution_filename')

@@ -56,11 +56,16 @@ class ZipFileTest(unittest.TestCase):
         editor.load_task_file(task_filename, True)
 
     def saveZipFile(self, filename_task_xml, modelSolution_alert):
+        cwd = os.getcwd()
+        if cwd.endswith('testcases'):
+            raise Exception('check working directoy: ' + cwd);
+
         self.TaskFileNo = self.TaskFileNo + 1
         editor.save_task_file_plain(modelSolution_alert) # filename_task_xml_1
         # self.assertTrue()
 
         move_to_folder = self.output_folder
+
         move_to_filename_xml = self.getTaskFile(self.TaskFileNo)
         expected_file_name = filename_task_xml
 
@@ -136,6 +141,7 @@ class ZipFileTest(unittest.TestCase):
 
         self.saveZipFile(expectedFilename, modelSolution_alert)
         self.saveLonCapaFile(modelSolution_alert)
+
 
         self.reimportZipFile()
         self.saveZipFile(expectedFilename, modelSolution_alert)

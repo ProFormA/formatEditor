@@ -272,7 +272,7 @@ class TaskClass {
                 taskfile.fileclass = xmlReader.readSingleText("@class", thisNode);
 
                 // todo:
-                taskfile.comment = xmlReader.readSingleText("@comment", thisNode);
+                taskfile.comment = xmlReader.readSingleText("dns:internal-description", thisNode);
                 let content = xmlReader.readSingleNode('*', thisNode); // nodeValue
                 if (content) {
                     switch (content.nodeName) {
@@ -320,7 +320,7 @@ class TaskClass {
             while (thisNode) {
                 let modelSolution = new TaskModelSolution();
                 modelSolution.id = xmlReader.readSingleText("@id", thisNode);
-                modelSolution.comment = xmlReader.readSingleText("@comment", thisNode);
+                modelSolution.comment = xmlReader.readSingleText("dns:description", thisNode);
                 readFileRefs(xmlReader, modelSolution, thisNode);
                 this.modelsolutions[modelSolution.id] = modelSolution;
                 thisNode = iterator.iterateNext();

@@ -166,10 +166,14 @@ convertToXML = function() {
     task.title = $("#xml_meta-data_title").val();
     task.description = descriptionEditor.getValue();
     let proglangAndVersion = $("#xml_programming-language").val();
-    var proglangSplit = proglangAndVersion.split("/");
+    let proglangSplit = proglangAndVersion.split("/");
 
     task.proglang = proglangSplit[0]; // proglangAndVersion.substr(0, proglangAndVersion.indexOf("/"));
-    task.proglangVersion = proglangSplit[1]; // proglangAndVersion.substr(proglangAndVersion.indexOf("/")+1);
+    if (proglangSplit.length > 1)
+        task.proglangVersion = proglangSplit[1]; // proglangAndVersion.substr(proglangAndVersion.indexOf("/")+1);
+    else
+        task.proglangVersion = '';
+
     task.parentuuid = null;
     //task.uuid = $("#xml_uuid").val();
     //if (!task.uuid)
@@ -335,7 +339,10 @@ readAndDisplayXml = function() {
     $("#xml_uuid").val(task.uuid);
     $("#xml_subm_max-size").val(task.sizeSubmission);
     $("#xml_upload-mime-type").val(task.mimeTypeRegExpSubmission);
-    $("#xml_programming-language").val(task.proglang + '/' + task.proglangVersion);
+    if (task.proglangVersion)
+        $("#xml_programming-language").val(task.proglang + '/' + task.proglangVersion);
+    else
+        $("#xml_programming-language").val(task.proglang);
     $("#xml_lang").val(task.lang);
 
     // check proglang
