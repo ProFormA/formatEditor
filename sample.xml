@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+
+<files xmlns="urn:proforma:v2.0">
+
+	<!--embedded-bin-file-type-->
+	<file id="id1" mimetype="mimetype1" class="template" name="embedded.bin">
+		<internal-description>internal-description1</internal-description>
+		<content transfercoding="base64">AAECAwQFBgcICQoLDA0ODw==</content>
+	</file>
+
+	<!-- attached-bin-file-type -->
+	<file id="id1" mimetype="mimetype1" class="template" name="referenced.bin">
+		<internal-description>internal-description1</internal-description>
+	</file>
+	
+
+	<!-- embedded-txt-file-type-->
+	<!-- Paul: warum hier keine natural-language? Ist doch auch eine Textdatei. -->
+	<!-- Paul: warum hier kein encoding? Hier wird das encoding benötigt, weil eie Datei ja neu erzeugt werden muss.-->
+	<file id="id1" mimetype="mimetype1" class="template" name="embedded.txt"  natural-language='de'>
+		<internal-description>internal-description1</internal-description>
+		<content encode='ISO8859-1' >ein Text</content>
+	</file>
+
+	<!-- attached-txt-file-type -->
+	<!-- Paul: warum hier encoding? Die Datei wird ja nur ausgepackt und gut.-->
+	<file id="id1" mimetype="mimetype1" class="template" name="referenced.txt" natural-language='de'>
+		<internal-description>internal-description1</internal-description>
+	</file>
+
+	
+</files>	
