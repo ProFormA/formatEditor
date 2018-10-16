@@ -9,8 +9,8 @@ download_path = "c:/Users/" + username + "/Downloads"
 print "using '" + download_path + "' as download path"
 
 # preferred browser
-#browser = "Edge"
-browser = "Firefox"
+browser = "Edge"
+#browser = "Firefox"
 #browser = "Chrome"
 
 # path to firefox binary

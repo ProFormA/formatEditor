@@ -28,7 +28,7 @@ class BaseFunctionalityTest(zipFileTest.ZipFileTest):
     def test_input(self):
         # I N P U T
 
-        try:
+        # try:
             ####################################################################
             ## fill MAIN page
             ####################################################################
@@ -73,11 +73,11 @@ class BaseFunctionalityTest(zipFileTest.ZipFileTest):
             zipFileTest.ZipFileTest.saveFilesAndReloadAndSave(self, expectedZipName, False)
             # zipFileTest.ZipFileTest.saveZipFile(self, expectedZipName)
             # zipFileTest.ZipFileTest.saveLonCapaFile(self)
-        except Exception,e:
-            try:
-                editor.driver.save_screenshot('screenshot.png')
-            except:
-                pass
-            raise e
+        # except Exception,e:
+        #     try:
+        #         editor.driver.save_screenshot('screenshot.png')
+        #     except:
+        #         pass
+        #     raise e
 
 

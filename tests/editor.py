@@ -187,27 +187,35 @@ def getFilenameWithWildcard(file_name):
 
 def confirmDownloadSaveDialog(dialogkey):
 
+    if browser == "Chrome":
+        return
+
     time.sleep(timeoutConfirmSave)
     # a new window is opened asking what to do with the download
     # print "confirm dialog"
     keyboard = Controller()
 
-    global firstTimeDialogs
-    if firstTimeDialogs[dialogkey]:
-        print "1. Download => Speichern statt Öffnen wählen"
-        # switch to save (instead of open)
-        print "cursor down"
-        keyboard.press(Key.down)
-        keyboard.release(Key.down)
-        time.sleep(timeoutSwitchToSave)
-        firstTimeDialogs[dialogkey] = False
+    if browser == "Firefox":
+        global firstTimeDialogs
+        if firstTimeDialogs[dialogkey]:
+            print "1. Download => Speichern statt Öffnen wählen"
+            # switch to save (instead of open)
+            print "cursor down"
+            keyboard.press(Key.down)
+            keyboard.release(Key.down)
+            time.sleep(timeoutSwitchToSave)
+            firstTimeDialogs[dialogkey] = False
 
-    print "enter"
+        print "enter"
 
-    keyboard.press(Key.enter)
-    keyboard.release(Key.enter)
+        keyboard.press(Key.enter)
+        keyboard.release(Key.enter)
+    elif browser == "Edge":
+        pass
+        #alert = driver.switch_to.alert
+        #alert.dismiss()
 
-    # print "confirmDownloadSaveDialog finished"
+    print "confirmDownloadSaveDialog finished"
 
 def save_task_file_plain(modelSolution_alert):
     # print "press save zip button"
@@ -217,8 +225,8 @@ def save_task_file_plain(modelSolution_alert):
     if modelSolution_alert:
         confirmPopup()
 
-    if browser == "Firefox":
-        confirmDownloadSaveDialog('zip')
+    # if browser == "Firefox":
+    confirmDownloadSaveDialog('zip')
 
 
     # wait for download to complete
@@ -230,8 +238,8 @@ def save_task_file(expected_file_name, move_to_folder, move_to_filename_xml):
     elem = driver.find_element_by_id("buttonZip")
     elem.click()
 
-    if browser == "Firefox":
-        confirmDownloadSaveDialog('zip')
+    # if browser == "Firefox":
+    confirmDownloadSaveDialog('zip')
 
     # wait for download to complete
     time.sleep(timeoutSave)
@@ -288,8 +296,8 @@ def save_lon_capa_problem(expected_file_name, modelSolution_alert):
     if modelSolution_alert:
         confirmPopup()
 
-    if browser == "Firefox":
-        confirmDownloadSaveDialog('loncapa')
+    # if browser == "Firefox":
+    confirmDownloadSaveDialog('loncapa')
 
     # wait for download to complete
     time.sleep(timeoutSaveLonCapa)

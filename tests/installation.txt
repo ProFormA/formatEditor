@@ -30,6 +30,7 @@ Installation
     - for EDGE:  	https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
       Determine which OS version you have.
       Then download the appropriate driver (MicrosoftWebDriver.exe) and continue (see above).
+      Note that you need to turn off 'Always ask me what to do with each download' in advanced settings of Edge!
 
     - for PHANTOMJS: http://phantomjs.org/download.html
 

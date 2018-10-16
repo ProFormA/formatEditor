@@ -110,7 +110,7 @@ function createDownloadLink(ui_file) {
         "' download='" + ui_file.filename + "'>Download: " + ui_file.filename +"</a>\n";
 }
 
-function createDownloadLinks(/*cmhash*/) {
+function createDownloadLinks() {
     let returnvalue = "";
     let templateCounter = 0;
 
@@ -144,7 +144,7 @@ function createDownloadLinks(/*cmhash*/) {
 
 
 // returns the first 'embedded file' template
-function getEditorTemplate(cmhash) {
+function getEditorTemplate() {
     let returnvalue = "";
     FileWrapper.doOnAllFiles(function(ui_file) {
         if (ui_file.class === "template" && ui_file.type === 'embedded') {
@@ -155,9 +155,9 @@ function getEditorTemplate(cmhash) {
         }
     });
     return returnvalue;
-};
+}
 
-function getModelSolution(cmhash) {
+function getModelSolution() {
     let returnvalue = "";
     FileWrapper.doOnAllFiles(function(ui_file) {
         if (ui_file.id === $(".xml_model-solution_fileref").first().val()) {
@@ -173,11 +173,11 @@ function getModelSolution(cmhash) {
     });
 
   return returnvalue;
-};
+}
 
-createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimetype,cmhash,versionchck) {
-  var template = getEditorTemplate(cmhash);
-  var downloadable = createDownloadLinks(cmhash);
+createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimetype,versionchck) {
+  var template = getEditorTemplate();
+  var downloadable = createDownloadLinks();
   const lc_zip = $("#lczip").val().trim();
   if (!lc_zip) {
       // empty => set to .
@@ -196,8 +196,8 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
   lc_user_path = $("#lczip").val().trim();
   lc_codeMHeader = "/lib/SyntaxHighlighter/CodeMirror_Header.library";
   lc_codeMFooter = "/lib/SyntaxHighlighter/CodeMirror_Footer.library";
-  if (lc_mimetype == "java") {lc_mimetype = "x-java";}
-  else if (lc_mimetype == "python") {lc_mimetype = "x-python";}
+  if (lc_mimetype === "java") {lc_mimetype = "x-java";}
+  else if (lc_mimetype === "python") {lc_mimetype = "x-python";}
   lc_problemname = lc_problemname.replace(/[^a-z0-9]/gi, "");      // title without special characters
 
   lc_return = '<problem>\n\n<!-- generated with ProFormA editor version ' + codeversion + ' -->\n\n';
@@ -208,13 +208,13 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
   lc_return += '# LON-CAPA partID, redundant taskID, submissiontype, filename of submitted file,';
   lc_return += 'Mime type, zip location\n';
   lc_return += "$externalurl = &proforma_url(0,'0', 'textfield', '" + lc_filename;
-  if(versionchck == "101") {
+  if(versionchck === "101") {
     lc_return += "','" + lc_mimetype + "',$zip_file,'v1.0.1');\n";
   } else {
     lc_return += "','" + lc_mimetype + "',$zip_file);\n";
   }
   lc_return += "$ausgabe = &proforma_output(0,1); # LON-CAPA partID, LON-CAPA responseID \n";
-  lc_return += "$modelsolution = '<pre>" + getModelSolution(cmhash) + "</pre>';\n";
+  lc_return += "$modelsolution = '<pre>" + getModelSolution() + "</pre>';\n";
   lc_return += "</" + "script>\n\n";
   lc_return += "<startouttext />\n" +lc_descr+ "\n" + downloadable + "<endouttext />\n\n<startouttext />\n";
   lc_return += "$pfad_error\n$error\n$ausgabe\n";
@@ -226,7 +226,7 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
   return lc_return;
 };
 
-createLONCAPAOutput = function (prgrlang,cmhash,versionchck) {
+createLONCAPAOutput = function (prgrlang, versionchck) {
   loncapa_filename = "input.txt";
 
   FileWrapper.doOnAllFiles(function(ui_file) {
@@ -236,7 +236,7 @@ createLONCAPAOutput = function (prgrlang,cmhash,versionchck) {
   });
 
   LcProblem =  createLONCAPAproblemFile($("#xml_description").val(),loncapa_filename,
-      $("#xml_meta-data_title").val(),prgrlang,cmhash,versionchck);
+      $("#xml_meta-data_title").val(),prgrlang,versionchck);
 
   //$("#output2").val(createLONCAPAproblemFile($("#xml_description").val(),loncapa_filename,
 	//				     $("#xml_meta-data_title").val(),prgrlang,cmhash,versionchck));

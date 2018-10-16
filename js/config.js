@@ -280,9 +280,9 @@ var config = (function(testConfigNode) {
 
     function createFurtherOutput(proglang) {
         if (configXsdSchemaFile === version101) {
-            createLONCAPAOutput(proglang,codemirror,"101");
+            createLONCAPAOutput(proglang, "101");
         } else {
-            createLONCAPAOutput(proglang,codemirror,"old");
+            createLONCAPAOutput(proglang, "old");
         }
     }
 
