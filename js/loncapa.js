@@ -60,7 +60,15 @@ function insertLCformelements () {
   $('#otherSoftware1').html(loncapaZipLocation);
 
   $("#button_save_lon_capa").click(function(){
-      convertToXML();
+      let proglangAndVersion = $("#xml_programming-language").val();
+      let proglangSplit = proglangAndVersion.split("/");
+      let proglang = proglangSplit[0];
+      if (config.xsdSchemaFile === version101) {
+          createLONCAPAOutput(proglang, "101");
+      } else {
+          createLONCAPAOutput(proglang, "old");
+      }
+      // convertToXML();
       downloadTextFile2(LcProblem /*$("#output2")*/, "task.problem", anchorLC);
   })
 
@@ -176,6 +184,8 @@ function getModelSolution() {
 }
 
 createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimetype,versionchck) {
+    console.log("createLONCAPAproblemFile called 1");
+
   var template = getEditorTemplate();
   var downloadable = createDownloadLinks();
   const lc_zip = $("#lczip").val().trim();
@@ -223,20 +233,25 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
   lc_return += '<textfield>\n'+template+'\n</textfield>\n</externalresponse>\n\n';
   lc_return += '<startouttext />\n</div>\n<endouttext />\n';
   lc_return += '<import id="92">' +lc_path+lc_codeMFooter+ '</import>\n</problem>\n';
+
+    console.log("createLONCAPAproblemFile called 1");
+
   return lc_return;
 };
 
 createLONCAPAOutput = function (prgrlang, versionchck) {
-  loncapa_filename = "input.txt";
 
-  FileWrapper.doOnAllFiles(function(ui_file) {
+    loncapa_filename = "input.txt";
+
+    FileWrapper.doOnAllFiles(function(ui_file) {
       if (ui_file.id === $(".xml_model-solution_fileref")[0].value) {
           loncapa_filename = ui_file.filename;
       }
-  });
+    });
 
-  LcProblem =  createLONCAPAproblemFile($("#xml_description").val(),loncapa_filename,
-      $("#xml_meta-data_title").val(),prgrlang,versionchck);
+
+    LcProblem =  createLONCAPAproblemFile($("#xml_description").val(),loncapa_filename,
+        $("#xml_meta-data_title").val(),prgrlang,versionchck);
 
   //$("#output2").val(createLONCAPAproblemFile($("#xml_description").val(),loncapa_filename,
 	//				     $("#xml_meta-data_title").val(),prgrlang,cmhash,versionchck));

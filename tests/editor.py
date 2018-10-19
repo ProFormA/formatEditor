@@ -6,6 +6,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
+import thread
 
 import os.path
 import shutil
@@ -39,8 +40,10 @@ timeoutSetFileTest = 1
 timeoutOpenLoadDialog = 2
 timeoutReadXml = 2
 timeoutConfirmSave = 3
+timeoutConfirmOpen = 3
 timeoutSwitchToSave = 1
-
+timeoutClickAndAlert = 1
+timeoutClick = 0.2
 
 ####################################################################
 # open browser window
@@ -146,20 +149,14 @@ def closeBrowser():
 
 ####################################################################
 
-def load_task_file(task_file, content_will_be_deleted):
-    the_path = os.path.dirname(os.path.abspath(__file__))
-    filename = the_path + "/" + task_file
-    filename = filename.replace("/", "\\") # needed on Windows!!
-    # print filename
-
-    # print "press load button"
-    elem = driver.find_element_by_id("button_load")
-    elem.click() # .... Edge kommt erst wieder, wenn man den Dialog beendet hat :-(D:\users\karin\Code\zell\git\formatEditor\tests\input\Hello_World_094.zip
-
-    # print "wait for dialog"
+thread_started = False
+def fillOpenFileDialog(filename):
+    global thread_started
+    thread_started = True
+    print "thread started"
     time.sleep(timeoutOpenLoadDialog)
 
-    # print "type text into dialog"
+    print "type text into dialog"
     # control the modal window with pynpy (not selenium!)
     # type filename in input field
     keyboard = Controller()
@@ -170,8 +167,43 @@ def load_task_file(task_file, content_will_be_deleted):
     keyboard.press(Key.enter)
     keyboard.release(Key.enter)
 
+
+def load_task_file(task_file, content_will_be_deleted):
+    the_path = os.path.dirname(os.path.abspath(__file__))
+    filename = the_path + "/" + task_file
+    filename = filename.replace("/", "\\") # needed on Windows!!
+    # print filename
+
+    # print "press load button"
+    elem = driver.find_element_by_id("button_load")
+    if browser == "Edge":
+        global thread_started
+        thread_started = False
+        # .... Edge kommt erst wieder, wenn man den Dialog beendet hat :-(
+        thread.start_new_thread(fillOpenFileDialog, (filename,))
+        while not thread_started:
+            pass
+    elem.click()
+
+    if browser != "Edge":
+        fillOpenFileDialog(filename)
+
+        #time.sleep(timeoutOpenLoadDialog)
+
+        # control the modal window with pynpy (not selenium!)
+        # type filename in input field
+        #keyboard = Controller()
+        #keyboard.type(filename)
+        # Press and release enterD:\users\karin\Code\zell\git\formatEditor\tests\input\Hello_World_094.zip
+        #time.sleep(timeoutTypeFilename)
+
+        #keyboard.press(Key.enter)
+        #keyboard.release(Key.enter)
+
+        #time.sleep(timeoutReadXml)
+
     # print "wait for rendering to complete"
-    time.sleep(timeoutReadXml)
+    time.sleep(timeoutConfirmOpen)
 
     if content_will_be_deleted:
         alert = driver.switch_to.alert
@@ -615,6 +647,7 @@ def get_file_usage(filename):
 def add_file():
     change_tab("file_tab")
     elem = driver.find_element_by_id("addFile").click()
+    time.sleep(timeoutClick);
 
 # does not work! only first element is found :-(
 #def remove_file(index): # 0-based
@@ -628,6 +661,7 @@ def remove_first_file():
     change_tab("file_tab")
     elem = driver.find_element_by_class_name('xml_file')
     elem.find_element_by_tag_name('button').click()
+    time.sleep(timeoutClickAndAlert);
     alert = driver.switch_to.alert
     alert.accept()
 

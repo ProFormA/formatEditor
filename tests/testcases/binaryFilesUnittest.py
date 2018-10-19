@@ -146,13 +146,13 @@ class BinaryFilesTest(zipFileTest.ZipFileTest):
         # do not use compact test function in order to perform more
         # test
         ## zipFileTest.ZipFileTest.saveFilesAndReloadAndSave(self, expectedZipName, True)
-        zipFileTest.ZipFileTest.saveZipFile(self, expectedZipName, True)
+        zipFileTest.ZipFileTest.saveZipFile(self, expectedZipName, False) #True)
 
         self.checkForFilesInZip()
 
         zipFileTest.ZipFileTest.saveLonCapaFile(self, True)
         zipFileTest.ZipFileTest.reimportZipFile(self)
-        zipFileTest.ZipFileTest.saveZipFile(self, expectedZipName, True)
+        zipFileTest.ZipFileTest.saveZipFile(self, expectedZipName, False) # True)
         self.checkForFilesInZip()
 
         zipFileTest.ZipFileTest.saveLonCapaFile(self, True)

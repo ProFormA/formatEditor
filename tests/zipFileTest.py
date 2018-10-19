@@ -56,6 +56,7 @@ class ZipFileTest(unittest.TestCase):
         editor.load_task_file(task_filename, True)
 
     def saveZipFile(self, filename_task_xml, modelSolution_alert):
+        # modelSolution_alert: True if ????
         cwd = os.getcwd()
         if cwd.endswith('testcases'):
             raise Exception('check working directoy: ' + cwd);

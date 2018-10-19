@@ -202,7 +202,7 @@ function downloadTextFile2(text, filename, dummybutton) {
     console.log("downloadTextFile2 called");
     //const text = textarea.val();
     if (text.length === 0) {
-        console.log("downloadTextFile2 called with empty output");
+        console.error("downloadTextFile2 called with empty output");
         return;
     }
 
@@ -210,11 +210,31 @@ function downloadTextFile2(text, filename, dummybutton) {
 //    downloadText3(text, filename, 'text/plain');
 //    return;
 
+
     const text1 = encodeURIComponent(text);
+
     // create dummy button for saving task.xml
     dummybutton.href = "data:text/text;charset=utf-8," + text1;
     dummybutton.download = filename;
+    console.log(text1);
     dummybutton.click();
+    console.log("downloadTextFile2 called 1");
+
+/*
+    dummybutton.href = "data:text/text;charset=utf-8," + text1;
+    dummybutton.download = filename;
+    dummybutton.click();
+*/
+
+/*
+    // für Edge
+    let url = window.URL.createObjectURL(text);
+    let a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.download = filename;
+    a.href = url;
+*/
 }
 
 /*
