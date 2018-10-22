@@ -211,7 +211,7 @@ unzipme = function (blob, readyCallback) {
 zipme = function() {
     // get task.xml content from user interface
     var TEXT_CONTENT = taskXml; // $("#output").val();
-    if (TEXT_CONTENT.length == 0) {
+    if (!TEXT_CONTENT || TEXT_CONTENT.length == 0) {
         console.log("zipme called with empty output");
         return;
     }

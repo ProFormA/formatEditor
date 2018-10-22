@@ -247,7 +247,36 @@ function downloadText3(text, name, type) {
 }
 */
 
+function downloadText4(filename, text, a) {
 
+    // Edge crashes with normnal data uri but
+    // supports blobs in download.
+   var blob = new Blob([text], { "type": "text/text;charset=utf8;" });
+/*
+    var filename = this._options.filename.replace(/ /g, "_") + ".csv";
+    if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(blob, filename);
+    }
+    else {
+        var link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute('visibility', 'hidden');
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        // document.body.removeChild(link);
+    }
+
+    const text1 = encodeURIComponent(text);
+*/
+
+    //let a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.download = filename;
+    a.href = URL.createObjectURL(blob);
+    a.click();
+}
 
 
 ///////////////////////////////////////////////////////// document ready function
@@ -591,11 +620,11 @@ $(function() {
   config.createFurtherUiElements();
 
   // create dummy button for saving task.xml
-  let anchor = document.createElement("a");
+/*  let anchor = document.createElement("a");
   anchor.style = "display: none";
   //anchor.id = "dummy_save_xml_button";
   document.body.appendChild(anchor);
-
+*/
   // There must be at least one model solution
   // newFile(setcounter(fileIDs));
     ModelSolutionWrapper.create();

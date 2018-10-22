@@ -16,6 +16,7 @@
 
 // string that contains the LON CAPA problem file content
 var LcProblem;
+var anchorLC = undefined;
 
 function insertLCformelements () {
   var loncapaTextarea = " <div id='exportProblemXML' class=' ui-corner-all'>" +
@@ -52,10 +53,12 @@ function insertLCformelements () {
 
 
     // create dummy button for saving task.xml
-    var anchorLC = document.createElement("a");
-    anchorLC.style = "display: none";
-    anchorLC.id = "dummy_lon_capa_button";
-    document.body.appendChild(anchorLC);
+    if (!anchorLC) {
+        anchorLC = document.createElement("a");
+        anchorLC.style = "display: none";
+        anchorLC.id = "dummy_lon_capa_button";
+        document.body.appendChild(anchorLC);
+    }
 
   $('#otherSoftware1').html(loncapaZipLocation);
 
@@ -69,7 +72,8 @@ function insertLCformelements () {
           createLONCAPAOutput(proglang, "old");
       }
       // convertToXML();
-      downloadTextFile2(LcProblem /*$("#output2")*/, "task.problem", anchorLC);
+      downloadText4("task.problem", LcProblem, anchorLC);
+      // downloadTextFile2(LcProblem, "task.problem", anchorLC);
   })
 
 }
@@ -241,7 +245,7 @@ createLONCAPAproblemFile = function(lc_descr,lc_filename,lc_problemname,lc_mimet
 
 createLONCAPAOutput = function (prgrlang, versionchck) {
 
-    loncapa_filename = "input.txt";
+    let loncapa_filename = "input.txt";
 
     FileWrapper.doOnAllFiles(function(ui_file) {
       if (ui_file.id === $(".xml_model-solution_fileref")[0].value) {
