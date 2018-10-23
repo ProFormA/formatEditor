@@ -144,9 +144,20 @@ var config = (function(testConfigNode) {
     // -------------------------
     // TESTS
     // -------------------------
+    const htmlPraktomat =
+        "<p>" +
+        " Public:<input type='checkbox' class='xml_pr_public' checked title='results are shown to the students'>" +
+        " Required:<input type='checkbox' class='xml_pr_required' checked title='test must be passed in order to pass the task'>" +
+
+        " <label for='xml_pr_always'>Always: </label>"+
+        "<select class='xml_pr_always'>"+
+        "<option selected='selected'>True</option><option>False</option></select>" +
+
+        "</p>";
+
 
     // HTML building blocks for the extra input fields in tests
-    const htmlJavaComp =
+    const htmlJavaComp = htmlPraktomat +
         "<p><label for='xml_pr_CompilerFlags'>Compiler flags: </label>"+
         "<input class='shortinput xml_pr_CompilerFlags'/>"+
         " <label for='xml_pr_CompilerOutputFlags'>Compiler output flags: </label>"+
@@ -157,7 +168,7 @@ var config = (function(testConfigNode) {
         "<input class='mediuminput xml_pr_CompilerFPatt' value='^.*\\.[jJ][aA][vV][aA]$' " +
         "title='Regular expression describing all source files to be passed to the compiler'/></p>";
 
-    const htmlCComp =
+    const htmlCComp = htmlPraktomat +
         "<p><label for='xml_pr_CompilerFlags'>Compiler flags: </label>"+
         "<input class='shortinput xml_pr_CompilerFlags' value='-Wall'/>"+
         " <label for='xml_pr_CompilerOutputFlags'>Compiler output flags: </label>"+
@@ -170,7 +181,8 @@ var config = (function(testConfigNode) {
         "title='Regular expression describing all source files to be passed to the compiler'/></p>";
 
 
-    const htmlJavaJunit = "<p><label for='xml_ju_mainclass'>Test class (no extension)<span class='red'>*</span>: </label>"+
+    const htmlJavaJunit = htmlPraktomat +
+        "<p><label for='xml_ju_mainclass'>Test class (no extension)<span class='red'>*</span>: </label>"+
         "<input class='mediuminput xml_ju_mainclass'/>"+
         " <label for='xml_ju_framew'>Framework<span class='red'>*</span>: </label>"+
         "<select class='xml_ju_framew'><option selected='selected' value='JUnit'>JUnit</option></select>"+
@@ -184,12 +196,14 @@ var config = (function(testConfigNode) {
         "<p><label for='xml_pr_configDescription'>Test description: </label>"+
         "<input class='largeinput xml_pr_configDescription'/></p>";
 
-    const htmlSetlX =  "<p><label for='xml_jt_framew'>Framework<span class='red'>*</span>: </label>"+
+    const htmlSetlX =  htmlPraktomat +
+        "<p><label for='xml_jt_framew'>Framework<span class='red'>*</span>: </label>"+
         "<select class='xml_jt_framew'><option selected='selected' value='setlX'>setlX</option></select>"+
         " <label for='xml_jt_version'>Version<span class='red'>*</span>: </label>"+
         "<select class='xml_jt_version'><option selected='selected' value='2.40'>2.40</option></select></p>";
 
-    const htmlCheckstyle = "<p><label for='xml_pr_CS_version'>Version<span class='red'>*</span>: </label>"+
+    const htmlCheckstyle = htmlPraktomat +
+        "<p><label for='xml_pr_CS_version'>Version<span class='red'>*</span>: </label>"+
         "<select class='xml_pr_CS_version'>" +
         "<option value='5.4'>5.4</option>" +
         "<option selected='selected' value='6.2'>6.2</option>" +
@@ -200,27 +214,34 @@ var config = (function(testConfigNode) {
 
     const JUnit_Default_Title = "Java JUnit Test";
 
+    function initPraktomatTest(testId) {
+        let test = TestWrapper.constructFromId(testId);
+        test.root.find(".xml_pr_always").hide();
+        test.root.find("label[for='xml_pr_always']").hide();
+    }
+
     // Tests objects
     const testCComp       = new TestInfo("C Compiler Test", htmlCComp,
-        "c-compilation", false, readPraktomatCompiler, writePraktomatCompiler);
+        "c-compilation", false, readPraktomatCompiler, writePraktomatCompiler, initPraktomatTest);
     const testJavaComp    = new TestInfo("Java Compiler Test", htmlJavaComp,
-        "java-compilation", false, readPraktomatCompiler, writePraktomatCompiler);
+        "java-compilation", false, readPraktomatCompiler, writePraktomatCompiler, initPraktomatTest);
     const testJavaJUnit   = new TestInfo(JUnit_Default_Title, htmlJavaJunit,
-        "unittest", true, readUnitTest, writeUnitTest);
+        "unittest", true, readUnitTest, writeUnitTest, initPraktomatTest);
     const testCheckStyle  = new TestInfo("CheckStyle Test", htmlCheckstyle,
         "java-checkstyle", true, readPraktomatCheckStyle,
-        writePraktomatCheckStyle);
-    const testPython      = new TestInfo("Python Test", "",
-        "python", true, readPraktomat, writePraktomat);
-    const testDgSetup     = new TestInfo("DejaGnu Setup", "",
-        "dejagnu-setup", true, readPraktomat, writePraktomat);
-    const testDGTester    = new TestInfo("DejaGnu Tester", "",
-        "dejagnu-tester", true, readPraktomat, writePraktomat);
+        writePraktomatCheckStyle, initPraktomatTest);
+    const testPython      = new TestInfo("Python Test", htmlPraktomat,
+        "python", true, readPraktomat, writePraktomat, initPraktomatTest);
+    const testDgSetup     = new TestInfo("DejaGnu Setup", htmlPraktomat,
+        "dejagnu-setup", true, readPraktomat, writePraktomat, initPraktomatTest);
+    const testDGTester    = new TestInfo("DejaGnu Tester", htmlPraktomat,
+        "dejagnu-tester", true, readPraktomat, writePraktomat, initPraktomatTest);
     const testSetlX       = new TestInfo("SetlX Test", htmlSetlX,
-        "jartest", true, readPraktomat, writePraktomatJar);
+        "jartest", true, readPraktomat, writePraktomatJar, initPraktomatTest);
     const testSetlXSyntax = new TestInfo("SetlX Syntax Test", htmlSetlX,
         "jartest" , true, readPraktomat, writePraktomatJar,
         function(testId) {
+            initPraktomatTest(testId);
             // add file for the test
             const filename = 'setlxsyntaxtest.stlx';
             createFileWithContent(filename, 'print("");');
@@ -278,13 +299,6 @@ var config = (function(testConfigNode) {
         insertLCformelements();
     }
 
-    function createFurtherOutput(proglang) {
-        if (configXsdSchemaFile === version101) {
-            createLONCAPAOutput(proglang, "101");
-        } else {
-            createLONCAPAOutput(proglang, "old");
-        }
-    }
 
     function getMimetype(mimetype, extension) {
         switch (extension) {
@@ -355,7 +369,6 @@ var config = (function(testConfigNode) {
     return {
         // methods
         createFurtherUiElements: createFurtherUiElements,
-        createFurtherOutput: createFurtherOutput,
         getMimetype: getMimetype,
         isBinaryFile: isBinaryFile,
         handleFilenameChangeInTest: handleFilenameChangeInTest,
@@ -372,16 +385,4 @@ var config = (function(testConfigNode) {
         maxSizeForEditor: 100000, // maximum file size to enable editing
     }
 })();
-
-
-
-
-
-// -------------------------
-// XML
-// -------------------------
-
-// do not rename!
-//const tExtraTemplateTopLevel = '<praktomat:allowed-upload-filename-mimetypes>(text/.*)</praktomat:allowed-upload-filename-mimetypes>';
-
 

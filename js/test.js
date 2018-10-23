@@ -49,32 +49,22 @@ class TestWrapper {
 
             "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
             "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
-            // TestFileReference.getInstance().getTableString() +
-            // "<span class='drop_zone drop_zone_text'>Drop Your File(s) Here!</span>" +
-            //"<br>" +
             //    " <label for='xml_test_validity'>Validity: </label>"+
             //    "<input class='shortinput xml_test_validity'/>"+
             "<p><label for='xml_test_type'>Type: </label>"+
             "<select class='xml_test_type'>"+ testTypes + "</select>"+
-
-            /*        "<p><label for='xml_pr_public'>Public<span class='red'>*</span>: </label>"+
-                    "<select class='xml_pr_public'>"+
-                    "<option selected='selected'>True</option><option>False</option></select>"+
-
-                    " <label for='xml_pr_required'>Required<span class='red'>*</span>: </label>"+
-                    "<select class='xml_pr_required'>"+
-                    "<option selected='selected'>True</option><option>False</option></select>"+
-            */
+/*
             " <label for='xml_pr_always'>Always: </label>"+
             "<select class='xml_pr_always'>"+
             "<option selected='selected'>True</option><option>False</option></select>" +
+*/
             "</p>" +
 
             "<p><label for='xml_test_title'>Title<span class='red'>*</span>: </label>"+
             "<input class='mediuminput xml_test_title' value='"+ TestName +"'/>" +
             //"<p>" +
-            " Public:<input type='checkbox' class='xml_pr_public' checked title='results are shown to the students'>" +
-            " Required:<input type='checkbox' class='xml_pr_required' checked title='test must be passed in order to pass the task'></p>" +
+//            " Public:<input type='checkbox' class='xml_pr_public' checked title='results are shown to the students'>" +
+//            " Required:<input type='checkbox' class='xml_pr_required' checked title='test must be passed in order to pass the task'></p>" +
             //"</p>" +
 
             "</p>"+
@@ -95,10 +85,11 @@ class TestWrapper {
         if (!DEBUG_MODE) {
             testroot.find(".xml_test_type").hide();
             testroot.find("label[for='xml_test_type']").hide();
-            testroot.find(".xml_pr_always").hide();
-            testroot.find("label[for='xml_pr_always']").hide();
             testroot.find(".xml_test_id").hide();
             testroot.find("label[for='xml_test_id']").hide();
+            // TODO: move to config.js
+            //testroot.find(".xml_pr_always").hide();
+            //testroot.find("label[for='xml_pr_always']").hide();
         }
         if (!WithFileRef) {
             testroot.find("table").hide();

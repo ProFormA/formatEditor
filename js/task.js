@@ -236,9 +236,6 @@ convertToXML = function() {
 
 
     taskXml = task.writeXml();
-
-    // config.createFurtherOutput(task.proglang);
-
     const t1 = performance.now();
     console.log("Call to convertToXML took " + (t1 - t0) + " milliseconds.")
 };
