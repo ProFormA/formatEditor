@@ -5,7 +5,7 @@
 	<!--embedded-bin-file-type-->
 	<file id="id1" mimetype="mimetype1" class="template" name="embedded.bin">
 		<internal-description>internal-description1</internal-description>
-		<content transfercoding="base64">AAECAwQFBgcICQoLDA0ODw==</content>
+		<base64content>AAECAwQFBgcICQoLDA0ODw==</base64content>
 	</file>
 
 	<!-- attached-bin-file-type -->
@@ -13,20 +13,17 @@
 		<internal-description>internal-description1</internal-description>
 	</file>
 	
-
 	<!-- embedded-txt-file-type-->
-	<!-- Paul: warum hier keine natural-language? Ist doch auch eine Textdatei. -->
-	<!-- Paul: warum hier kein encoding? Hier wird das encoding benötigt, weil eie Datei ja neu erzeugt werden muss.-->
-	<file id="id1" mimetype="mimetype1" class="template" name="embedded.txt"  natural-language='de'>
+	<file id="id1" mimetype="mimetype1" class="template" name="embedded.txt">
 		<internal-description>internal-description1</internal-description>
-		<content encode='ISO8859-1' >ein Text</content>
+		<textcontent>ein Text</textcontent>
 	</file>
 
 	<!-- attached-txt-file-type -->
-	<!-- Paul: warum hier encoding? Die Datei wird ja nur ausgepackt und gut.-->
 	<file id="id1" mimetype="mimetype1" class="template" name="referenced.txt" natural-language='de'>
 		<internal-description>internal-description1</internal-description>
+		<externalcontent encode='ISO8859-1'></externalcontent>
 	</file>
-
-	
 </files>	
+
+

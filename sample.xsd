@@ -1,69 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:proforma:v2.0"  xmlns:tns="urn:proforma:v2.0" elementFormDefault="qualified">
 
-  <xs:element name="files" type="tns:task-files-type">
-  </xs:element>
+	<xs:element name="files" type="tns:task-files-type">
+	</xs:element>
 
-  <!-- SIMPLE TYPES -->
-  <xs:simpleType name="description-type">
-    <xs:restriction base="xs:string"/>
-  </xs:simpleType>
+	<!-- SIMPLE TYPES -->
+	<xs:simpleType name="description-type">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
 
-  <!-- COMPLEX TYPES -->
-  <xs:complexType name="task-files-type">
-    <xs:sequence minOccurs="0" maxOccurs="unbounded">
-      <xs:element name="file" type="tns:task-file-type"/>
-    </xs:sequence>
-  </xs:complexType>
+	<!-- COMPLEX TYPES -->
+	<xs:complexType name="task-files-type">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="file" type="tns:task-file-type"/>
+		</xs:sequence>
+	</xs:complexType>
 
-  <xs:complexType name="filecontent-type">
-    <xs:simpleContent>
-      <xs:extension base="xs:string">
-	<xs:attribute name="transfercoding" type="xs:string"/>
-	<xs:attribute name="encode" type="xs:string"/>
-      </xs:extension>
-    </xs:simpleContent>	
-  </xs:complexType>
-  
- 
-  
-  <xs:complexType name="file-type">
-    <xs:sequence>
-      <xs:element name="internal-description" type="tns:description-type" minOccurs="0"/>
-      <xs:element name="content" type="tns:filecontent-type" minOccurs="0" maxOccurs="1"/>
-    </xs:sequence>
-    <xs:attribute name="id" type="xs:string" use="required"/>
-    <xs:attribute name="mimetype" type="xs:string" use="optional"/>
-    <xs:attribute name="name" type="xs:string" use="required"/>
-    <xs:attribute name="natural-language" type="xs:language" use="optional"/>
-  </xs:complexType>
-  
-  <!-- DERIVED TYPES -->
-  <xs:complexType name="task-file-type">
-  <xs:complexContent>
-    <xs:extension base="tns:file-type">
-    <xs:sequence>
-      <!-- <xs:element name="internal-description" type="tns:description-type" minOccurs="0"/>-->
-    </xs:sequence>
-    <xs:attribute name="class" use="required">
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="template"/>
-          <xs:enumeration value="library"/>
-          <xs:enumeration value="inputdata"/>
-          <xs:enumeration value="instruction"/>
-          <xs:enumeration value="source-code"/>
-          <xs:enumeration value="internal-library"/>
-          <xs:enumeration value="internal"/>
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:attribute>
-    </xs:extension>
-	</xs:complexContent>
+	<xs:complexType name="textcontent-type">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+			</xs:extension>
+		</xs:simpleContent>	
+	</xs:complexType>
+
+
+	<xs:complexType name="base64content-type">
+		<xs:simpleContent>
+			<xs:extension base="xs:base64Binary">
+			</xs:extension>
+		</xs:simpleContent>	
+	</xs:complexType> 
+
+	<xs:complexType name="externalcontent-type">
+		<xs:attribute name="encode" type="xs:string"/>
+	</xs:complexType> 
+
+
+	<xs:complexType name="file-type">
+		<xs:sequence>
+			<xs:element name="internal-description" type="tns:description-type" minOccurs="0"/>
+			<xs:choice>
+				<xs:element name="textcontent" type="tns:textcontent-type" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="base64content" type="tns:base64content-type" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="externalcontent" type="tns:externalcontent-type" minOccurs="0" maxOccurs="1"/>
+			</xs:choice>
+
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required"/>
+		<xs:attribute name="mimetype" type="xs:string" use="optional"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="natural-language" type="xs:language" use="optional"/>
+	</xs:complexType>
+
+	<!-- DERIVED TYPES -->
+	<xs:complexType name="task-file-type">
+		<xs:complexContent>
+			<xs:extension base="tns:file-type">
+				<xs:attribute name="class" use="required">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="template"/>
+							<xs:enumeration value="library"/>
+							<xs:enumeration value="inputdata"/>
+							<xs:enumeration value="instruction"/>
+							<xs:enumeration value="source-code"/>
+							<xs:enumeration value="internal-library"/>
+							<xs:enumeration value="internal"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+
+	<xs:complexType name="submission-file-type">
+		<xs:complexContent>
+			<xs:extension base="tns:file-type">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>	
 	
-  </xs:complexType>
+	<xs:complexType name="response-file-type">
+		<xs:complexContent>
+			<xs:extension base="tns:file-type">
+				<xs:attribute name="title" type="xs:string" use="required"/>			
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>		
+	
+	
+	<xs:complexType name="included-task-file-type">
+		<xs:sequence>
+			<xs:element name="internal-description" type="tns:description-type" minOccurs="0"/>
+			<xs:choice>
+			<!-- macht es überhaupt Sinn, den Task als base64 einzubauen ? -->
+				<xs:element name="base64content" type="tns:base64content-type" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="externalcontent" type="tns:externalcontent-type" minOccurs="0" maxOccurs="1"/>
+			</xs:choice>
+
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required"/>
+		<xs:attribute name="mimetype" type="xs:string" use="optional"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="natural-language" type="xs:language" use="optional"/>
+		<xs:attribute name="uuid" type="xs:string" use="optional"/>
+	</xs:complexType>
+	
+
+
 
   
-  <!-- xsd:language -->
-  
+	
+	<!-- xsd:language -->
+
 </xs:schema>
