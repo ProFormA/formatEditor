@@ -115,6 +115,8 @@ class TaskTest {
     constructor() {
         this.id = null;
         this.title = null;
+        this.description = "";
+        this.comment = "";
         this.testtype = null;
         this.filerefs = [];
         this.writeCallback = null;
@@ -341,6 +343,8 @@ class TaskClass {
                 let test = new TaskTest();
                 test.id = xmlReader.readSingleText("@id", thisNode);
                 test.title = xmlReader.readSingleText("dns:title", thisNode);
+                test.description = xmlReader.readSingleText("dns:description", thisNode);
+                test.comment = xmlReader.readSingleText("dns:internal-description", thisNode);
                 test.testtype = xmlReader.readSingleText("dns:test-type", thisNode);
 
                 let configIterator = xmlReader.readNodes("dns:test-configuration", thisNode);
@@ -405,7 +409,7 @@ class TaskClass {
             } else {
                 xmlWriter.createTextElement(fileElem, 'attached-bin-file', item.filename);
             }
-            xmlWriter.createTextElement(fileElem, 'internal-description', item.comment);
+            xmlWriter.createOptionalTextElement(fileElem, 'internal-description', item.comment);
 
         }
 
@@ -444,6 +448,8 @@ class TaskClass {
             let testElem = xmlDoc.createElementNS(xmlns, "test");
             testElem.setAttribute("id", item.id);
             xmlWriter.createTextElement(testElem, 'title', item.title);
+            xmlWriter.createOptionalTextElement(testElem, 'description', item.description);
+            xmlWriter.createOptionalTextElement(testElem, 'internal-description', item.comment);
             xmlWriter.createTextElement(testElem, 'test-type', item.testtype);
             let config = xmlDoc.createElementNS(xmlns, "test-configuration");
             testElem.appendChild(config);
@@ -455,6 +461,7 @@ class TaskClass {
             if (childs.length === 0) {
                 config.removeChild(filerefs);
             }
+
 
             tests.appendChild(testElem);
             if (item.writeCallback) {

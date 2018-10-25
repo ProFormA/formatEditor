@@ -71,13 +71,15 @@ p{ 	                        padding-left:0.3em;  }
     float:right; 	font-size: 65%;
 }
 
-
+/*
 #xml_description {
     float: left;
     width: 50%;
+*(
     /* border: 1px solid black; */
     /*    background-color: #BFF9CA;    */
-}
+/*}*/
+
 
 #preview {
     width: 99.99%;
@@ -200,14 +202,8 @@ table, th, td {
 }
 
 /********************** manual and FAQ *******************/
-div#tabs-5 img{
-	width:80%;
-}
 
 /*
-div#tabs-5 img{
-	width:100%;
-}
 
 li#manual.ui-state-default, li#manual.ui-widget-content .ui-state-default{
 	border: 1px solid #bbb;
@@ -246,15 +242,6 @@ li#FAQ{
 */
 /********************** HTML5 upload and download elements *******************/
 
-.likebutton{
-    -webkit-appearance: button;
-    -moz-appearance: button;
-    appearance: button;
-    font-weight: normal;
-    border: 1px solid #bbb;
-    background-color:  #F7F7F7;
-    padding: 1;
-}
 
 input[type=file]{ 
     width: 220px;

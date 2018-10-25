@@ -27,7 +27,17 @@ class TestWrapper {
     get root() { return this._root; }
     get id() { return this.getValue(this._id,".xml_test_id" ); }
     get title() { return this.getValue(this._id,".xml_test_title" ); }
-    get testtype() { return this.getValue(this._id,".xml_test_type" ); }
+    get comment() { return this.getValue(this._comment,".xml_internal_description"); }
+    get description() { return this.getValue(this._description,".xml_description" ); }
+    get testtype() { return this.getValue(this._type,".xml_test_type" ); }
+
+    // setter
+    set comment(newComment) {
+        this._root.find(".xml_internal_description").val(newComment);
+    }
+    set description(newDescription) {
+        this._root.find(".xml_description").val(newDescription);
+    }
 
 
 
@@ -64,7 +74,7 @@ class TestWrapper {
             "<p><label for='xml_test_title'>Title<span class='red'>*</span>: </label>"+
             "<input class='maxinput xml_test_title' value='"+ TestName +"'/>" +
 
-//            getDescriptionHtmlString('', '') +
+            getDescriptionHtmlString('', '') +
             //"<p>" +
 //            " Public:<input type='checkbox' class='xml_pr_public' checked title='results are shown to the students'>" +
 //            " Required:<input type='checkbox' class='xml_pr_required' checked title='test must be passed in order to pass the task'></p>" +

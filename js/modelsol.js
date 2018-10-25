@@ -25,12 +25,12 @@ class ModelSolutionWrapper {
     // getter
     get root() { return this._root; }
     get id() { return this.getValue(this._id,".xml_model-solution_id" ); }
-    get comment() { return this.getValue(this._type,".xml_internal_description" /*".xml_model-solution_comment"*/ ); }
-    get description() { return this.getValue(this._type,".xml_description" ); }
+    get comment() { return this.getValue(this._comment,".xml_internal_description" /*".xml_model-solution_comment"*/ ); }
+    get description() { return this.getValue(this._description,".xml_description" ); }
 
     // setter
     set comment(newComment) {
-        this._root.find("xml_internal_description" /*".xml_model-solution_comment"*/).val(newComment);
+        this._root.find(".xml_internal_description" /*".xml_model-solution_comment"*/).val(newComment);
     }
     set description(newDescription) { this._root.find(".xml_description").val(newDescription); }
 

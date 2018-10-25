@@ -94,7 +94,7 @@ class FileWrapper {
     get filename() { return this.getValue(this._filename,".xml_file_filename" ); }
     get class() { return this.getValue(this._class,".xml_file_class" ); }
     get type() { return this.getValue(this._type,".xml_file_type" ); }
-    get comment() { return this.getValue(this._type,".xml_internal_description" ); }
+    get comment() { return this.getValue(this._comment,".xml_internal_description" ); }
     get mimetype() { return fileStorages[this.id].mimetype; }
     get isBinary() { return fileStorages[this.id].isBinary; }
     get storeAsFile() { return fileStorages[this.id].storeAsFile; }

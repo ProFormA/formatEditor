@@ -215,6 +215,9 @@ convertToXML = function() {
         test.id = uiTest.id;
         test.title = uiTest.title;
         test.testtype = uiTest.testtype;
+        test.comment = uiTest.comment;
+        test.description = uiTest.description;
+
         let counter = 0;
         TestFileReference.getInstance().doOnAll(uiTest.root, function(id) {
             test.filerefs[counter++] = new TaskFileRef(id);
@@ -248,9 +251,6 @@ readAndDisplayXml = function() {
 
     function createMs(item, index) {
         let ms = ModelSolutionWrapper.create(item.id, item.description, item.comment);
-        //let root = newModelsol(item.id, item.comment);
-        //modelSolIDs[item.id];
-
         let counter = 0;
         item.filerefs.forEach(function(itemFileref, indexFileref) {
             let filename = task.findFilenameForId(itemFileref.refid);
@@ -272,17 +272,19 @@ readAndDisplayXml = function() {
     function createTest(item, index) {
         testIDs[item.id] = 1;
 
-        let testroot = undefined;
+        let ui_test = undefined;
         $.each(config.testInfos, function(index, configItem) {
-            if (!testroot && item.testtype === configItem.testType) {
-                testroot = TestWrapper.create(item.id, /* configItem.title */item.title, configItem.htmlExtraFields,
-                    configItem.testType, configItem.withFileRef).root;
+            if (!ui_test && item.testtype === configItem.testType) {
+                ui_test = TestWrapper.create(item.id, item.title, configItem.htmlExtraFields,
+                    configItem.testType, configItem.withFileRef);
                 if (configItem.readXml) {
-                    task.readTestConfig(taskXml, item.id, configItem.readXml, testroot);
+                    task.readTestConfig(taskXml, item.id, configItem.readXml, ui_test.root);
                 }
+                ui_test.comment = item.comment;
+                ui_test.description = item.description;
             }
         });
-        if (!testroot) {
+        if (!ui_test) {
             setErrorMessage("Test "+item.testtype+" not imported");
             testIDs[item.id] = 0;
             return; // wrong test-type
@@ -292,7 +294,7 @@ readAndDisplayXml = function() {
         let counter = 0;
         item.filerefs.forEach(function(itemFileref, indexFileref) {
             let filename = task.findFilenameForId(itemFileref.refid);
-            TestFileReference.getInstance().setFilenameOnCreation(testroot, counter++, filename);
+            TestFileReference.getInstance().setFilenameOnCreation(ui_test.root, counter++, filename);
         });
     }
 

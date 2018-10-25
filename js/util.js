@@ -28,12 +28,12 @@ const version101    = 'taskxml1.0.1.xsd';
 
 function getDescriptionHtmlString(description, comment) {
     return "<p><label for='xml_description' class='leftlabel'>Description: </label>" +
-    "<textarea rows='1'  class='xml_description' " +
+    "<textarea rows='2'  class='xml_description' " +
     "title = 'Visible description'>"+description+"</textarea>" +
         //"<br>" +
         "</p><p>" +
         "<label for='xml_internal_description'  class='leftlabel'>Internal Description:</label>" +
-    "<textarea rows='1'  class='xml_internal_description' " +
+    "<textarea rows='2'  class='xml_internal_description' " +
     "title = 'Internal description (not visible)'>"+comment+"</textarea></p>";
 }
 
