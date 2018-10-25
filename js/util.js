@@ -32,7 +32,7 @@ function getDescriptionHtmlString(description, comment) {
     "title = 'Visible description'>"+description+"</textarea>" +
         //"<br>" +
         "</p><p>" +
-        "<label for='xml_internal_description'  class='leftlabel'>Internal Description: </label>" +
+        "<label for='xml_internal_description'  class='leftlabel'>Internal Description:</label>" +
     "<textarea rows='1'  class='xml_internal_description' " +
     "title = 'Internal description (not visible)'>"+comment+"</textarea></p>";
 }

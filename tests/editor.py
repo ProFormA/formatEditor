@@ -672,8 +672,11 @@ def set_filename(file_index, filename): # 0-based
 
 def set_file_comment(file_index, text): # 0-based
     # change_tab("file_tab")
-    elem = driver.find_elements_by_class_name('xml_file_comment')
-    elem[file_index].send_keys(text)
+    #elem = driver.find_elements_by_class_name('xml_file_comment')
+    #elem[file_index].send_keys(text)
+    elem = driver.find_element_by_css_selector('#file_' + str(file_index+1) + ' .xml_internal_description')
+    elem.send_keys(text)
+
 
 def set_file_class(file_index, option_index):  # 0-based
     change_tab("file_tab")

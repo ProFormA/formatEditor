@@ -94,7 +94,7 @@ class FileWrapper {
     get filename() { return this.getValue(this._filename,".xml_file_filename" ); }
     get class() { return this.getValue(this._class,".xml_file_class" ); }
     get type() { return this.getValue(this._type,".xml_file_type" ); }
-    get comment() { return this.getValue(this._type,".xml_file_comment" ); }
+    get comment() { return this.getValue(this._type,".xml_internal_description" ); }
     get mimetype() { return fileStorages[this.id].mimetype; }
     get isBinary() { return fileStorages[this.id].isBinary; }
     get storeAsFile() { return fileStorages[this.id].storeAsFile; }
@@ -144,7 +144,7 @@ class FileWrapper {
     }
 
     set comment(newComment) {
-        this._root.find(".xml_file_comment").val(newComment);
+        this._root.find(".xml_internal_description").val(newComment);
     }
 
     set type(newType) {
@@ -429,6 +429,7 @@ class FileWrapper {
             fileIDs[fileid] = 1;
         }
         $("#filesection").append("<div "+
+            "id='file_" + fileid + "'" +
             "class='ui-widget ui-widget-content ui-corner-all xml_file drop_zone'>"+
             "<h3 class='ui-widget-header'><span class ='xml_filename_header'></span> (File #"+fileid+")<span "+
             "class='rightButton'><button onclick='FileWrapper.removeFile($(this));'>x</button></span></h3>"+
@@ -461,15 +462,16 @@ class FileWrapper {
             "<span class='drop_zone_text'>Drop Your File Here!</span>" +
             "</p>"+
 
-            "<p><label for='xml_file_comment'>Comment: </label>"+
-            "<input class='largeinput xml_file_comment'/></p>"+
+            "<p><label for='xml_internal_description'>Internal Description:</label>"+
+            "<textarea rows='1' class='xml_internal_description'/></p>"+
 
             "<p><label>File content<span class='red'>*</span>: </label>"+
             "<span class='xml_file_binary'>(Binary file) " +
             "<span class='xml_file_size'>File size: ???</span>" +
             "</span>" +
             "<span class='xml_file_non_binary'>" +
-            "<input type='file' class='largeinput file_input' onchange='FileWrapper.onReadFile(this)'/> " +
+            "<button class='xml_dummy_upload_file'>Load File...</button>" +
+            "<input class='xml_upload_file' type='file' style='display:none' onchange='FileWrapper.onReadFile(this)'/> " +
 
             "<button class='xml_file_edit' onclick='FileWrapper.showEditor($(this));'>Edit</button>" +
             "<button class='xml_file_editor_close' onclick='FileWrapper.hideEditor($(this));'>Close editor</button>" +
@@ -491,6 +493,10 @@ class FileWrapper {
             ui_file.root.find(".xml_file_class").hide();
             ui_file.root.find("label[for='xml_file_class']").hide();
         }
+
+        ui_file.root.find(".xml_dummy_upload_file").click(function(){
+            ui_file.root.find(".xml_upload_file").click();
+        });
 
         if (config.useCodemirror) {
             FileWrapper.addCodemirrorElement(fileid);
