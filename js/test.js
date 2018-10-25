@@ -39,16 +39,17 @@ class TestWrapper {
         });
     }
 
-    static create(tempcounter, TestName, MoreText, TestType, WithFileRef) {
+    static create(testid, TestName, MoreText, TestType, WithFileRef) {
     // create a new test HTML form element
 
         $("#testsection").append("<div "+
+            "id='test_" + testid + "'" +
             "class='ui-widget ui-widget-content ui-corner-all xml_test'>"+
-            "<h3 class='ui-widget-header'>" + TestName + " (Test #"+tempcounter+")<span "+
+            "<h3 class='ui-widget-header'>" + TestName + " (Test #"+testid+")<span "+
             "class='rightButton'><button onclick='remP3($(this));deletecounter(testIDs,$(this));'>x</button></span></h3>"+
 
             "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
-            "<input class='tinyinput xml_test_id' value='" + tempcounter + "' readonly/>"+
+            "<input class='tinyinput xml_test_id' value='" + testid + "' readonly/>"+
             //    " <label for='xml_test_validity'>Validity: </label>"+
             //    "<input class='shortinput xml_test_validity'/>"+
             "<p><label for='xml_test_type'>Type: </label>"+
@@ -61,7 +62,9 @@ class TestWrapper {
             "</p>" +
 
             "<p><label for='xml_test_title'>Title<span class='red'>*</span>: </label>"+
-            "<input class='mediuminput xml_test_title' value='"+ TestName +"'/>" +
+            "<input class='maxinput xml_test_title' value='"+ TestName +"'/>" +
+
+//            getDescriptionHtmlString('', '') +
             //"<p>" +
 //            " Public:<input type='checkbox' class='xml_pr_public' checked title='results are shown to the students'>" +
 //            " Required:<input type='checkbox' class='xml_pr_required' checked title='test must be passed in order to pass the task'></p>" +
@@ -75,7 +78,7 @@ class TestWrapper {
             "</div>");
 
         // hide fields that exist only for technical reasons
-        var testroot = $(".xml_test_id[value='" + tempcounter + "']").parent().parent();
+        var testroot = $(".xml_test_id[value='" + testid + "']").parent().parent();
         testroot.find(".xml_test_type").val(TestType);
         let test = TestWrapper.constructFromRoot(testroot);
 
@@ -87,9 +90,6 @@ class TestWrapper {
             testroot.find("label[for='xml_test_type']").hide();
             testroot.find(".xml_test_id").hide();
             testroot.find("label[for='xml_test_id']").hide();
-            // TODO: move to config.js
-            //testroot.find(".xml_pr_always").hide();
-            //testroot.find("label[for='xml_pr_always']").hide();
         }
         if (!WithFileRef) {
             testroot.find("table").hide();

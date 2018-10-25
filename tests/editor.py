@@ -713,10 +713,18 @@ def add_model_solution():
     change_tab("ms_tab")       
     elem = driver.find_element_by_id("addModelsol").click()
 
+def set_model_solution_description(ms_index, text): # 0-based
+    elem = driver.find_element_by_css_selector('#modelsolution_' + str(ms_index+1) + ' .xml_description')
+    elem.send_keys(text)
 
 def set_model_solution_comment(ms_index, text): # 0-based
-    elem = driver.find_elements_by_class_name('xml_model-solution_comment')
-    elem[ms_index].send_keys(text)
+    # Edge-Treiber kann leider kein find_element_by_css_selector
+    elem = driver.find_element_by_css_selector('#modelsolution_' + str(ms_index+1) + ' .xml_internal_description')
+    elem.send_keys(text)
+
+#    elem = driver.find_element_by_css_selector('.xml_model-solution .xml_internal_description')
+#    elem = driver.find_elements_by_class_name('xml_model-solution_comment')
+    # elem[ms_index].send_keys(text)
 
 
 # ms_index: 0-based

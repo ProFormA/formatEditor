@@ -9,13 +9,37 @@ body{
 
 
 
+
 textarea{
-	vertical-align: middle;
-	width: 99%;
+    /*display: inline-block;*/
+	vertical-align: top; /* middle; */
+    width: calc(99% - 120px);
+	/*width: 99%; */
     resize: vertical; /* user can resize vertically, but width is fixed */
 }
 
- 
+label{
+    display: inline-block;
+    width: 120px;
+    text-align: left;
+}
+
+
+/*
+#modelsolution_2 .xml_internal_description {
+background:red;
+}
+*/
+
+iframe {
+    resize: vertical; /* user can resize vertically, but width is fixed */
+}
+
+
+.maxinput{
+    vertical-align: middle;
+    width: calc(99% - 120px);
+}
 .largeinput{
 	vertical-align: middle;
 	width: 80%;

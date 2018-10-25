@@ -117,8 +117,10 @@ class PythonTest(zipFileTest.ZipFileTest):
         # editor.add_model_solution() # first model solution ist added by editor
         editor.add_model_solution()
 
-        editor.set_model_solution_comment(0, "model solution #0")
-        editor.set_model_solution_comment(1, "model solution #1")
+        editor.set_model_solution_comment(0, "Internal description for model solution #0")
+        editor.set_model_solution_comment(1, "Internal description for model solution #1")
+        editor.set_model_solution_description(0, "Description for model solution #0")
+        editor.set_model_solution_description(1, "Description for model solution #1")
 
         editor.add_file_to_model_solution(0, 2)
         editor.add_file_to_model_solution(1, 1)

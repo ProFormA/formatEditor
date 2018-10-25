@@ -25,12 +25,14 @@ class ModelSolutionWrapper {
     // getter
     get root() { return this._root; }
     get id() { return this.getValue(this._id,".xml_model-solution_id" ); }
-    get comment() { return this.getValue(this._type,".xml_model-solution_comment" ); }
+    get comment() { return this.getValue(this._type,".xml_internal_description" /*".xml_model-solution_comment"*/ ); }
+    get description() { return this.getValue(this._type,".xml_description" ); }
 
     // setter
     set comment(newComment) {
-        this._root.find(".xml_model-solution_comment").val(newComment);
+        this._root.find("xml_internal_description" /*".xml_model-solution_comment"*/).val(newComment);
     }
+    set description(newDescription) { this._root.find(".xml_description").val(newDescription); }
 
 
     static doOnAll(callback) {
@@ -41,9 +43,11 @@ class ModelSolutionWrapper {
         });
     }
 
-    static create(id, comment) {
+    static create(id, description, comment) {
         if (!comment)
             comment = '';
+        if (!description)
+            description = '';
 
         let modelsolid = id;
         if (!modelsolid) {
@@ -56,16 +60,25 @@ class ModelSolutionWrapper {
 
 
         $("#modelsolutionsection").append("<div " +
+            "id='modelsolution_" + modelsolid + "'" +
             "class='ui-widget ui-widget-content ui-corner-all xml_model-solution'>" +
             "<h3 class='ui-widget-header'>Model solution #" + modelsolid + "<span " +
             "class='rightButton'><button onclick='remP3($(this));deletecounter(modelSolIDs,$(this));'>x</button></span></h3>" +
             "<p><label for='xml_model-solution_id'>ID<span class='red'>*</span>: </label>" +
             "<input class='tinyinput xml_model-solution_id' value='" + modelsolid + "' readonly/>" +
+
+            getDescriptionHtmlString(description, comment) +
+//            "<p><label for='xml_description'>Description: </label>" +
+//            "<input class='largeinput xml_description' value ='" + description + "'/></p>" +
+
+//            "<p><label for='xml_model-solution_comment'>Internal Description: </label>" +
+//            "<input class='largeinput xml_model-solution_comment' value ='" + comment + "'/></p>" +
+
+            "<p>" +
             ModelSolutionFileReference.getInstance().getTableString() +
-            //   "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>" +
-            "<p><label for='xml_model-solution_comment'>Comment: </label>" +
-            "<input class='largeinput xml_model-solution_comment' value ='" + comment + "'/>" +
-            "</p></div>");
+            "</p>" +
+
+            "</div>");
 
         const msroot = $(".xml_model-solution_id[value='" + modelsolid + "']").parent().parent();
         FileReferenceList.init(null, null, ModelSolutionFileReference, msroot);

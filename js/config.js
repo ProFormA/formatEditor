@@ -182,8 +182,8 @@ var config = (function(testConfigNode) {
 
 
     const htmlJavaJunit = htmlPraktomat +
-        "<p><label for='xml_ju_mainclass'>Test class (no extension)<span class='red'>*</span>: </label>"+
-        "<input class='mediuminput xml_ju_mainclass'/>"+
+        "<p><label for='xml_ju_mainclass'>Test class<span class='red'>*</span>: </label>"+
+        "<input class='mediuminput xml_ju_mainclass' title='normally filename without extension'/>"+
         " <label for='xml_ju_framew'>Framework<span class='red'>*</span>: </label>"+
         "<select class='xml_ju_framew'><option selected='selected' value='JUnit'>JUnit</option></select>"+
         " <label for='xml_ju_version'>Version<span class='red'>*</span>: </label>"+

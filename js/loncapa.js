@@ -24,13 +24,13 @@ function insertLCformelements() {
         "<textarea class='ui-corner-all' id='output2' rows='20' cols='80' readonly></textarea>";
     $('#otherSoftware2').html(loncapaTextarea);
 
-    const inputinfo = "Can be relative or absolute. If absolute it must be \"/res/fhwf/...\" and not \"/priv/...\" because that is where it will be " +
+    const inputinfo = "Path to zip-file in LON-CAPA: Can be relative or absolute. If absolute it must be \"/res/fhwf/...\" and not \"/priv/...\" because that is where it will be " +
         "after publication. The filename of the zip-file is not part of the path. When uploading the " +
         "zip-file to LON-CAPA it should be named the task title minus any non-A-z characters.";
 
     const loncapaZipLocation = "<div class='ui-widget ui-widget-content ui-corner-all'>" +
         "<h3 class='ui-widget-header'>LON-CAPA</h3>" +
-        "<label for='lczip'>Path to zip-file in LON-CAPA: </label>" +
+        "<label for='lczip'>Path to zip-file: </label>" +
         "<input title ='" + inputinfo + "' class='mediuminput' id='lczip' value='zip/'/> " +
 
         "<button id='button_save_lon_capa' style='float: right;'>Save LON-CAPA problem File</button>" +

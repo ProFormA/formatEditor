@@ -75,6 +75,12 @@ class XmlWriter {
         node.appendChild(newTag);
         return newTag;
     }
+
+    createOptionalTextElement(node, tag, value, ns = undefined, cdata = false) {
+        if (value === '')
+            return;
+        return this.createTextElement(node, tag, value, ns, cdata);
+    }
 }
 
 // task data structures
@@ -98,7 +104,8 @@ class TaskFile {
 class TaskModelSolution {
     constructor() {
         this.id = null;
-        this.comment = null;
+        this.description = "";
+        this.comment = "";
         this.filerefs = [];
     }
 }
@@ -320,7 +327,8 @@ class TaskClass {
             while (thisNode) {
                 let modelSolution = new TaskModelSolution();
                 modelSolution.id = xmlReader.readSingleText("@id", thisNode);
-                modelSolution.comment = xmlReader.readSingleText("dns:description", thisNode);
+                modelSolution.description = xmlReader.readSingleText("dns:description", thisNode);
+                modelSolution.comment = xmlReader.readSingleText("dns:internal-description", thisNode);
                 readFileRefs(xmlReader, modelSolution, thisNode);
                 this.modelsolutions[modelSolution.id] = modelSolution;
                 thisNode = iterator.iterateNext();
@@ -421,7 +429,8 @@ class TaskClass {
             if (childs.length === 0) {
                 msElem.removeChild(filerefs);
             }
-            xmlWriter.createTextElement(msElem, 'description', item.comment);
+            xmlWriter.createOptionalTextElement(msElem, 'description', item.description);
+            xmlWriter.createOptionalTextElement(msElem, 'internal-description', item.comment);
         }
 
         function writeTest(item, index) {

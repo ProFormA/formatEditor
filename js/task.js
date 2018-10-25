@@ -199,6 +199,7 @@ convertToXML = function() {
         let modelSolution = new TaskModelSolution();
         modelSolution.id = ms.id;
         modelSolution.comment = ms.comment;
+        modelSolution.description = ms.description;
         let counter = 0;
         ModelSolutionFileReference.getInstance().doOnAll(ms.root, function(id) {
             modelSolution.filerefs[counter++] = new TaskFileRef(id);
@@ -246,7 +247,7 @@ readAndDisplayXml = function() {
     let task = new TaskClass();
 
     function createMs(item, index) {
-        let ms = ModelSolutionWrapper.create(item.id, item.comment);
+        let ms = ModelSolutionWrapper.create(item.id, item.description, item.comment);
         //let root = newModelsol(item.id, item.comment);
         //modelSolIDs[item.id];
 
