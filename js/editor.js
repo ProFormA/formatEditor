@@ -503,8 +503,9 @@ $(function() {
 
   $("#loadFile").click(function() {
       // todo do not create file ibject at once
-        let ui_file = newFile();
-        ui_file.root.find(".xml_upload_file").click();
+      $(".xml_load_and_create_file").click();
+        //let ui_file = newFile();
+        //ui_file.root.find(".xml_upload_file").click();
 
         //FileWrapper.showEditor(undefined, ui_file);
   });

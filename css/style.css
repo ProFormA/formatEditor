@@ -1,5 +1,9 @@
 /********************** general settings *******************/
 
+:root {
+    --labelwith: 130px;
+}
+
 body{
 	font-family: "Trebuchet MS", "Helvetica", "Arial", "Verdana", "sans-serif";
 	font-size: 65%;
@@ -13,26 +17,28 @@ table {
     width:33%;
 }
 */
+p label:first-child {
+    /*background: yellow;*/
+    display: inline-block;
+    width: var(--labelwith); /*130px;*/
+    text-align: left;
+}
+
 table td:first-child {
-    width: 130px;
+    width: var(--labelwith); /*130px;*/
     /*background-color: red;*/
 }
 
 textarea{
     /*display: inline-block;*/
 	vertical-align: top; /* middle; */
-    width: calc(99% - 130px);
+    width: calc(99% - var(--labelwith)); /*130px;*/
 	/*width: 99%; */
     resize: vertical; /* user can resize vertically, but width is fixed */
 }
 
 
-p label:first-child {
-/*    background: yellow; */
-    display: inline-block;
-    width: 130px;
-    text-align: left;
-}
+
 
 
 /*
@@ -48,7 +54,7 @@ iframe {
 
 .maxinput{
     vertical-align: middle;
-    width: calc(99% - 120px);
+    width: calc(99% - 130px);
 }
 .largeinput{
 	vertical-align: middle;

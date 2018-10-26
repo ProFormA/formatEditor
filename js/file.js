@@ -251,11 +251,19 @@ class FileWrapper {
         return found;
     }
 
+/*
     static onReadFile(inputbutton) {             // read a file and its filename into the HTML form
         let filenew = inputbutton.files[0];
         const fileId = $(inputbutton).closest('.xml_file').find(".xml_file_id").val();
         readAndCreateFileData(filenew, fileId);
     }
+*/
+    static onReadAndCreateFile(inputbutton) {             // read a file and create a new file item
+        let filenew = inputbutton.files[0];
+        let ui_file = newFile();
+        readAndCreateFileData(filenew, ui_file.id);
+    }
+
 
     static removeFile(button) {                                       // ask before removing
         let root = button.parent().parent().parent(); // arrgh!
@@ -477,11 +485,12 @@ class FileWrapper {
             "<span class='xml_file_non_binary'>" +
 
 
-            "<button class='xml_file_edit' onclick='FileWrapper.showEditor($(this));'>File Content +</button>" +
-            "<button class='xml_file_editor_close' onclick='FileWrapper.hideEditor($(this));'>File Content -</button>" +
+            "<button class='xml_file_edit' onclick='FileWrapper.showEditor($(this));'>Content +</button>" +
+            "<button class='xml_file_editor_close' onclick='FileWrapper.hideEditor($(this));'>Content -</button>" +
 
-            "<span><button class='xml_dummy_upload_file' style='display:none'>Load File...</button>" +
+/*            "<span><button class='xml_dummy_upload_file' style='display:none'>Load File...</button>" +
             "<input class='xml_upload_file' type='file' style='display:none' onchange='FileWrapper.onReadFile(this)'/></span> " +
+*/
 
             "<textarea rows='3' cols='80' class='xml_file_text'"+
             "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea>" +
@@ -503,12 +512,12 @@ class FileWrapper {
             ui_file.root.find("label[for='xml_file_class']").hide();
         }
 
+/*
         ui_file.root.find(".xml_dummy_upload_file").hide();
-
         ui_file.root.find(".xml_dummy_upload_file").click(function(){
             ui_file.root.find(".xml_upload_file").click();
         });
-
+*/
         if (config.useCodemirror) {
             FileWrapper.addCodemirrorElement(fileid);
         }

@@ -91,14 +91,9 @@ class TestWrapper {
 
             "<p><label for='xml_test_title'>Title<span class='red'>*</span>: </label>"+
             "<input class='maxinput xml_test_title' value='"+ TestName +"'/>" +
-
-            getDescriptionHtmlString('', '') +
-            //"<p>" +
-//            " Public:<input type='checkbox' class='xml_pr_public' checked title='results are shown to the students'>" +
-//            " Required:<input type='checkbox' class='xml_pr_required' checked title='test must be passed in order to pass the task'></p>" +
-            //"</p>" +
-
             "</p>"+
+            getDescriptionHtmlString('', '') +
+
 
             MoreText +
             "<p>" + TestFileReference.getInstance().getTableString() + "</p>" +
