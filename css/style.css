@@ -7,22 +7,30 @@ body{
 	background-color: #F7F7F7;
 }
 
-
-
+/*
+table {
+    float:left;
+    width:33%;
+}
+*/
+table td:first-child {
+    width: 130px;
+    /*background-color: red;*/
+}
 
 textarea{
     /*display: inline-block;*/
 	vertical-align: top; /* middle; */
-    width: calc(99% - 120px);
+    width: calc(99% - 130px);
 	/*width: 99%; */
     resize: vertical; /* user can resize vertically, but width is fixed */
 }
 
 
 p label:first-child {
-    background: yellow;
+/*    background: yellow; */
     display: inline-block;
-    width: 120px;
+    width: 130px;
     text-align: left;
 }
 

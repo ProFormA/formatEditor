@@ -60,7 +60,7 @@ class FileReferenceList {
         const tdFirstRemoveButton = "<td><button class='" + this.classRemoveFileref +
             "' onclick='" + className + ".getInstance().removeFileRef($(this))' style='display: none;'>x</button></td>";
 
-        this.table = "<table>" +
+        this.table = "<table cellpadding='0'>" + // cellspacing='0' >" +
             "<tr>" +
             this.tdFilenameLabel + // label
             this.tdFilename +
@@ -556,7 +556,7 @@ class ModelSolutionFileReference extends FileReferenceList {
 
     constructor() {
         super('xml_model-solution_filename', 'xml_model-solution_fileref',
-            'ModelSolutionFileReference', 'Filename',
+            'ModelSolutionFileReference', 'File',
             'file belonging to a model solution', true);
     }
     static getInstance() {return modelSolutionFileRefSingleton;}
