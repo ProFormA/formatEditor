@@ -1,5 +1,6 @@
 /*
- * This proformaEditor was created by the eCULT-Team of Ostfalia University
+ * This is part of the proformaEditor which was created by the eCULT-Team
+ * of Ostfalia University
  * http://ostfalia.de/cms/de/ecult/
  * The software is distributed under a CC BY-SA 3.0 Creative Commons license
  * https://creativecommons.org/licenses/by-sa/3.0/
@@ -11,7 +12,8 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * The version number of this software is in the file js/editor.js.
+ * Author:
+ * Dr.Uta Priss (Karin Borm)
  */
 
 var anchorLC = undefined;

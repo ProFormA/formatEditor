@@ -11,10 +11,10 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * The version number of this software is in the variable codeversion below.
- *
- * Known bugs: search the code for the string "ToDo" below and check faq.html and installationFAQ.html
+ * @copyright 2018 Ostfalia Hochschule fuer angewandte Wissenschaften
+ * @author   Karin Borm <k.borm@ostfalia.de>
  */
+
 
 
 const loadFileOption = "<load...>";

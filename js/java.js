@@ -11,19 +11,17 @@
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * Author:
+ * Karin Borm
  */
 
 /**
- * contains functions and data relevant for handling java tests (i.e. submission is
- * a Java source code file)
- *
- * Created by KarinBorm on 21.03.2017.
+ * contains functions and data relevant for handling java tests
  */
 
 
-/*
 
- */
 
 
 

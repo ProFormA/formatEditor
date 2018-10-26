@@ -1,3 +1,20 @@
+/*
+ * This proformaEditor was created by the eCULT-Team of Ostfalia University
+ * http://ostfalia.de/cms/de/ecult/
+ * The software is distributed under a CC BY-SA 3.0 Creative Commons license
+ * https://creativecommons.org/licenses/by-sa/3.0/
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * Author:
+ * Karin Borm (Dr.Uta Priss)
+ */
+
 class TestWrapper {
     static constructFromRoot(root) {
         let test = new TestWrapper();
@@ -9,7 +26,8 @@ class TestWrapper {
     static constructFromId(id) {
         // this._id = id;
         let test = new TestWrapper();
-        test._root = $(".xml_test_id[value='" + id + "']").closest(".xml_test");
+        test._root = $("#test_" + id);
+        //test._root = $(".xml_test_id[value='" + id + "']").closest(".xml_test");
         if (test.root.length === 0)
             return undefined; // no element with id found
         return test;
@@ -42,7 +60,7 @@ class TestWrapper {
 
 
     static doOnAll(callback) {
-        // todo: iterate through all modelsolutions in variable
+        // todo: iterate through all tests in variable
         $.each($(".xml_test_id"), function (indexOpt, item) {
             let test = TestWrapper.constructFromId(item.value);
             callback(test);

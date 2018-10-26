@@ -1,5 +1,24 @@
 # coding=utf-8
 
+# This is part of the ProFormA Editor
+#
+# This proformaEditor was created by the eCULT-Team of Ostfalia University
+# http://ostfalia.de/cms/de/ecult/
+# The software is distributed under a CC BY-SA 3.0 Creative Commons license
+# https://creativecommons.org/licenses/by-sa/3.0/
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+# PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+# editor controlling functions
+#
+# @copyright 2018 Ostfalia Hochschule fuer angewandte Wissenschaften
+# @author   Karin Borm <k.borm@ostfalia.de>
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -28,19 +47,19 @@ firstTimeDialogs = {'zip': True, 'loncapa': True}
 
 
 
-timeoutSave = 4
-timeoutSaveLonCapa = 4
+timeoutSave = 3.5
+timeoutSaveLonCapa = 3.5
 timeoutSelectChrome = 1
-timeoutSetFileref = 0.3
 timeoutLoadFileref = 1.5
 timeoutTypeFilename = 1
+#timeoutSetFileref = 0.3 #??
 timeoutSetFileref = 1.5
 timeoutAddFileToMs = 1
 timeoutSetFileTest = 1
-timeoutOpenLoadDialog = 2
-timeoutReadXml = 2
-timeoutConfirmSave = 3
-timeoutConfirmOpen = 3
+timeoutOpenLoadDialog = 1.5
+timeoutReadXml = 1.5
+timeoutConfirmSave = 2.5
+timeoutConfirmOpen = 2.5
 timeoutSwitchToSave = 1
 timeoutClickAndAlert = 1
 timeoutClick = 0.2
@@ -771,6 +790,16 @@ def set_test_title(jct_index, text): # 0-based
     elem = driver.find_elements_by_class_name('xml_test_title')
     elem[jct_index].clear()
     elem[jct_index].send_keys(text)
+
+
+def set_test_description(test_index, text): # 0-based
+    elem = driver.find_element_by_css_selector('#test_' + str(test_index+1) + ' .xml_description')
+    elem.send_keys(text)
+
+def set_test_comment(test_index, text): # 0-based
+    elem = driver.find_element_by_css_selector('#test_' + str(test_index+1) + ' .xml_internal_description')
+    elem.send_keys(text)
+
 
 def set_checkbox_value(elem, value):
     is_checked = elem.get_attribute('checked')

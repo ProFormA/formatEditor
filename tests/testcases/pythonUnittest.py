@@ -1,4 +1,23 @@
-# coding=utf-8
+# coding=utf-8# coding=utf-8
+
+# This is part of the ProFormA Editor
+#
+# This proformaEditor was created by the eCULT-Team of Ostfalia University
+# http://ostfalia.de/cms/de/ecult/
+# The software is distributed under a CC BY-SA 3.0 Creative Commons license
+# https://creativecommons.org/licenses/by-sa/3.0/
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+# PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+# test for Python functions
+#
+# @copyright 2018 Ostfalia Hochschule fuer angewandte Wissenschaften
+# @author   Karin Borm <k.borm@ostfalia.de>
 
 import editor
 import time
@@ -140,6 +159,9 @@ class PythonTest(zipFileTest.ZipFileTest):
 
         editor.set_test_file(counter_test_index, 1)
         editor.set_test_title(counter_test_index, "Python Test #0")
+        editor.set_test_description(counter_test_index, "Description for Python Test #0")
+        editor.set_test_comment(counter_test_index, "Internal description for Python Test #0")
+
         editor.set_test_public(counter_test_index, "False")
         editor.set_test_required(counter_test_index, "False")
         # editor.set_junit_fileref2(counter_test_index, "1")
@@ -148,6 +170,8 @@ class PythonTest(zipFileTest.ZipFileTest):
 
         editor.set_test_file(counter_test_index, 3)
         editor.set_test_title(counter_test_index, "Python Test #1")
+        editor.set_test_description(counter_test_index, "Description for Python Test #1")
+        editor.set_test_comment(counter_test_index, "Internal description for Python Test #1")
         editor.set_test_public(counter_test_index, "True")
         editor.set_test_required(counter_test_index, "True")
         # editor.set_junit_fileref2(counter_test_index, "2")

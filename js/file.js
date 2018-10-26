@@ -11,8 +11,8 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- *
- * Known bugs: search the code for the string "ToDo" below and check faq.html and installationFAQ.html
+ * Author:
+ * Karin Borm (Dr. Uta Priss)
  */
 
 var fileStorages = [];
@@ -54,7 +54,8 @@ class FileWrapper {
     static constructFromId(id) {
         // this._id = id;
         let file = new FileWrapper();
-        file._root = $(".xml_file_id[value='" + id + "']").closest(".xml_file");
+        file._root = $("#file_" + id);
+        //file._root = $(".xml_file_id[value='" + id + "']").closest(".xml_file");
         if (file.root.length === 0)
             return undefined; // no element with id found
         return file;
@@ -400,9 +401,11 @@ class FileWrapper {
      */
     static addCodemirrorElement(cmID) {                     // cmID is determined by setcounter(), starts at 1
         codemirror[cmID] = CodeMirror.fromTextArea(
-            $(".xml_file_id[value='"+ cmID +"']").parent().parent().find(".xml_file_text")[0],{
+//            $(".xml_file_id[value='"+ cmID +"']").parent().parent().find(".xml_file_text")[0],{
+            FileWrapper.constructFromId(cmID).root.find(".xml_file_text")[0],{
+                // todo: set mode depending on programming language resp. file extension
                 mode : "text/x-java", indentUnit: 4, lineNumbers: true, matchBrackets: true, tabMode : "shift",
-                styleActiveLine: true, viewportMargin: Infinity, autoCloseBrackets: true, theme: "eclipse",
+                styleActiveLine: true, /*viewportMargin: Infinity, */autoCloseBrackets: true, theme: "eclipse",
                 dragDrop: false
             });
 

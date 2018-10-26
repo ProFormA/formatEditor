@@ -11,10 +11,10 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * The version number of this software is in the variable codeversion below.
- *
- * Known bugs: search the code for the string "ToDo" below and check faq.html and installationFAQ.html
+ * Author:
+ * Karin Borm, Dr. Uta Priss
  */
+
 
 const DEBUG_MODE = false;
 const TEST_MODE  = false;
@@ -69,5 +69,4 @@ function generateUUID(){
     return uuid;
 };
 
-const isFirefox = typeof InstallTrigger !== 'undefined'; // Firefox 1.0+
-console.log("isFirefox value = " + isFirefox);
+
