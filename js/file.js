@@ -437,11 +437,12 @@ class FileWrapper {
             "<h3 class='ui-widget-header'><span class ='xml_filename_header'></span> (File #"+fileid+")<span "+
             "class='rightButton'><button onclick='FileWrapper.removeFile($(this));'>x</button></span></h3>"+
 
-            "<p><label for='xml_file_id'>ID: </label>"+
-            "<input class='tinyinput xml_file_id' value='"+fileid+"'/>"+
-
+            "<p>" +
             " <label for='xml_file_filename'>Filename<span class='red'>*</span>: </label>"+
             "<input class='mediuminput xml_file_filename' onchange='FileWrapper.onFilenameChangedCallback(this)' title='with extension'/>"+
+
+            "<label for='xml_file_id'>ID: </label>"+ // do not set at first position because of layout (css)
+            "<input class='tinyinput xml_file_id' value='"+fileid+"'/>"+
 
             " <label for='xml_file_class'>Usage: " +
             // "<span class='red'>*</span>: " +
@@ -483,9 +484,10 @@ class FileWrapper {
             "</span></p>" +
             "</div>");
 
-        const fileroot = $(".xml_file_id[value='" + fileid + "']").closest(".xml_file");
+        // const fileroot = $("#file_" + fileid);
+        //const fileroot = $(".xml_file_id[value='" + fileid + "']").closest(".xml_file");
 
-        let ui_file = FileWrapper.constructFromRoot(fileroot);
+        let ui_file = FileWrapper.constructFromId(fileid); // constructFromRoot(fileroot);
         fileStorages[fileid] = new FileStorage(false, '', '', '');
 
         // hide fields that exist only for technical reasons

@@ -32,7 +32,7 @@ function insertLCformelements() {
 
     const loncapaZipLocation = "<div class='ui-widget ui-widget-content ui-corner-all'>" +
         "<h3 class='ui-widget-header'>LON-CAPA</h3>" +
-        "<label for='lczip'>Path to zip-file: </label>" +
+        "<p><label for='lczip'>Path to zip-file: </label>" +
         "<input title ='" + inputinfo + "' class='mediuminput' id='lczip' value='zip/'/> " +
 
         "<button id='button_save_lon_capa' style='float: right;'>Save LON-CAPA problem File</button>" +

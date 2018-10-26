@@ -18,7 +18,9 @@ textarea{
     resize: vertical; /* user can resize vertically, but width is fixed */
 }
 
-label{
+
+p label:first-child {
+    background: yellow;
     display: inline-block;
     width: 120px;
     text-align: left;
