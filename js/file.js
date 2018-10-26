@@ -485,8 +485,8 @@ class FileWrapper {
             "<span class='xml_file_non_binary'>" +
 
 
-            "<button class='xml_file_edit' onclick='FileWrapper.showEditor($(this));'>Content +</button>" +
-            "<button class='xml_file_editor_close' onclick='FileWrapper.hideEditor($(this));'>Content -</button>" +
+            "<button class='xml_file_edit' onclick='FileWrapper.showEditor($(this));'>Expand Content</button>" +
+            "<button class='xml_file_editor_close' onclick='FileWrapper.hideEditor($(this));'>Collapse Content</button>" +
 
 /*            "<span><button class='xml_dummy_upload_file' style='display:none'>Load File...</button>" +
             "<input class='xml_upload_file' type='file' style='display:none' onchange='FileWrapper.onReadFile(this)'/></span> " +

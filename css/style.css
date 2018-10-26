@@ -37,7 +37,12 @@ textarea{
     resize: vertical; /* user can resize vertically, but width is fixed */
 }
 
-
+.viewer {
+    width: 99%;
+    /*resize: both;*/ /* user can resize vertically, but width is fixed */
+    /*border: 2px solid black;*/
+    /*padding:1em;*/
+}
 
 
 
@@ -115,7 +120,7 @@ p{ 	                        padding-left:0.3em;  }
 .xml_test_fileref{	width: 50px;     }
 .xml_template_filename{	width: 300px;     }
 .xml_template_fileref{	width: 50px;     } */
-.fileref_filename{	width: 300px;     }
+.fileref_filename{	width: 400px;     }
 .fileref_fileref{	width: 50px;     }
 
 

@@ -20,6 +20,8 @@
 const loadFileOption = "<load...>";
 const emptyFileOption = " "; // must not be empty!!
 
+const showEditorText = 'View';
+const hideEditorText = 'Hide';
 
 let filenameClassList = [];
 let filerefClassList = [];
@@ -43,30 +45,41 @@ class FileReferenceList {
 
     getClassFilename() { return this.classFilename; }
 
+    createRow(withLabel) {
+        // hide first remove file button
+        const tdFirstRemoveButton = "<td><button class='" + this.classRemoveFileref +
+            "' onclick='" + this.className + ".getInstance().removeFileRef($(this))' style='display: none;'>x</button></td>";
+        const tdExpandButton = "<td><button class='collapse' title='show content' onclick='" +
+            this.className + ".getInstance().toggleEditor($(this))'>"+showEditorText+"</button><br></td>";
+        const tdFilenameLabel ="<td>" + this.filenameLabel + "</td>";
+
+        return "<tr>" +
+            (withLabel? tdFilenameLabel:'<td></td>') + // label
+            this.tdFilename +
+            tdExpandButton +
+            tdFirstRemoveButton + // x-button
+            this.tdAddButton +
+        "</tr>";
+
+    }
     createTableString(className, label, mandatory) {
+        this.className = className;
         label = label + '(s)';
         this.filenameLabel = "<label for='" + this.classFilename +
             "'>" + label + (mandatory?"<span class='red'>*</span>":"") + ": </label>";
-        this.tdFilenameLabel ="<td>" + this.filenameLabel + "</td>";
+
         this.tdFilename = "<td><select class='mediuminput fileref_filename " + this.classFilename + "' " +
             "onchange = 'FileReferenceList.onFileSelectionChanged(this)' title='" + this.help + "'></select></td>"+
             "<td><label for='" + this.classFileref + "'>Fileref: </label>"+ // fileref
             "<input class='tinyinput fileref_fileref " + this.classFileref + "' readonly/></td>";
         this.tdAddButton = "<td><button class='" + this.classAddFileref +
             "' title='add another filename' onclick='" + className + ".getInstance().addFileRef($(this))'>+</button><br></td>";
-        this.tdRemoveButton = "<td><button class='" + this.classRemoveFileref +
-            "' onclick='" + className + ".getInstance().removeFileRef($(this))'>x</button></td>";
-        // hide first remove file button
-        const tdFirstRemoveButton = "<td><button class='" + this.classRemoveFileref +
-            "' onclick='" + className + ".getInstance().removeFileRef($(this))' style='display: none;'>x</button></td>";
+
+        //this.tdRemoveButton = "<td><button class='" + this.classRemoveFileref +
+        //    "' onclick='" + className + ".getInstance().removeFileRef($(this))'>x</button></td>";
 
         this.table = "<table cellpadding='0'>" + // cellspacing='0' >" +
-            "<tr>" +
-            this.tdFilenameLabel + // label
-            this.tdFilename +
-            tdFirstRemoveButton + // x-button
-            this.tdAddButton +
-            "</tr>"+
+            this.createRow(true) +
             "</table>" +
             "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>";
     }
@@ -128,17 +141,32 @@ class FileReferenceList {
     }
 
 
+    toggleEditor(element, hide) {
+        let td = element.parent();
+        let tr = td.parent();
+        const fileid = tr.find('.fileref_fileref')[0].value;
+        let ui_file = FileWrapper.constructFromId(fileid);
+
+        if (element.html() === hideEditorText) {
+            element.html(showEditorText);
+            tr.next().remove();
+        }
+        else {
+            if (ui_file && !ui_file.isBinary) {
+                element.html(hideEditorText);
+                $( "<tr><td colspan='6'><textarea disabled cols='80' class='viewer'>"+
+                    ui_file.text
+                    +"</textarea></td></tr>" ).insertAfter(tr);
+            }
+        }
+   }
+
     addFileRef(element) {
         // add new line for selecting a file for a test
         let td = element.parent();
         let tr = td.parent();
         let table_body = tr.parent();
-        table_body.append(
-            "<tr><td></td>" + // label
-            this.tdFilename +
-            this.tdRemoveButton +
-            this.tdAddButton +
-            "</tr>");
+        table_body.append(this.createRow(false));
         td.remove(); // remove current +-button
         table_body.find("." + this.classRemoveFileref).show(); // show all remove file buttons
 
@@ -156,6 +184,12 @@ class FileReferenceList {
     removeFileRef(element) {
         let td = element.parent();
         let tr = td.parent();
+        const buttonText = td.prev().find('button').html();
+        if (buttonText === hideEditorText) {
+            // remove editor
+            tr.next().remove();
+        }
+
         // get associated fileid
         const fileid = tr.find('.fileref_fileref')[0].value;
 
@@ -165,6 +199,10 @@ class FileReferenceList {
         // remove line in file table for test
         let table_body = tr.parent();
         let previousRow = tr.prev("tr");
+        if (previousRow.find('td').length === 1) {
+            // only one column => editor visible go to previous row
+            previousRow = previousRow.prev("tr");
+        }
         let hasNextTr = tr.nextAll("tr");
         let hasPrevTr = tr.prevAll("tr");
 
@@ -180,10 +218,21 @@ class FileReferenceList {
             let firstCell = table_body.find("td").first();
             firstCell.append(this.filenameLabel); // without td
         }
-        if (table_body.find("tr").length === 1) {
-            // table has exactly one row left
-            // => hide all remove file buttons
-            table_body.find("." + this.classRemoveFileref).hide();
+        switch (table_body.find("tr").length) {
+            case 1:
+                // table has exactly one row left
+                // => hide all remove file buttons
+                table_body.find("." + this.classRemoveFileref).hide();
+                break;
+            case 2:
+                // check if second row has editor
+                let rows = table_body.find("tr");
+                let row = rows.last();
+                let cols = row.find('td');
+                if (cols.length === 1)
+                    // => hide all remove file buttons
+                    table_body.find("." + this.classRemoveFileref).hide();
+                break;
         }
 
         if (fileid) {
