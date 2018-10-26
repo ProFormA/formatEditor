@@ -469,16 +469,20 @@ class FileWrapper {
             "<p><label for='xml_internal_description'>Internal Description:</label>"+
             "<textarea rows='1' class='xml_internal_description'/></p>"+
 
-            "<p><label>File content<span class='red'>*</span>: </label>"+
+            "<p>" +
+//            "<label>File content<span class='red'>*</span>: </label>"+
             "<span class='xml_file_binary'>(Binary file) " +
             "<span class='xml_file_size'>File size: ???</span>" +
             "</span>" +
             "<span class='xml_file_non_binary'>" +
-            "<button class='xml_dummy_upload_file'>Load File...</button>" +
-            "<input class='xml_upload_file' type='file' style='display:none' onchange='FileWrapper.onReadFile(this)'/> " +
 
-            "<button class='xml_file_edit' onclick='FileWrapper.showEditor($(this));'>Edit</button>" +
-            "<button class='xml_file_editor_close' onclick='FileWrapper.hideEditor($(this));'>Close editor</button>" +
+
+            "<button class='xml_file_edit' onclick='FileWrapper.showEditor($(this));'>File Content +</button>" +
+            "<button class='xml_file_editor_close' onclick='FileWrapper.hideEditor($(this));'>File Content -</button>" +
+
+            "<span><button class='xml_dummy_upload_file' style='display:none'>Load File...</button>" +
+            "<input class='xml_upload_file' type='file' style='display:none' onchange='FileWrapper.onReadFile(this)'/></span> " +
+
             "<textarea rows='3' cols='80' class='xml_file_text'"+
             "onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea>" +
             "</span></p>" +
@@ -498,6 +502,8 @@ class FileWrapper {
             ui_file.root.find(".xml_file_class").hide();
             ui_file.root.find("label[for='xml_file_class']").hide();
         }
+
+        ui_file.root.find(".xml_dummy_upload_file").hide();
 
         ui_file.root.find(".xml_dummy_upload_file").click(function(){
             ui_file.root.find(".xml_upload_file").click();

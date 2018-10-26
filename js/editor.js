@@ -501,6 +501,14 @@ $(function() {
     FileWrapper.showEditor(undefined, ui_file);
     $("#tabs").tabs("option", "active", tab_page.FILES); });
 
+  $("#loadFile").click(function() {
+      // todo do not create file ibject at once
+        let ui_file = newFile();
+        ui_file.root.find(".xml_upload_file").click();
+
+        //FileWrapper.showEditor(undefined, ui_file);
+  });
+
   $("#addModelsol").click(function() {
       ModelSolutionWrapper.create();
       //newModelsol(setcounter(modelSolIDs));
