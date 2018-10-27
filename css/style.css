@@ -18,16 +18,22 @@ table {
 }
 */
 p label:first-child {
-    /*background: yellow;*/
+    /*background-color: red;*/
     display: inline-block;
     width: var(--labelwith); /*130px;*/
     text-align: left;
 }
 
-table td:first-child {
-    width: var(--labelwith); /*130px;*/
-    /*background-color: red;*/
+/* fileref table */
+.xml_fileref_table {
+    width:100%;
+    /*background-color: yellow;*/
 }
+
+.xml_fileref_table td:first-child { width: var(--labelwith); }
+.xml_fileref_table td { width: 1px; } /* min width, actually: this causes the width to fit the content */
+.xml_fileref_table td:last-child { width: 100%; }
+
 
 textarea{
     /*display: inline-block;*/
@@ -37,8 +43,9 @@ textarea{
     resize: vertical; /* user can resize vertically, but width is fixed */
 }
 
-.viewer {
-    width: 99%;
+.fileref_viewer {
+    width: calc(99% - var(--labelwith)); /*130px;*/
+    float:right;
     /*resize: both;*/ /* user can resize vertically, but width is fixed */
     /*border: 2px solid black;*/
     /*padding:1em;*/

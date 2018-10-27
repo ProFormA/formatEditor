@@ -15,7 +15,7 @@
  * @author   Karin Borm <k.borm@ostfalia.de>
  */
 
-
+// todo: replace table solution with something without table!
 
 const loadFileOption = "<load...>";
 const emptyFileOption = " "; // must not be empty!!
@@ -59,6 +59,7 @@ class FileReferenceList {
             tdExpandButton +
             tdFirstRemoveButton + // x-button
             this.tdAddButton +
+            '<td></td>'
         "</tr>";
 
     }
@@ -78,7 +79,7 @@ class FileReferenceList {
         //this.tdRemoveButton = "<td><button class='" + this.classRemoveFileref +
         //    "' onclick='" + className + ".getInstance().removeFileRef($(this))'>x</button></td>";
 
-        this.table = "<table cellpadding='0'>" + // cellspacing='0' >" +
+        this.table = "<table class='xml_fileref_table' cellpadding='0'>" + // cellspacing='0' >" +
             this.createRow(true) +
             "</table>" +
             "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>";
@@ -154,7 +155,7 @@ class FileReferenceList {
         else {
             if (ui_file && !ui_file.isBinary) {
                 element.html(hideEditorText);
-                $( "<tr><td colspan='6'><textarea disabled cols='80' class='viewer'>"+
+                $( "<tr><td colspan='7'><textarea disabled cols='80' rows='10' class='fileref_viewer'>"+
                     ui_file.text
                     +"</textarea></td></tr>" ).insertAfter(tr);
             }
@@ -210,7 +211,9 @@ class FileReferenceList {
 
         if (hasNextTr.length === 0) {
             // if row to be deleted is last row then add +-button to last row
-            previousRow.append(this.tdAddButton);
+            //let tds = previousRow.find("td");
+            //let td = tds.last();
+            $(this.tdAddButton).insertBefore(previousRow.find("td").last());
         }
         if (hasPrevTr.length === 0) {
             // row to be deleted is first row
