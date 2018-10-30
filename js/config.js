@@ -118,6 +118,7 @@ var config = (function(testConfigNode) {
 
     // xml test reader
     function readPraktomat(test, xmlReader, testConfigNode, testroot) {
+        initPraktomatTest(test.id)
         let praktomatNode = xmlReader.readSingleNode("dns:test-meta-data", testConfigNode);
 
         $(testroot).find(".xml_pr_always").val(xmlReader.readSingleText("praktomat:always", praktomatNode));

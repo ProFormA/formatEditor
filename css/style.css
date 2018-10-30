@@ -20,6 +20,29 @@ p label:first-child {
     text-align: left;
 }
 
+.xml_file_non_binary label {
+    display: inline-block;
+    /*background-color: red;*/
+    width: var(--labelwith);
+    text-align: left;
+}
+
+/* dummy position needed in order to position close button */
+.xml_file_non_binary {
+    position: relative;
+    top: 0px;
+}
+
+.xml_file_editor_close {
+    position: absolute; /* needs position in base element ! */
+    top: 0px;
+    right: 0px;
+    /*display: inline-block;*/
+    /*float: right;*/
+    vertical-align: top; /* middle; */
+    z-index: 10;
+}
+
 /* fileref table */
 .xml_fileref_table {
     width:100%;
@@ -39,6 +62,7 @@ p label:first-child {
 .fileref_viewer {
     width: var(--inputwidth);
     float:right;
+    background-color: #F7F7F7;
 }
 
 
@@ -55,12 +79,14 @@ textarea{
     border: 1px solid;
 }
 
-#xml_description + .CodeMirror{
+#xml_description + .CodeMirror, .xml_file_text + .CodeMirror{
     vertical-align: top;
     display: inline-block;
     width: var(--inputwidth);
+    /*background-color: green;*/
     resize: vertical; /* user can resize vertically, but width is fixed */
 }
+
 
 #preview {
     display: inline-block;
