@@ -526,6 +526,33 @@ $(function() {
         console.log("save_zip_file called");
     });
 
+    $("#restriction_selector").change(function() {
+        let value = $("#restriction_selector").val();
+        switch(value) {
+            case 'files':
+                $("#regexp_restriction").hide();
+                $("#files_restriction").show();
+                $("#archive_restriction").hide();
+                break;
+            case 'regular expression':
+                $("#regexp_restriction").show();
+                $("#files_restriction").hide();
+                $("#archive_restriction").hide();
+                break;
+            case 'archive':
+                $("#archive_restriction").show();
+                $("#regexp_restriction").hide();
+                $("#files_restriction").hide();
+                break;
+            default:
+                alert('unsupported value for restriction');
+                break;
+        }
+    });
+
+    $("#regexp_restriction").hide();
+    $("#files_restriction").show();
+    $("#archive_restriction").hide();
 
 ///////////////////////////////////////////////////////// function: readXML
 
@@ -690,6 +717,8 @@ $(function() {
     FileReferenceList.init("#librarydropzone", '#librarysection', LibraryFileReference);
     FileReferenceList.init("#instructiondropzone", '#instructionsection', InstructionFileReference);
     FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
+
+    $("#files_restriction").append(SubmissionFileListObject.getInstance().getTableString());
 
 
 // test

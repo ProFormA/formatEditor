@@ -22,6 +22,7 @@
     <script src="js/taskdata.js"></script>
     <script src="js/task.js"></script>
     <script src="js/filereflist.js"></script>
+    <script src="js/submissionfilelist.js"></script>
     <script src="js/editor.js"></script>
     <script src="js/zip.js"></script>
     <script src="js/zipper.js"></script>
@@ -85,19 +86,35 @@
                 <div class='ui-widget ui-widget-content ui-corner-all drop_zone' id="templatedropzone">
                      <h3 class='ui-widget-header'>Submission</h3>
                     <span id='templatesection' ></span>
-                     <p><label for='xml_subm_max-size'>Max filesize [kB]: </label>
-                         <input class='shortinput' id='xml_subm_max-size' value='1000'/>
-                         <!--<label for='xml_subm_unpackArchiveRegExp'>Archive RegExp: </label>-->
-                         <!--<input class='shortinput' id='xml_subm_unpackArchiveRegExp'/>-->
-                         <!--<label for='xml_subm_unpackArchive'>Archive: </label>-->
-                         <!--<input class='shortinput' id='xml_subm_unpackArchive'/>-->
-                         <label for='xml_subm_uploadNameRegexp' style="display: none">Filetype: </label>
-                         <input class='mediuminput' id='xml_subm_uploadNameRegexp' value="*" style="display: none"/>
-                         <label for='xml_upload-mime-type'>MimeType: </label>
-                         <input class='mediuminput' id='xml_upload-mime-type' value='^(text/.*)$'/>
-                         <!-- <input type='file' id='dummy_file_upload_button' onchange="readSingleFileAndCreateFilebox(this)"/> -->
-                         <input type='file' id='dummy_file_upload_button' style="display: none"/> <!-- onchange="readSingleFileAndCreateFilebox(this)"/> -->
-                     </p>
+
+                    <p><label>Restriction:</label>
+                    <select id='restriction_selector'>
+                    <option selected='selected'>files</option>"
+                    <option>regular expression</option>"
+                    <option>archive</option>"
+                    </select>
+                    </p>
+                    <div id="regexp_restriction">
+                        <p>
+                            <label for='xml_subm_uploadNameRegexp'>Filename: </label>
+                            <input class='mediuminput' id='xml_subm_uploadNameRegexp' value="*"/>
+
+                            <label for='xml_subm_max-size'>Max filesize [kB]: </label>
+                            <input class='shortinput' id='xml_subm_max-size' value='1000'/>
+                            <!--<label for='xml_subm_unpackArchiveRegExp'>Archive RegExp: </label>-->
+                            <!--<input class='shortinput' id='xml_subm_unpackArchiveRegExp'/>-->
+                            <!--<label for='xml_subm_unpackArchive'>Archive: </label>-->
+                            <!--<input class='shortinput' id='xml_subm_unpackArchive'/>-->
+                            <label for='xml_upload-mime-type'>MimeType: </label>
+                            <input class='shortinput' id='xml_upload-mime-type' value='^(text/.*)$'/>
+                            <!-- <input type='file' id='dummy_file_upload_button' onchange="readSingleFileAndCreateFilebox(this)"/> -->
+                            <input type='file' id='dummy_file_upload_button' style="display: none"/> <!-- onchange="readSingleFileAndCreateFilebox(this)"/> -->
+                        </p>
+                    </div>
+                    <div id="files_restriction"></div>
+                    <div id="archive_restriction"></div>
+
+
                 </div>
                 <span id='otherSoftware1'></span>
                 <span id='gradinghintsection'></span>

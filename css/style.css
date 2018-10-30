@@ -13,17 +13,10 @@ body{
 }
 
 /* left side labels */
-p label:first-child {
+p label:first-child, .xml_file_non_binary label {
     /*background-color: red;*/
     display: inline-block;
     width: var(--labelwith); /*130px;*/
-    text-align: left;
-}
-
-.xml_file_non_binary label {
-    display: inline-block;
-    /*background-color: red;*/
-    width: var(--labelwith);
     text-align: left;
 }
 
@@ -49,7 +42,7 @@ p label:first-child {
     /*background-color: yellow;*/
 }
 
-.xml_fileref_table td:first-child {
+.xml_fileref_table td:first-child, .dynamic_table td:first-child {
     /*background-color: blue;*/
     width: var(--labelwith);
 }
@@ -132,7 +125,9 @@ p{ 	                        padding-left:0.3em;  }
     float:right; 	font-size: 65%;
 }
 
-
+.restrict_filename { width: 400px; }
+.restrict_mimetype { width: 200px; }
+.restrict_size { width: 90px; }
 
 .fileref_filename{	width: 400px;     }
 .fileref_fileref{	width: 50px;     }
