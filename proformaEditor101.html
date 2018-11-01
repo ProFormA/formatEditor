@@ -89,9 +89,9 @@
 
                     <p><label>Restriction:</label>
                     <select id='restriction_selector'>
-                    <option selected='selected'>files</option>"
-                    <option>regular expression</option>"
-                    <option>archive</option>"
+                    <option selected='selected' value="files">Files</option>"
+                    <option value="file_regexp">Files with Regular Expression</option>"
+                    <option value="archive">Archive</option>"
                     </select>
                     </p>
                     <div id="regexp_restriction">
@@ -107,12 +107,41 @@
                             <!--<input class='shortinput' id='xml_subm_unpackArchive'/>-->
                             <label for='xml_upload-mime-type'>MimeType: </label>
                             <input class='shortinput' id='xml_upload-mime-type' value='^(text/.*)$'/>
-                            <!-- <input type='file' id='dummy_file_upload_button' onchange="readSingleFileAndCreateFilebox(this)"/> -->
-                            <input type='file' id='dummy_file_upload_button' style="display: none"/> <!-- onchange="readSingleFileAndCreateFilebox(this)"/> -->
+
                         </p>
                     </div>
                     <div id="files_restriction"></div>
-                    <div id="archive_restriction"></div>
+                    <div id="archive_restriction">
+                        <p>
+                            <label for='xml_subm_uploadNameRegexp'>Archive Filename: </label>
+                            <input class='mediuminput' id='xml_subm_archive_name' value="*"/>
+
+                            <label for='xml_subm_max-size'>Max filesize [kB]: </label>
+                            <input class='shortinput' id='xml_subm_archive_size' value='1000'/>
+                            <!--<label for='xml_subm_unpackArchiveRegExp'>Archive RegExp: </label>-->
+                            <!--<input class='shortinput' id='xml_subm_unpackArchiveRegExp'/>-->
+                            <!--<label for='xml_subm_unpackArchive'>Archive: </label>-->
+                            <!--<input class='shortinput' id='xml_subm_unpackArchive'/>-->
+                            <label for='xml_upload-mime-type'>MimeType: </label>
+                            <input class='shortinput' id='xml_subm_archive_mime_type' value='irgendwas mit zip'/>
+
+                        </p>
+                        <p><label>Restrict content by:</label>
+                            <select id='archive_list_selector'>
+                                <option selected='selected' value="files">File List</option>"
+                                <option value="file_regexp">Regular Expression</option>"
+                            </select>
+                        </p>
+                        <div id="archive_files_restriction"></div>
+                        <div id="archive_regexp_restriction">
+                            <p>
+                                <label></label>
+                                <label for='xml_subm_uploadNameRegexp'>Filename Regular Expression: </label>
+                                <input class='mediuminput' id='regexp_archivefiles' value="*"/>
+                            </p>
+                        </div>
+                    </div>
+                    <input type='file' id='dummy_file_upload_button' style="display: none"/>
 
 
                 </div>

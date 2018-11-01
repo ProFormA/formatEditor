@@ -526,23 +526,28 @@ $(function() {
         console.log("save_zip_file called");
     });
 
+    // Restriction selection handling
+    let restriction_files = $("#files_restriction");
+    let restriction_regexp = $("#regexp_restriction");
+    let restriction_archive = $("#archive_restriction");
+
     $("#restriction_selector").change(function() {
         let value = $("#restriction_selector").val();
         switch(value) {
             case 'files':
-                $("#regexp_restriction").hide();
-                $("#files_restriction").show();
-                $("#archive_restriction").hide();
+                restriction_regexp.hide();
+                restriction_files.show();
+                restriction_archive.hide();
                 break;
-            case 'regular expression':
-                $("#regexp_restriction").show();
-                $("#files_restriction").hide();
-                $("#archive_restriction").hide();
+            case 'file_regexp':
+                restriction_regexp.show();
+                restriction_files.hide();
+                restriction_archive.hide();
                 break;
             case 'archive':
-                $("#archive_restriction").show();
-                $("#regexp_restriction").hide();
-                $("#files_restriction").hide();
+                restriction_archive.show();
+                restriction_regexp.hide();
+                restriction_files.hide();
                 break;
             default:
                 alert('unsupported value for restriction');
@@ -550,9 +555,34 @@ $(function() {
         }
     });
 
-    $("#regexp_restriction").hide();
-    $("#files_restriction").show();
-    $("#archive_restriction").hide();
+    restriction_regexp.hide();
+    restriction_files.show();
+    restriction_archive.hide();
+
+
+    let restriction_arch_files = $("#archive_files_restriction");
+    let restriction_arch_regexp = $("#archive_regexp_restriction");
+
+    $("#archive_list_selector").change(function() {
+        let value = $("#archive_list_selector").val();
+        switch(value) {
+            case 'files':
+                restriction_arch_files.show();
+                restriction_arch_regexp.hide();
+                break;
+            case 'file_regexp':
+                restriction_arch_files.hide();
+                restriction_arch_regexp.show();
+                break;
+            default:
+                alert('unsupported value for restriction');
+                break;
+        }
+    });
+
+    restriction_arch_files.show();
+    restriction_arch_regexp.hide();
+
 
 ///////////////////////////////////////////////////////// function: readXML
 
@@ -718,7 +748,8 @@ $(function() {
     FileReferenceList.init("#instructiondropzone", '#instructionsection', InstructionFileReference);
     FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
 
-    $("#files_restriction").append(SubmissionFileListObject.getInstance().getTableString());
+    $("#files_restriction").append(SubmissionFileList.getInstance().getTableString());
+    $("#archive_files_restriction").append(SubmissionArchiveFileList.getInstance().getTableString());
 
 
 // test

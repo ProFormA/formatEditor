@@ -20,20 +20,21 @@
 
 
 // abstract class for a filename reference input
-class SubmissionFileList {
+class DynamicList {
 
     constructor(classFilename, classFileref, jsClassName, label, help, mandatory) {
         this.classFilename = classFilename;
-        this.classFileref = classFileref;
         this.classAddItem = classFileref.replace('xml_', 'add_'); // classAddItem;
         this.classRemoveItem = classFileref.replace('xml_', 'remove_'); // classRemoveItem;
         this.help = help;
 
         this.createTableString(jsClassName, label, mandatory);
-        this.JsClassname = jsClassName;
     }
 
     getClassFilename() { return this.classFilename; }
+
+    // virtual
+    createRowContent() { return '';}
 
     createRow(first) {
         // hide first remove file button
@@ -43,27 +44,14 @@ class SubmissionFileList {
         return "<tr>" +
             "<td>" + (first?this.filenameLabel:'') + "</td>" + // label
 
-            "<td>Filename:</td>" +
-            "<td><input class='restrict_filename " + this.classFilename + "' " +
-            " title='" + this.help + "'></input></td>" +
-
-            "<td>MimeType:</td>" +
-            "<td><input class='restrict_mimetype' " +
-            " title='regular expression' value='^(text/.*)$'></input></td>" +
-
-            "<td>Size[B]:</td>" +
-            "<td><input class='restrict_size' " +
-            " title='in bytes'></input></td>" +
-
-            "<td>optional:</td>" +
-            "<td><input type='checkbox' class='optional' title='optional file'></td>" +
+            this.createRowContent() +
 
             tdFirstRemoveButton + // x-button
             this.tdAddButton +
             '<td></td>'
         "</tr>";
-
     }
+
     createTableString(className, label, mandatory) {
         this.className = className;
         label = label + '(s)';
@@ -83,12 +71,14 @@ class SubmissionFileList {
         return this.table;
     }
 
+    /*
     doOnAll(root, callback) {
         $.each(root.find(".fileref_fileref"), function(index, item) {
             const filerefId = item.value;
             callback(filerefId);
         });
     }
+    */
 
     addItem(element) {
         // add new line for selecting a file for a test
@@ -109,9 +99,6 @@ class SubmissionFileList {
             // remove editor
             tr.next().remove();
         }
-
-        // TODO:
-        // if fileclass == library => internal???
 
         // remove line in file table for test
         let table_body = tr.parent();
@@ -154,19 +141,58 @@ class SubmissionFileList {
                 break;
         }
     }
-
-
 }
 
 
-class SubmissionFileListObject extends SubmissionFileList {
+class SubmissionFileList extends DynamicList {
 
     constructor() {
-        super('xml_subm_filename', 'xml_subm_fileref', 'SubmissionFileListObject', 'Expected File',
+        super('xml_subm_filename', 'xml_subm_fileref', 'SubmissionFileList', 'Expected File',
             'files belonging to the submission', false);
+    }
+
+    createRowContent() {
+        return "<td>Filename:</td>" +
+            "<td><input class='restrict_filename " + this.classFilename + "' " +
+            " title='" + this.help + "'></input></td>" +
+
+            "<td>MimeType:</td>" +
+            "<td><input class='restrict_mimetype' " +
+            " title='regular expression' value='^(text/.*)$'></input></td>" +
+
+            "<td>Size[B]:</td>" +
+            "<td><input class='restrict_size' " +
+            " title='in bytes'></input></td>" +
+
+            "<td>optional:</td>" +
+            "<td><input type='checkbox' class='optional' title='optional file'></td>";
     }
 
     static getInstance() {return submissionFileSingleton;}
 }
-let submissionFileSingleton = new SubmissionFileListObject();
+let submissionFileSingleton = new SubmissionFileList();
 
+
+class SubmissionArchiveFileList extends DynamicList {
+
+    constructor() {
+        super('xml_subm_filename', 'xml_subm_fileref', 'SubmissionArchiveFileList', 'Expected File',
+            'files belonging to the submission archive', false);
+    }
+
+    createRowContent() {
+        return "<td>Path:</td>" +
+            "<td><input class='restrict_filename " + this.classFilename + "' " +
+            " title='" + this.help + "'></input></td>" +
+
+            "<td>MimeType:</td>" +
+            "<td><input class='restrict_mimetype' " +
+            " title='regular expression' value='^(text/.*)$'></input></td>" +
+
+            "<td>optional:</td>" +
+            "<td><input type='checkbox' class='optional' title='optional file'></td>";
+    }
+
+    static getInstance() {return archiveFileSingleton;}
+}
+let archiveFileSingleton = new SubmissionArchiveFileList();
