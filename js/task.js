@@ -192,7 +192,7 @@ convertToXML = function() {
         task.uuid = generateUUID();
     task.lang = $("#xml_lang").val();
     task.sizeSubmission = $("#xml_subm_max-size").val();
-    task.mimeTypeRegExpSubmission = $("#xml_upload-mime-type").val();
+    //task.mimeTypeRegExpSubmission = $("#xml_upload-mime-type").val();
 
     // read files
     FileWrapper.doOnAllFiles(function(ui_file) {
@@ -350,7 +350,7 @@ readAndDisplayXml = function() {
     $("#xml_meta-data_title").val(task.title);
     $("#xml_uuid").val(task.uuid);
     $("#xml_subm_max-size").val(task.sizeSubmission);
-    $("#xml_upload-mime-type").val(task.mimeTypeRegExpSubmission);
+    //$("#xml_upload-mime-type").val(task.mimeTypeRegExpSubmission);
     if (task.proglangVersion)
         $("#xml_programming-language").val(task.proglang + '/' + task.proglangVersion);
     else

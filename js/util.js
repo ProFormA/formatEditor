@@ -25,16 +25,25 @@ const codeversion   = '3.0.0 pre';                     // current version of thi
 const version094    = 'taskxml0.9.4.xsd';                // name of schema files
 const version101    = 'taskxml1.0.1.xsd';
 
+function getInternalDescriptionString(comment) {
+    return "<p>" +
+        "<label for='xml_internal_description'  class='leftlabel'>Internal Description:</label>" +
+        "<textarea rows='2'  class='xml_internal_description' " +
+        "title = 'Internal description (not visible for students)'>"+comment+"</textarea></p>";
+}
 
 function getDescriptionHtmlString(description, comment) {
-    return "<p><label for='xml_description' class='leftlabel'>Description: </label>" +
+    return "<p><label for='xml_description'>Description: </label>" +
     "<textarea rows='2'  class='xml_description' " +
     "title = 'Visible description'>"+description+"</textarea>" +
         //"<br>" +
-        "</p><p>" +
-        "<label for='xml_internal_description'  class='leftlabel'>Internal Description:</label>" +
+        "</p>" +
+        getInternalDescriptionString(comment);
+
+/*        "<p>" +
+        "<label for='xml_internal_description'>Internal Description:</label>" +
     "<textarea rows='2'  class='xml_internal_description' " +
-    "title = 'Internal description (not visible)'>"+comment+"</textarea></p>";
+    "title = 'Internal description (not visible)'>"+comment+"</textarea></p>";*/
 }
 
 // without . (MyString.Java = java)

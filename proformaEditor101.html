@@ -42,7 +42,7 @@
             <ul>
                 <li id="main_tab"><a href="#tabs-1">Main</a></li>
                 <li id="ms_tab"><a href="#tabs-3">Model Solutions</a></li>
-                <li id="test_tab"><a href="#tabs-4">Tests</a></li>
+                <li id="test_tab"><a href="#tabs-4">Testsuite</a></li>
                 <li id="file_tab"><a href="#tabs-2">Files</a></li>
                 <!--<li id="debug_output"><a href="#tabs-Debug">Output</a></li>-->
                 <!-- <li id="FAQ"><a href="#tabs-6">FAQ</a></li>
@@ -50,38 +50,43 @@
             </ul>
             <div id="tabs-1">
                 <div class='ui-widget ui-widget-content ui-corner-all' >
-                    <h3 class='ui-widget-header'>Task description</h3>
+                    <h3 class='ui-widget-header'>Task</h3>
 
                     <p><label for='xml_meta-data_title'>Title<span class='red'>*</span>: </label>
-                        <input class='maxinput' id='xml_meta-data_title'/></p>
+                        <input class='maxinput' id='xml_meta-data_title'/>
+                    </p>
+
+                    <p><label for='xml_programming-language'>Programming Language:</label>
+                        <select id='xml_programming-language'></select>
+                    </p>
 
                     <p><span><label for='xml_description'>Description<span class='red'>*</span>: </label>
                        <textarea rows='8' cols='80' id='xml_description' name='xml_description'
                                  title = 'What the students will see.'></textarea>
-
-                    </span>
-                    </p><p><label></label>
+                    </span></p>
+                    <p><label></label>
                         <iframe id=preview title="HTML Preview"></iframe>
                     </p>
                     <span id="librarydropzone"><p><span id='librarysection'></span></p></span>
                     <span id="instructiondropzone"><p></span><span id='instructionsection' ></span></p></span>
                     <!-- onfocus='this.rows=10;' onmouseout='this.rows=10;' -->
-                     <p><label for='xml_lang'>Language<span class='red'>*</span>: </label>
+                     <p><label for='xml_lang'>Language: </label>
                          <select id='xml_lang'>
                              <option value='en'>English</option>
-                             <option selected='selected' value='de'>Deutsch</option>
+                             <option selected='selected' value='de'>German</option>
                          </select>
                      <label for='xml_uuid' style="display: none">UUID: </label>
                          <input class='mediuminput' id='xml_uuid' readonly style="display: none"/></p>
+                    <span id="xml_task_internal_description"/>
                 </div>
 
-                <div class='ui-widget ui-widget-content ui-corner-all'>
+                <!-- programming language options are set with script!!! -->
+                <!-- <div class='ui-widget ui-widget-content ui-corner-all'>
                      <h3 class='ui-widget-header'>Programming language</h3>
                      <p><label for='xml_programming-language'>Name and version<span class='red'>*</span>: </label>
                          <select id='xml_programming-language'>
-                             <!-- programming language options are set with script!!! -->
                          </select></p>
-                </div>
+                </div> -->
 
                 <div class='ui-widget ui-widget-content ui-corner-all drop_zone' id="templatedropzone">
                      <h3 class='ui-widget-header'>Submission</h3>
@@ -89,46 +94,44 @@
 
                     <p><label>Restriction:</label>
                     <select id='restriction_selector'>
-                    <option selected='selected' value="files">Files</option>"
-                    <option value="file_regexp">Files with Regular Expression</option>"
+                    <option selected='selected' value="files">Filenames</option>"
+                    <option value="file_regexp">Files by Regular Expression</option>"
                     <option value="archive">Archive</option>"
                     </select>
                     </p>
                     <div id="regexp_restriction">
                         <p>
-                            <label for='xml_subm_uploadNameRegexp'>Filename: </label>
-                            <input class='mediuminput' id='xml_subm_uploadNameRegexp' value="*"/>
+                            <label for='xml_subm_regexp_name'>Filename: </label>
+                            <input class='mediuminput' id='xml_subm_regexp_name' value="*"/>
 
-                            <label for='xml_subm_max-size'>Max filesize [kB]: </label>
-                            <input class='shortinput' id='xml_subm_max-size' value='1000'/>
+                            <label for='xml_subm_regexp_size'>Max filesize[B]:</label>
+                            <input class='shortinput' id='xml_subm_regexp_size' value='1000'/>
                             <!--<label for='xml_subm_unpackArchiveRegExp'>Archive RegExp: </label>-->
                             <!--<input class='shortinput' id='xml_subm_unpackArchiveRegExp'/>-->
                             <!--<label for='xml_subm_unpackArchive'>Archive: </label>-->
                             <!--<input class='shortinput' id='xml_subm_unpackArchive'/>-->
-                            <label for='xml_upload-mime-type'>MimeType: </label>
-                            <input class='shortinput' id='xml_upload-mime-type' value='^(text/.*)$'/>
+                            <!--<label for='xml_subm_regexp_mime_type'>MimeType: </label>
+                            <input class='shortinput' id='xml_subm_regexp_mime_type' value='^(text/.*)$'/>-->
 
                         </p>
                     </div>
                     <div id="files_restriction"></div>
                     <div id="archive_restriction">
                         <p>
-                            <label for='xml_subm_uploadNameRegexp'>Archive Filename: </label>
+                            <label for='xml_subm_archive_name'>Archive Filename: </label>
                             <input class='mediuminput' id='xml_subm_archive_name' value="*"/>
 
-                            <label for='xml_subm_max-size'>Max filesize [kB]: </label>
+                            <label for='xml_subm_archive_size'>Max filesize[B]:</label>
                             <input class='shortinput' id='xml_subm_archive_size' value='1000'/>
                             <!--<label for='xml_subm_unpackArchiveRegExp'>Archive RegExp: </label>-->
                             <!--<input class='shortinput' id='xml_subm_unpackArchiveRegExp'/>-->
                             <!--<label for='xml_subm_unpackArchive'>Archive: </label>-->
                             <!--<input class='shortinput' id='xml_subm_unpackArchive'/>-->
-                            <label for='xml_upload-mime-type'>MimeType: </label>
-                            <input class='shortinput' id='xml_subm_archive_mime_type' value='irgendwas mit zip'/>
 
                         </p>
                         <p><label>Restrict content by:</label>
                             <select id='archive_list_selector'>
-                                <option selected='selected' value="files">File List</option>"
+                                <option selected='selected' value="files">File Path List</option>"
                                 <option value="file_regexp">Regular Expression</option>"
                             </select>
                         </p>
@@ -136,8 +139,8 @@
                         <div id="archive_regexp_restriction">
                             <p>
                                 <label></label>
-                                <label for='xml_subm_uploadNameRegexp'>Filename Regular Expression: </label>
-                                <input class='mediuminput' id='regexp_archivefiles' value="*"/>
+                                <label for='xml_subm_archive_regexp_files'>Filename Regular Expression: </label>
+                                <input class='mediuminput' id='xml_subm_archive_regexp_files' value="*"/>
                             </p>
                         </div>
                     </div>

@@ -111,6 +111,8 @@ function setcounter(temphash) {
 function deletecounter(temphash,tempelement) {         // for modelSolIDs, testIDs
   //console.log('deletecounter called');
   // let tempcnter;
+
+    // todo: do not use parent...
     delete temphash[tempelement.parent().parent().parent().find('.tinyinput')[0].value];
 }
 
@@ -750,6 +752,8 @@ $(function() {
 
     $("#files_restriction").append(SubmissionFileList.getInstance().getTableString());
     $("#archive_files_restriction").append(SubmissionArchiveFileList.getInstance().getTableString());
+
+    $("#xml_task_internal_description").append(getInternalDescriptionString(''));
 
 
 // test

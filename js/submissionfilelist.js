@@ -42,7 +42,7 @@ class DynamicList {
             "' onclick='" + this.className + ".getInstance().removeItem($(this))' style='display: none;'>x</button></td>";
 
         return "<tr>" +
-            "<td>" + (first?this.filenameLabel:'') + "</td>" + // label
+            "<td>" + (first?this.label:'') + "</td>" + // label
 
             this.createRowContent() +
 
@@ -54,9 +54,13 @@ class DynamicList {
 
     createTableString(className, label, mandatory) {
         this.className = className;
-        label = label + '(s)';
-        this.filenameLabel = "<label for='" + this.classFilename +
-            "'>" + label + (mandatory?"<span class='red'>*</span>":"") + ": </label>";
+        if (label.length > 0) {
+            label = label + '(s)';
+            this.label = "<label for='" + this.classFilename +
+                "'>" + label + (mandatory?"<span class='red'>*</span>":"") + ": </label>";
+        } else {
+            this.label = "<label></label>";
+        }
 
 
         this.tdAddButton = "<td><button class='" + this.classAddItem +
@@ -122,7 +126,7 @@ class DynamicList {
             // row to be deleted is first row
             // => add filename label to first column
             let firstCell = table_body.find("td").first();
-            firstCell.append(this.filenameLabel); // without td
+            firstCell.append(this.label); // without td
         }
         switch (table_body.find("tr").length) {
             case 1:
@@ -156,10 +160,6 @@ class SubmissionFileList extends DynamicList {
             "<td><input class='restrict_filename " + this.classFilename + "' " +
             " title='" + this.help + "'></input></td>" +
 
-            "<td>MimeType:</td>" +
-            "<td><input class='restrict_mimetype' " +
-            " title='regular expression' value='^(text/.*)$'></input></td>" +
-
             "<td>Size[B]:</td>" +
             "<td><input class='restrict_size' " +
             " title='in bytes'></input></td>" +
@@ -176,7 +176,7 @@ let submissionFileSingleton = new SubmissionFileList();
 class SubmissionArchiveFileList extends DynamicList {
 
     constructor() {
-        super('xml_subm_filename', 'xml_subm_fileref', 'SubmissionArchiveFileList', 'Expected File',
+        super('xml_subm_filename', 'xml_subm_fileref', 'SubmissionArchiveFileList', '',
             'files belonging to the submission archive', false);
     }
 
@@ -184,10 +184,6 @@ class SubmissionArchiveFileList extends DynamicList {
         return "<td>Path:</td>" +
             "<td><input class='restrict_filename " + this.classFilename + "' " +
             " title='" + this.help + "'></input></td>" +
-
-            "<td>MimeType:</td>" +
-            "<td><input class='restrict_mimetype' " +
-            " title='regular expression' value='^(text/.*)$'></input></td>" +
 
             "<td>optional:</td>" +
             "<td><input type='checkbox' class='optional' title='optional file'></td>";

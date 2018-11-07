@@ -582,9 +582,11 @@
 
   <xs:complexType name="task-type">
     <xs:sequence>
+      <xs:element name="title" type="tns:title-type"/>
       <xs:element name="description" type="tns:description-type"/>
+      <xs:element name="internal-description" type="tns:description-type" minOccurs="0"/>
       <xs:element name="proglang" type="tns:proglang-type"/>
-      <xs:element name="submission-restrictions" type="tns:submission-restrictions-type"/>
+      <xs:element name="submission-restrictions" type="tns:submission-restrictions-type" minOccurs="0"/>
       <xs:element name="files" type="tns:task-files-type"/>
       <xs:element name="external-resources" type="tns:external-resources-type" minOccurs="0"/>
       <xs:element name="model-solutions" type="tns:model-solutions-type"/>
@@ -602,17 +604,12 @@
       <xs:element name="meta-data" type="tns:task-meta-data-type"/>
     </xs:sequence>
     <xs:attribute name="uuid" type="xs:string" use="required"/>
-    <!-- The task is identified by attribute "uuid", an automatic generated UUID
-         in Version 3, 4, or 5 (see RFC 4122). Name-based UUIDs (version 3 and 5)
-         may especially be useful when deriving an instance from a task template
-         (the "namespace" of all instances) by resolving the template's variation
-         points to specific instance values (the "name" of the instance). -->
     <xs:attribute name="parent-uuid" type="xs:string" use="optional"/>
     <xs:attribute name="lang" type="xs:language"/>
   </xs:complexType>
 
   <xs:complexType name="submission-restrictions-type">
-    <xs:choice>
+    <xs:choice maxOccurs="unbounded">
       <xs:element name="archive-restriction" type="tns:archive-restr-type"/>
       <xs:element name="file-restriction" type="tns:file-restr-type"/>
       <xs:element name="regexp-restriction" type="tns:file-regexp-restr-type"/>
@@ -700,7 +697,6 @@
 
   <xs:complexType name="task-meta-data-type">
     <xs:sequence>
-      <xs:element name="title" type="tns:title-type"/>
       <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
     </xs:sequence>
   </xs:complexType>

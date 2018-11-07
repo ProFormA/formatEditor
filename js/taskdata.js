@@ -151,7 +151,7 @@ class TaskClass {
         this.uuid = null;
         this.lang = 'de';
         this.sizeSubmission = 0;
-        this.mimeTypeRegExpSubmission = '';
+//        this.mimeTypeRegExpSubmission = '';
 
         this.files = [];
         // this.external-resources ;
@@ -208,7 +208,7 @@ class TaskClass {
             this.uuid = xmlReader.readSingleText("@uuid");
             this.lang = xmlReader.readSingleText("@lang");
             this.sizeSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@max-size");
-            this.mimeTypeRegExpSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@mime-type-regexp");
+//            this.mimeTypeRegExpSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@mime-type-regexp");
 
             // read files
             let iterator = xmlReader.readNodes("dns:files/dns:file");
@@ -286,7 +286,7 @@ class TaskClass {
             this.uuid = xmlReader.readSingleText("@uuid");
             this.lang = xmlReader.readSingleText("@lang");
             this.sizeSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@max-size");
-            this.mimeTypeRegExpSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@mime-type-regexp");
+//            this.mimeTypeRegExpSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@mime-type-regexp");
 
             // read files
             let iterator = xmlReader.readNodes("dns:files/dns:file");
@@ -504,7 +504,7 @@ class TaskClass {
             let regexp = xmlDoc.createElementNS(xmlns, "regexp-restriction");
             submission.appendChild(regexp);
             regexp.setAttribute("max-size", this.sizeSubmission);
-            regexp.setAttribute("mime-type-regexp", this.mimeTypeRegExpSubmission);
+            // regexp.setAttribute("mime-type-regexp", this.mimeTypeRegExpSubmission);
 
             files = xmlDoc.createElementNS(xmlns, "files");
             task.appendChild(files);
