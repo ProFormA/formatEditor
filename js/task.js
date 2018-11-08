@@ -16,54 +16,6 @@
  */
 
 
-///////////////////////////////////////////////////////// Create an empty xml template
-/* This creates an empty XML template in the required format.
- * The first return value contains the main XML structure without individual tests.
- * The second return value contains a hash which has an element for each test type.
- */
-/*
-function createXMLTemplate(schemaversion) {            // parseXML is not namespace-aware
-    if (schemaversion === version094) {
-        var xmlTemp1 = '<task ' + xsdNamespace.namespace + 'lang="">';
-        var xmlTemp2 = '<description></description><proglang version=""></proglang><submission-restrictions max-size=""/>';
-    } else {
-        var xmlTemp1 = '<task ' + xsdNamespace.namespace + 'uuid ="" lang="">';
-        var xmlTemp2 = '<description></description><proglang version=""></proglang><submission-restrictions>'+
-            '<regexp-restriction max-size="" mime-type-regexp=""/></submission-restrictions>';
-    }
-    const xmlTemp3 = '<files><file class="internal" filename="" id="" type="embedded"/></files>';
-    const xmlTemp4 = '<model-solutions><model-solution id=""><filerefs><fileref/></filerefs></model-solution></model-solutions>';
-    const xmlTemp5 = '<tests></tests><grading-hints /><meta-data><title/>';
-    const xmlTemp6 = '</meta-data></task>';
-
-    var extra = tExtraTemplateTopLevel;
-    if (!extra)
-        extra = "";
-    var xmlDc = $.parseXML(xmlTemp1 + xmlTemp2 + xmlTemp3 + xmlTemp4 + xmlTemp5 + tExtraTemplateTopLevel + xmlTemp6);
-
-    function createXmlTestTemplate(testtype, metaDataElements, addElement) {
-        const xstrTestType = '<test ' + xsdNamespace.namespace + 'id=""><title/><test-type>';
-        const xstrFileRef = '</test-type><test-configuration><filerefs><fileref/></filerefs>';
-        const xstrMetaData = '<test-meta-data>';
-        const xstrTestCfg = '</test-meta-data></test-configuration></test>';
-
-        if (!addElement)
-            addElement = "";
-        var strTemplate = xstrTestType + testtype + xstrFileRef +
-            addElement + xstrMetaData + metaDataElements + xstrTestCfg;
-        return $.parseXML(strTemplate);
-    }
-
-    // build hash from testinfos
-    var xmlHash = {};
-    $.each(config.testInfos, function(index, testinfo) {
-        xmlHash[testinfo.xmlTemplateName] =
-            createXmlTestTemplate(testinfo.testType, testinfo.xmlTemplate1, testinfo.xmlTemplate2);
-    })
-
-    return {xmlDoc : xmlDc, testtemplate: xmlHash};
-}
-*/
 
 function isInputComplete() {
     let inputField = $("#xml_description");
@@ -147,12 +99,11 @@ function isInputComplete() {
 // on document ready...:
 
 ///////////////////////////////////////////////////////// function: convertToXML
-/* This converts the form elements into the XML file.
- * First, it checks for some required values and stops executing if these are missing.
- * TODO: The XML file is validated against the schema.
+
+
+/**
+ * writes data from UI elements to xml string
  */
-
-
 convertToXML = function() {
 
     const t0 = performance.now();

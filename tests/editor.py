@@ -172,10 +172,10 @@ thread_started = False
 def fillOpenFileDialog(filename):
     global thread_started
     thread_started = True
-    print "thread started"
+    # print "thread started"
     time.sleep(timeoutOpenLoadDialog)
 
-    print "type text into dialog"
+    # print "type text into dialog"
     # control the modal window with pynpy (not selenium!)
     # type filename in input field
     keyboard = Controller()
@@ -249,15 +249,15 @@ def confirmDownloadSaveDialog(dialogkey):
     if browser == "Firefox":
         global firstTimeDialogs
         if firstTimeDialogs[dialogkey]:
-            print "1. Download => Speichern statt Öffnen wählen"
+            # print "1. Download => Speichern statt Öffnen wählen"
             # switch to save (instead of open)
-            print "cursor down"
+            # print "cursor down"
             keyboard.press(Key.down)
             keyboard.release(Key.down)
             time.sleep(timeoutSwitchToSave)
             firstTimeDialogs[dialogkey] = False
 
-        print "enter"
+        # print "enter"
 
         keyboard.press(Key.enter)
         keyboard.release(Key.enter)
@@ -266,7 +266,7 @@ def confirmDownloadSaveDialog(dialogkey):
         #alert = driver.switch_to.alert
         #alert.dismiss()
 
-    print "confirmDownloadSaveDialog finished"
+    # print "confirmDownloadSaveDialog finished"
 
 def save_task_file_plain(modelSolution_alert):
     # print "press save zip button"
