@@ -439,13 +439,25 @@ def set_task_description(text):
         set_input_field("xml_description", text)
 
 def set_task_title(text):
-    set_input_field("xml_meta-data_title", text)
+    set_input_field("xml_title", text)
+
+def set_task_comment(text):
+    elem = driver.find_element_by_css_selector('#xml_task_internal_description .xml_internal_description')
+    elem.clear()
+    elem.send_keys(text)
+
+#    set_input_field("xml_task_internal_description", text)
+
 
 def set_filesize(text):
-    set_input_field("xml_subm_max-size", text)
+    set_input_field("xml_subm_regexp_size", text)
 
-def set_mimetype(text):
-    set_input_field("xml_upload-mime-type", text)
+# depricated
+#def set_mimetype(text):
+#    set_input_field("xml_upload-mime-type", text)
+
+def set_regexp_filename(text):
+    set_input_field("xml_subm_regexp_name", text)
 
 def set_LON_CAPA_path(text):
     set_input_field("lczip", text)

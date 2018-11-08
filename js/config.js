@@ -99,7 +99,7 @@ var config = (function(testConfigNode) {
         xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerFlags", $(root).find(".xml_pr_CompilerFlags").val(), praktomatns);
         xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerOutputFlags", $(root).find(".xml_pr_CompilerOutputFlags").val(), praktomatns);
         xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerLibs", $(root).find(".xml_pr_CompilerLibs").val(), praktomatns);
-        xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerFilePattern", $(root).find(".xml_pr_CompilerFPatt").val(), praktomatns, true);
+        xmlWriter.createCDataElement(childs[0], "praktomat:config-CompilerFilePattern", $(root).find(".xml_pr_CompilerFPatt").val(), praktomatns);
     }
 
     function writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {

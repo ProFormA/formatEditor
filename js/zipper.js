@@ -217,7 +217,7 @@ zipme = function() {
     }
     var FILENAME = "task.xml";
     var blob;
-    var zipname = $("#xml_meta-data_title").val();
+    var zipname = $("#xml_title").val();
     zipname = zipname.replace(/[^a-z0-9]/gi, "");
     zipname = zipname + '.zip';
 

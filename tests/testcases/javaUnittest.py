@@ -31,7 +31,6 @@ expectedZipName = "input222.zip"
 description = "input111"
 title = "input222"
 filesize = "3333"
-mimetype = "text/TEST"
 lon_capa_path = "input4444/"
 language = "en"
 prog_lang = "java/1.8"
@@ -74,10 +73,12 @@ class JavaTest(zipFileTest.ZipFileTest):
         editor.set_task_description(description)
         # fill title
         editor.set_task_title(title)
+        # fill internal description
+        editor.set_task_comment('task internal description')
         # fill filesize
         editor.set_filesize(filesize)
-        # fill MimeType
-        editor.set_mimetype(mimetype)
+        # fill regexp filename
+        editor.set_regexp_filename("ABC123*")
         # LON-CAPA path
         editor.set_LON_CAPA_path(lon_capa_path)
         # fill language

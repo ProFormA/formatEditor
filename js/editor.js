@@ -127,10 +127,15 @@ function setErrorMessageInvalidOption(xmlpath, attribute, value) {              
 
 function setErrorMessage(errormess, exception) {                  // setting the error console
     let error_output = $("#error-message");
-    error_output.append("\n* " + errormess);
-    if (exception !== undefined) {
-        error_output.append("\n  (" + exception.message + ")");
-        console.error(exception.stack);
+    if (errormess) {
+        error_output.append("\n* " + errormess);
+        if (exception) {
+            error_output.append("\n  (" + exception.message + ")");
+            console.error(exception.stack);
+        }
+    }
+    else {
+        error_output.append("\n* " + exception);
     }
 
     error_output.css('visibility', 'visible');
@@ -557,8 +562,9 @@ $(function() {
         }
     });
 
-    restriction_regexp.hide();
-    restriction_files.show();
+    // initial selection
+    restriction_regexp.show();
+    restriction_files.hide();
     restriction_archive.hide();
 
 

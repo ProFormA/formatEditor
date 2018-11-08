@@ -240,5 +240,5 @@ createLONCAPAOutput = function (prgrlang, versionchck) {
     });
 
     return createLONCAPAproblemFile($("#xml_description").val(), loncapa_filename,
-        $("#xml_meta-data_title").val(), prgrlang, versionchck);
+        $("#xml_title").val(), prgrlang, versionchck);
 };

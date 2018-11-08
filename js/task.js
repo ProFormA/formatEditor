@@ -75,7 +75,7 @@ function isInputComplete() {
         return false;
     }
 
-    inputField = $("#xml_meta-data_title");
+    inputField = $("#xml_title");
     if (!inputField.val()) {
         setErrorMessage("Task title is empty.");
         // switch to appropriate tab and set focus
@@ -175,7 +175,8 @@ convertToXML = function() {
 
     // copy data to task class
     let task = new TaskClass();
-    task.title = $("#xml_meta-data_title").val();
+    task.title = $("#xml_title").val();
+    task.comment = $("#xml_task_internal_description").find('.xml_internal_description').val();
     task.description = descriptionEditor.getValue();
     let proglangAndVersion = $("#xml_programming-language").val();
     let proglangSplit = proglangAndVersion.split("/");
@@ -191,8 +192,8 @@ convertToXML = function() {
     //if (!task.uuid)
         task.uuid = generateUUID();
     task.lang = $("#xml_lang").val();
-    task.sizeSubmission = $("#xml_subm_max-size").val();
-    //task.mimeTypeRegExpSubmission = $("#xml_upload-mime-type").val();
+    task.sizeSubmission = $("#xml_subm_regexp_size").val();
+    task.filenameRegExpSubmission = $("#xml_subm_regexp_name").val();
 
     // read files
     FileWrapper.doOnAllFiles(function(ui_file) {
@@ -347,10 +348,11 @@ readAndDisplayXml = function() {
 
 
     descriptionEditor.setValue(task.description);
-    $("#xml_meta-data_title").val(task.title);
+    $("#xml_title").val(task.title);
+    $("#xml_task_internal_description").find('.xml_internal_description').val(task.comment);
     $("#xml_uuid").val(task.uuid);
-    $("#xml_subm_max-size").val(task.sizeSubmission);
-    //$("#xml_upload-mime-type").val(task.mimeTypeRegExpSubmission);
+    $("#xml_subm_regexp_size").val(task.sizeSubmission);
+    $("#xml_subm_regexp_name").val(task.filenameRegExpSubmission);
     if (task.proglangVersion)
         $("#xml_programming-language").val(task.proglang + '/' + task.proglangVersion);
     else

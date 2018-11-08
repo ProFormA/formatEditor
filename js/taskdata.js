@@ -82,10 +82,19 @@ class XmlWriter {
         this.ns = ns;
     }
 
+    createCDataElement(node, tag, value, ns = undefined) {
+        let newTag = this.xmlDoc.createElementNS(ns?ns:this.ns, tag);
+        newTag.appendChild(this.xmlDoc.createCDATASection(value));
+        node.appendChild(newTag);
+        return newTag;
+    }
+
     createTextElement(node, tag, value, ns = undefined, cdata = false) {
         let newTag = this.xmlDoc.createElementNS(ns?ns:this.ns, tag);
-        if (cdata)
+        if (cdata) {
             newTag.appendChild(this.xmlDoc.createCDATASection(value));
+            throw new SyntaxError('cdata not supported, use createCDataElement');
+        }
         else
             newTag.appendChild(this.xmlDoc.createTextNode(value));
         node.appendChild(newTag);
@@ -93,9 +102,18 @@ class XmlWriter {
     }
 
     createOptionalTextElement(node, tag, value, ns = undefined, cdata = false) {
+        if (cdata) {
+            throw new SyntaxError('cdata not supported, use createOptionalTextElement');
+        }
         if (value === '')
             return;
         return this.createTextElement(node, tag, value, ns, cdata);
+    }
+
+    createOptionalCDataElement(node, tag, value, ns = undefined) {
+        if (value === '')
+            return;
+        return this.createCDataElement(node, tag, value, ns);
     }
 }
 
@@ -145,13 +163,14 @@ class TaskClass {
     constructor() {
         this.title = '';
         this.description = '';
+        this.comment = '';
         this.proglang = '';
         this.proglangVersion = '';
         this.parentuuid = null;
         this.uuid = null;
         this.lang = 'de';
         this.sizeSubmission = 0;
-//        this.mimeTypeRegExpSubmission = '';
+        this.filenameRegExpSubmission = '';
 
         this.files = [];
         // this.external-resources ;
@@ -208,7 +227,8 @@ class TaskClass {
             this.uuid = xmlReader.readSingleText("@uuid");
             this.lang = xmlReader.readSingleText("@lang");
             this.sizeSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@max-size");
-//            this.mimeTypeRegExpSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@mime-type-regexp");
+            // mimetype is unsupported
+            // this.mimeTypeRegExpSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction");
 
             // read files
             let iterator = xmlReader.readNodes("dns:files/dns:file");
@@ -279,14 +299,15 @@ class TaskClass {
             let xmlReader = new XmlReader(xmlfile);
             xmlReader.setRootNode(xmlReader.readSingleNode("/dns:task")); // => shorter xpaths
 
-            this.title = xmlReader.readSingleText("dns:meta-data/dns:title");
+            this.title = xmlReader.readSingleText("dns:title");
             this.description = xmlReader.readSingleText("dns:description");
+            this.comment = xmlReader.readSingleText("dns:internal-description");
             this.proglang = xmlReader.readSingleText("dns:proglang");
             this.proglangVersion = xmlReader.readSingleText("dns:proglang/@version");
             this.uuid = xmlReader.readSingleText("@uuid");
             this.lang = xmlReader.readSingleText("@lang");
             this.sizeSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@max-size");
-//            this.mimeTypeRegExpSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@mime-type-regexp");
+            this.filenameRegExpSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction");
 
             // read files
             let iterator = xmlReader.readNodes("dns:files/dns:file");
@@ -495,13 +516,15 @@ class TaskClass {
 
             xmlWriter = new XmlWriter(xmlDoc, xmlns);
 
-            xmlWriter.createTextElement(task, 'description', this.description, undefined, true);
+            xmlWriter.createTextElement(task, 'title', this.title);
+            xmlWriter.createCDataElement(task, 'description', this.description);
+            xmlWriter.createOptionalCDataElement(task, 'internal-description', this.comment);
             let proglang = xmlWriter.createTextElement(task, 'proglang', this.proglang);
             proglang.setAttribute("version", this.proglangVersion);
 
             let submission = xmlDoc.createElementNS(xmlns, "submission-restrictions");
             task.appendChild(submission);
-            let regexp = xmlDoc.createElementNS(xmlns, "regexp-restriction");
+            let regexp = xmlWriter.createTextElement(submission, "regexp-restriction", this.filenameRegExpSubmission);
             submission.appendChild(regexp);
             regexp.setAttribute("max-size", this.sizeSubmission);
             // regexp.setAttribute("mime-type-regexp", this.mimeTypeRegExpSubmission);
@@ -527,7 +550,6 @@ class TaskClass {
 
             let metadata = xmlDoc.createElementNS(xmlns, "meta-data");
             task.appendChild(metadata);
-            xmlWriter.createTextElement(metadata, 'title', this.title);
             config.writeXmlExtra(metadata, xmlDoc, xmlWriter);
             //xmlWriter.createTextElement(metadata, 'praktomat:allowed-upload-filename-mimetypes', '(text/.*)');
 

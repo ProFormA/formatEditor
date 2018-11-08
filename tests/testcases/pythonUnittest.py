@@ -30,7 +30,7 @@ import zipFileTest
 description = "input111"
 title = "input222"
 filesize = "3333"
-mimetype = "text/TEST"
+
 lon_capa_path = "input4444/"
 language = "en"
 prog_lang = "python/2"
@@ -58,8 +58,8 @@ class PythonTest(zipFileTest.ZipFileTest):
         editor.set_task_title(title)
         # fill filesize
         editor.set_filesize(filesize)
-        # fill MimeType
-        editor.set_mimetype(mimetype)
+        # fill Fielname
+        editor.set_regexp_filename("TestAbc*")
         # LON-CAPA path
         editor.set_LON_CAPA_path(lon_capa_path)
         # fill language

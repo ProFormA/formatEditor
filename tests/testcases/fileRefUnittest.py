@@ -50,7 +50,7 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         # fill filesize
         editor.set_filesize("3333")
         # fill MimeType
-        editor.set_mimetype("text/TEST")
+        editor.set_regexp_filename("Filename*")
         # LON-CAPA path
         editor.set_LON_CAPA_path("input4444/")
         # fill language
