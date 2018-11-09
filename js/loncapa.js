@@ -170,20 +170,6 @@ function getModelSolution() {
         return false;
     });
 
-    /*
-    FileWrapper.doOnAllFiles(function (ui_file) {
-        if (ui_file.id === $(".xml_model-solution_fileref").first().val()) {
-            if (ui_file.type !== 'embedded') {
-                // file is not embedded
-                alert("The Model Solution will not be shown in LON-CAPA because it is stored in zip (not embedded in task).");
-                returnvalue = 'A Model Solution is not available.';
-            } else {
-                returnvalue = ui_file.text;
-            }
-            return false;
-        }
-    });*/
-
     return returnvalue;
 }
 

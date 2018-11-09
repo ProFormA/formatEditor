@@ -16,7 +16,7 @@
 
 zip.workerScriptsPath = "./js/";
 
-const debug_unzip = true;
+const debug_unzip = false;
 /**
  * unzips the {task}.zip file
  * - store files temporarily in unzippedFiles
@@ -67,7 +67,7 @@ unzipme = function (blob, readyCallback) {
                     if (debug_unzip) console.log("relinkFiles " + filename + " -> " + fileid + " " + ui_file.type + " size: " + ui_file.size);
                     //ui_file.isBinary = true;
                     //ui_file.storeAsFile = true;
-                    ui_file.type = ui_file.type;
+                    ui_file.type = ui_file.type; // needed...
                     //ui_file.disableTypeChange();
                 } else {
                     if (unzippedFiles[filename] && fileStorages[fileid].byZipper) { // fileStorages[fileid].filename.length) {
@@ -84,6 +84,9 @@ unzipme = function (blob, readyCallback) {
                 }
             }
         });
+
+        // needed because files are read asynchronously
+        FileReferenceList.updateAllEditorButtons();
     }
 
     function onFilesRead(zipReader) {

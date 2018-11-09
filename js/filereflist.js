@@ -84,6 +84,14 @@ class FileReferenceList extends DynamicList {
         });
     }
 
+    /*
+    static doOnAll(callback) {
+        $.each(".fileref_fileref", function(index, item) {
+            const filerefId = item.value;
+            return callback(filerefId);
+        });
+    }*/
+
     // init table
     init(root, DEBUG_MODE) {
         if (!this.root)
@@ -168,10 +176,12 @@ class FileReferenceList extends DynamicList {
         if (enabled) {
             // check if file is binary and cannot be viewed
             const fileid = FileReferenceList.rowGetFileId(row);
+            if (!fileid)
+                return;
             let ui_file = FileWrapper.constructFromId(fileid);
             if (ui_file.isBinary)
                 enabled = false;
-            console.log('enable view button in fileref for ' + ui_file.filename + ', enabled = ' + enabled);
+            //console.log('enable view button in fileref for ' + ui_file.filename + ', enabled = ' + enabled);
         }
 
         row.find(".collapse").last().prop('disabled', !enabled);
@@ -509,6 +519,12 @@ class FileReferenceList extends DynamicList {
         }
     };
 
+    static updateAllEditorButtons() {
+        $.each($(".fileref_fileref"), function(index, item) {
+            let row = $(item).parent().parent();
+            FileReferenceList.rowEnableEditorButton(row, true);
+        });
+    }
 
     // update all filename lists
     static updateAllFilenameLists() {
