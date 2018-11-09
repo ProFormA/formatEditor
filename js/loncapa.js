@@ -152,8 +152,25 @@ function getEditorTemplate() {
     return returnvalue;
 }
 
+/**
+ * get code of first file in first model solution
+ * @returns {string}
+ */
 function getModelSolution() {
     let returnvalue = "";
+    ModelSolutionFileReference.getInstance().doOnAll(function(id) {
+        const ui_file = FileWrapper.constructFromId(id);
+        if (ui_file.type !== 'embedded') {
+            // file is not embedded
+            alert("The Model Solution will not be shown in LON-CAPA because it is stored in zip (not embedded in task).");
+            returnvalue = 'A Model Solution is not available.';
+        } else {
+            returnvalue = ui_file.text;
+        }
+        return false;
+    });
+
+    /*
     FileWrapper.doOnAllFiles(function (ui_file) {
         if (ui_file.id === $(".xml_model-solution_fileref").first().val()) {
             if (ui_file.type !== 'embedded') {
@@ -165,7 +182,7 @@ function getModelSolution() {
             }
             return false;
         }
-    });
+    });*/
 
     return returnvalue;
 }
@@ -233,12 +250,19 @@ createLONCAPAproblemFile = function (lc_descr, lc_filename, lc_problemname, lc_m
 createLONCAPAOutput = function (prgrlang, versionchck) {
     let loncapa_filename = "input.txt";
 
+    // ??? why use first Model Solution filename?
+    ModelSolutionFileReference.getInstance().doOnAll(function(fileid) {
+        const ui_file = FileWrapper.constructFromId(fileid);
+        loncapa_filename = ui_file.filename;
+        return false;
+    });
+/*
     FileWrapper.doOnAllFiles(function (ui_file) {
         if (ui_file.id === $(".xml_model-solution_fileref")[0].value) {
             loncapa_filename = ui_file.filename;
         }
     });
-
+*/
     return createLONCAPAproblemFile($("#xml_description").val(), loncapa_filename,
         $("#xml_title").val(), prgrlang, versionchck);
 };

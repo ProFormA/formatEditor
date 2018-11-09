@@ -37,7 +37,8 @@ function isInputComplete() {
     }
 
     if ((typeof $(".xml_file_id")[0] === "undefined") ||      //  check for missing form values
-        (typeof $(".xml_model-solution_fileref")[0] === "undefined")) {
+        ModelSolutionFileReference.getInstance().getCountFilerefs() === 0) {
+        // (typeof $(".xml_model-solution_fileref")[0] === "undefined")) {
         setErrorMessage("Required elements are missing. " +
             "At least one model solution element and its " +
             "corresponding file element must be provided. ");
@@ -165,9 +166,9 @@ convertToXML = function() {
         modelSolution.comment = ms.comment;
         modelSolution.description = ms.description;
         let counter = 0;
-        ModelSolutionFileReference.getInstance().doOnAll(ms.root, function(id) {
+        ModelSolutionFileReference.getInstance().doOnAll(function(id) {
             modelSolution.filerefs[counter++] = new TaskFileRef(id);
-        });
+        }, ms.root);
 
         //readFileRefs(xmlReader, modelSolution, thisNode);
         task.modelsolutions[modelSolution.id] = modelSolution;
@@ -183,9 +184,9 @@ convertToXML = function() {
         test.description = uiTest.description;
 
         let counter = 0;
-        TestFileReference.getInstance().doOnAll(uiTest.root, function(id) {
+        TestFileReference.getInstance().doOnAll(function(id) {
             test.filerefs[counter++] = new TaskFileRef(id);
-        });
+        }, uiTest.root);
 
         $.each(config.testInfos, function(index, configItem) {
             // search for appropriate writexml function

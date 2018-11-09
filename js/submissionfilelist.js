@@ -22,10 +22,10 @@
 // abstract class for a filename reference input
 class DynamicList {
 
-    constructor(classFilename, classFileref, jsClassName, label, help, mandatory) {
+    constructor(classFilename, css_classname, jsClassName, label, help, mandatory) {
         this.classFilename = classFilename;
-        this.classAddItem = classFileref.replace('xml_', 'add_'); // classAddItem;
-        this.classRemoveItem = classFileref.replace('xml_', 'remove_'); // classRemoveItem;
+        this.classAddItem = css_classname.replace('xml_', 'add_'); // classAddItem;
+        this.classRemoveItem = css_classname.replace('xml_', 'remove_'); // classRemoveItem;
         this.help = help;
 
         this.createTableString(jsClassName, label, mandatory);
@@ -48,7 +48,7 @@ class DynamicList {
 
             tdFirstRemoveButton + // x-button
             this.tdAddButton +
-            '<td></td>'
+            '<td></td>' +
         "</tr>";
     }
 
@@ -89,9 +89,10 @@ class DynamicList {
         let td = element.parent();
         let tr = td.parent();
         let table_body = tr.parent();
-        table_body.append(this.createRow(false));
+        let newRow = table_body.append(this.createRow(false));
         td.remove(); // remove current +-button
         table_body.find("." + this.classRemoveItem).show(); // show all remove file buttons
+        return newRow;
     }
 
 
@@ -151,7 +152,7 @@ class DynamicList {
 class SubmissionFileList extends DynamicList {
 
     constructor() {
-        super('xml_subm_filename', 'xml_subm_fileref', 'SubmissionFileList', 'Expected File',
+        super('xml_subm_filename', 'xml_subm_files', 'SubmissionFileList', 'Expected File',
             'files belonging to the submission', false);
     }
 
@@ -176,7 +177,7 @@ let submissionFileSingleton = new SubmissionFileList();
 class SubmissionArchiveFileList extends DynamicList {
 
     constructor() {
-        super('xml_subm_filename', 'xml_subm_fileref', 'SubmissionArchiveFileList', '',
+        super('xml_subm_filename', 'xml_subm_archive', 'SubmissionArchiveFileList', '',
             'files belonging to the submission archive', false);
     }
 

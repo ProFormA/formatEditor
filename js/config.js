@@ -18,28 +18,19 @@
 
 const configXsdSchemaFile = version101;   // choose version for output
 /*
-// -------------------------
-// NAMESPACE HANDLING
-// -------------------------
-var xsdNamespace = (function() {
-    function init() {
-        // not really configuration but ....
-        if (configXsdSchemaFile === version094) {
-            namespace = 'xmlns:'+pfix_unit+'="urn:proforma:unittest" xmlns:'+pfix_prak+'="urn:proforma:praktomat:v0.1" ' +
-                'xmlns="urn:proforma:task:v0.9.4" xmlns:'+pfix_jart+'="urn:proforma:tests:jartest:v1" ';
-        } else {
-            namespace = 'xmlns:'+pfix_unit+'="urn:proforma:tests:unittest:v1" xmlns:'+pfix_prak+'="urn:proforma:praktomat:v0.2" '
-                + 'xmlns="urn:proforma:task:v1.0.1" xmlns:'+pfix_jart+'="urn:proforma:tests:jartest:v1" ';
-        }
-    }
-})();
+    version094:
+        namespace = 'xmlns:'+pfix_unit+'="urn:proforma:unittest" xmlns:'+pfix_prak+'="urn:proforma:praktomat:v0.1" ' +
+            'xmlns="urn:proforma:task:v0.9.4" xmlns:'+pfix_jart+'="urn:proforma:tests:jartest:v1" ';
+    version101:
+        namespace = 'xmlns:'+pfix_unit+'="urn:proforma:tests:unittest:v1" xmlns:'+pfix_prak+'="urn:proforma:praktomat:v0.2" '
+            + 'xmlns="urn:proforma:task:v1.0.1" xmlns:'+pfix_jart+'="urn:proforma:tests:jartest:v1" ';
 */
 
 
 var config = (function(testConfigNode) {
     const praktomatns = "urn:proforma:praktomat:v0.2";
-    const jartestns = "urn:proforma:tests:jartest:v1";
-    const unittestns = "urn:proforma:tests:unittest:v1";
+    const jartestns   = "urn:proforma:tests:jartest:v1";
+    const unittestns  = "urn:proforma:tests:unittest:v1";
 
     function writeNamespaces(task) {
         task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:jartest', jartestns);

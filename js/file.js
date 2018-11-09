@@ -250,7 +250,10 @@ class FileWrapper {
     set storeAsFile(storeAsFile) { fileStorages[this.id].storeAsFile = storeAsFile; }
     set originalFilename(filename) { fileStorages[this.id].originalFilename = filename; }
     set size(size) { fileStorages[this.id].size = size; }
-    set isBinary(isBinary) { fileStorages[this.id].isBinary = isBinary; }
+    set isBinary(isBinary) {
+        fileStorages[this.id].isBinary = isBinary;
+        if (isBinary) console.log('set binary=true for ' + this.filename);
+    }
     set isLibrary(isLib) {this.root.find(".file_library")[0].checked = isLib;}
 
 /*    disableTypeChange() {

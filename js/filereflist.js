@@ -27,42 +27,33 @@ let filenameClassList = [];
 let filerefClassList = [];
 
 // abstract class for a filename reference input
-class FileReferenceList {
+class FileReferenceList extends DynamicList {
 
     constructor(classFilename, classFileref, jsClassName, label, help, mandatory) {
-        this.classFilename = classFilename;
-        this.classFileref = classFileref;
-        this.classAddFileref = classFileref.replace('xml_', 'add_'); // classAddFileref;
-        this.classRemoveFileref = classFileref.replace('xml_', 'remove_'); // classRemoveFileref;
-        this.help = help;
+        super(classFilename, classFileref, jsClassName, label, help, mandatory);
 
-        this.createTableString(jsClassName, label, mandatory);
-        this.JsClassname = jsClassName;
+        this.table = this.table +
+            "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>";
 
         filenameClassList.push('.' + this.classFilename);
-        filerefClassList.push('.' + this.classFileref);
+        filerefClassList.push('.' + classFileref);
     }
 
-    getClassFilename() { return this.classFilename; }
 
-    createRow(withLabel) {
-        // hide first remove file button
-        const tdFirstRemoveButton = "<td><button class='" + this.classRemoveFileref +
-            "' onclick='" + this.className + ".getInstance().removeFileRef($(this))' style='display: none;'>x</button></td>";
+    createRowContent() {
+        const tdFilename = "<td><select class='mediuminput fileref_filename " + this.classFilename + "' " +
+            "onchange = 'FileReferenceList.onFileSelectionChanged(this)' title='" + this.help + "'></select></td>"+
+            "<td><label for='fileref_fileref'>Fileref: </label>"+ // fileref
+            "<input class='tinyinput fileref_fileref' readonly/></td>";
+
         const tdExpandButton = "<td><button class='collapse' title='show content' onclick='" +
             this.className + ".getInstance().toggleEditor($(this))'>"+showEditorText+"</button><br></td>";
-        const tdFilenameLabel ="<td>" + this.filenameLabel + "</td>";
 
-        return "<tr>" +
-            (withLabel? tdFilenameLabel:'<td></td>') + // label
-            this.tdFilename +
-            tdExpandButton +
-            tdFirstRemoveButton + // x-button
-            this.tdAddButton +
-            '<td></td>'
-        "</tr>";
-
+        return tdFilename + tdExpandButton;
     }
+
+
+/*
     createTableString(className, label, mandatory) {
         this.className = className;
         label = label + '(s)';
@@ -84,24 +75,24 @@ class FileReferenceList {
             "</table>" +
             "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>";
     }
-
-    getTableString() {
-        return this.table;
-    }
-
-    doOnAll(root, callback) {
-        $.each(root.find(".fileref_fileref"), function(index, item) {
+*/
+    doOnAll(callback, root) {
+        let theRoot = root?root:this.root;
+        $.each(theRoot.find(".fileref_fileref"), function(index, item) {
             const filerefId = item.value;
-            callback(filerefId);
+            return callback(filerefId);
         });
     }
 
     // init table
     init(root, DEBUG_MODE) {
+        if (!this.root)
+            this.root = root;
         FileReferenceList.updateFilenameList(root.find("." + this.classFilename).last());
+        FileReferenceList.rowEnableEditorButton(root, false);
         if (!DEBUG_MODE) {
-            root.find("." + this.classFileref).hide();
-            root.find("label[for='" + this.classFileref + "']").hide();
+            root.find(".fileref_fileref").hide();
+            root.find("label[for='fileref_fileref']").hide();
         }
 
         // register dragenter, dragover.
@@ -134,13 +125,20 @@ class FileReferenceList {
         // set filename
         if (index > 0) {
             // create new fileref if index > 0
-            this.addFileRef(box.find("." + this.classAddFileref).first());
+            this.addItem(box.find("." + this.classAddItem).first());
         }
         let element = box.find("." + this.classFilename);
         FileReferenceList.updateFilenameList(element.eq(index));
         element.eq(index).val(filename).change();
     }
 
+    getCountFilerefs() {
+        let counter = 0;
+        this.doOnAll(function () {
+            counter++;
+        });
+        return counter;
+    }
 
     toggleEditor(element, hide) {
         let td = element.parent();
@@ -155,14 +153,38 @@ class FileReferenceList {
         else {
             if (ui_file && !ui_file.isBinary) {
                 element.html(hideEditorText);
-                $( "<tr><td colspan='7'><textarea disabled cols='80' rows='10' class='fileref_viewer'>"+
+                $( "<tr><td colspan='8'><textarea disabled cols='80' rows='10' class='fileref_viewer'>"+
                     ui_file.text
                     +"</textarea></td></tr>" ).insertAfter(tr);
             }
         }
-   }
+    }
 
-    addFileRef(element) {
+    static rowGetFileId(row) {
+        return row.find('.fileref_fileref')[0].value;
+    }
+
+    static rowEnableEditorButton(row, enabled) {
+        if (enabled) {
+            // check if file is binary and cannot be viewed
+            const fileid = FileReferenceList.rowGetFileId(row);
+            let ui_file = FileWrapper.constructFromId(fileid);
+            if (ui_file.isBinary)
+                enabled = false;
+            console.log('enable view button in fileref for ' + ui_file.filename + ', enabled = ' + enabled);
+        }
+
+        row.find(".collapse").last().prop('disabled', !enabled);
+    }
+
+    addItem(element) {
+        let td = element.parent();
+        let tr = td.parent();
+        let table_body = tr.parent();
+
+        let newRow = super.addItem(element);
+        FileReferenceList.rowEnableEditorButton(newRow, false);
+/*
         // add new line for selecting a file for a test
         let td = element.parent();
         let tr = td.parent();
@@ -170,30 +192,33 @@ class FileReferenceList {
         table_body.append(this.createRow(false));
         td.remove(); // remove current +-button
         table_body.find("." + this.classRemoveFileref).show(); // show all remove file buttons
-
+*/
         // add filelist to new file option
         FileReferenceList.updateFilenameList(table_body.find("." + this.classFilename).last());
 
         if (!DEBUG_MODE) {
             // hide new fileref fields
-            table_body.find("." + this.classFileref).hide();
-            table_body.find("label[for='" + this.classFileref + "']").hide();
+            table_body.find(".fileref_fileref").hide();
+            table_body.find("label[for='fileref_fileref']").hide();
         }
     }
 
 
-    removeFileRef(element) {
+    removeItem(element) {
+        super.removeItem(element);
+
         let td = element.parent();
         let tr = td.parent();
+/*
         const buttonText = td.prev().find('button').html();
         if (buttonText === hideEditorText) {
             // remove editor
             tr.next().remove();
         }
-
+*/
         // get associated fileid
-        const fileid = tr.find('.fileref_fileref')[0].value;
-
+        const fileid = FileReferenceList.rowGetFileId(tr); // tr.find('.fileref_fileref')[0].value;
+/*
         // TODO:
         // if fileclass == library => internal???
 
@@ -237,7 +262,7 @@ class FileReferenceList {
                     table_body.find("." + this.classRemoveFileref).hide();
                 break;
         }
-
+*/
         if (fileid) {
             FileReferenceList.deleteFile(fileid);
         }
@@ -284,6 +309,12 @@ class FileReferenceList {
 
     static getCountSpecialReferences(fileId) {
         let count = 0;
+
+        librarySingleton.doOnAll(function(id) { if (id === fileId) count++; });
+        templSingleton.doOnAll(function(id) { if (id === fileId) count++; });
+        instructionSingleton.doOnAll(function(id) { if (id === fileId) count++; });
+
+/*
         $.each($(".xml_library_fileref, .xml_template_fileref, .xml_instruction_fileref"),
             function(index, item) {
                 const filerefId = item.value;
@@ -291,6 +322,7 @@ class FileReferenceList {
                     count++;
                 }
         });
+*/
 
         return count;
     }
@@ -306,15 +338,17 @@ class FileReferenceList {
             const currentFilename = $(element).val();
             if (currentFilename === "") {
                 $(element).val(filename).change();
+                // FileReferenceList.rowEnableEditorButton($(element).parent(), true);
                 done = true;
             }
         });
 
         if (!done) { // no empty select option is found
             // append filename
-            this.addFileRef($(uploadBox).find('.' + this.classAddFileref).last());
+            let newRow = this.addItem($(uploadBox).find('.' + this.classAddItem).last());
             // select filename
             $(uploadBox).find("." + this.classFilename).last().val(filename).change();
+            // FileReferenceList.rowEnableEditorButton(newRow, true);
         }
     }
 
@@ -383,7 +417,7 @@ class FileReferenceList {
                         if (table_body.find('tr').length > 1) {
                             // more than one row => delete row
                             // (object does not matter)
-                            modelSolutionFileRefSingleton.removeFileRef($(item));
+                            modelSolutionFileRefSingleton.removeItem($(item));
                         }
                     }
                 }
@@ -394,7 +428,10 @@ class FileReferenceList {
         const selectedFilename = $(tempSelElem).val();
         // get old file id
         const nextTd = $(tempSelElem).parent().next('td');
+        const row = $(tempSelElem).closest('tr');
         const oldFileId = nextTd.find('.fileref_fileref')[0].value;
+
+        FileReferenceList.rowEnableEditorButton(row, false);
 
         switch (selectedFilename) {
             case loadFileOption:
@@ -411,10 +448,12 @@ class FileReferenceList {
                         console.log("no file selected -> cancel");
                         return;
                     }
+
                     readAndCreateFileData(filenew, undefined /*-1*/,
                         function (newFilename, fileId) {
                             if ($(tempSelElem)) {
                                 $(tempSelElem).val(newFilename).change();
+                                FileReferenceList.rowEnableEditorButton(row, true);
                             }
                             // set classname if file belongs to JUNIT
                             //setJavaClassname(newFilename);
@@ -442,6 +481,7 @@ class FileReferenceList {
 
                         // set new file id
                         nextTd.find('.fileref_fileref')[0].value = fileid;
+                        FileReferenceList.rowEnableEditorButton(row, true);
                         if ($(tempSelElem).hasClass('xml_test_filename')) {   // is it a test or a model-solution
                             // call test specific configured handler
                             if (fileid) {

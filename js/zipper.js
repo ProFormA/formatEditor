@@ -16,7 +16,7 @@
 
 zip.workerScriptsPath = "./js/";
 
-const debug_unzip = false;
+const debug_unzip = true;
 /**
  * unzips the {task}.zip file
  * - store files temporarily in unzippedFiles
