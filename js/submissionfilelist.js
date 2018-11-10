@@ -80,15 +80,6 @@ class DynamicList {
         return this.table;
     }
 
-    /*
-    doOnAll(root, callback) {
-        $.each(root.find(".fileref_fileref"), function(index, item) {
-            const filerefId = item.value;
-            callback(filerefId);
-        });
-    }
-    */
-
     addItem(element) {
         // add new line for selecting a file for a test
         let td = element.parent();
@@ -100,24 +91,24 @@ class DynamicList {
         return newRow;
     }
 
+    // virtual
+    getPreviousItem(tr) {
+        return tr.prev("tr");
+    }
 
-    // TODO: move fileref part to fileref class
+    // virtual
+    getItemCount(table_body) {
+        return table_body.find("tr").length;
+    }
+
     removeItem(element) {
         let td = element.parent();
         let tr = td.parent();
-        const buttonText = td.prev().find('button').html();
-        if (buttonText === hideEditorText) {
-            // remove editor
-            tr.next().remove();
-        }
 
         // remove line in file table for test
         let table_body = tr.parent();
-        let previousRow = tr.prev("tr");
-        if (previousRow.find('td').length === 1) {
-            // only one column => editor visible go to previous row
-            previousRow = previousRow.prev("tr");
-        }
+
+        let previousRow = this.getPreviousItem(tr); // tr.prev("tr");
         let hasNextTr = tr.nextAll("tr");
         let hasPrevTr = tr.prevAll("tr");
 
@@ -135,21 +126,13 @@ class DynamicList {
             let firstCell = table_body.find("td").first();
             firstCell.append(this.label); // without td
         }
-        switch (table_body.find("tr").length) {
-            case 1:
-                // table has exactly one row left
-                // => hide all remove file buttons
-                table_body.find("." + this.classRemoveItem).hide();
-                break;
-            case 2:
-                // check if second row has editor
-                let rows = table_body.find("tr");
-                let row = rows.last();
-                let cols = row.find('td');
-                if (cols.length === 1)
-                    // => hide all remove file buttons
-                    table_body.find("." + this.classRemoveItem).hide();
-                break;
+
+        // check if previousRow is first row
+        let firstRow = table_body.find("tr")[0];
+        if (this.getItemCount(table_body) === 1) {
+            // table has exactly one row left
+            // => hide all remove file buttons
+            table_body.find("." + this.classRemoveItem).hide();
         }
     }
 }

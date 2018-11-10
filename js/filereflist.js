@@ -214,20 +214,45 @@ class FileReferenceList extends DynamicList {
     }
 
 
-    removeItem(element) {
-        super.removeItem(element);
+    // override
+    getItemCount(table_body) {
+        let count = 0;
+        $.each(table_body.find("tr"), function(index, item) {
+            if ($(item).find("td").length > 2)
+                count++;
+        });
+        return count;
+    }
 
+    // override
+    getPreviousItem(tr) {
+        let previousRow = tr.prev("tr");
+
+        if (previousRow.find('td').length === 1) {
+            // only one column => editor visible go to previous row
+            previousRow = previousRow.prev("tr");
+        }
+        return previousRow;
+    }
+
+    removeItem(element) {
         let td = element.parent();
         let tr = td.parent();
-/*
+
+        // save associated fileid
+        const fileid = FileReferenceList.rowGetFileId(tr); // tr.find('.fileref_fileref')[0].value;
+
+        // remove editor
         const buttonText = td.prev().find('button').html();
         if (buttonText === hideEditorText) {
             // remove editor
             tr.next().remove();
         }
-*/
-        // get associated fileid
-        const fileid = FileReferenceList.rowGetFileId(tr); // tr.find('.fileref_fileref')[0].value;
+
+        super.removeItem(element);
+
+
+
 /*
         // TODO:
         // if fileclass == library => internal???
