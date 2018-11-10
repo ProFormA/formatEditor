@@ -537,31 +537,59 @@ $(function() {
     $("#submit_test").click(function() {
 
         const grader = $("#grader_uri").val();
+        const t1 = performance.now();
         convertToXML();
 
+        const t2 = performance.now();
+        console.log("Creating XML took " + (t2 - t1) + " ms.")
+
+        // use proxy in order to circumvent the CORS problem
+        const newUrl = "https://cors-anywhere.herokuapp.com/" + grader;
+
+        var ans = $.ajax({
+            type: 'POST',
+            enctype: 'multipart/form-data',
+            url: newUrl,
+            data: taskXml,
+            //dataType: "xml",
+            processData: false,
+            //contentType: false,
+            success : function(data){
+                // alert("success " + data);
+                $("#submit_response").html(data);
+            },
+            error : function($xhr, textStatus, errorThrown){
+                alert("error " + $xhr.status);
+                console.log("ERROR : ", errorThrown);
+                console.log("ERROR : ", $xhr);
+                console.log("ERROR : ", textStatus);
+            },
+            ajaxError  : function($xhr, textStatus, errorThrown){
+                alert("ajaxError " + $xhr.status);
+                console.log("ERROR : ", errorThrown);
+                console.log("ERROR : ", $xhr);
+                console.log("ERROR : ", textStatus);
+            }
+        });
 
         // VERSION 0
-
+/*
         $.ajax({
             type: "POST",
             dataType: 'xml',
             url: grader,
-//            username: 'user',
-//            password: 'pass',
             crossDomain : true,
-/*            xhrFields: {
-                withCredentials: true
-            }*/
         })
             .done(function( data ) {
+                alert(data);
                 console.log("done");
             })
-            .fail( function(xhr, textStatus, errorThrown) {
-                alert(xhr.responseText);
+            .fail( function($xhr, textStatus, errorThrown) {
+                alert($xhr.responseXml);
                 alert(textStatus);
-                alert(errorThrown.message);
+                //alert(errorThrown.message);
             });
-
+*/
 
         // VERSION 1
 /*
