@@ -22,13 +22,13 @@
 // abstract class for a filename reference input
 class DynamicList {
 
-    constructor(classFilename, css_classname, jsClassName, label, help, mandatory) {
+    constructor(classFilename, css_classname, jsClassName, label, help, mandatory, extra_css_class) {
         this.classFilename = classFilename;
         this.classAddItem = css_classname.replace('xml_', 'add_'); // classAddItem;
         this.classRemoveItem = css_classname.replace('xml_', 'remove_'); // classRemoveItem;
         this.help = help;
 
-        this.createTableString(jsClassName, label, mandatory);
+        this.createTableString(jsClassName, label, mandatory, extra_css_class);
     }
 
     getClassFilename() { return this.classFilename; }
@@ -52,7 +52,7 @@ class DynamicList {
         "</tr>";
     }
 
-    createTableString(className, label, mandatory) {
+    createTableString(className, label, mandatory, extra_css_class) {
         this.className = className;
         if (label.length > 0) {
             label = label + '(s)';
@@ -66,9 +66,14 @@ class DynamicList {
         this.tdAddButton = "<td><button class='" + this.classAddItem +
             "' title='add another filename' onclick='" + className + ".getInstance().addItem($(this))'>+</button><br></td>";
 
-        this.table = "<table class='dynamic_table' cellpadding='0'>" + // cellspacing='0' >" +
-            this.createRow(true) +
-            "</table>";
+        if (extra_css_class)
+            this.table = "<table class='dynamic_table " + extra_css_class + "' cellpadding='0'>" + // cellspacing='0' >" +
+                this.createRow(true) +
+                "</table>";
+        else
+            this.table = "<table class='dynamic_table' cellpadding='0'>" + // cellspacing='0' >" +
+                this.createRow(true) +
+                "</table>";
     }
 
     getTableString() {
@@ -90,12 +95,13 @@ class DynamicList {
         let tr = td.parent();
         let table_body = tr.parent();
         let newRow = table_body.append(this.createRow(false));
-        td.remove(); // remove current +-button
+        element.remove(); // remove current +-button
         table_body.find("." + this.classRemoveItem).show(); // show all remove file buttons
         return newRow;
     }
 
 
+    // TODO: move fileref part to fileref class
     removeItem(element) {
         let td = element.parent();
         let tr = td.parent();

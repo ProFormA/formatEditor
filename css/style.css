@@ -26,22 +26,25 @@ p label:first-child, .xml_file_non_binary label {
     top: 0px;
 }
 
+/* X on right side, needs position in base element ! */
+/*
 .xml_file_editor_close {
-    position: absolute; /* needs position in base element ! */
+    position: absolute;
     top: 0px;
     right: 0px;
-    /*display: inline-block;*/
-    /*float: right;*/
-    vertical-align: top; /* middle; */
+    vertical-align: top;
     z-index: 10;
 }
+*/
 
-/* fileref table */
-.xml_fileref_table {
+/* layout for fileref table */
+
+.xml_fileref_table { /* stretch full line */
     width:100%;
     /*background-color: yellow;*/
 }
 
+/* first column should have label width */
 .xml_fileref_table td:first-child, .dynamic_table td:first-child {
     /*background-color: blue;*/
     width: var(--labelwith);
@@ -50,6 +53,7 @@ p label:first-child, .xml_file_non_binary label {
     /*background-color: green;*/
     width: 1px;
 } /* min width, actually: this causes the width to fit the content */
+
 .xml_fileref_table td:last-child { width: var(--inputwidth); }
 
 .fileref_viewer {

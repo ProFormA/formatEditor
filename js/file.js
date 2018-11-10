@@ -549,13 +549,14 @@ class FileWrapper {
             "</span>" +
 
             "<span class='xml_file_non_binary'>" +
-            "<label for='xml_file_editor_close'></label>" +
+            "<button class='xml_file_edit' onclick='FileWrapper.showEditor($(this));'>Edit</button>" +
+            "<label for='xml_file_editor_close'>" +
+            "<button class='xml_file_editor_close' onclick='FileWrapper.hideEditor($(this));'>Hide</button>" +
+            "</label>" +
             "<span>" +
             "<textarea rows='3' cols='80' class='xml_file_text' onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea>" +
-            "<button class='xml_file_editor_close' onclick='FileWrapper.hideEditor($(this));'>x</button>" +
             "</span>" +
 
-            "<button class='xml_file_edit' onclick='FileWrapper.showEditor($(this));'>Edit</button>" +
 
 /*            "<span><button class='xml_dummy_upload_file' style='display:none'>Load File...</button>" +
             "<input class='xml_upload_file' type='file' style='display:none' onchange='FileWrapper.onReadFile(this)'/></span> " +

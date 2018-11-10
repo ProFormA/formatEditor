@@ -30,7 +30,7 @@ let filerefClassList = [];
 class FileReferenceList extends DynamicList {
 
     constructor(classFilename, classFileref, jsClassName, label, help, mandatory) {
-        super(classFilename, classFileref, jsClassName, label, help, mandatory);
+        super(classFilename, classFileref, jsClassName, label, help, mandatory, 'xml_fileref_table');
 
         this.table = this.table +
             "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>";
@@ -161,7 +161,7 @@ class FileReferenceList extends DynamicList {
         else {
             if (ui_file && !ui_file.isBinary) {
                 element.html(hideEditorText);
-                $( "<tr><td colspan='8'><textarea disabled cols='80' rows='10' class='fileref_viewer'>"+
+                $( "<tr><td colspan='7'><textarea disabled cols='80' rows='10' class='fileref_viewer'>"+
                     ui_file.text
                     +"</textarea></td></tr>" ).insertAfter(tr);
             }
