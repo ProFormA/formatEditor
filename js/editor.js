@@ -533,6 +533,80 @@ $(function() {
         console.log("save_zip_file called");
     });
 
+
+    $("#submit_test").click(function() {
+
+        const grader = $("#grader_uri").val();
+        convertToXML();
+
+
+        // VERSION 0
+
+        $.ajax({
+            type: "POST",
+            dataType: 'xml',
+            url: grader,
+//            username: 'user',
+//            password: 'pass',
+            crossDomain : true,
+/*            xhrFields: {
+                withCredentials: true
+            }*/
+        })
+            .done(function( data ) {
+                console.log("done");
+            })
+            .fail( function(xhr, textStatus, errorThrown) {
+                alert(xhr.responseText);
+                alert(textStatus);
+                alert(errorThrown.message);
+            });
+
+
+        // VERSION 1
+/*
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                // Request finished. Do processing here.
+                $("#submit_response").html(this.responseText);
+            } else {
+                let text = this.responseText + ' Status=' + this.status + " statusText=" + this.statusText + " readyState=" +
+                    this.readyState;
+                alert(text);
+                $("#submit_response").html(text);
+            }
+        };
+        try {
+            request.open("POST",grader,true);
+            //Send the proper header information along with the request
+            request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.send(taskXml);
+        }
+        catch(err) {
+            alert("XMLHttpRequest error");
+            setErrorMessage("XMLHttpRequest exception", err);
+        }
+*/
+/*
+        fetch(grader, {
+            method : "POST",
+            body: taskXml // new FormData(taskXml),
+            // -- or --
+            // body : JSON.stringify({
+            // user : document.getElementById('user').value,
+            // ...
+            // })
+        }).then(
+            response => alert("Response " + text)
+            //response => response.text() // .json(), etc.
+            // same as function(response) {return response.text();}
+        ).then(
+            html => alert("Response 1 " + html)
+        );
+*/
+    });
+
     // Restriction selection handling
     let restriction_files = $("#files_restriction");
     let restriction_regexp = $("#regexp_restriction");
