@@ -457,7 +457,27 @@ $(function() {
             submission.appendChild(files);
 
             // TODO: handle multiple model solutions
-            ModelSolutionFileReference.getInstance().doOnAll(function(fileid) {
+            // read model solutions
+            ModelSolutionWrapper.doOnAll(function(ms) {
+                ModelSolutionFileReference.getInstance().doOnAll(function(id) {
+                    //alert(id);
+                    const ui_file = FileWrapper.constructFromId(id);
+                    let fileElem = xmlDoc.createElementNS(xmlns, "file");
+                    files.appendChild(fileElem);
+                    let fileContentElem = xmlDoc.createElementNS(xmlns, "embedded-txt-file");
+                    fileContentElem.setAttribute("filename", ui_file.filename);
+                    fileContentElem.appendChild(xmlDoc.createCDATASection(ui_file.content));
+                    fileElem.appendChild(fileContentElem);
+                    return false;
+
+                }, ms.root);
+
+            })
+
+
+//            ModelSolutionFileReference.getInstance().doOnAll(function(fileid) {
+//                alert(fileid);
+/*
                 let fileElem = xmlDoc.createElementNS(xmlns, "file");
                 files.appendChild(fileElem);
                 const ui_file = FileWrapper.constructFromId(fileid);
@@ -466,7 +486,8 @@ $(function() {
                 fileContentElem.appendChild(xmlDoc.createCDATASection(ui_file.content));
                 fileElem.appendChild(fileContentElem);
                 return false;
-            });
+*/
+//            });
 
 //            if (item.filetype === 'embedded') {
 
