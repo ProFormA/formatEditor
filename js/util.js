@@ -16,8 +16,10 @@
  */
 
 
-const DEBUG_MODE = false;
-const TEST_MODE  = false;
+const DEBUG_MODE       = true;
+const TEST_MODE        = false;
+const SUBMISSION_TEST  = true;
+
 
 const codeversion   = '3.0.0 pre';                     // current version of this code
 

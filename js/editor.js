@@ -437,6 +437,85 @@ $(function() {
         }
     }
 
+
+    function createSubmissionXml() {
+        let submissionXml = '';
+        const xmlns = "urn:proforma:v2.0";
+
+        try {
+            let xmlDoc = document.implementation.createDocument(xmlns, "submission", null);
+            let submission = xmlDoc.documentElement;
+
+            xmlWriter = new XmlWriter(xmlDoc, xmlns);
+
+            // first approach: everthing is inline
+            // xmlWriter.createTextElement(submission, 'task', taskXml);
+            convertToXML(xmlDoc, submission); // create task
+            //xmlWriter.createTextElement(submission, 'external-submission', 'submission');
+            // support only one text file
+            let files = xmlDoc.createElementNS(xmlns, "files");
+            submission.appendChild(files);
+
+            // TODO: handle multiple model solutions
+            ModelSolutionFileReference.getInstance().doOnAll(function(fileid) {
+                let fileElem = xmlDoc.createElementNS(xmlns, "file");
+                files.appendChild(fileElem);
+                const ui_file = FileWrapper.constructFromId(fileid);
+                let fileContentElem = xmlDoc.createElementNS(xmlns, "embedded-txt-file");
+                fileContentElem.setAttribute("filename", ui_file.filename);
+                fileContentElem.appendChild(xmlDoc.createCDATASection(ui_file.content));
+                fileElem.appendChild(fileContentElem);
+                return false;
+            });
+
+//            if (item.filetype === 'embedded') {
+
+
+/*            } else {
+                xmlWriter.createTextElement(fileElem, 'attached-bin-file', item.filename);
+            }
+*/
+
+
+            let resultspec = xmlWriter.createTextElement(submission, 'result-spec', '');
+            resultspec.setAttribute("format", 'xml');
+            resultspec.setAttribute("structure", 'separate-test-feedback');
+
+
+            let serializer = new XMLSerializer();
+            submissionXml = serializer.serializeToString (xmlDoc);
+
+            if ((submissionXml.substring(0, 5) !== "<?xml")){
+                submissionXml = '<?xml version="1.0"?>' + submissionXml;
+                // result = "<?xml version='1.0' encoding='UTF-8'?>" + result;
+            }
+
+            const xsd_file = 'proforma.xsd';
+            // validate output
+            $.get(xsd_file, function(data, textStatus, jqXHR) {      // read XSD schema
+                const valid = xmllint.validateXML({xml: submissionXml, schema: jqXHR.responseText});
+                if (valid.errors !== null) {                                // does not conform to schema
+                    setErrorMessage("Errors in XSD-Validation: ");
+                    valid.errors.some(function(error, index) {
+                        setErrorMessage(error);
+                        return index > 15;
+                    })
+
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                setErrorMessage("XSD-Schema " + xsd_file + " not found.", errorThrown);
+            });
+
+        } catch (err){
+            setErrorMessage("Error sending to grader.". err, err);
+            return '';
+        }
+
+        console.log('Submissionxml=\n');
+        console.log(submissionXml);
+        return submissionXml;
+    }
+
 // -------------------------------------------------------------
 
 
@@ -538,22 +617,30 @@ $(function() {
 
         const grader = $("#grader_uri").val();
         const t1 = performance.now();
-        convertToXML();
-
-        const t2 = performance.now();
-        console.log("Creating XML took " + (t2 - t1) + " ms.")
+        // convertToXML();
 
         // use proxy in order to circumvent the CORS problem
         const newUrl = "https://cors-anywhere.herokuapp.com/" + grader;
+        //const newUrl = grader;
+
+        // Create an FormData object
+        //var data = new FormData(form);
+        //data.append("xml", taskXml);
+
+
+        let submissionXml = createSubmissionXml();
+        const t2 = performance.now();
+        console.log("Creating XML took " + (t2 - t1) + " ms.")
+
 
         var ans = $.ajax({
             type: 'POST',
-            enctype: 'multipart/form-data',
+            //enctype: 'multipart/form-data',
             url: newUrl,
-            data: taskXml,
-            //dataType: "xml",
-            processData: false,
-            //contentType: false,
+            data: submissionXml, // taskXml,
+            dataType: "xml",
+            //processData: false, // prevent jQuery form transforming the data into a query string
+            contentType: false,
             success : function(data){
                 // alert("success " + data);
                 $("#submit_response").html(data);
@@ -668,6 +755,10 @@ $(function() {
     restriction_regexp.show();
     restriction_files.hide();
     restriction_archive.hide();
+
+    if (!SUBMISSION_TEST)
+        $("#submission_preview").hide();
+
 
 
     let restriction_arch_files = $("#archive_files_restriction");
