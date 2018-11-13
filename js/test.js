@@ -15,6 +15,9 @@
  * Karin Borm (Dr.Uta Priss)
  */
 
+var testIDs = {};
+
+
 class TestWrapper {
     static constructFromRoot(root) {
         let test = new TestWrapper();
@@ -67,8 +70,12 @@ class TestWrapper {
         });
     }
 
-    static create(testid, TestName, MoreText, TestType, WithFileRef) {
+    static create(id, TestName, MoreText, TestType, WithFileRef) {
     // create a new test HTML form element
+
+        let testid = id;
+        if (!testid)
+            testid = setcounter(testIDs);
 
         $("#testsection").append("<div "+
             "id='test_" + testid + "'" +
@@ -93,7 +100,6 @@ class TestWrapper {
             "<input class='maxinput xml_test_title' value='"+ TestName +"'/>" +
             "</p>"+
             getDescriptionHtmlString('', '') +
-
 
             MoreText +
             "<p>" + TestFileReference.getInstance().getTableString() + "</p>" +

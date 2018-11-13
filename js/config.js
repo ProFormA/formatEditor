@@ -290,10 +290,8 @@ var config = (function(testConfigNode) {
 
     // list of XML schema files that shall be used for validation
     const xsds = [
-        // TODO: this is not configuration! XSD for task.xml (default)
-        'proforma.xsd'
         // configXsdSchemaFile,
-        // "praktomat.xsd"
+        //"praktomat.xsd"
         // .... TODO
     ];
 

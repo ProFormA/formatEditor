@@ -63,8 +63,8 @@
                     <p><span><label for='xml_description'>Description<span class='red'>*</span>: </label>
                        <textarea rows='8' cols='80' id='xml_description' name='xml_description'
                                  title = 'What the students will see.'></textarea>
-                    </span></p>
-                    <p><label></label>
+                    </span><br>
+                    <label></label>
                         <iframe id=preview title="HTML Preview"></iframe>
                     </p>
                     <span id="librarydropzone"><p><span id='librarysection'></span></p></span>
@@ -166,15 +166,15 @@
             <div id="tabs-2" class="drop_zone">
                 <span id='filesection' ></span>
                 <p>
-                    <button id='addFile'>Add file</button>
-                    <button id='loadFile'>Load file...</button>
+                    <button id='addFile'>New file</button>
+                    <button id='loadFile'>Open file...</button>
                     <input class='xml_load_and_create_file' type='file' style='display:none' onchange='FileWrapper.onReadAndCreateFile(this)'/>
                    <span class='drop_zone_text'>Drop Your File(s) Here!</span>
                 </p>
             </div>
             <div id="tabs-3">
                 <span id='modelsolutionsection'></span>
-                <p><button id='addModelsol'>Add model solution</button></p>
+                <p><button id='addModelsol'>New model solution</button></p>
             </div>
             <div id="tabs-4">
                 <span id='testsection'></span>
@@ -213,7 +213,7 @@
                 <!--    <p><button id='addGH'>Add grading hint</button></p>  -->
                 <!-- not needed for Praktomat -->
                 <br>
-                <p><button id="button_load">Load Task...</button></p>
+                <p><button id="button_load">Open Task...</button></p>
                 <p><!-- Load TASK.XML from file or zip-->
                 <input id="upload_xml_file" type="file"  onchange="uploadTaskFile(this);"/>
                 </p>

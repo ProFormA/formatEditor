@@ -113,7 +113,6 @@ function createDownloadLinks() {
     FileWrapper.doOnAllFiles(function (ui_file) {
         switch (ui_file.class) {
         case "template":
-            // let filetype = fileroot.find(".xml_file_type").val();
             switch (ui_file.type) {
             case 'file':
                 // first template is binary => do not skip
@@ -158,6 +157,24 @@ function getEditorTemplate() {
  */
 function getModelSolution() {
     let returnvalue = "";
+    ModelSolutionWrapper.doOnAll(function(ms) {
+        FileReferenceList.doOnAll(ms.root, function(id) {
+            const ui_file = FileWrapper.constructFromId(id);
+            if (ui_file.type !== 'embedded') {
+                // file is not embedded
+                alert("The Model Solution will not be shown in LON-CAPA because it is stored in zip (not embedded in task).");
+                returnvalue = 'A Model Solution is not available.';
+            } else {
+                returnvalue = ui_file.text;
+            }
+            return false;
+
+        });
+        return false;
+    });
+
+/*
+
     ModelSolutionFileReference.getInstance().doOnAll(function(id) {
         const ui_file = FileWrapper.constructFromId(id);
         if (ui_file.type !== 'embedded') {
@@ -169,7 +186,7 @@ function getModelSolution() {
         }
         return false;
     });
-
+*/
     return returnvalue;
 }
 
@@ -236,12 +253,23 @@ createLONCAPAproblemFile = function (lc_descr, lc_filename, lc_problemname, lc_m
 createLONCAPAOutput = function (prgrlang, versionchck) {
     let loncapa_filename = "input.txt";
 
-    // ??? why use first Model Solution filename?
+    // ??? why do we use first Model Solution filename?
+    ModelSolutionWrapper.doOnAll(function(ms) {
+        FileReferenceList.doOnAll(ms.root, function(id) {
+            const ui_file = FileWrapper.constructFromId(id);
+            loncapa_filename = ui_file.filename;
+            return false;
+        });
+        return false;
+    });
+
+/*
     ModelSolutionFileReference.getInstance().doOnAll(function(fileid) {
         const ui_file = FileWrapper.constructFromId(fileid);
         loncapa_filename = ui_file.filename;
         return false;
     });
+*/
 /*
     FileWrapper.doOnAllFiles(function (ui_file) {
         if (ui_file.id === $(".xml_model-solution_fileref")[0].value) {

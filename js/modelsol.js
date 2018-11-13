@@ -15,6 +15,8 @@
  * Karin Borm (Dr. Uta Priss)
  */
 
+var modelSolIDs = {};
+
 class ModelSolutionWrapper {
 
     static constructFromRoot(root) {
@@ -58,7 +60,7 @@ class ModelSolutionWrapper {
         // todo: iterate through all modelsolutions in variable
         $.each($(".xml_model-solution_id"), function (indexOpt, item) {
             let modelsolution = ModelSolutionWrapper.constructFromId(item.value);
-            callback(modelsolution);
+            return callback(modelsolution);
         });
     }
 

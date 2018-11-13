@@ -17,6 +17,7 @@
 
 var fileStorages = [];
 var fileIDs = {};
+var codemirror = {};
 
 
 /**
@@ -180,7 +181,8 @@ class FileWrapper {
         if (config.useCodemirror) {
             codemirror[this.id].setValue(newText);
             const fileObject = fileStorages[this.id];
-            codemirror[this.id].setOption("mode", fileObject.mimetype);
+            //alert('CodeMirror-Mode: ' + fileObject.mimetype);
+            codemirror[this.id].setOption("mode", this.getCodemirrorMode());
         } else {
             this._root.find(".xml_file_text").val(newText);
         }
@@ -270,6 +272,20 @@ class FileWrapper {
         FileReferenceList.updateAllFilenameLists();
     }
 
+    getCodemirrorMode() {
+        switch(getExtension(this.filename)) {
+            case "java":   return "text/x-java";
+            case "python": return "text/x-python";
+            case "setlx":  return "text/text";
+            case "c":      return "text/x-csrc";
+            case "cpp":    return "text/x-c++src";
+            case "xml":    return "application/xml";
+            case "html":    return "text/html";
+            case "sql":    return "text/x-sql";
+            case "js":    return "textjavascript";
+        }
+        return "";
+    }
 
     static onFilenameChanged(ui_file) {
         console.log('onFilenameChanged');

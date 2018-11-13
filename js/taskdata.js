@@ -569,18 +569,21 @@ class TaskClass {
                 // result = "<?xml version='1.0' encoding='UTF-8'?>" + result;
             }
 
+            let xsds = [ 'proforma.xsd' ];
+            xsds = xsds.concat(config.xsds);
+
+
             if (!topLevelDoc) { // do not validate for XML part
                 // validate output
-                config.xsds.forEach(function (xsd_file, index) {
+                xsds.forEach(function (xsd_file, index) {
                     $.get(xsd_file, function (data, textStatus, jqXHR) {      // read XSD schema
                         const valid = xmllint.validateXML({xml: result /*xmlString*/, schema: jqXHR.responseText});
                         if (valid.errors !== null) {                                // does not conform to schema
-                            setErrorMessage("Errors in XSD-Validation: ");
+                            setErrorMessage("Errors in XSD-Validation " + xsd_file + ":");
                             valid.errors.some(function (error, index) {
                                 setErrorMessage(error);
                                 return index > 15;
                             })
-
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         setErrorMessage("XSD-Schema " + xsd_file + " not found.", errorThrown);

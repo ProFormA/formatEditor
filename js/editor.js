@@ -47,10 +47,8 @@ const testTypes = getTesttypeOptions();
 
 //////////////////////////////////////////////////////////////////////////////
 //* These global variables keep track of how many of these elements currently exist.
-var modelSolIDs = {};
-var testIDs = {};
 var gradingHintCounter;                                // only 1 grading hint is allowed
-var codemirror = {};
+
 
 
 // Codemirror description editor is made global in order to allow access
@@ -399,13 +397,13 @@ $(function() {
 
     function addTestButtons() {
         $.each(config.testInfos, function(index, item) {
-            $("#testbuttons").append("<button id='" + item.buttonJQueryId + "'>Add " + item.title + "</button> ");
+            $("#testbuttons").append("<button id='" + item.buttonJQueryId + "'>New " + item.title + "</button> ");
             $("#" + item.buttonJQueryId).click(function() {
 
-                var testNo = setcounter(testIDs);    // sets the corresponding fileref, filename and title "SetlX-Syntax-Test"
-                TestWrapper.create(testNo,item.title, item.htmlExtraFields, item.testType, item.withFileRef);
+                //var testNo = setcounter(testIDs);    // sets the corresponding fileref, filename and title "SetlX-Syntax-Test"
+                let ui_test = TestWrapper.create(null, item.title, item.htmlExtraFields, item.testType, item.withFileRef);
                 if (item.onCreated) {
-                    item.onCreated(testNo);
+                    item.onCreated(ui_test.id); // testNo);
                 }
 
                 $("#tabs").tabs("option", "active", tab_page.TESTS); });
@@ -452,15 +450,12 @@ $(function() {
             // xmlWriter.createTextElement(submission, 'task', taskXml);
             convertToXML(xmlDoc, submission); // create task
             //xmlWriter.createTextElement(submission, 'external-submission', 'submission');
-            // support only one text file
+
             let files = xmlDoc.createElementNS(xmlns, "files");
             submission.appendChild(files);
-
-            // TODO: handle multiple model solutions
-            // read model solutions
+            // read model solution files
             ModelSolutionWrapper.doOnAll(function(ms) {
-                ModelSolutionFileReference.getInstance().doOnAll(function(id) {
-                    //alert(id);
+                FileReferenceList.doOnAll(ms.root, function(id) {
                     const ui_file = FileWrapper.constructFromId(id);
                     let fileElem = xmlDoc.createElementNS(xmlns, "file");
                     files.appendChild(fileElem);
@@ -469,25 +464,8 @@ $(function() {
                     fileContentElem.appendChild(xmlDoc.createCDATASection(ui_file.content));
                     fileElem.appendChild(fileContentElem);
                     return false;
-
-                }, ms.root);
-
-            })
-
-
-//            ModelSolutionFileReference.getInstance().doOnAll(function(fileid) {
-//                alert(fileid);
-/*
-                let fileElem = xmlDoc.createElementNS(xmlns, "file");
-                files.appendChild(fileElem);
-                const ui_file = FileWrapper.constructFromId(fileid);
-                let fileContentElem = xmlDoc.createElementNS(xmlns, "embedded-txt-file");
-                fileContentElem.setAttribute("filename", ui_file.filename);
-                fileContentElem.appendChild(xmlDoc.createCDATASection(ui_file.content));
-                fileElem.appendChild(fileContentElem);
-                return false;
-*/
-//            });
+                });
+            });
 
 //            if (item.filetype === 'embedded') {
 
@@ -619,7 +597,6 @@ $(function() {
 
   $("#addModelsol").click(function() {
       ModelSolutionWrapper.create();
-      //newModelsol(setcounter(modelSolIDs));
       $("#tabs").tabs("option", "active", tab_page.MODEL_SOLUTION); });
 
 
@@ -659,11 +636,11 @@ $(function() {
             //enctype: 'multipart/form-data',
             url: newUrl,
             data: submissionXml, // taskXml,
-            dataType: "xml",
+            dataType: "html", // convert XML to html in order to show result in textarea
             //processData: false, // prevent jQuery form transforming the data into a query string
             contentType: false,
             success : function(data){
-                // alert("success " + data);
+                alert("success " + data);
                 $("#submit_response").html(data);
             },
             error : function($xhr, textStatus, errorThrown){
@@ -872,7 +849,6 @@ $(function() {
   // There must be at least one model solution
   // newFile(setcounter(fileIDs));
     ModelSolutionWrapper.create();
-  //newModelsol(setcounter(modelSolIDs));
   // show/hide buttons according to programming language
   switchProgLang();
 

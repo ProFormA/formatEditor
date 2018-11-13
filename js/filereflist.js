@@ -17,7 +17,7 @@
 
 // todo: replace table solution with something without table!
 
-const loadFileOption = "<load...>";
+const loadFileOption = "<open...>";
 const emptyFileOption = " "; // must not be empty!!
 
 const showEditorText = 'View';
@@ -77,6 +77,8 @@ class FileReferenceList extends DynamicList {
     }
 */
     doOnAll(callback, root) {
+        if (root)
+            console.log('doOnAll ios deprecated, use static version instead');
         let theRoot = root?root:this.root;
         $.each(theRoot.find(".fileref_fileref"), function(index, item) {
             const filerefId = item.value;
@@ -84,13 +86,12 @@ class FileReferenceList extends DynamicList {
         });
     }
 
-    /*
-    static doOnAll(callback) {
-        $.each(".fileref_fileref", function(index, item) {
+    static doOnAll(root, callback) {
+        $.each(root.find(".fileref_fileref"), function(index, item) {
             const filerefId = item.value;
             return callback(filerefId);
         });
-    }*/
+    }
 
     // init table
     init(root, DEBUG_MODE) {
@@ -140,11 +141,11 @@ class FileReferenceList extends DynamicList {
         element.eq(index).val(filename).change();
     }
 
-    getCountFilerefs() {
+    getCountFilerefs(root) {
         let counter = 0;
         this.doOnAll(function () {
             counter++;
-        });
+        }, root);
         return counter;
     }
 
@@ -666,7 +667,6 @@ class TestFileReference extends FileReferenceList {
     }
 
     static getInstance() {return testFileRefSingleton;}
-    static getClassRoot() { return "xml_test"; }
 
     onFileUpload(filename, uploadBox) {
         super.onFileUpload(filename, uploadBox);
@@ -693,7 +693,6 @@ class ModelSolutionFileReference extends FileReferenceList {
             'file belonging to a model solution', true);
     }
     static getInstance() {return modelSolutionFileRefSingleton;}
-    static getClassRoot() { return "xml_model-solution"; }
 }
 let modelSolutionFileRefSingleton = new ModelSolutionFileReference();
 
