@@ -198,7 +198,7 @@ class TaskClass {
             callback(this.tests[testid], xmlReader, configNodeNode, testroot);
         } catch (err){
             alert (err);
-            setErrorMessage("Error while parsing the test configuration in xml file. ". err, err);
+            setErrorMessage("Error while parsing test configuration in xml file", err);
         }
     }
 
@@ -276,7 +276,7 @@ class TaskClass {
 
         } catch (err){
             //alert (err);
-            setErrorMessage("Error while parsing the xml file. The file has not been imported.". err, err);
+            setErrorMessage("Error while parsing the xml file. The file has not been imported.", err);
         }
     }
 
@@ -394,7 +394,7 @@ class TaskClass {
 
        } catch (err){
            //alert (err);
-           setErrorMessage("Error while parsing the xml file. The file has not been imported.". err, err);
+           setErrorMessage("Error while parsing the xml file. The file has not been imported.", err);
        }
     }
 
@@ -593,7 +593,7 @@ class TaskClass {
 
             return result;
         } catch (err){
-            setErrorMessage("Error creating task xml file.". err, err);
+            setErrorMessage("Error creating task xml file.", err);
             return '';
         }
     }

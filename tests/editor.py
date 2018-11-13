@@ -937,11 +937,9 @@ def add_junit_test():
     elem = driver.find_element_by_id("addJavaJUnitTest").click()
 
 
-def set_junit_description(junit_index, text): # 0-based
-    elem = driver.find_elements_by_class_name('xml_pr_configDescription')
-    set_input_value(elem[junit_index], text)
-    # elem[junit_index].clear()
-    # elem[junit_index].send_keys(text)
+#def set_junit_description(junit_index, text): # 0-based
+#    elem = driver.find_elements_by_class_name('xml_pr_configDescription')
+#    set_input_value(elem[junit_index], text)
 
 def set_junit_test_class(junit_index, classtext):
     elem = driver.find_elements_by_class_name('xml_ju_mainclass')

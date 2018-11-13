@@ -71,7 +71,10 @@ var config = (function(testConfigNode) {
 
         writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
         let childs = testConfigNode.getElementsByTagName('test-meta-data');
-        xmlWriter.createTextElement(childs[0], 'praktomat:config-testDescription', $(root).find(".xml_pr_configDescription").val(), praktomatns);
+
+        // remove description completely ???
+//        xmlWriter.createTextElement(childs[0], 'praktomat:config-testDescription', $(root).find(".xml_pr_configDescription").val(), praktomatns);
+//        xmlWriter.createTextElement(childs[0], 'praktomat:config-testDescription', '', praktomatns);
     }
     function writePraktomatCheckStyle(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
         let root = uiElement.root;
@@ -115,7 +118,11 @@ var config = (function(testConfigNode) {
         $(testroot).find(".xml_pr_always").val(xmlReader.readSingleText("praktomat:always", praktomatNode));
         $(testroot).find(".xml_pr_public")[0].checked = (xmlReader.readSingleText("praktomat:public", praktomatNode)==='True');
         $(testroot).find(".xml_pr_required")[0].checked = (xmlReader.readSingleText("praktomat:required", praktomatNode)==='True');
-        $(testroot).find(".xml_pr_configDescription").val(xmlReader.readSingleText("praktomat:config-testDescription", praktomatNode));
+        // version 1.0.1: read description from praktomat and copy to test description
+        let description = xmlReader.readSingleText("praktomat:config-testDescription", praktomatNode);
+        if (description && !test.description)
+            test.description = description;
+//        $(testroot).find(".xml_pr_configDescription").val(xmlReader.readSingleText("praktomat:config-testDescription", praktomatNode));
     }
 
     function readUnitTest(test, xmlReader, testConfigNode, testroot) {
@@ -198,9 +205,9 @@ var config = (function(testConfigNode) {
         "<option value='4.12-gruendel'>4.12-gruendel</option>" +
         "<option selected='selected' value='4.10'>4.10</option>"+
         "<option value='3'>3</option>" +
-        "</select></p>"+
-        "<p><label for='xml_pr_configDescription'>Test description: </label>"+
-        "<input class='largeinput xml_pr_configDescription'/></p>";
+        "</select></p>";
+//        "<p><label for='xml_pr_configDescription'>Test description: </label>"+
+//        "<input class='largeinput xml_pr_configDescription'/></p>";
 
     const htmlSetlX =  htmlPraktomat +
         "<p><label for='xml_jt_framew'>Framework<span class='red'>*</span>: </label>"+

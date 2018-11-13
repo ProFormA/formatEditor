@@ -127,15 +127,16 @@ function setErrorMessage(errormess, exception) {                  // setting the
     let error_output = $("#error-message");
     if (errormess) {
         error_output.append("\n* " + errormess);
-        if (exception) {
-            error_output.append("\n  (" + exception.message + ")");
-            console.error(exception.stack);
-        }
-    }
-    else {
-        error_output.append("\n* " + exception);
     }
 
+    if (exception) {
+        if (exception instanceof Error) {
+            error_output.append("\n  (" + exception.message + ")");
+            console.error(exception.stack);
+        } else {
+            error_output.append("\n* " + exception);
+        }
+    }
     error_output.css('visibility', 'visible');
     error_output.scrollTop(error_output[0].scrollHeight);
 //    error_output.scrollTop($("#error-message")[0].scrollHeight);
@@ -506,7 +507,7 @@ $(function() {
             });
 
         } catch (err){
-            setErrorMessage("Error sending to grader.". err, err);
+            setErrorMessage("Error sending to grader", err);
             return '';
         }
 

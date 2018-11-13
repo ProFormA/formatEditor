@@ -214,7 +214,7 @@ class JavaTest(zipFileTest.ZipFileTest):
         editor.add_junit_test()
 
         # fill JUnit test #0
-        editor.set_junit_description(0, "junit description # 0")
+        editor.set_test_description(0, "junit description # 0")
         editor.set_test_file(counter_test_index, 1)
         editor.set_test_title(counter_test_index, "JUnit Test #0")
         editor.set_junit_test_class(0, "JUNIT test class #0")
@@ -226,7 +226,7 @@ class JavaTest(zipFileTest.ZipFileTest):
         counter_test_index = counter_test_index + 1
 
         # fill JUnit test #1
-        editor.set_junit_description(1, "junit description # 1")
+        editor.set_test_description(1, "junit description # 1")
         editor.set_test_file(counter_test_index, 4) # file with package name
         # editor.set_test_title(counter_test_index, "JUnit Test #1")
         # editor.set_junit_test_class(1, "JUNIT test class #1")
