@@ -16,6 +16,11 @@
  */
 
 
+const T_Lms_Usage = {
+    DISPLAY: 'display',
+    DOWNLOAD: 'download'
+};
+
 // helper class
 class XmlReader {
     constructor(xmlText) {
@@ -127,7 +132,10 @@ class TaskFileRef {
 class TaskFile {
     constructor() {
         this.filename = '';
-        this.fileclass = '';
+//        this.fileclass = '';
+        this.usedByGrader = null;
+        this.usageInLms = null;
+        this.visible = null;
         this.id = null;
         this.filetype = null;
         this.comment = null;
@@ -204,6 +212,8 @@ class TaskClass {
 
     readXmlVersion101(xmlfile) {
 
+
+
         function readFileRefs(xmlReader, element, thisNode) {
             let fileRefIterator = xmlReader.readNodes("dns:filerefs/dns:fileref", thisNode);
             let fileRefNode = fileRefIterator.iterateNext();
@@ -236,7 +246,30 @@ class TaskClass {
             while (thisNode) {
                 let taskfile = new TaskFile();
                 taskfile.id = xmlReader.readSingleText("@id", thisNode);
-                taskfile.fileclass = xmlReader.readSingleText("@class", thisNode);
+                const fileclass = xmlReader.readSingleText("@class", thisNode);
+                switch(fileclass) {
+                    case 'internal':
+                    case 'internal-library':
+                        taskfile.usedByGrader = true;
+                        taskfile.usageInLms = null;
+                        taskfile.visible = false;
+                        break;
+                    case 'template':
+                        taskfile.usedByGrader = false;
+                        taskfile.usageInLms = T_Lms_Usage.DISPLAY;
+                        taskfile.visible = true;
+                        break;
+                    case 'instruction':
+                        taskfile.usedByGrader = false;
+                        taskfile.usageInLms = T_Lms_Usage.DOWNLOAD;
+                        taskfile.visible = true;
+                        break;
+                    case 'library':
+                        taskfile.usedByGrader = true;
+                        taskfile.usageInLms = T_Lms_Usage.DOWNLOAD;
+                        taskfile.visible = true;
+                        break;
+                }
                 taskfile.comment = xmlReader.readSingleText("@comment", thisNode);
                 taskfile.filetype = xmlReader.readSingleText("@type", thisNode);
                 taskfile.filename = xmlReader.readSingleText("@filename", thisNode);
@@ -315,7 +348,11 @@ class TaskClass {
             while (thisNode) {
                 let taskfile = new TaskFile();
                 taskfile.id = xmlReader.readSingleText("@id", thisNode);
-                taskfile.fileclass = xmlReader.readSingleText("@class", thisNode);
+                //taskfile.fileclass = xmlReader.readSingleText("@class", thisNode);
+                taskfile.usedByGrader = xmlReader.readSingleText("@used-by-grader", thisNode);
+                taskfile.usageInLms = xmlReader.readSingleText("@used-by-lms", thisNode);
+                taskfile.visible = xmlReader.readSingleText("@visible", thisNode);
+
 
                 // todo:
                 taskfile.comment = xmlReader.readSingleText("dns:internal-description", thisNode);
@@ -435,7 +472,11 @@ class TaskClass {
         function writeFile(item, index) {
             let fileElem = xmlDoc.createElementNS(xmlns, "file");
             fileElem.setAttribute("id", item.id);
-            fileElem.setAttribute("class", item.fileclass);
+            //fileElem.setAttribute("class", item.fileclass);
+            fileElem.setAttribute("used-by-grader", item.usedByGrader);
+            fileElem.setAttribute("used-by-lms", item.usageInLms);
+            fileElem.setAttribute("visible", item.visible);
+
             // fileElem.setAttribute("comment", item.comment);
             files.appendChild(fileElem);
             if (item.filetype === 'embedded') {

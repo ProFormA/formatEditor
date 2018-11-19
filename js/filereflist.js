@@ -346,9 +346,9 @@ class FileReferenceList extends DynamicList {
     static getCountSpecialReferences(fileId) {
         let count = 0;
 
-        librarySingleton.doOnAll(function(id) { if (id === fileId) count++; });
+        //librarySingleton.doOnAll(function(id) { if (id === fileId) count++; });
         templSingleton.doOnAll(function(id) { if (id === fileId) count++; });
-        instructionSingleton.doOnAll(function(id) { if (id === fileId) count++; });
+        downloadableSingleton.doOnAll(function(id) { if (id === fileId) count++; });
 
 /*
         $.each($(".xml_library_fileref, .xml_template_fileref, .xml_instruction_fileref"),
@@ -428,9 +428,9 @@ class FileReferenceList extends DynamicList {
                         case 'template':
                             found = filenameobject.hasClass('xml_template_filename');
                             break;
-                        case 'library':
+/*                        case 'library':
                             found = filenameobject.hasClass('xml_library_filename');
-                            break;
+                            break;*/
                         case 'instruction':
                             found = filenameobject.hasClass('xml_instruction_filename');
                             break;
@@ -530,8 +530,8 @@ class FileReferenceList extends DynamicList {
                             handleClassChange(ui_file, fileid, TEMPLATE);
                         } else if ($(tempSelElem).hasClass('xml_instruction_filename')) {
                             handleClassChange(ui_file, fileid, INSTRUCTION);
-                        } else if ($(tempSelElem).hasClass('xml_library_filename')) {
-                            handleClassChange(ui_file, fileid, LIBRARY);
+/*                        } else if ($(tempSelElem).hasClass('xml_library_filename')) {
+                            handleClassChange(ui_file, fileid, LIBRARY);*/
                         } else {
                             // model solution, nothing to be done
                         }
@@ -698,22 +698,22 @@ let modelSolutionFileRefSingleton = new ModelSolutionFileReference();
 
 
 
-class InstructionFileReference extends FileReferenceList {
+class DownloadableFileReference extends FileReferenceList {
 
     constructor() {
         super('xml_instruction_filename', 'xml_instruction_fileref',
-            'InstructionFileReference', 'Other attachment',
-            'e.g. image or pdf with further information (file is NOT available for grader)', false);
+            'DownloadableFileReference', 'Downloadable File',
+            'e.g. pdf, image, library ', false);
     }
-    static getInstance() {return instructionSingleton;}
+    static getInstance() {return downloadableSingleton;}
 }
-let instructionSingleton = new InstructionFileReference();
+let downloadableSingleton = new DownloadableFileReference();
 
 
 class TemplateFileReference extends FileReferenceList {
     constructor() {
         super('xml_template_filename', 'xml_template_fileref',
-            'TemplateFileReference', 'Template',
+            'TemplateFileReference', 'Code template',
             'code snippet that the student should use as a starting point for coding\n' +
             '(file is NOT available for grader)', false);
     }
@@ -721,6 +721,8 @@ class TemplateFileReference extends FileReferenceList {
 }
 let templSingleton = new TemplateFileReference();
 
+
+/*
 class LibraryFileReference extends FileReferenceList {
     constructor() {
         super('xml_library_filename', 'xml_library_fileref',
@@ -730,3 +732,4 @@ class LibraryFileReference extends FileReferenceList {
     static getInstance() {return librarySingleton;}
 }
 let librarySingleton = new LibraryFileReference();
+*/

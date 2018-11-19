@@ -18,7 +18,7 @@
 
 const DEBUG_MODE       = false;
 const TEST_MODE        = false;
-const SUBMISSION_TEST  = false;
+const SUBMISSION_TEST  = true;
 
 
 const codeversion   = '3.0.0 pre';                     // current version of this code
@@ -81,3 +81,22 @@ function generateUUID(){
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
+/* setcounter and deletecounter are only used for fileIDs, modelSolIDs, testIDs
+ * setcounter finds the first available ID and returns it
+ * setcounter should be called when a new item is created
+ * deletecounter deletes an ID from the hash, to be used when deleting an item
+ */
+function setcounter(temphash) {
+    let tempcnter = 1;
+    while (temphash.hasOwnProperty(tempcnter)) {         // if the counter is already used, take next one
+        tempcnter++;
+    }
+    temphash[tempcnter] = 1;
+    return tempcnter;
+}
+function deletecounter(temphash,tempelement) {         // for modelSolIDs, testIDs
+
+    // todo: do not use parent...
+    delete temphash[tempelement.parent().parent().parent().find('.tinyinput')[0].value];
+}

@@ -60,3 +60,26 @@ function ProglangInfo(name, tests) {
     this.tests = tests;
 }
 
+
+// -------------------------------------------------------------
+
+
+// helper function for custom test configuration
+createFileWithContent = function(filename, content) {
+    let ui_file = newFile();
+    ui_file.filename = filename;
+    ui_file.text = content;
+    // onFilenameChanged(ui_file);
+    return ui_file.id;
+}
+
+addFileReferenceToTest = function(testId, filename) {
+    var xml_test_root = $(".xml_test_id[value='"+testId+"']").parent().parent();
+    var element = xml_test_root.find(".xml_test_filename").last();
+    element.val(filename).change();
+};
+
+getTestField = function(testId, fieldClass) {
+    var xml_test_root = $(".xml_test_id[value='"+testId+"']").parent().parent();
+    return xml_test_root.parent().find(fieldClass).first();
+}

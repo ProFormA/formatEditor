@@ -92,27 +92,7 @@ function getProgLangOptions() {
 
 
 
-//////////////////////////////////////////////////////////////////////////////
-/* setcounter and deletecounter are only used for fileIDs, modelSolIDs, testIDs
- * setcounter finds the first available ID and returns it
- * setcounter should be called when a new item is created
- * deletecounter deletes an ID from the hash, to be used when deleting an item
- */
-function setcounter(temphash) {
-    let tempcnter = 1;
-    while (temphash.hasOwnProperty(tempcnter)) {         // if the counter is already used, take next one
-        tempcnter++;
-    }
-    temphash[tempcnter] = 1;
-    return tempcnter;
-}
-function deletecounter(temphash,tempelement) {         // for modelSolIDs, testIDs
-  //console.log('deletecounter called');
-  // let tempcnter;
 
-    // todo: do not use parent...
-    delete temphash[tempelement.parent().parent().parent().find('.tinyinput')[0].value];
-}
 
 //////////////////////////////////////////////////////////////////////////////
 /* The HTML div-element "error-message" displays error messages if required.
@@ -148,17 +128,7 @@ function clearErrorMessage() {                         // clearing the error con
     error_output.css('visibility', 'hidden');
 }
 
-//////////////////////////////////////////////////////////////////////////////
-/* Allows to upload a file into a textarea
- * or to create a download link for text from a textarea.
- * These functions are used in click events associated with textareas.
- */
-/*
-function uploadTestTaskFile(inputbutton) {
-    // var filenew = inputbutton.files[0];
-    // TODO....
-}
-*/
+
 
 function uploadTaskFile(inputbutton) {                     // upload button for textareas: output, output2
     var filenew = inputbutton.files[0];
@@ -218,15 +188,6 @@ function downloadTextFile2(text, filename, dummybutton) {
     dummybutton.click();
 }
 
-/*
-function downloadText3(text, name, type) {
-    var dummyAnchor = document.getElementById("dummyAnchor");
-    var file = new Blob([text], {type: type});
-    dummyAnchor.href = URL.createObjectURL(file);
-    dummyAnchor.download = name;
-    dummyAnchor.click();
-}
-*/
 
 function downloadTextFile(filename, text, a) {
     // Edge crashes with normnal data uri but
@@ -516,56 +477,24 @@ $(function() {
         return submissionXml;
     }
 
-// -------------------------------------------------------------
 
-
-    // helper function for custom test configuration
-    createFileWithContent = function(filename, content) {
-        let ui_file = newFile();
-        ui_file.filename = filename;
-        ui_file.text = content;
-        // onFilenameChanged(ui_file);
-        return ui_file.id;
-    }
-
-    addFileReferenceToTest = function(testId, filename) {
-        var xml_test_root = $(".xml_test_id[value='"+testId+"']").parent().parent();
-        var element = xml_test_root.find(".xml_test_filename").last();
-        element.val(filename).change();
-    };
-
-    getTestField = function(testId, fieldClass) {
-        var xml_test_root = $(".xml_test_id[value='"+testId+"']").parent().parent();
-        return xml_test_root.parent().find(fieldClass).first();
-    }
 
 
 ///////////////////////////////////////////////////////// jQuery UI settings
     $("#tabs").tabs();                                   // hide HTML elements when the manual or FAQ are selected
     $('#tabs').click(function(e) {
         var curTab = $('.ui-tabs-active');
-        /*
-        if (curTab.index() == tab_page.MANUAL || curTab.index() == tab_page.FAQ){ // if manual or FAQ selected
-            $("#rightPanel").hide();
-            $("#button-list").hide();
-            $("#end-container").hide();
-            $("#xml-output-input").hide();
-            $("#otherSoftware2").hide();
-        } else
-        */
-        {
-            $("#rightPanel").show();
-            $("#button-list").show();
-            $("#end-container").show();
-            $("#xml-output-input").show();
-            $("#otherSoftware2").show();
+        $("#rightPanel").show();
+        $("#button-list").show();
+        $("#end-container").show();
+        $("#xml-output-input").show();
+        $("#otherSoftware2").show();
 
-            // refresh codemirror editors  -
-            // otherwise content is visible only after first click in window
-            setTimeout(function () {
-                Object.keys(codemirror).forEach(function(item) {codemirror[item].refresh();});
-            }, 5);
-        }
+        // refresh codemirror editors  -
+        // otherwise content is visible only after first click in window
+        setTimeout(function () {
+            Object.keys(codemirror).forEach(function(item) {codemirror[item].refresh();});
+        }, 5);
     });
 
 
@@ -836,19 +765,11 @@ $(function() {
 */
 
 ///////////////////////////////////////////////////////// if LON-CAPA is used insert relevant form elements
-  //if (useLoncapa == 1) { insertLCformelements();}
 
   // create further elements needed for LMS
   config.createFurtherUiElements();
 
-  // create dummy button for saving task.xml
-/*  let anchor = document.createElement("a");
-  anchor.style = "display: none";
-  //anchor.id = "dummy_save_xml_button";
-  document.body.appendChild(anchor);
-*/
   // There must be at least one model solution
-  // newFile(setcounter(fileIDs));
     ModelSolutionWrapper.create();
   // show/hide buttons according to programming language
   switchProgLang();
@@ -858,26 +779,6 @@ $(function() {
   $("#button_load").click(function(){
     $("#upload_xml_file").click();
   })
-
-/*
-    $("#tabs-2").click(function(e){
-        alert('tab switched');
-        //$(this).tab('show');
-    });
-
-    $('#tabs-2').click(function (link) {
-        alert('tab switched');
-        //console.log(link.currentTarget.innerText);
-    })
-*/
-/*
-  $("#button_save_xml").click(function(){
-    console.log("button_save_xml clicked");
-    convertToXML();
-    downloadTextFile2($("#output"), "task.xml", anchor);
-    //downloadTextFile2($("#output"), "task.xml", $("#dummy_save_xml_button")[0]);
-  })
-*/
 
 
   if (!DEBUG_MODE) {
@@ -943,8 +844,8 @@ $(function() {
     });
 
     // add file reference for template, library instruction
-    FileReferenceList.init("#librarydropzone", '#librarysection', LibraryFileReference);
-    FileReferenceList.init("#instructiondropzone", '#instructionsection', InstructionFileReference);
+//    FileReferenceList.init("#librarydropzone", '#librarysection', LibraryFileReference);
+    FileReferenceList.init("#downloaddropzone", '#downloadsection', DownloadableFileReference);
     FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
 
     $("#files_restriction").append(SubmissionFileList.getInstance().getTableString());
@@ -952,10 +853,6 @@ $(function() {
 
     $("#xml_task_internal_description").append(getInternalDescriptionString(''));
 
-
-// test
-//    var myCsv = "Col1,Col2,Col3\nval1,val2,val3";
-//    window.open('data:text/csv;charset=utf-8,' + escape(myCsv));
 
     // saving files is realised with an anchor having the download attribute set.
     // Unfortunately not every browser supports downloads and not every browser
@@ -996,7 +893,6 @@ $(function() {
     // register html preview window
     var delay;
     descriptionEditor = CodeMirror.fromTextArea(
-//        $("#xml_description")[0], {
             document.getElementById('xml_description'), {
         mode: 'text/html',
         autoCloseTags: true

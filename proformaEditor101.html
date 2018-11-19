@@ -21,7 +21,7 @@
     <script src="js/test.js"></script>
     <script src="js/taskdata.js"></script>
     <script src="js/task.js"></script>
-    <script src="js/submissionfilelist.js"></script>
+    <script src="js/dynamic-list.js"></script>
     <script src="js/filereflist.js"></script>
     <script src="js/editor.js"></script>
     <script src="js/zip.js"></script>
@@ -68,7 +68,9 @@
                         <iframe id=preview title="HTML Preview"></iframe>
                     </p>
                     <span id="librarydropzone"><p><span id='librarysection'></span></p></span>
-                    <span id="instructiondropzone"><p></span><span id='instructionsection' ></span></p></span>
+                    <span id="downloaddropzone"><p></span><span id='downloadsection' ></span></p></span>
+                    <span id="templatedropzone"><p></span><span id='templatesection' ></span></p></span>
+
                     <!-- onfocus='this.rows=10;' onmouseout='this.rows=10;' -->
                      <p><label for='xml_lang'>Language: </label>
                          <select id='xml_lang'>
@@ -88,9 +90,8 @@
                          </select></p>
                 </div> -->
 
-                <div class='ui-widget ui-widget-content ui-corner-all drop_zone' id="templatedropzone">
+                <div class='ui-widget ui-widget-content ui-corner-all'>
                      <h3 class='ui-widget-header'>Submission</h3>
-                    <span id='templatesection' ></span>
 
                     <p><label>Restriction:</label>
                     <select id='restriction_selector'>
@@ -147,6 +148,10 @@
                     <input type='file' id='dummy_file_upload_button' style="display: none"/>
 
                     <div id="submission_preview">
+                        <p>
+                            EXPERIMENTAL:
+                        </p>
+
                         <p>
                             <label for='grader_uri'>Grader URI: </label>
                             <input class='mediuminput' id='grader_uri' value="http://"/>

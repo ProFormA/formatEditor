@@ -118,12 +118,14 @@ convertToXML = function(topLevelDoc, rootNode) {
     }
 
     // PRE PROCESSING
+/*
     FileWrapper.doOnAllFiles(function(ui_file) {
         if (ui_file.isLibrary && ui_file.class === INTERNAL) {
             // convert to internal library if class is internal
             ui_file.class = INTERNAL_LIB;
         }
     });
+*/
 
     // copy data to task class
     let task = new TaskClass();
@@ -282,12 +284,12 @@ readAndDisplayXml = function() {
     $("#testsection")[0].textContent = "";
 
     // initialise other sections
-    FileReferenceList.init("#librarydropzone", '#librarysection', LibraryFileReference);
-    FileReferenceList.init("#instructiondropzone", '#instructionsection', InstructionFileReference);
+    //FileReferenceList.init("#librarydropzone", '#librarysection', LibraryFileReference);
+    FileReferenceList.init("#downloaddropzone", '#downloadsection', DownloadableFileReference);
     FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
     const templateroot = $("#templatedropzone");
-    const libroot = $("#librarydropzone");
-    const instructionroot = $("#instructiondropzone");
+    //const libroot = $("#librarydropzone");
+    const downloadroot = $("#downloaddropzone");
 
     // fileIDs = {};
     modelSolIDs = {};
@@ -322,18 +324,29 @@ readAndDisplayXml = function() {
 
     // POST PROCESSING
 
-    // special handling for template, library and instruction file class:
+    // special handling for visisble files:
     // add dummy file references
     let indexTemplate = 0;
-    let indexInstruction = 0;
-    let indexLib = 0;
+    let indexDownload = 0;
+    //let indexLib = 0;
     task.files.forEach(function(item) {
+        if (item.visible) {
+            switch (item.usageInLms) {
+                case T_Lms_Usage.DISPLAY:
+                    TemplateFileReference.getInstance().setFilenameOnCreation(templateroot, indexTemplate++, item.filename);
+                    break;
+                case T_Lms_Usage.DOWNLOAD:
+                    DownloadableFileReference.getInstance().setFilenameOnCreation(downloadroot, indexDownload++, item.filename);
+                    break;
+            }
+        }
+/*
         switch(item.fileclass) {
             case TEMPLATE:
                 TemplateFileReference.getInstance().setFilenameOnCreation(templateroot, indexTemplate++, item.filename);
                 break;
             case INSTRUCTION:
-                InstructionFileReference.getInstance().setFilenameOnCreation(instructionroot, indexInstruction++, item.filename);
+                DownloadableFileReference.getInstance().setFilenameOnCreation(downloadroot, indexDownload++, item.filename);
                 break;
             case LIBRARY:
                 LibraryFileReference.getInstance().setFilenameOnCreation(libroot, indexLib++, item.filename);
@@ -345,6 +358,7 @@ readAndDisplayXml = function() {
             default:
                 break;
         }
+*/
     });
 
     // fill filename lists in empty file refences

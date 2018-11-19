@@ -156,7 +156,7 @@ class FileWrapper {
     get root() { return this._root; }
     get id() { return this.getValue(this._id,".xml_file_id" ); }
     get filename() { return this.getValue(this._filename,".xml_file_filename" ); }
-    get class() { return this.getValue(this._class,".xml_file_class" ); }
+//    get class() { return this.getValue(this._class,".xml_file_class" ); }
     get type() { return this.getValue(this._type,".xml_file_type" ); }
     get comment() { return this.getValue(this._comment,".xml_internal_description" ); }
     get mimetype() { return fileStorages[this.id].mimetype; }
@@ -165,7 +165,7 @@ class FileWrapper {
     get content() { return fileStorages[this.id].content; }
     get size() { return fileStorages[this.id].size; }
     get originalFilename() { return fileStorages[this.id].originalFilename; }
-    get isLibrary() { return this.root.find(".file_library")[0].checked;}
+//    get isLibrary() { return this.root.find(".file_library")[0].checked;}
 
 
     get text() {
@@ -204,9 +204,10 @@ class FileWrapper {
         this._root.find(".xml_filename_header").first().text(name);
     }
 
-    set class(newClass) {
+/*    set class(newClass) {
         this._root.find(".xml_file_class").val(newClass);
     }
+*/
 
     set comment(newComment) {
         this._root.find(".xml_internal_description").val(newComment);
@@ -256,7 +257,7 @@ class FileWrapper {
         fileStorages[this.id].isBinary = isBinary;
         if (isBinary) console.log('set binary=true for ' + this.filename);
     }
-    set isLibrary(isLib) {this.root.find(".file_library")[0].checked = isLib;}
+//    set isLibrary(isLib) {this.root.find(".file_library")[0].checked = isLib;}
 
 /*    disableTypeChange() {
         if (!this._type) {
@@ -546,7 +547,7 @@ class FileWrapper {
             "</select>"+
 
             // not nice!!
-            " Library:<input type='checkbox' class='file_library' >" + // onclick='FileWrapper.onLibrary(this)'>"+
+//            " Library:<input type='checkbox' class='file_library' >" + // onclick='FileWrapper.onLibrary(this)'>"+
 
             " <label for='xml_file_type'>Store </label>"+
             "<select class='xml_file_type' onchange='FileWrapper.onFiletypeChanged(this)'>"+
