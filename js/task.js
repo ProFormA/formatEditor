@@ -149,7 +149,7 @@ convertToXML = function(topLevelDoc, rootNode) {
     task.sizeSubmission = $("#xml_subm_regexp_size").val();
     task.filenameRegExpSubmission = $("#xml_subm_regexp_name").val();
 
-    // read files
+    // write files
     FileWrapper.doOnAllFiles(function(ui_file) {
         let taskfile = new TaskFile();
         taskfile.filename = ui_file.filename;
@@ -161,7 +161,7 @@ convertToXML = function(topLevelDoc, rootNode) {
         task.files[taskfile.id] = taskfile;
     });
 
-    // read model solutions
+    // write model solutions
     ModelSolutionWrapper.doOnAll(function(ms) {
         let modelSolution = new TaskModelSolution();
         modelSolution.id = ms.id;
@@ -170,13 +170,14 @@ convertToXML = function(topLevelDoc, rootNode) {
         let counter = 0;
         ModelSolutionFileReference.getInstance().doOnAll(function(id) {
             modelSolution.filerefs[counter++] = new TaskFileRef(id);
+            task.files[id].visible = T_VISIBLE.DELAYED;
         }, ms.root);
 
         //readFileRefs(xmlReader, modelSolution, thisNode);
         task.modelsolutions[modelSolution.id] = modelSolution;
     })
 
-    // read tests
+    // write tests
     TestWrapper.doOnAll(function(uiTest) {
         let test = new TaskTest();
         test.id = uiTest.id;
@@ -187,7 +188,11 @@ convertToXML = function(topLevelDoc, rootNode) {
 
         let counter = 0;
         TestFileReference.getInstance().doOnAll(function(id) {
-            test.filerefs[counter++] = new TaskFileRef(id);
+            if (id) {
+                test.filerefs[counter++] = new TaskFileRef(id);
+                console.log("Test ID" + id);
+                task.files[id].usedByGrader = true;
+            }
         }, uiTest.root);
 
         $.each(config.testInfos, function(index, configItem) {
@@ -204,6 +209,12 @@ convertToXML = function(topLevelDoc, rootNode) {
         //readFileRefs(xmlReader, modelSolution, thisNode);
         task.tests[test.id] = test;
     })
+
+
+    VisibleFileReference.getInstance().doOnAll(function(id, displayMode) {
+        task.files[id].visible = T_VISIBLE.YES;
+        task.files[id].usageInLms = displayMode;
+    });
 
 
     taskXml = task.writeXml(topLevelDoc, rootNode);
@@ -284,12 +295,17 @@ readAndDisplayXml = function() {
     $("#testsection")[0].textContent = "";
 
     // initialise other sections
-    //FileReferenceList.init("#librarydropzone", '#librarysection', LibraryFileReference);
+    FileReferenceList.init("#visiblefiledropzone", '#visiblesection', VisibleFileReference);
+
+    FileReferenceList.init("#multimediadropzone", '#multimediasection', MultimediaFileReference);
     FileReferenceList.init("#downloaddropzone", '#downloadsection', DownloadableFileReference);
     FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
     const templateroot = $("#templatedropzone");
-    //const libroot = $("#librarydropzone");
+    const multmediaroot = $("#multimediadropzone");
     const downloadroot = $("#downloaddropzone");
+    const visibleroot = $("#visiblefiledropzone");
+
+
 
     // fileIDs = {};
     modelSolIDs = {};
@@ -328,14 +344,22 @@ readAndDisplayXml = function() {
     // add dummy file references
     let indexTemplate = 0;
     let indexDownload = 0;
-    //let indexLib = 0;
+    let indexMultmedia = 0;
+    let indexVisible = 0;
+
     task.files.forEach(function(item) {
-        if (item.visible) {
+        if (item.visible === T_VISIBLE.YES) {
+            VisibleFileReference.getInstance().setFilenameOnCreation(visibleroot, indexVisible, item.filename);
+            VisibleFileReference.getInstance().setDisplayMode(visibleroot, indexVisible++, item.usageInLms);
+
             switch (item.usageInLms) {
-                case T_Lms_Usage.DISPLAY:
+                case T_LMS_USAGE.DISPLAY:
+                    TemplateFileReference.getInstance().setFilenameOnCreation(multmediaroot, indexMultmedia++, item.filename);
+                    break;
+                case T_LMS_USAGE.EDIT:
                     TemplateFileReference.getInstance().setFilenameOnCreation(templateroot, indexTemplate++, item.filename);
                     break;
-                case T_Lms_Usage.DOWNLOAD:
+                case T_LMS_USAGE.DOWNLOAD:
                     DownloadableFileReference.getInstance().setFilenameOnCreation(downloadroot, indexDownload++, item.filename);
                     break;
             }
@@ -349,7 +373,7 @@ readAndDisplayXml = function() {
                 DownloadableFileReference.getInstance().setFilenameOnCreation(downloadroot, indexDownload++, item.filename);
                 break;
             case LIBRARY:
-                LibraryFileReference.getInstance().setFilenameOnCreation(libroot, indexLib++, item.filename);
+                MultimediaFileReference.getInstance().setFilenameOnCreation(libroot, indexLib++, item.filename);
             // break; // fall through!!
             case INTERNAL_LIB:
                 let ui_file = FileWrapper.constructFromId(item.id);

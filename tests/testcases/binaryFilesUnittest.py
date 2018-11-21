@@ -127,20 +127,21 @@ class BinaryFilesTest(zipFileTest.ZipFileTest):
 
 
         ####################################################################
-        # Instruction FILES
+        # Display FILES
         ####################################################################
 
-        editor.load_instruction_file('input/instruction.txt', 0)
-        editor.add_instruction_file()
-        editor.load_instruction_file('input/instruction.zip', 1)
+        editor.load_display_file('input/instruction.txt', 0)
+        editor.add_display_file()
+        editor.load_display_file('input/instruction.zip', 1)
 
         ####################################################################
         # Template FILES
         ####################################################################
 
-        editor.load_template_file('input/template.txt', 0)
         editor.add_template_file()
-        editor.load_template_file('input/template.zip', 1)
+        editor.load_template_file('input/template.txt', 2)
+        editor.add_template_file()
+        editor.load_template_file('input/template.zip', 3)
 
         ####################################################################
         # add Java compiler test
@@ -179,9 +180,14 @@ class BinaryFilesTest(zipFileTest.ZipFileTest):
 
         # check for visible template and instruction filesD:\users\karin\Code\zell\git\formatEditor\tests\output\java\binary.zip
 
-        self.assertTrue('instruction.txt', editor.get_instruction_file(0))
-        self.assertTrue('instruction.zip', editor.get_instruction_file(1))
-        self.assertTrue('template.txt', editor.get_template_file(0))
-        self.assertTrue('template.zip', editor.get_template_file(1))
+        self.assertTrue('instruction.txt' == editor.get_visible_file(0))
+        self.assertTrue(editor.get_displaymode('instruction.txt') == 'display')
+        self.assertTrue('instruction.zip' == editor.get_visible_file(1))
+        self.assertTrue(editor.get_displaymode('instruction.zip') == 'display')
+
+        self.assertTrue('template.txt' == editor.get_visible_file(2))
+        self.assertTrue(editor.get_displaymode('template.txt') == 'edit')
+        self.assertTrue('template.zip' == editor.get_visible_file(3))
+        self.assertTrue(editor.get_displaymode('template.zip') == 'edit')
 
 

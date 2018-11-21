@@ -96,8 +96,10 @@ class PythonTest(zipFileTest.ZipFileTest):
 
         # set file class
         editor.set_template_filename("file1.py", 0)
-        editor.set_library_filename("file2.py", 0)
-        editor.set_instruction_filename("file4.py", 0)
+        editor.add_download_file()
+        editor.set_download_filename("file2.py", 1)
+        editor.add_display_file()
+        editor.set_display_filename("file4.py", 2)
 
 
         # editor.set_file_class(0, 0)

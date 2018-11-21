@@ -52,8 +52,8 @@ timeoutSaveLonCapa = 3.5
 timeoutSelectChrome = 1
 timeoutLoadFileref = 1.5
 timeoutTypeFilename = 1
-#timeoutSetFileref = 0.3 #??
-timeoutSetFileref = 1.5
+timeoutSetFileref = 0.3
+#timeoutSetFileref = 1.5
 timeoutAddFileToMs = 1
 timeoutSetFileTest = 1
 timeoutOpenLoadDialog = 1.5
@@ -498,25 +498,34 @@ def select_chrome_option(elem, select):
     keyboard.release(Key.enter)
 
 
-def add_instruction_file():
+def add_display_file():
     change_tab("main_tab")
-    elems = driver.find_elements_by_class_name("add_instruction_fileref")
+    elems = driver.find_elements_by_class_name("add_visible_fileref")
     elem = elems[0].click()
 
 def add_template_file():
     change_tab("main_tab")
-    elems = driver.find_elements_by_class_name("add_template_fileref")
+    elems = driver.find_elements_by_class_name("add_visible_fileref")
     elem = elems[0].click()
 
-def add_library_file():
+def add_download_file():
     change_tab("main_tab")
-    elems = driver.find_elements_by_class_name("add_library_fileref")
+    elems = driver.find_elements_by_class_name("add_visible_fileref")
     elem = elems[0].click()
 
 def add_test_file(index):
     change_tab("test_tab")
     elems = driver.find_elements_by_class_name("add_test_fileref")
     elem = elems[index].click()
+
+def set_visible_fileref(filename, index, displaymode):
+    set_fileref(filename, index, "xml_visible_filename")
+    elems = driver.find_elements_by_class_name('xml_lms_usage')
+    elem = elems[index]
+    select = Select(elem)
+    select.select_by_value(displaymode)
+    time.sleep(timeoutClick)
+
 
 def set_fileref(filename, index, xml_class):
     filename = filename.replace("/", "\\") # needed on Windows!!
@@ -572,31 +581,46 @@ def load_fileref(filename, index, xml_class):
     time.sleep(timeoutSetFileref)
 
 
-def load_instruction_file(filename, index):
-    change_tab("main_tab")
-    load_fileref(filename, index, "xml_instruction_filename")
+def set_display_mode(index, displaymode):
+    elems = driver.find_elements_by_class_name('xml_lms_usage')
+    elem = elems[index]
+    select = Select(elem)
+    select.select_by_value(displaymode)
+    time.sleep(timeoutClick)
 
-def set_instruction_filename(filename, index):
+
+def load_display_file(filename, index):
     change_tab("main_tab")
-    set_fileref(filename, index, "xml_instruction_filename")
+    load_fileref(filename, index, "xml_visible_filename")
+    set_display_mode(index, 'display')
+
+def set_display_filename(filename, index):
+    change_tab("main_tab")
+    set_visible_fileref(filename, index, "display")
+#    set_fileref(filename, index, "xml_instruction_filename")
 
 
-def load_library_file(filename, index):
+def load_download_file(filename, index):
     change_tab("main_tab")
-    load_fileref(filename, index, "xml_library_filename")
+    load_fileref(filename, index, "xml_visible_filename")
+    set_display_mode(index, 'download')
 
-def set_library_filename(filename, index):
+def set_download_filename(filename, index):
     change_tab("main_tab")
-    set_fileref(filename, index, "xml_library_filename")
+    set_visible_fileref(filename, index, "download")
+    #set_fileref(filename, index, "xml_multimedia_filename")
 
 
 def load_template_file(filename, index):
     change_tab("main_tab")
-    load_fileref(filename, index, "xml_template_filename")
+    load_fileref(filename, index, "xml_visible_filename")
+    set_display_mode(index, 'edit')
+
 
 def set_template_filename(filename, index):
     change_tab("main_tab")
-    set_fileref(filename, index, "xml_template_filename")
+    set_visible_fileref(filename, index, "edit")
+
 
 
 def set_ms_filename(filename, index):
@@ -613,38 +637,43 @@ def load_test_file(filename, index):
 
 def delete_template(index):
     change_tab("main_tab")
-    elem = driver.find_elements_by_class_name("remove_template_fileref")
+    elem = driver.find_elements_by_class_name("remove_visible_fileref")
     elem[index].click()
 
-def delete_library(index):
+def delete_download(index):
     change_tab("main_tab")
-    elem = driver.find_elements_by_class_name("remove_library_fileref")
+    elem = driver.find_elements_by_class_name("remove_visible_fileref")
     elem[index].click()
 
-def delete_instruction(index):
+def delete_display(index):
     change_tab("main_tab")
-    elem = driver.find_elements_by_class_name("remove_instruction_fileref")
+    elem = driver.find_elements_by_class_name("remove_visible_fileref")
     elem[index].click()
 
 
 ####################################################################
 # RETRIEVE VALUES
 ####################################################################
-def get_template_file(index):
+def get_visible_file(index):
     change_tab("main_tab")
-    elems = driver.find_elements_by_class_name("xml_template_filename")
+    elems = driver.find_elements_by_class_name("xml_visible_filename")
     return elems[index].get_attribute("value")
 
+#def get_template_file(index):
+#    change_tab("main_tab")
+#    elems = driver.find_elements_by_class_name("xml_template_filename")
+#    return elems[index].get_attribute("value")
 
-def get_instruction_file(index):
-    change_tab("main_tab")
-    elems = driver.find_elements_by_class_name("xml_instruction_filename")
-    return elems[index].get_attribute("value")
 
-def get_library_file(index):
-    change_tab("main_tab")
-    elems = driver.find_elements_by_class_name("xml_library_filename")
-    return elems[index].get_attribute("value")
+#def get_display_file(index):
+#    change_tab("main_tab")
+#    elems = driver.find_elements_by_class_name("xml_instruction_filename")
+#    return elems[index].get_attribute("value")
+
+#def get_download_file(index):
+#    change_tab("main_tab")
+#    elems = driver.find_elements_by_class_name("xml_multimedia_filename")
+#    return elems[index].get_attribute("value")
 
 def get_ms_file(index):
     change_tab("main_tab")
@@ -656,9 +685,9 @@ def get_test_file(index):
     elems = driver.find_elements_by_class_name("xml_test_filename")
     return elems[index].get_attribute("value")
 
-def get_file_usage(filename):
-    change_tab("file_tab")
-    elems = driver.find_elements_by_class_name("xml_file_filename")
+def get_displaymode(filename):
+    change_tab("main_tab")
+    elems = driver.find_elements_by_class_name("xml_visible_filename")
     index = 0
     for elem in elems:
         if elem.get_attribute("value") == filename:
@@ -666,8 +695,8 @@ def get_file_usage(filename):
         index = index + 1
 
     # print ' ' + filename + ' => ' + str(index)
-    usages = driver.find_elements_by_class_name("xml_file_class")
-    # print 'get_file_usage for file ' + filename + ' is "' +  usages[index].get_attribute("value") + '"'
+    usages = driver.find_elements_by_class_name("xml_lms_usage")
+    # print 'get_displaymode for file ' + filename + ' is "' +  usages[index].get_attribute("value") + '"'
     return usages[index].get_attribute("value")
 
 

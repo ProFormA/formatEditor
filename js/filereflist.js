@@ -39,6 +39,7 @@ class FileReferenceList extends DynamicList {
         filerefClassList.push('.' + classFileref);
     }
 
+    createExtraContent() { return ''; }
 
     createRowContent() {
         const tdFilename = "<td><select class='mediuminput fileref_filename " + this.classFilename + "' " +
@@ -46,10 +47,12 @@ class FileReferenceList extends DynamicList {
             "<td><label for='fileref_fileref'>Fileref: </label>"+ // fileref
             "<input class='tinyinput fileref_fileref' readonly/></td>";
 
+
+
         const tdExpandButton = "<td><button class='collapse' title='show content' onclick='" +
             this.className + ".getInstance().toggleEditor($(this))'>"+showEditorText+"</button><br></td>";
 
-        return tdFilename + tdExpandButton;
+        return tdFilename + tdExpandButton + this.createExtraContent();
     }
 
 
@@ -149,6 +152,8 @@ class FileReferenceList extends DynamicList {
         return counter;
     }
 
+    getNumberOfExtraColumns() { return 0;}
+
     toggleEditor(element, hide) {
         let td = element.parent();
         let tr = td.parent();
@@ -160,9 +165,10 @@ class FileReferenceList extends DynamicList {
             tr.next().remove();
         }
         else {
+            const numberOfColumns = 7 + this.getNumberOfExtraColumns();
             if (ui_file && !ui_file.isBinary) {
                 element.html(hideEditorText);
-                $( "<tr><td colspan='7'><textarea disabled cols='80' rows='10' class='fileref_viewer'>"+
+                $( "<tr><td colspan='"+ numberOfColumns + "'><textarea disabled cols='80' rows='10' class='fileref_viewer'>"+
                     ui_file.text
                     +"</textarea></td></tr>" ).insertAfter(tr);
             }
@@ -351,7 +357,7 @@ class FileReferenceList extends DynamicList {
         downloadableSingleton.doOnAll(function(id) { if (id === fileId) count++; });
 
 /*
-        $.each($(".xml_library_fileref, .xml_template_fileref, .xml_instruction_fileref"),
+        $.each($(".xml_multmedia_fileref, .xml_template_fileref, .xml_instruction_fileref"),
             function(index, item) {
                 const filerefId = item.value;
                 if (filerefId === fileId) {
@@ -429,7 +435,7 @@ class FileReferenceList extends DynamicList {
                             found = filenameobject.hasClass('xml_template_filename');
                             break;
 /*                        case 'library':
-                            found = filenameobject.hasClass('xml_library_filename');
+                            found = filenameobject.hasClass('xml_multimedia_filename');
                             break;*/
                         case 'instruction':
                             found = filenameobject.hasClass('xml_instruction_filename');
@@ -530,7 +536,7 @@ class FileReferenceList extends DynamicList {
                             handleClassChange(ui_file, fileid, TEMPLATE);
                         } else if ($(tempSelElem).hasClass('xml_instruction_filename')) {
                             handleClassChange(ui_file, fileid, INSTRUCTION);
-/*                        } else if ($(tempSelElem).hasClass('xml_library_filename')) {
+/*                        } else if ($(tempSelElem).hasClass('xml_multimedia_filename')) {
                             handleClassChange(ui_file, fileid, LIBRARY);*/
                         } else {
                             // model solution, nothing to be done
@@ -698,12 +704,55 @@ let modelSolutionFileRefSingleton = new ModelSolutionFileReference();
 
 
 
+class VisibleFileReference extends FileReferenceList {
+
+    constructor() {
+        super('xml_visible_filename', 'xml_visible_fileref',
+            'VisibleFileReference', 'Student visible File',
+            'files that the student can see (e.g. pdf, image, library ', false);
+    }
+
+    createExtraContent() {
+        return "<td><select class='xml_lms_usage'>"+
+            "<option value='download' selected='selected'>Download</option>"+
+            "<option value='edit'>Editor (e.g. Code Snippet)</option>"+
+            "<option value='display'>Display (e.g. multimedia)</option>"+
+            "</select><br></td>";
+    }
+
+    getNumberOfExtraColumns() { return 1;}
+
+    doOnAll(callback) {
+        $.each(this.root.find(".fileref_fileref"), function(index, item) {
+            const filerefId = item.value;
+            if (filerefId) {
+                const row = $(item).parent().parent();
+                const displayMode_row = row.find(".xml_lms_usage").first();
+                let displayMode = displayMode_row.val();
+                return callback(filerefId, displayMode);
+            }
+        });
+    }
+
+    setDisplayMode(box, index, displayMode) {
+        let elements = box.find(".xml_lms_usage");
+        let element = elements.eq(index);
+        $(element).val(displayMode);
+    }
+
+    static getInstance() {return visibleFileseSingleton;}
+}
+let visibleFileseSingleton = new VisibleFileReference();
+
+
+
+
 class DownloadableFileReference extends FileReferenceList {
 
     constructor() {
         super('xml_instruction_filename', 'xml_instruction_fileref',
             'DownloadableFileReference', 'Downloadable File',
-            'e.g. pdf, image, library ', false);
+            'files that can be downloaded by student (e.g. pdf, image, library ', false);
     }
     static getInstance() {return downloadableSingleton;}
 }
@@ -714,22 +763,21 @@ class TemplateFileReference extends FileReferenceList {
     constructor() {
         super('xml_template_filename', 'xml_template_fileref',
             'TemplateFileReference', 'Code template',
-            'code snippet that the student should use as a starting point for coding\n' +
-            '(file is NOT available for grader)', false);
+            'code snippet that the student should use as a starting point for coding', false);
     }
     static getInstance() {return templSingleton;}
 }
 let templSingleton = new TemplateFileReference();
 
 
-/*
-class LibraryFileReference extends FileReferenceList {
+
+class MultimediaFileReference extends FileReferenceList {
     constructor() {
-        super('xml_library_filename', 'xml_library_fileref',
-            'LibraryFileReference', 'Code attachment',
-            'e.g. library, interface (file is available for grader)', false);
+        super('xml_multimedia_filename', 'xml_multmedia_fileref',
+            'MultimediaFileReference', 'Multmedia File',
+            'files belonging to descripton (e.g. images) ' +
+            'that should be displayed inline (if supported by LMS)', false);
     }
     static getInstance() {return librarySingleton;}
 }
-let librarySingleton = new LibraryFileReference();
-*/
+let librarySingleton = new MultimediaFileReference();

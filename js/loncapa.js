@@ -110,7 +110,16 @@ function createDownloadLinks() {
     let returnvalue = "";
     let templateCounter = 0;
 
-    FileWrapper.doOnAllFiles(function (ui_file) {
+    VisibleFileReference.getInstance().doOnAll(function (id, displayMode) {
+        if (displayMode === T_LMS_USAGE.EDIT && templateCounter === 0) {
+            templateCounter++;
+            return true;
+        }
+        let ui_file = FileWrapper.constructFromId(id);
+        returnvalue = returnvalue + createDownloadLink(ui_file);
+
+/*
+        }
         switch (ui_file.class) {
         case "template":
             switch (ui_file.type) {
@@ -133,6 +142,7 @@ function createDownloadLinks() {
             returnvalue = returnvalue + createDownloadLink(ui_file);
             break;
         }
+        */
     });
     return returnvalue;
 }
@@ -140,6 +150,15 @@ function createDownloadLinks() {
 // returns the first 'embedded file' template
 function getEditorTemplate() {
     let returnvalue = "";
+
+    VisibleFileReference.getInstance().doOnAll(function (id, displayMode) {
+        if (displayMode === T_LMS_USAGE.EDIT && returnvalue === "") {
+            let ui_file = FileWrapper.constructFromId(id);
+            returnvalue = ui_file.text;
+            return false;
+        }
+    });
+/*
     FileWrapper.doOnAllFiles(function (ui_file) {
         if (ui_file.class === "template" && ui_file.type === 'embedded') {
             if (returnvalue === "") {
@@ -148,6 +167,7 @@ function getEditorTemplate() {
             }
         }
     });
+*/
     return returnvalue;
 }
 

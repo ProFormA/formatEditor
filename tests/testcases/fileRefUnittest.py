@@ -109,13 +109,15 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         editor.add_template_file()
         editor.set_template_filename("file3.c", 2)
 
-        editor.set_instruction_filename("file4.c", 0)
-        editor.add_instruction_file()
-        editor.set_instruction_filename("file5.c", 1)
+        editor.add_display_file()
+        editor.set_display_filename("file4.c", 3)
+        editor.add_display_file()
+        editor.set_display_filename("file5.c", 4)
 
-        editor.set_library_filename("file6.c", 0)
-        editor.add_library_file()
-        editor.set_library_filename("file7.c", 1)
+        editor.add_download_file()
+        editor.set_download_filename("file6.c", 5)
+        editor.add_download_file()
+        editor.set_download_filename("file7.c", 6)
 
         editor.set_ms_filename("file8.c", 0)
 
@@ -134,59 +136,61 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         editor.set_test_filename("file12.c", 4) # 4!!
 
         # check precondition
-        self.assertTrue('file1.c' == editor.get_template_file(0))
-        self.assertTrue('file2.c' == editor.get_template_file(1))
-        self.assertTrue('file3.c' == editor.get_template_file(2))
-        self.assertTrue('template' == editor.get_file_usage('file1.c'))
-        self.assertTrue('template' == editor.get_file_usage('file2.c'))
-        self.assertTrue('template' == editor.get_file_usage('file3.c'))
+        self.assertTrue('file1.c' == editor.get_visible_file(0)) #get_template_file(0))
+        self.assertTrue('file2.c' == editor.get_visible_file(1)) #get_template_file(1))
+        self.assertTrue('file3.c' == editor.get_visible_file(2)) #get_template_file(2))
+        self.assertTrue('edit' == editor.get_displaymode('file1.c'))
+        self.assertTrue('edit' == editor.get_displaymode('file2.c'))
+        self.assertTrue('edit' == editor.get_displaymode('file3.c'))
 
-        self.assertTrue('file4.c' ==  editor.get_instruction_file(0))
-        self.assertTrue('file5.c' ==  editor.get_instruction_file(1))
-        self.assertTrue('instruction' == editor.get_file_usage('file4.c'))
-        self.assertTrue('instruction' == editor.get_file_usage('file5.c'))
+        self.assertTrue('file4.c' == editor.get_visible_file(3)) #get_display_file(0))
+        self.assertTrue('file5.c' == editor.get_visible_file(4)) #get_display_file(1))
+        self.assertTrue('display' == editor.get_displaymode('file4.c'))
+        self.assertTrue('display' == editor.get_displaymode('file5.c'))
 
-        self.assertTrue('file6.c' == editor.get_library_file(0))
-        self.assertTrue('file7.c' == editor.get_library_file(1))
-        self.assertTrue('library' == editor.get_file_usage('file6.c'))
-        self.assertTrue('library' == editor.get_file_usage('file7.c'))
+        self.assertTrue('file6.c' == editor.get_visible_file(5)) #get_download_file(0))
+        self.assertTrue('file7.c' == editor.get_visible_file(6)) #get_download_file(1))
+        self.assertTrue('download' == editor.get_displaymode('file6.c'))
+        self.assertTrue('download' == editor.get_displaymode('file7.c'))
 
 
         self.assertTrue('file8.c' == editor.get_ms_file(0))
-        self.assertTrue('internal' ==  editor.get_file_usage('file8.c'))
+        #self.assertTrue('internal' == editor.get_displaymode('file8.c'))
 
         self.assertTrue('file9.c' == editor.get_test_file(0))
-        self.assertTrue('internal' == editor.get_file_usage('file9.c'))
+        #self.assertTrue('internal' == editor.get_displaymode('file9.c'))
 
         self.assertTrue('file10.c' == editor.get_test_file(1))
         self.assertTrue('file12.c' == editor.get_test_file(2))
-        self.assertTrue('internal' ==  editor.get_file_usage('file10.c'))
-        self.assertTrue('internal' == editor.get_file_usage('file12.c'))
+        #self.assertTrue('internal' == editor.get_displaymode('file10.c'))
+        #self.assertTrue('internal' == editor.get_displaymode('file12.c'))
 
 
         self.assertTrue('file11.c' == editor.get_test_file(3))
         self.assertTrue('file12.c' == editor.get_test_file(4))
-        self.assertTrue('internal' == editor.get_file_usage('file11.c'))
-        self.assertTrue('internal' == editor.get_file_usage('file12.c'))
-        # self.assertTrue('internal-library' == editor.get_file_usage('file12.c'))
+        #self.assertTrue('internal' == editor.get_displaymode('file11.c'))
+        #self.assertTrue('internal' == editor.get_displaymode('file12.c'))
+        # self.assertTrue('internal-library' == editor.get_displaymode('file12.c'))
 
         # actions
 
         # file1.c: template -> library
         # => old template field will be removed!!
-        editor.set_library_filename("file1.c", 0)
-        alert = editor.driver.switch_to.alert
-        alert.accept()
+        editor.set_download_filename("file1.c", 0)
+        #alert = editor.driver.switch_to.alert
+        #alert.accept()
+        editor.set_visible_fileref('file2.c', 1, 'download')
+        editor.set_visible_fileref('file3.c', 2, 'download')
 
-        self.assertTrue('library' == editor.get_file_usage('file1.c'))
+        self.assertTrue('download' == editor.get_displaymode('file1.c'))
         #print 'empty field: "' + editor.get_template_file(0) + '"'
         #self.assertTrue('' == editor.get_template_file(0))
-        self.assertTrue('file1.c' == editor.get_library_file(0))
-        self.assertTrue('file7.c' == editor.get_library_file(1))
-        self.assertTrue('file2.c' == editor.get_template_file(0)) # index -1
-        self.assertTrue('file3.c' == editor.get_template_file(1)) # index -1
-        self.assertTrue('template' == editor.get_file_usage('file2.c'))
-        self.assertTrue('template' == editor.get_file_usage('file3.c'))
+        self.assertTrue('file1.c' == editor.get_visible_file(0))
+        self.assertTrue('file7.c' == editor.get_visible_file(6))
+        self.assertTrue('file2.c' == editor.get_visible_file(1)) # index -1
+        self.assertTrue('file3.c' == editor.get_visible_file(2)) # index -1
+        self.assertTrue('download' == editor.get_displaymode('file2.c'))
+        self.assertTrue('download' == editor.get_displaymode('file3.c'))
 
         # todo??
         # test/instruction, test/test, test/model-solution(?), template/library, template/test/test
@@ -194,32 +198,33 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
 
         # delete template 3
         # => file3.c will be deleted
-        indexFile3 = 1
+        indexFile3 = 2
         # check for correct index
-        self.assertTrue('file3.c' == editor.get_template_file(indexFile3))
+        self.assertTrue('file3.c' == editor.get_visible_file(indexFile3))
         editor.delete_template(indexFile3)
 
-        self.assertTrue('file2.c' == editor.get_template_file(0)) # still there
-        try:
-            editor.get_file_usage('file3.c')
-            self.assertTrue(False, 'file3.c still exists')
-        except:
-            pass
+        self.assertTrue('file2.c' == editor.get_visible_file(1)) # still there
+        #try:
+            # is deleted :-)
+            #editor.get_displaymode('file3.c')
+            #self.assertTrue(False, 'file3.c still exists')
+        #except:
+        #    pass
 
 
         # add file11.c to library
         # => file usage = library
-        self.assertTrue('internal' == editor.get_file_usage('file11.c'))
+        #self.assertTrue('internal' == editor.get_displaymode('file11.c'))
         indexLib = 2
-        editor.add_library_file()
-        editor.set_library_filename("file11.c", indexLib)
-        self.assertTrue('library' == editor.get_file_usage('file11.c'))
+        #editor.add_download_file()
+        editor.set_download_filename("file11.c", indexLib)
+        self.assertTrue('download' == editor.get_displaymode('file11.c'))
 
         # delete 11 bei library
         # => file usage = internal
-        self.assertTrue('file11.c' == editor.get_library_file(indexLib))
-        editor.delete_library(indexLib)
-        self.assertTrue('internal' == editor.get_file_usage('file11.c'))
+        self.assertTrue('file11.c' == editor.get_visible_file(indexLib))
+        editor.delete_download(indexLib)
+        #self.assertTrue('internal' == editor.get_displaymode('file11.c'))
 
 
 

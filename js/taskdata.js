@@ -16,10 +16,19 @@
  */
 
 
-const T_Lms_Usage = {
+const T_LMS_USAGE = {
     DISPLAY: 'display',
-    DOWNLOAD: 'download'
+    DOWNLOAD: 'download',
+    EDIT: 'edit'
 };
+
+const T_VISIBLE = {
+    YES: 'yes',
+    NO: 'no',
+    DELAYED: 'delayed'
+};
+
+
 
 // helper class
 class XmlReader {
@@ -133,9 +142,9 @@ class TaskFile {
     constructor() {
         this.filename = '';
 //        this.fileclass = '';
-        this.usedByGrader = null;
+        this.usedByGrader = false;
         this.usageInLms = null;
-        this.visible = null;
+        this.visible = T_VISIBLE.NO;
         this.id = null;
         this.filetype = null;
         this.comment = null;
@@ -214,7 +223,7 @@ class TaskClass {
 
 
 
-        function readFileRefs(xmlReader, element, thisNode) {
+        function readFileRefs(xmlReader, element, thisNode, visibility, task) {
             let fileRefIterator = xmlReader.readNodes("dns:filerefs/dns:fileref", thisNode);
             let fileRefNode = fileRefIterator.iterateNext();
             let counter = 0;
@@ -223,6 +232,8 @@ class TaskClass {
                 fileRef.refid = xmlReader.readSingleText("@refid", fileRefNode);
                 element.filerefs[counter++] = fileRef;
                 fileRefNode = fileRefIterator.iterateNext();
+                if (visibility)
+                    task.files[fileRef.refid].visible = visibility;
             }
         }
 
@@ -256,17 +267,17 @@ class TaskClass {
                         break;
                     case 'template':
                         taskfile.usedByGrader = false;
-                        taskfile.usageInLms = T_Lms_Usage.DISPLAY;
+                        taskfile.usageInLms = T_LMS_USAGE.EDIT;
                         taskfile.visible = true;
                         break;
                     case 'instruction':
                         taskfile.usedByGrader = false;
-                        taskfile.usageInLms = T_Lms_Usage.DOWNLOAD;
+                        taskfile.usageInLms = T_LMS_USAGE.DOWNLOAD;
                         taskfile.visible = true;
                         break;
                     case 'library':
                         taskfile.usedByGrader = true;
-                        taskfile.usageInLms = T_Lms_Usage.DOWNLOAD;
+                        taskfile.usageInLms = T_LMS_USAGE.DOWNLOAD;
                         taskfile.visible = true;
                         break;
                 }
@@ -285,7 +296,7 @@ class TaskClass {
                 let modelSolution = new TaskModelSolution();
                 modelSolution.id = xmlReader.readSingleText("@id", thisNode);
                 modelSolution.comment = xmlReader.readSingleText("@comment", thisNode);
-                readFileRefs(xmlReader, modelSolution, thisNode);
+                readFileRefs(xmlReader, modelSolution, thisNode, T_VISIBLE.DELAYED, this);
                 this.modelsolutions[modelSolution.id] = modelSolution;
                 thisNode = iterator.iterateNext();
             }
@@ -349,10 +360,9 @@ class TaskClass {
                 let taskfile = new TaskFile();
                 taskfile.id = xmlReader.readSingleText("@id", thisNode);
                 //taskfile.fileclass = xmlReader.readSingleText("@class", thisNode);
-                taskfile.usedByGrader = xmlReader.readSingleText("@used-by-grader", thisNode);
-                taskfile.usageInLms = xmlReader.readSingleText("@used-by-lms", thisNode);
+                taskfile.usedByGrader = (xmlReader.readSingleText("@used-by-grader", thisNode)==='yes');
+                taskfile.usageInLms = xmlReader.readSingleText("@usage-by-lms", thisNode);
                 taskfile.visible = xmlReader.readSingleText("@visible", thisNode);
-
 
                 // todo:
                 taskfile.comment = xmlReader.readSingleText("dns:internal-description", thisNode);
@@ -473,8 +483,9 @@ class TaskClass {
             let fileElem = xmlDoc.createElementNS(xmlns, "file");
             fileElem.setAttribute("id", item.id);
             //fileElem.setAttribute("class", item.fileclass);
-            fileElem.setAttribute("used-by-grader", item.usedByGrader);
-            fileElem.setAttribute("used-by-lms", item.usageInLms);
+            fileElem.setAttribute("used-by-grader", item.usedByGrader?'yes':'no');
+            if (item.usageInLms) // optional
+                fileElem.setAttribute("usage-by-lms", item.usageInLms);
             fileElem.setAttribute("visible", item.visible);
 
             // fileElem.setAttribute("comment", item.comment);

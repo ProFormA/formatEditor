@@ -779,6 +779,11 @@ $(function() {
   $("#button_load").click(function(){
     $("#upload_xml_file").click();
   })
+/*
+    $("#button_new").click(function(){
+        $("#upload_xml_file").click();
+    })
+*/
 
 
   if (!DEBUG_MODE) {
@@ -844,9 +849,18 @@ $(function() {
     });
 
     // add file reference for template, library instruction
-//    FileReferenceList.init("#librarydropzone", '#librarysection', LibraryFileReference);
+    FileReferenceList.init("#visiblefiledropzone", '#visiblesection', VisibleFileReference);
+
+
+    FileReferenceList.init("#multimediadropzone", '#multimediasection', MultimediaFileReference);
     FileReferenceList.init("#downloaddropzone", '#downloadsection', DownloadableFileReference);
     FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
+
+
+    $("#templatedropzone").hide();
+    $("#multimediadropzone").hide();
+    $("#downloaddropzone").hide();
+
 
     $("#files_restriction").append(SubmissionFileList.getInstance().getTableString());
     $("#archive_files_restriction").append(SubmissionArchiveFileList.getInstance().getTableString());

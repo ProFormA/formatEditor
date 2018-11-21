@@ -143,6 +143,16 @@ table, th, td {
 	font-size: 100%;    
 }
 
+
+/* top */
+
+/*
+.ui-tabs-nav {
+	height:10%;
+    position:fixed;
+    width:79%;
+}
+*/
 /********************** left panel *******************/
 #tabs{
 	float:left;
