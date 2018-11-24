@@ -849,7 +849,8 @@ $(function() {
     });
 
     // add file reference for template, library instruction
-    FileReferenceList.init("#visiblefiledropzone", '#visiblesection', VisibleFileReference);
+    if (USE_VISIBLES)
+        FileReferenceList.init("#visiblefiledropzone", '#visiblesection', VisibleFileReference);
 
 
     FileReferenceList.init("#multimediadropzone", '#multimediasection', MultimediaFileReference);
@@ -857,9 +858,11 @@ $(function() {
     FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
 
 
-    $("#templatedropzone").hide();
+    /*$("#templatedropzone").hide();
     $("#multimediadropzone").hide();
-    $("#downloaddropzone").hide();
+    $("#downloaddropzone").hide();*/
+    if (!USE_VISIBLES)
+        $("#visiblefiledropzone").hide();
 
 
     $("#files_restriction").append(SubmissionFileList.getInstance().getTableString());

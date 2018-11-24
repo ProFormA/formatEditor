@@ -52,15 +52,20 @@ class DynamicList {
         "</tr>";
     }
 
-    createTableString(className, label, mandatory, extra_css_class) {
-        this.className = className;
+    getLabelString(label) {
         if (label.length > 0) {
             label = label + '(s)';
-            this.label = "<label for='" + this.classFilename +
-                "'>" + label + (mandatory?"<span class='red'>*</span>":"") + ": </label>";
+            return "<label for='" + this.classFilename +
+                "'>" + label + (this.mandatory?"<span class='red'>*</span>":"") + ": </label>";
         } else {
-            this.label = "<label></label>";
+            return "<label></label>";
         }
+    }
+
+    createTableString(className, label, mandatory, extra_css_class) {
+        this.className = className;
+        this.mandatory = mandatory;
+        this.label = this.getLabelString(label);
 
 
         this.tdAddButton = "<td><button class='" + this.classAddItem +

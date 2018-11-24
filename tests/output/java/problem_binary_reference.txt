@@ -1,6 +1,6 @@
 <problem>
 
-<!-- generated with ProFormA editor version 2.2.1 -->
+<!-- generated with ProFormA editor version 3.0.0 pre -->
 
 <import id="11">/res/fhwf/ecult/lib/proforma_v2.library</import>
 <import id="91">/res/fhwf/ecult/lib/SyntaxHighlighter/CodeMirror_Header.library</import>
@@ -15,9 +15,10 @@ $modelsolution = '<pre>A Model Solution is not available.</pre>';
 
 <startouttext />
 binary files test
+<a href='data:text/text;base64,VGhpcyBpcyBhIHRlbXBsYXRlIGZpbGUu' download='template.txt'>Download: template.txt</a>
+<a href='data:text/text;base64,UEsDBBQAAAAAAP2NbEwl+uudGAAAABgAAAAMAAAAdGVtcGxhdGUudHh0VGhpcyBpcyBhIHRlbXBsYXRlIGZpbGUuUEsBAhQAFAAAAAAA/Y1sTCX6650YAAAAGAAAAAwAAAAAAAAAAQAgAAAAAAAAAHRlbXBsYXRlLnR4dFBLBQYAAAAAAQABADoAAABCAAAAAAA=' download='template.zip'>Download: template.zip</a>
 <a href='data:text/text;base64,VGhpcyBpcyBhbiBpbnN0cnVjdGlvbiBmaWxlLg==' download='instruction.txt'>Download: instruction.txt</a>
 <a href='data:text/text;base64,UEsDBBQAAAAAAPeNbExKC7gzHAAAABwAAAAPAAAAaW5zdHJ1Y3Rpb24udHh0VGhpcyBpcyBhbiBpbnN0cnVjdGlvbiBmaWxlLlBLAQIUABQAAAAAAPeNbExKC7gzHAAAABwAAAAPAAAAAAAAAAEAIAAAAAAAAABpbnN0cnVjdGlvbi50eHRQSwUGAAAAAAEAAQA9AAAASQAAAAAA' download='instruction.zip'>Download: instruction.zip</a>
-<a href='data:text/text;base64,UEsDBBQAAAAAAP2NbEwl+uudGAAAABgAAAAMAAAAdGVtcGxhdGUudHh0VGhpcyBpcyBhIHRlbXBsYXRlIGZpbGUuUEsBAhQAFAAAAAAA/Y1sTCX6650YAAAAGAAAAAwAAAAAAAAAAQAgAAAAAAAAAHRlbXBsYXRlLnR4dFBLBQYAAAAAAQABADoAAABCAAAAAAA=' download='template.zip'>Download: template.zip</a>
 <endouttext />
 
 <startouttext />
@@ -29,7 +30,7 @@ $ausgabe
 
 <externalresponse answerdisplay="$modelsolution" answer="" url="$externalurl" form="%args" id="1">
 <textfield>
-This is a template file.
+
 </textfield>
 </externalresponse>
 

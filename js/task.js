@@ -210,11 +210,26 @@ convertToXML = function(topLevelDoc, rootNode) {
         task.tests[test.id] = test;
     })
 
+    if (USE_VISIBLES) {
+        VisibleFileReference.getInstance().doOnAll(function(id, displayMode) {
+            task.files[id].visible = T_VISIBLE.YES;
+            task.files[id].usageInLms = displayMode;
+        });
+    } else {
+        DownloadableFileReference.getInstance().doOnNonEmpty(function(id) {
+            task.files[id].visible = T_VISIBLE.YES;
+            task.files[id].usageInLms = T_LMS_USAGE.DOWNLOAD;
+        });
+        MultimediaFileReference.getInstance().doOnNonEmpty(function(id) {
+            task.files[id].visible = T_VISIBLE.YES;
+            task.files[id].usageInLms = T_LMS_USAGE.DISPLAY;
+        });
+        TemplateFileReference.getInstance().doOnNonEmpty(function(id) {
+            task.files[id].visible = T_VISIBLE.YES;
+            task.files[id].usageInLms = T_LMS_USAGE.EDIT;
+        });
 
-    VisibleFileReference.getInstance().doOnAll(function(id, displayMode) {
-        task.files[id].visible = T_VISIBLE.YES;
-        task.files[id].usageInLms = displayMode;
-    });
+    }
 
 
     taskXml = task.writeXml(topLevelDoc, rootNode);
@@ -295,7 +310,7 @@ readAndDisplayXml = function() {
     $("#testsection")[0].textContent = "";
 
     // initialise other sections
-    FileReferenceList.init("#visiblefiledropzone", '#visiblesection', VisibleFileReference);
+    if (USE_VISIBLES) FileReferenceList.init("#visiblefiledropzone", '#visiblesection', VisibleFileReference);
 
     FileReferenceList.init("#multimediadropzone", '#multimediasection', MultimediaFileReference);
     FileReferenceList.init("#downloaddropzone", '#downloadsection', DownloadableFileReference);
@@ -349,40 +364,23 @@ readAndDisplayXml = function() {
 
     task.files.forEach(function(item) {
         if (item.visible === T_VISIBLE.YES) {
-            VisibleFileReference.getInstance().setFilenameOnCreation(visibleroot, indexVisible, item.filename);
-            VisibleFileReference.getInstance().setDisplayMode(visibleroot, indexVisible++, item.usageInLms);
-
-            switch (item.usageInLms) {
-                case T_LMS_USAGE.DISPLAY:
-                    TemplateFileReference.getInstance().setFilenameOnCreation(multmediaroot, indexMultmedia++, item.filename);
-                    break;
-                case T_LMS_USAGE.EDIT:
-                    TemplateFileReference.getInstance().setFilenameOnCreation(templateroot, indexTemplate++, item.filename);
-                    break;
-                case T_LMS_USAGE.DOWNLOAD:
-                    DownloadableFileReference.getInstance().setFilenameOnCreation(downloadroot, indexDownload++, item.filename);
-                    break;
+            if (USE_VISIBLES) {
+                VisibleFileReference.getInstance().setFilenameOnCreation(visibleroot, indexVisible, item.filename);
+                VisibleFileReference.getInstance().setDisplayMode(visibleroot, indexVisible++, item.usageInLms);
+            } else {
+                switch (item.usageInLms) {
+                    case T_LMS_USAGE.DISPLAY:
+                        MultimediaFileReference.getInstance().setFilenameOnCreation(multmediaroot, indexMultmedia++, item.filename);
+                        break;
+                    case T_LMS_USAGE.EDIT:
+                        TemplateFileReference.getInstance().setFilenameOnCreation(templateroot, indexTemplate++, item.filename);
+                        break;
+                    case T_LMS_USAGE.DOWNLOAD:
+                        DownloadableFileReference.getInstance().setFilenameOnCreation(downloadroot, indexDownload++, item.filename);
+                        break;
+                }
             }
         }
-/*
-        switch(item.fileclass) {
-            case TEMPLATE:
-                TemplateFileReference.getInstance().setFilenameOnCreation(templateroot, indexTemplate++, item.filename);
-                break;
-            case INSTRUCTION:
-                DownloadableFileReference.getInstance().setFilenameOnCreation(downloadroot, indexDownload++, item.filename);
-                break;
-            case LIBRARY:
-                MultimediaFileReference.getInstance().setFilenameOnCreation(libroot, indexLib++, item.filename);
-            // break; // fall through!!
-            case INTERNAL_LIB:
-                let ui_file = FileWrapper.constructFromId(item.id);
-                ui_file.isLibrary = true;
-                break;
-            default:
-                break;
-        }
-*/
     });
 
     // fill filename lists in empty file refences

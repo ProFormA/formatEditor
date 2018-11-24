@@ -56,29 +56,6 @@ class FileReferenceList extends DynamicList {
     }
 
 
-/*
-    createTableString(className, label, mandatory) {
-        this.className = className;
-        label = label + '(s)';
-        this.filenameLabel = "<label for='" + this.classFilename +
-            "'>" + label + (mandatory?"<span class='red'>*</span>":"") + ": </label>";
-
-        this.tdFilename = "<td><select class='mediuminput fileref_filename " + this.classFilename + "' " +
-            "onchange = 'FileReferenceList.onFileSelectionChanged(this)' title='" + this.help + "'></select></td>"+
-            "<td><label for='" + this.classFileref + "'>Fileref: </label>"+ // fileref
-            "<input class='tinyinput fileref_fileref " + this.classFileref + "' readonly/></td>";
-        this.tdAddButton = "<td><button class='" + this.classAddFileref +
-            "' title='add another filename' onclick='" + className + ".getInstance().addFileRef($(this))'>+</button><br></td>";
-
-        //this.tdRemoveButton = "<td><button class='" + this.classRemoveFileref +
-        //    "' onclick='" + className + ".getInstance().removeFileRef($(this))'>x</button></td>";
-
-        this.table = "<table class='xml_fileref_table' cellpadding='0'>" + // cellspacing='0' >" +
-            this.createRow(true) +
-            "</table>" +
-            "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>";
-    }
-*/
     doOnAll(callback, root) {
         if (root)
             console.log('doOnAll ios deprecated, use static version instead');
@@ -86,6 +63,14 @@ class FileReferenceList extends DynamicList {
         $.each(theRoot.find(".fileref_fileref"), function(index, item) {
             const filerefId = item.value;
             return callback(filerefId);
+        });
+    }
+
+    doOnNonEmpty(callback) {
+        $.each(this.root.find(".fileref_fileref"), function(index, item) {
+            const filerefId = item.value;
+            if (filerefId)
+                return callback(filerefId);
         });
     }
 
@@ -357,7 +342,7 @@ class FileReferenceList extends DynamicList {
         downloadableSingleton.doOnAll(function(id) { if (id === fileId) count++; });
 
 /*
-        $.each($(".xml_multmedia_fileref, .xml_template_fileref, .xml_instruction_fileref"),
+        $.each($(".xml_multmedia_fileref, .xml_template_fileref, .xml_download_fileref"),
             function(index, item) {
                 const filerefId = item.value;
                 if (filerefId === fileId) {
@@ -438,7 +423,7 @@ class FileReferenceList extends DynamicList {
                             found = filenameobject.hasClass('xml_multimedia_filename');
                             break;*/
                         case 'instruction':
-                            found = filenameobject.hasClass('xml_instruction_filename');
+                            found = filenameobject.hasClass('xml_download_filename');
                             break;
                         default:
                             alert('tbd 1');
@@ -534,7 +519,7 @@ class FileReferenceList extends DynamicList {
                             // TODO: check for internal-library
                         } else if ($(tempSelElem).hasClass('xml_template_filename')) {
                             handleClassChange(ui_file, fileid, TEMPLATE);
-                        } else if ($(tempSelElem).hasClass('xml_instruction_filename')) {
+                        } else if ($(tempSelElem).hasClass('xml_download_filename')) {
                             handleClassChange(ui_file, fileid, INSTRUCTION);
 /*                        } else if ($(tempSelElem).hasClass('xml_multimedia_filename')) {
                             handleClassChange(ui_file, fileid, LIBRARY);*/
@@ -703,7 +688,6 @@ class ModelSolutionFileReference extends FileReferenceList {
 let modelSolutionFileRefSingleton = new ModelSolutionFileReference();
 
 
-
 class VisibleFileReference extends FileReferenceList {
 
     constructor() {
@@ -750,7 +734,7 @@ let visibleFileseSingleton = new VisibleFileReference();
 class DownloadableFileReference extends FileReferenceList {
 
     constructor() {
-        super('xml_instruction_filename', 'xml_instruction_fileref',
+        super('xml_download_filename', 'xml_download_fileref',
             'DownloadableFileReference', 'Downloadable File',
             'files that can be downloaded by student (e.g. pdf, image, library ', false);
     }
@@ -762,9 +746,20 @@ let downloadableSingleton = new DownloadableFileReference();
 class TemplateFileReference extends FileReferenceList {
     constructor() {
         super('xml_template_filename', 'xml_template_fileref',
-            'TemplateFileReference', 'Code template',
+            'TemplateFileReference', 'Skeleton Code for Editor',
             'code snippet that the student should use as a starting point for coding', false);
     }
+
+    init(root, DEBUG_MODE) {
+        super.init(root, DEBUG_MODE);
+        // hide add button in order to allow only one code skeleton
+        this.root.find('.' + this.classAddItem).hide();
+    }
+    getLabelString(label) {
+        return label;
+    }
+
+
     static getInstance() {return templSingleton;}
 }
 let templSingleton = new TemplateFileReference();
@@ -773,10 +768,10 @@ let templSingleton = new TemplateFileReference();
 
 class MultimediaFileReference extends FileReferenceList {
     constructor() {
-        super('xml_multimedia_filename', 'xml_multmedia_fileref',
+        super('xml_multimedia_filename', 'xml_multimedia_fileref',
             'MultimediaFileReference', 'Multmedia File',
             'files belonging to descripton (e.g. images) ' +
-            'that should be displayed inline (if supported by LMS)', false);
+            'that should be embedded (if supported by LMS)', false);
     }
     static getInstance() {return librarySingleton;}
 }

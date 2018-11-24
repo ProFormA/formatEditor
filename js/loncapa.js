@@ -110,40 +110,33 @@ function createDownloadLinks() {
     let returnvalue = "";
     let templateCounter = 0;
 
-    VisibleFileReference.getInstance().doOnAll(function (id, displayMode) {
-        if (displayMode === T_LMS_USAGE.EDIT && templateCounter === 0) {
-            templateCounter++;
-            return true;
-        }
-        let ui_file = FileWrapper.constructFromId(id);
-        returnvalue = returnvalue + createDownloadLink(ui_file);
-
-/*
-        }
-        switch (ui_file.class) {
-        case "template":
-            switch (ui_file.type) {
-            case 'file':
-                // first template is binary => do not skip
-                returnvalue = returnvalue + createDownloadLink(ui_file);
-                break;
-            case 'embedded':
-                // skip first embedded template
-                if (templateCounter === 0) {
-                    templateCounter++;
-                } else {
-                    returnvalue = returnvalue + createDownloadLink(ui_file);
-                }
-                break;
+    if (USE_VISIBLES) {
+        VisibleFileReference.getInstance().doOnAll(function (id, displayMode) {
+            if (displayMode === T_LMS_USAGE.EDIT && templateCounter === 0) {
+                templateCounter++;
+                return true;
             }
-            break;
-        case "library":
-        case "instruction":
+            let ui_file = FileWrapper.constructFromId(id);
             returnvalue = returnvalue + createDownloadLink(ui_file);
-            break;
-        }
-        */
-    });
+        });
+    } else {
+        DownloadableFileReference.getInstance().doOnNonEmpty(function(id) {
+            let ui_file = FileWrapper.constructFromId(id);
+            returnvalue = returnvalue + createDownloadLink(ui_file);
+        });
+        MultimediaFileReference.getInstance().doOnNonEmpty(function(id) {
+            let ui_file = FileWrapper.constructFromId(id);
+            returnvalue = returnvalue + createDownloadLink(ui_file);
+        });
+        TemplateFileReference.getInstance().doOnNonEmpty(function(id) {
+            if (templateCounter === 0) {
+                templateCounter++;
+                return true;
+            }
+            let ui_file = FileWrapper.constructFromId(id);
+            returnvalue = returnvalue + createDownloadLink(ui_file);
+        });
+    }
     return returnvalue;
 }
 
@@ -151,23 +144,24 @@ function createDownloadLinks() {
 function getEditorTemplate() {
     let returnvalue = "";
 
-    VisibleFileReference.getInstance().doOnAll(function (id, displayMode) {
-        if (displayMode === T_LMS_USAGE.EDIT && returnvalue === "") {
-            let ui_file = FileWrapper.constructFromId(id);
-            returnvalue = ui_file.text;
-            return false;
-        }
-    });
-/*
-    FileWrapper.doOnAllFiles(function (ui_file) {
-        if (ui_file.class === "template" && ui_file.type === 'embedded') {
-            if (returnvalue === "") {
+    if (USE_VISIBLES) {
+        VisibleFileReference.getInstance().doOnAll(function (id, displayMode) {
+            if (displayMode === T_LMS_USAGE.EDIT && returnvalue === "") {
+                let ui_file = FileWrapper.constructFromId(id);
                 returnvalue = ui_file.text;
                 return false;
             }
-        }
-    });
-*/
+        });
+    } else {
+        TemplateFileReference.getInstance().doOnNonEmpty(function(id) {
+            if (returnvalue === "") {
+                let ui_file = FileWrapper.constructFromId(id);
+                returnvalue = ui_file.text;
+                return false;
+            }
+        });
+    }
+
     return returnvalue;
 }
 

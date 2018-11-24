@@ -104,20 +104,20 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         # set test3: 11, 12
 
         editor.set_template_filename("file1.c", 0)
-        editor.add_template_file()
-        editor.set_template_filename("file2.c", 1)
-        editor.add_template_file()
-        editor.set_template_filename("file3.c", 2)
+        #editor.add_template_file()
+        #editor.set_template_filename("file2.c", 1)
+        #editor.add_template_file()
+        #editor.set_template_filename("file3.c", 2)
 
+        #editor.add_display_file()
+        editor.set_display_filename("file4.c", 0)
         editor.add_display_file()
-        editor.set_display_filename("file4.c", 3)
-        editor.add_display_file()
-        editor.set_display_filename("file5.c", 4)
+        editor.set_display_filename("file5.c", 1)
 
+        #editor.add_download_file()
+        editor.set_download_filename("file6.c", 0)
         editor.add_download_file()
-        editor.set_download_filename("file6.c", 5)
-        editor.add_download_file()
-        editor.set_download_filename("file7.c", 6)
+        editor.set_download_filename("file7.c", 1)
 
         editor.set_ms_filename("file8.c", 0)
 
@@ -136,22 +136,22 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         editor.set_test_filename("file12.c", 4) # 4!!
 
         # check precondition
-        self.assertTrue('file1.c' == editor.get_visible_file(0)) #get_template_file(0))
-        self.assertTrue('file2.c' == editor.get_visible_file(1)) #get_template_file(1))
-        self.assertTrue('file3.c' == editor.get_visible_file(2)) #get_template_file(2))
-        self.assertTrue('edit' == editor.get_displaymode('file1.c'))
-        self.assertTrue('edit' == editor.get_displaymode('file2.c'))
-        self.assertTrue('edit' == editor.get_displaymode('file3.c'))
+        self.assertTrue('file1.c' == editor.get_template_file(0))
+#        self.assertTrue('file2.c' == editor.get_visible_file(1)) #get_template_file(1))
+#        self.assertTrue('file3.c' == editor.get_visible_file(2)) #get_template_file(2))
+#        self.assertTrue('edit' == editor.get_displaymode('file1.c'))
+#        self.assertTrue('edit' == editor.get_displaymode('file2.c'))
+#        self.assertTrue('edit' == editor.get_displaymode('file3.c'))
 
-        self.assertTrue('file4.c' == editor.get_visible_file(3)) #get_display_file(0))
-        self.assertTrue('file5.c' == editor.get_visible_file(4)) #get_display_file(1))
-        self.assertTrue('display' == editor.get_displaymode('file4.c'))
-        self.assertTrue('display' == editor.get_displaymode('file5.c'))
+        self.assertTrue('file4.c' == editor.get_display_file(0))
+        self.assertTrue('file5.c' == editor.get_display_file(1))
+#        self.assertTrue('display' == editor.get_displaymode('file4.c'))
+#        self.assertTrue('display' == editor.get_displaymode('file5.c'))
 
-        self.assertTrue('file6.c' == editor.get_visible_file(5)) #get_download_file(0))
-        self.assertTrue('file7.c' == editor.get_visible_file(6)) #get_download_file(1))
-        self.assertTrue('download' == editor.get_displaymode('file6.c'))
-        self.assertTrue('download' == editor.get_displaymode('file7.c'))
+        self.assertTrue('file6.c' == editor.get_download_file(0))
+        self.assertTrue('file7.c' == editor.get_download_file(1))
+#        self.assertTrue('download' == editor.get_displaymode('file6.c'))
+#        self.assertTrue('download' == editor.get_displaymode('file7.c'))
 
 
         self.assertTrue('file8.c' == editor.get_ms_file(0))
@@ -174,36 +174,38 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
 
         # actions
 
+# TODO Testfälle nochmal überarbeiten. Da passt so einiges nicht mehr
+
         # file1.c: template -> library
         # => old template field will be removed!!
         editor.set_download_filename("file1.c", 0)
         #alert = editor.driver.switch_to.alert
         #alert.accept()
-        editor.set_visible_fileref('file2.c', 1, 'download')
-        editor.set_visible_fileref('file3.c', 2, 'download')
+#        editor.set_fileref('file2.c', 1, 'xml_download_filename')
+#        editor.set_fileref('file3.c', 2, 'xml_download_filename')
 
-        self.assertTrue('download' == editor.get_displaymode('file1.c'))
+        self.assertTrue('file1.c' == editor.get_download_file(0))
         #print 'empty field: "' + editor.get_template_file(0) + '"'
         #self.assertTrue('' == editor.get_template_file(0))
-        self.assertTrue('file1.c' == editor.get_visible_file(0))
-        self.assertTrue('file7.c' == editor.get_visible_file(6))
-        self.assertTrue('file2.c' == editor.get_visible_file(1)) # index -1
-        self.assertTrue('file3.c' == editor.get_visible_file(2)) # index -1
-        self.assertTrue('download' == editor.get_displaymode('file2.c'))
-        self.assertTrue('download' == editor.get_displaymode('file3.c'))
+#        self.assertTrue('file1.c' == editor.get_visible_file(0))
+        self.assertTrue('file7.c' == editor.get_download_file(1))
+#        self.assertTrue('file2.c' == editor.get_visible_file(1)) # index -1
+#        self.assertTrue('file3.c' == editor.get_visible_file(2)) # index -1
+#        self.assertTrue('download' == editor.get_displaymode('file2.c'))
+#        self.assertTrue('download' == editor.get_displaymode('file3.c'))
 
         # todo??
         # test/instruction, test/test, test/model-solution(?), template/library, template/test/test
 
 
-        # delete template 3
-        # => file3.c will be deleted
-        indexFile3 = 2
+        # delete multimedia 1
+        # => file4.c will be deleted
+        indexFile4 = 0
         # check for correct index
-        self.assertTrue('file3.c' == editor.get_visible_file(indexFile3))
-        editor.delete_template(indexFile3)
+        self.assertTrue('file4.c' == editor.get_display_file(indexFile4))
+        editor.delete_display(indexFile4)
 
-        self.assertTrue('file2.c' == editor.get_visible_file(1)) # still there
+        self.assertTrue('file5.c' == editor.get_display_file(indexFile4)) # still there
         #try:
             # is deleted :-)
             #editor.get_displaymode('file3.c')
@@ -216,13 +218,13 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         # => file usage = library
         #self.assertTrue('internal' == editor.get_displaymode('file11.c'))
         indexLib = 2
-        #editor.add_download_file()
+        editor.add_download_file()
         editor.set_download_filename("file11.c", indexLib)
-        self.assertTrue('download' == editor.get_displaymode('file11.c'))
+        self.assertTrue('file11.c' == editor.get_download_file(indexLib))
 
-        # delete 11 bei library
+        # delete 11 bei downlaod
         # => file usage = internal
-        self.assertTrue('file11.c' == editor.get_visible_file(indexLib))
+        #self.assertTrue('file11.c' == editor.get_download_file(indexLib))
         editor.delete_download(indexLib)
         #self.assertTrue('internal' == editor.get_displaymode('file11.c'))
 

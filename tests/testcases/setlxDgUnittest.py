@@ -89,10 +89,10 @@ class SetlxDgTest(zipFileTest.ZipFileTest):
 
         # set file class
         editor.set_template_filename("file1.stlx", 0)
-        editor.add_download_file()
-        editor.set_download_filename("file2.stlx", 1)
-        editor.add_display_file()
-        editor.set_display_filename("file4.stlx", 2)
+        #editor.add_download_file()
+        editor.set_download_filename("file2.stlx", 0)
+        #editor.add_display_file()
+        editor.set_display_filename("file4.stlx", 0)
 
         # editor.set_file_class(0, 0)
         # editor.set_file_class(1, 1)

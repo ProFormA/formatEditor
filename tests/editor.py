@@ -500,17 +500,20 @@ def select_chrome_option(elem, select):
 
 def add_display_file():
     change_tab("main_tab")
-    elems = driver.find_elements_by_class_name("add_visible_fileref")
+    elems = driver.find_elements_by_class_name("add_multimedia_fileref")
+#    elems = driver.find_elements_by_class_name("add_visible_fileref")
     elem = elems[0].click()
 
 def add_template_file():
     change_tab("main_tab")
-    elems = driver.find_elements_by_class_name("add_visible_fileref")
+    elems = driver.find_elements_by_class_name("add_template_fileref")
+#    elems = driver.find_elements_by_class_name("add_visible_fileref")
     elem = elems[0].click()
 
 def add_download_file():
     change_tab("main_tab")
-    elems = driver.find_elements_by_class_name("add_visible_fileref")
+    elems = driver.find_elements_by_class_name("add_download_fileref")
+#    elems = driver.find_elements_by_class_name("add_visible_fileref")
     elem = elems[0].click()
 
 def add_test_file(index):
@@ -518,13 +521,14 @@ def add_test_file(index):
     elems = driver.find_elements_by_class_name("add_test_fileref")
     elem = elems[index].click()
 
-def set_visible_fileref(filename, index, displaymode):
-    set_fileref(filename, index, "xml_visible_filename")
-    elems = driver.find_elements_by_class_name('xml_lms_usage')
-    elem = elems[index]
-    select = Select(elem)
-    select.select_by_value(displaymode)
-    time.sleep(timeoutClick)
+
+# def set_visible_fileref(filename, index, displaymode):
+#     set_fileref(filename, index, "xml_visible_filename")
+#     elems = driver.find_elements_by_class_name('xml_lms_usage')
+#     elem = elems[index]
+#     select = Select(elem)
+#     select.select_by_value(displaymode)
+#     time.sleep(timeoutClick)
 
 
 def set_fileref(filename, index, xml_class):
@@ -591,35 +595,41 @@ def set_display_mode(index, displaymode):
 
 def load_display_file(filename, index):
     change_tab("main_tab")
-    load_fileref(filename, index, "xml_visible_filename")
-    set_display_mode(index, 'display')
+    load_fileref(filename, index, "xml_multimedia_filename")
+#    load_fileref(filename, index, "xml_visible_filename")
+#    set_display_mode(index, 'display')
 
 def set_display_filename(filename, index):
     change_tab("main_tab")
-    set_visible_fileref(filename, index, "display")
-#    set_fileref(filename, index, "xml_instruction_filename")
+#    set_visible_fileref(filename, index, "display")
+    set_fileref(filename, index, "xml_multimedia_filename")
 
 
 def load_download_file(filename, index):
     change_tab("main_tab")
-    load_fileref(filename, index, "xml_visible_filename")
-    set_display_mode(index, 'download')
+    load_fileref(filename, index, "xml_download_filename")
+#    load_fileref(filename, index, "xml_visible_filename")
+#    set_display_mode(index, 'download')
 
 def set_download_filename(filename, index):
     change_tab("main_tab")
-    set_visible_fileref(filename, index, "download")
+    set_fileref(filename, index, "xml_download_filename")
+
+#    set_visible_fileref(filename, index, "download")
     #set_fileref(filename, index, "xml_multimedia_filename")
 
 
 def load_template_file(filename, index):
     change_tab("main_tab")
-    load_fileref(filename, index, "xml_visible_filename")
-    set_display_mode(index, 'edit')
+    load_fileref(filename, index, "xml_template_filename")
+#    load_fileref(filename, index, "xml_visible_filename")
+#    set_display_mode(index, 'edit')
 
 
 def set_template_filename(filename, index):
     change_tab("main_tab")
-    set_visible_fileref(filename, index, "edit")
+    set_fileref(filename, index, "xml_template_filename")
+    #set_visible_fileref(filename, index, "edit")
 
 
 
@@ -637,43 +647,44 @@ def load_test_file(filename, index):
 
 def delete_template(index):
     change_tab("main_tab")
-    elem = driver.find_elements_by_class_name("remove_visible_fileref")
+    elem = driver.find_elements_by_class_name("remove_template_fileref")
     elem[index].click()
 
 def delete_download(index):
     change_tab("main_tab")
-    elem = driver.find_elements_by_class_name("remove_visible_fileref")
+    elem = driver.find_elements_by_class_name("remove_download_fileref")
     elem[index].click()
 
 def delete_display(index):
     change_tab("main_tab")
-    elem = driver.find_elements_by_class_name("remove_visible_fileref")
+    elem = driver.find_elements_by_class_name("remove_multimedia_fileref")
     elem[index].click()
 
 
 ####################################################################
 # RETRIEVE VALUES
 ####################################################################
-def get_visible_file(index):
+#def get_visible_file(index):
+#    change_tab("main_tab")
+#    elems = driver.find_elements_by_class_name("xml_visible_filename")
+#    return elems[index].get_attribute("value")
+
+def get_template_file(index):
     change_tab("main_tab")
-    elems = driver.find_elements_by_class_name("xml_visible_filename")
+    elems = driver.find_elements_by_class_name("xml_template_filename")
     return elems[index].get_attribute("value")
 
-#def get_template_file(index):
-#    change_tab("main_tab")
-#    elems = driver.find_elements_by_class_name("xml_template_filename")
-#    return elems[index].get_attribute("value")
 
+def get_display_file(index):
+    change_tab("main_tab")
+    elems = driver.find_elements_by_class_name("xml_multimedia_filename")
+    #print 'displayfile ' + elems[index].get_attribute("value")
+    return elems[index].get_attribute("value")
 
-#def get_display_file(index):
-#    change_tab("main_tab")
-#    elems = driver.find_elements_by_class_name("xml_instruction_filename")
-#    return elems[index].get_attribute("value")
-
-#def get_download_file(index):
-#    change_tab("main_tab")
-#    elems = driver.find_elements_by_class_name("xml_multimedia_filename")
-#    return elems[index].get_attribute("value")
+def get_download_file(index):
+    change_tab("main_tab")
+    elems = driver.find_elements_by_class_name("xml_download_filename")
+    return elems[index].get_attribute("value")
 
 def get_ms_file(index):
     change_tab("main_tab")

@@ -19,6 +19,7 @@
 const DEBUG_MODE       = false;
 const TEST_MODE        = false;
 const SUBMISSION_TEST  = false;
+const USE_VISIBLES     = false;
 
 
 const codeversion   = '3.0.0 pre';                     // current version of this code

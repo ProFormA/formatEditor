@@ -115,8 +115,8 @@ class JavaTest(zipFileTest.ZipFileTest):
 
         # set file class
         editor.set_template_filename("file1.java", 0)
-        editor.add_download_file()
-        editor.set_download_filename("file2.java", 1)
+        #editor.add_download_file()
+        editor.set_download_filename("file2.java", 0)
 
 #       editor.set_file_class(0, 0)
 #       editor.set_file_class(1, 1)#
