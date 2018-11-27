@@ -862,7 +862,7 @@ $(function() {
 
     FileReferenceList.init("#multimediadropzone", '#multimediasection', MultimediaFileReference);
     FileReferenceList.init("#downloaddropzone", '#downloadsection', DownloadableFileReference);
-    FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
+    //FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
 
 
     /*$("#templatedropzone").hide();

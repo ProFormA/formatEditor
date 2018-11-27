@@ -128,6 +128,7 @@ function createDownloadLinks() {
             let ui_file = FileWrapper.constructFromId(id);
             returnvalue = returnvalue + createDownloadLink(ui_file);
         });
+/*
         TemplateFileReference.getInstance().doOnNonEmpty(function(id) {
             if (templateCounter === 0) {
                 templateCounter++;
@@ -136,13 +137,14 @@ function createDownloadLinks() {
             let ui_file = FileWrapper.constructFromId(id);
             returnvalue = returnvalue + createDownloadLink(ui_file);
         });
+*/
     }
     return returnvalue;
 }
 
 // returns the first 'embedded file' template
 function getEditorTemplate() {
-    let returnvalue = "";
+    let returnvalue = '';
 
     if (USE_VISIBLES) {
         VisibleFileReference.getInstance().doOnAll(function (id, displayMode) {
@@ -153,13 +155,14 @@ function getEditorTemplate() {
             }
         });
     } else {
-        TemplateFileReference.getInstance().doOnNonEmpty(function(id) {
+        returnvalue = $("#code_template").val();
+/*        TemplateFileReference.getInstance().doOnNonEmpty(function(id) {
             if (returnvalue === "") {
                 let ui_file = FileWrapper.constructFromId(id);
                 returnvalue = ui_file.text;
                 return false;
             }
-        });
+        });*/
     }
 
     return returnvalue;

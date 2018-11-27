@@ -224,11 +224,13 @@ convertToXML = function(topLevelDoc, rootNode) {
             task.files[id].visible = T_VISIBLE.YES;
             task.files[id].usageInLms = T_LMS_USAGE.DISPLAY;
         });
+        /*
         TemplateFileReference.getInstance().doOnNonEmpty(function(id) {
             task.files[id].visible = T_VISIBLE.YES;
             task.files[id].usageInLms = T_LMS_USAGE.EDIT;
         });
-
+        */
+        task.codeskeleton = $("#code_template").val();
     }
 
 
@@ -314,7 +316,7 @@ readAndDisplayXml = function() {
 
     FileReferenceList.init("#multimediadropzone", '#multimediasection', MultimediaFileReference);
     FileReferenceList.init("#downloaddropzone", '#downloadsection', DownloadableFileReference);
-    FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
+    //FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
     const templateroot = $("#templatedropzone");
     const multmediaroot = $("#multimediadropzone");
     const downloadroot = $("#downloaddropzone");
@@ -331,6 +333,7 @@ readAndDisplayXml = function() {
     // TODO: validate??
     task.readXml(taskXml);
 
+    $("#code_template").val(task.codeskeleton);
 
     descriptionEditor.setValue(task.description);
     $("#xml_title").val(task.title);
@@ -373,7 +376,12 @@ readAndDisplayXml = function() {
                         MultimediaFileReference.getInstance().setFilenameOnCreation(multmediaroot, indexMultmedia++, item.filename);
                         break;
                     case T_LMS_USAGE.EDIT:
-                        TemplateFileReference.getInstance().setFilenameOnCreation(templateroot, indexTemplate++, item.filename);
+                        alert('??? hier sollte man nicht hinkommen');
+                        if (indexTemplate === 0)
+                            $("#code_template").val('Hier kommt der Code rein');
+                        else
+                            DownloadableFileReference.getInstance().setFilenameOnCreation(downloadroot, indexDownload++, item.filename);
+//                            TemplateFileReference.getInstance().setFilenameOnCreation(templateroot, indexTemplate++, item.filename);
                         break;
                     case T_LMS_USAGE.DOWNLOAD:
                         DownloadableFileReference.getInstance().setFilenameOnCreation(downloadroot, indexDownload++, item.filename);

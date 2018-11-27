@@ -149,6 +149,7 @@ class TaskFile {
         this.filetype = null;
         this.comment = null;
         this.content = null;
+        this.codeskeleton = null;
     }
 }
 
@@ -356,14 +357,15 @@ class TaskClass {
             // read files
             let iterator = xmlReader.readNodes("dns:files/dns:file");
             let thisNode = iterator.iterateNext();
+            let editCounter = 0;
             while (thisNode) {
+
                 let taskfile = new TaskFile();
                 taskfile.id = xmlReader.readSingleText("@id", thisNode);
                 //taskfile.fileclass = xmlReader.readSingleText("@class", thisNode);
                 taskfile.usedByGrader = (xmlReader.readSingleText("@used-by-grader", thisNode)==='yes');
                 taskfile.usageInLms = xmlReader.readSingleText("@usage-by-lms", thisNode);
                 taskfile.visible = xmlReader.readSingleText("@visible", thisNode);
-
                 // todo:
                 taskfile.comment = xmlReader.readSingleText("dns:internal-description", thisNode);
                 let content = xmlReader.readSingleNode('*', thisNode); // nodeValue
@@ -385,6 +387,22 @@ class TaskClass {
                     setErrorMessage("No file content for file #". taskfile.id);
                 }
 
+                // post processing:
+                // copy file content for editor in associated text area
+                const displaymode = xmlReader.readSingleText("@usage-by-lms", thisNode);
+                if (taskfile.usageInLms === T_LMS_USAGE.EDIT) {
+                    if (editCounter === 0) {
+                        // do not store as file
+                        this.codeskeleton = taskfile.content;
+                    } else {
+                        this.files[taskfile.id] = taskfile;
+                    }
+                    editCounter++;
+                } else {
+                    this.files[taskfile.id] = taskfile;
+                }
+
+
 /*
                 let embeddedTextFile = xmlReader.readSingleNode("embedded-txt-file");
                 if (embeddedTextFile) {
@@ -403,7 +421,7 @@ class TaskClass {
 */
 
 
-                this.files[taskfile.id] = taskfile;
+
                 thisNode = iterator.iterateNext();
             }
 
@@ -479,6 +497,23 @@ class TaskClass {
         */
 
         // version 2.0
+
+        function writeCodeSkeleton(task, id) {
+            let fileElem = xmlDoc.createElementNS(xmlns, "file");
+            fileElem.setAttribute("id", id);
+            fileElem.setAttribute("used-by-grader", 'no');
+            fileElem.setAttribute("usage-by-lms", T_LMS_USAGE.EDIT);
+            fileElem.setAttribute("visible", T_VISIBLE.YES);
+
+            // fileElem.setAttribute("comment", item.comment);
+            files.appendChild(fileElem);
+                let fileContentElem = xmlDoc.createElementNS(xmlns, "embedded-txt-file");
+                fileContentElem.setAttribute("filename", 'code.txt');
+                fileContentElem.appendChild(xmlDoc.createCDATASection(task.codeskeleton));
+                fileElem.appendChild(fileContentElem);
+            xmlWriter.createOptionalTextElement(fileElem, 'internal-description', 'Code Skeleton for Editor');
+        }
+
         function writeFile(item, index) {
             let fileElem = xmlDoc.createElementNS(xmlns, "file");
             fileElem.setAttribute("id", item.id);
@@ -591,6 +626,7 @@ class TaskClass {
 
             files = xmlDoc.createElementNS(xmlns, "files");
             task.appendChild(files);
+            writeCodeSkeleton(this, 'codeskeleton');
             this.files.forEach(writeFile);
 
             modelsolutions = xmlDoc.createElementNS(xmlns, "model-solutions");
