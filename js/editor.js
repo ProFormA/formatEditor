@@ -561,16 +561,23 @@ $(function() {
         console.log("Creating XML took " + (t2 - t1) + " ms.")
 
 
-        var ans = $.ajax({
+        let formData = new FormData();
+//        let blob1 = new Blob(['Lorem ipsum'], { type: 'plain/text' });
+        let blob1 = new Blob([submissionXml], { type: 'application/xml' });
+        formData.append('file', blob1, 'submission.xml');
+        let blob2 = new Blob([taskXml], { type: 'application/xml' });
+        formData.append('file', blob2, 'task.xml');
+
+        let ans = $.ajax({
             type: 'POST',
-            //enctype: 'multipart/form-data',
+            enctype: 'multipart/form-data',
             url: newUrl,
-            data: submissionXml, // taskXml,
+            data: formData, // taskXml,
             dataType: "html", // convert XML to html in order to show result in textarea
-            //processData: false, // prevent jQuery form transforming the data into a query string
+            processData: false, // prevent jQuery form transforming the data into a query string
             contentType: false,
             success : function(data){
-                alert("success " + data);
+                //alert("success " + data);
                 $("#submit_response").html(data);
             },
             error : function($xhr, textStatus, errorThrown){

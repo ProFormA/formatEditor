@@ -18,7 +18,7 @@
 
 const DEBUG_MODE       = false;
 const TEST_MODE        = false;
-const SUBMISSION_TEST  = false;
+const SUBMISSION_TEST  = true;
 const USE_VISIBLES     = false;
 
 

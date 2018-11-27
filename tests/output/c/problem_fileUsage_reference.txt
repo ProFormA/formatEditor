@@ -15,11 +15,9 @@ $modelsolution = '<pre></pre>';
 
 <startouttext />
 input111
-<a href='data:text/text;base64,' download='file1.c'>Download: file1.c</a>
-<a href='data:text/text;base64,' download='file2.c'>Download: file2.c</a>
-<a href='data:text/text;base64,' download='file5.c'>Download: file5.c</a>
 <a href='data:text/text;base64,' download='file6.c'>Download: file6.c</a>
-<a href='data:text/text;base64,' download='file7.c'>Download: file7.c</a>
+<a href='data:text/text;base64,' download='file4.c'>Download: file4.c</a>
+<a href='data:text/text;base64,' download='file5.c'>Download: file5.c</a>
 <endouttext />
 
 <startouttext />

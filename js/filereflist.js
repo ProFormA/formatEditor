@@ -43,7 +43,8 @@ class FileReferenceList extends DynamicList {
 
     createRowContent() {
         const tdFilename = "<td><select class='mediuminput fileref_filename " + this.classFilename + "' " +
-            "onchange = 'FileReferenceList.onFileSelectionChanged(this)' title='" + this.help + "'></select></td>"+
+            "onchange = '" +
+            this.className + ".getInstance().onFileSelectionChanged($(this))' title='" + this.help + "'></select></td>"+
             "<td><label for='fileref_fileref'>Fileref: </label>"+ // fileref
             "<input class='tinyinput fileref_fileref' readonly/></td>";
 
@@ -299,22 +300,11 @@ class FileReferenceList extends DynamicList {
     static deleteFile(fileid) {
         // check if there any references
         let ui_file = FileWrapper.constructFromId(fileid);
-        // check if there is still a special kind of reference (template, library or instruction)
+        // check if there is still a special kind of reference (display/download)
         if (!FileReferenceList.getCountSpecialReferences(fileid)) {
-            switch(FileReferenceList.getCountFileIdReferenced(fileid)) {
-                case 0:
-                    // no reference at all => delete file
-                    ui_file.delete();
-                    break;
-                case 1:
-                    // change to internal
-                    //ui_file.class = INTERNAL;
-                    break;
-                default:
-                    // change to internal-library
-                    //ui_file.class = INTERNAL_LIB;
-                    break;
-            }
+            if (FileReferenceList.getCountFileIdReferenced(fileid) === 0)
+                // no reference at all => delete file
+                ui_file.delete();
         }
     }
 
@@ -355,6 +345,32 @@ class FileReferenceList extends DynamicList {
     }
 
 
+    checkForExclusiveUse(ui_file, fileid, otherFileRefList, listname) {
+        // iterate through all file reference objects to find an 'old' one
+        $.each(otherFileRefList.root.find(".fileref_fileref"), function(index, item) {
+            if (item.value === fileid) {
+                alert("file class for file '" + ui_file.filename + "' will be no longer a " + listname + " file");
+
+                const filenameobject = $(item).closest('tr').find('.fileref_filename');
+
+                // file id matches
+                // remove old fileref object
+                filenameobject.val(emptyFileOption).change();
+                item.value = '';
+                // FileReferenceList.updateAllFilenameLists();
+                // remove actual numeric fileref value
+                let tr = $(item).parent().parent();
+                tr.find('.fileref_fileref').first().val('');
+                // check if complete row can be deleted
+                const table_body = tr.parent();
+                if (table_body.find('tr').length > 1) {
+                    // more than one row => delete row
+                    // (object does not matter)
+                    otherFileRefList.removeItem($(item));
+                }
+            }
+        });
+    }
     onFileUpload(filename, uploadBox) {
         // select new filename in first empty filename
         //console.log("uploadFiles: select " + filename + " in option list");
@@ -379,7 +395,9 @@ class FileReferenceList extends DynamicList {
         }
     }
 
-    static onFileSelectionChanged (tempSelElem) {              // changing a filename in the drop-down
+    onFilerefChanged(ui_file, fileid) {}
+
+    onFileSelectionChanged (tempSelElem) {              // changing a filename in the drop-down
 
         function isDuplicateId(fileid) {
             const filerefs = $(tempSelElem).closest('table').find(".fileref_fileref");
@@ -395,61 +413,7 @@ class FileReferenceList extends DynamicList {
             return found;
         }
 
-        // whenever a file is selected that causes a file class change,
-        // it must be checked whether a reference needs to be removed
-        // (e.g. from template to library)
-        function handleClassChange(ui_file, fileid, newClass) {
-            if (ui_file.class === newClass)
-                return;
-            const oldclass = ui_file.class;
-            ui_file.class = newClass;
-            if (!oldclass || oldclass === INTERNAL || oldclass === INTERNAL_LIB) {
-                return;
-            }
 
-            alert("file class for file '" + ui_file.filename + "' will be no longer '" + oldclass + "'");
-
-            // iterate through all file reference objects to find the 'old' one
-            let found = false;
-            $.each($(".fileref_fileref"), function(index, item) {
-                if (!found && item.value === fileid) {
-                    // file id matches
-                    const filenameobject = $(item).closest('tr').find('.fileref_filename');
-                    switch (oldclass) {
-                        case 'template':
-                            found = filenameobject.hasClass('xml_template_filename');
-                            break;
-/*                        case 'library':
-                            found = filenameobject.hasClass('xml_multimedia_filename');
-                            break;*/
-                        case 'instruction':
-                            found = filenameobject.hasClass('xml_download_filename');
-                            break;
-                        default:
-                            alert('tbd 1');
-                            break;
-                    }
-
-                    if (found) {
-                        // remove old fileref object
-                        filenameobject.val(emptyFileOption).change();
-                        item.value = '';
-                        // FileReferenceList.updateAllFilenameLists();
-                        // remove actual numeric fileref value
-                        let td = $(item).parent();
-                        let tr = td.parent();
-                        tr.find('.fileref_fileref').first().val('');
-                        // check if complete row can be deleted
-                        const table_body = tr.parent();
-                        if (table_body.find('tr').length > 1) {
-                            // more than one row => delete row
-                            // (object does not matter)
-                            modelSolutionFileRefSingleton.removeItem($(item));
-                        }
-                    }
-                }
-            });
-        }
 
         // var found = false;
         const selectedFilename = $(tempSelElem).val();
@@ -516,15 +480,8 @@ class FileReferenceList extends DynamicList {
                                 // setJUnitDefaultTitle(selectedFilename);
                                 config.handleFilenameChangeInTest(selectedFilename, tempSelElem);
                             }
-                            // TODO: check for internal-library
-                        } else if ($(tempSelElem).hasClass('xml_template_filename')) {
-                            handleClassChange(ui_file, fileid, TEMPLATE);
-                        } else if ($(tempSelElem).hasClass('xml_download_filename')) {
-                            handleClassChange(ui_file, fileid, INSTRUCTION);
-/*                        } else if ($(tempSelElem).hasClass('xml_multimedia_filename')) {
-                            handleClassChange(ui_file, fileid, LIBRARY);*/
                         } else {
-                            // model solution, nothing to be done
+                            this.onFilerefChanged(ui_file, fileid);
                         }
                     }
                 }
@@ -688,6 +645,7 @@ class ModelSolutionFileReference extends FileReferenceList {
 let modelSolutionFileRefSingleton = new ModelSolutionFileReference();
 
 
+// TODO: remove class VisibleFileReference
 class VisibleFileReference extends FileReferenceList {
 
     constructor() {
@@ -738,6 +696,11 @@ class DownloadableFileReference extends FileReferenceList {
             'DownloadableFileReference', 'Downloadable File',
             'files that can be downloaded by student (e.g. pdf, image, library ', false);
     }
+
+    onFilerefChanged(ui_file, fileid) {
+        this.checkForExclusiveUse(ui_file, fileid, multimediaSingleton, 'display');
+    }
+
     static getInstance() {return downloadableSingleton;}
 }
 let downloadableSingleton = new DownloadableFileReference();
@@ -773,6 +736,11 @@ class MultimediaFileReference extends FileReferenceList {
             'files belonging to descripton (e.g. images) ' +
             'that should be embedded (if supported by LMS)', false);
     }
+
+    onFilerefChanged(ui_file, fileid) {
+        this.checkForExclusiveUse(ui_file, fileid, downloadableSingleton, 'downloadable');
+    }
+
     static getInstance() {return multimediaSingleton;}
 }
 let multimediaSingleton = new MultimediaFileReference();
