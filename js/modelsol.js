@@ -46,12 +46,12 @@ class ModelSolutionWrapper {
     // getter
     get root() { return this._root; }
     get id() { return this.getValue(this._id,".xml_model-solution_id" ); }
-    get comment() { return this.getValue(this._comment,".xml_internal_description" /*".xml_model-solution_comment"*/ ); }
+    get comment() { return this.getValue(this._comment,".xml_internal_description"); }
     get description() { return this.getValue(this._description,".xml_description" ); }
 
     // setter
     set comment(newComment) {
-        this._root.find(".xml_internal_description" /*".xml_model-solution_comment"*/).val(newComment);
+        this._root.find(".xml_internal_description").val(newComment);
     }
     set description(newDescription) { this._root.find(".xml_description").val(newDescription); }
 
@@ -89,12 +89,6 @@ class ModelSolutionWrapper {
             "<input class='tinyinput xml_model-solution_id' value='" + modelsolid + "' readonly/>" +
 
             getDescriptionHtmlString(description, comment) +
-//            "<p><label for='xml_description'>Description: </label>" +
-//            "<input class='largeinput xml_description' value ='" + description + "'/></p>" +
-
-//            "<p><label for='xml_model-solution_comment'>Internal Description: </label>" +
-//            "<input class='largeinput xml_model-solution_comment' value ='" + comment + "'/></p>" +
-
             "<p>" +
             ModelSolutionFileReference.getInstance().getTableString() +
             "</p>" +
@@ -105,29 +99,11 @@ class ModelSolutionWrapper {
         FileReferenceList.init(null, null, ModelSolutionFileReference, msroot);
         let modelsolution = ModelSolutionWrapper.constructFromRoot(msroot);
 
-        // ModelSolutionFileReference.getInstance().init(msroot, DEBUG_MODE);
-
         if (!DEBUG_MODE) {
             // hide fields that exist only for technical reasons
             msroot.find(".xml_model-solution_id").hide();
             msroot.find("label[for='xml_model-solution_id']").hide();
         }
-        /*
-              msroot.on({
-                  drop: function(e){
-                      if(e.originalEvent.dataTransfer){
-                          if(e.originalEvent.dataTransfer.files.length) {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              //UPLOAD FILES HERE
-                              FileReferenceList.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget,
-                                  ModelSolutionFileReference.getInstance());
-                              // ModelSolutionFileReference.uploadFiles(e.originalEvent.dataTransfer.files, e.currentTarget);
-                          }
-                      }
-                  }
-              });
-              */
 
         return modelsolution;
     }

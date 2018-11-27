@@ -76,7 +76,7 @@ textarea{
     border: 1px solid;
 }
 
-#xml_description + .CodeMirror, .xml_file_text + .CodeMirror{
+#xml_description + .CodeMirror, .xml_file_text + .CodeMirror, #code_template + .CodeMirror {
     vertical-align: top;
     display: inline-block;
     width: var(--inputwidth);
@@ -129,9 +129,8 @@ p{ 	                        padding-left:0.3em;  }
     float:right; 	font-size: 65%;
 }
 
-.restrict_filename { width: 400px; }
-.restrict_mimetype { width: 200px; }
-.restrict_size { width: 90px; }
+.xml_restrict_filename { width: 400px; }
+
 
 .fileref_filename{	width: 400px;     }
 .fileref_fileref{	width: 50px;     }

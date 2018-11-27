@@ -102,12 +102,13 @@ class FileStorage {
     }
 }
 
-
+/*
 const INTERNAL     = 'internal';
 const TEMPLATE     = 'template';
 const INSTRUCTION  = 'instruction';
 const INTERNAL_LIB = 'internal-library';
 const LIBRARY      = 'library';
+*/
 
 // class for simpler access to file members from user interface
 // todo: store 'data' in variables not in html
@@ -412,20 +413,12 @@ class FileWrapper {
         });
     }
 
+/*
     static onFileclassChanged(selectfield) {
         const text = $("option:selected", selectfield).text(); // selected text
-
         alert('do not change if old value is template, instruction or library!!!');
-
-/*        switch (text)
-        {
-            case 'internal':
-            case 'internal-library':
-                break;
-
-        }*/
     }
-
+*/
 
     static onFilenameChangedCallback(filenamebox) {
         let ui_file = FileWrapper.constructFromRoot($(filenamebox).closest(".xml_file"));
@@ -537,6 +530,7 @@ class FileWrapper {
             " <label for='xml_file_class'>Usage: " +
             // "<span class='red'>*</span>: " +
             "</label>"+
+/*
             "<select class='xml_file_class' disabled onchange='FileWrapper.onFileclassChanged(this)' >"+
                 "<option selected='selected'>internal</option>"+
                 "<option>template</option>"+
@@ -545,7 +539,7 @@ class FileWrapper {
                 "<option>internal-library</option>"+
                 "<option>instruction</option>" +
             "</select>"+
-
+*/
             // not nice!!
 //            " Library:<input type='checkbox' class='file_library' >" + // onclick='FileWrapper.onLibrary(this)'>"+
 
@@ -573,11 +567,6 @@ class FileWrapper {
             "<span>" +
             "<textarea rows='3' cols='80' class='xml_file_text' onfocus='this.rows=10;' onmouseout='this.rows=6;'></textarea>" +
             "</span>" +
-
-
-/*            "<span><button class='xml_dummy_upload_file' style='display:none'>Load File...</button>" +
-            "<input class='xml_upload_file' type='file' style='display:none' onchange='FileWrapper.onReadFile(this)'/></span> " +
-*/
 
             "</span></p>" +
             "</div>");

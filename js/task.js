@@ -118,15 +118,6 @@ convertToXML = function(topLevelDoc, rootNode) {
     }
 
     // PRE PROCESSING
-/*
-    FileWrapper.doOnAllFiles(function(ui_file) {
-        if (ui_file.isLibrary && ui_file.class === INTERNAL) {
-            // convert to internal library if class is internal
-            ui_file.class = INTERNAL_LIB;
-        }
-    });
-*/
-
     // copy data to task class
     let task = new TaskClass();
     task.title = $("#xml_title").val();
@@ -146,8 +137,8 @@ convertToXML = function(topLevelDoc, rootNode) {
     //if (!task.uuid)
         task.uuid = generateUUID();
     task.lang = $("#xml_lang").val();
-    task.sizeSubmission = $("#xml_subm_regexp_size").val();
-    task.filenameRegExpSubmission = $("#xml_subm_regexp_name").val();
+    task.sizeSubmission = $("#xml_submission_size").val();
+    task.filenameRegExpSubmission = $(".xml_restrict_filename").first().val();
 
     // write files
     FileWrapper.doOnAllFiles(function(ui_file) {

@@ -101,58 +101,13 @@
                         <textarea id='code_template' rows='10' cols='80'></textarea>
                     </p>
 
-                    <p><label>Restriction:</label>
-                    <select id='restriction_selector'>
-                    <option value="files">Filenames</option>"
-                    <option selected='selected' value="file_regexp">Files by Regular Expression</option>"
-                    <option value="archive">Archive</option>"
-                    </select>
+
+                    <p><label>Maximum Size [B]</label>
+                        <input class='shortinput' id='xml_submission_size' value="1000"></input>
                     </p>
-                    <div id="regexp_restriction">
-                        <p>
-                            <label for='xml_subm_regexp_name'>Filename: </label>
-                            <input class='mediuminput' id='xml_subm_regexp_name' value="*"/>
 
-                            <label for='xml_subm_regexp_size'>Max filesize[B]:</label>
-                            <input class='shortinput' id='xml_subm_regexp_size' value='1000'/>
-                            <!--<label for='xml_subm_unpackArchiveRegExp'>Archive RegExp: </label>-->
-                            <!--<input class='shortinput' id='xml_subm_unpackArchiveRegExp'/>-->
-                            <!--<label for='xml_subm_unpackArchive'>Archive: </label>-->
-                            <!--<input class='shortinput' id='xml_subm_unpackArchive'/>-->
-                            <!--<label for='xml_subm_regexp_mime_type'>MimeType: </label>
-                            <input class='shortinput' id='xml_subm_regexp_mime_type' value='^(text/.*)$'/>-->
-
-                        </p>
-                    </div>
                     <div id="files_restriction"></div>
-                    <div id="archive_restriction">
-                        <p>
-                            <label for='xml_subm_archive_name'>Archive Filename: </label>
-                            <input class='mediuminput' id='xml_subm_archive_name' value="*"/>
 
-                            <label for='xml_subm_archive_size'>Max filesize[B]:</label>
-                            <input class='shortinput' id='xml_subm_archive_size' value='1000'/>
-                            <!--<label for='xml_subm_unpackArchiveRegExp'>Archive RegExp: </label>-->
-                            <!--<input class='shortinput' id='xml_subm_unpackArchiveRegExp'/>-->
-                            <!--<label for='xml_subm_unpackArchive'>Archive: </label>-->
-                            <!--<input class='shortinput' id='xml_subm_unpackArchive'/>-->
-
-                        </p>
-                        <p><label>Restrict content by:</label>
-                            <select id='archive_list_selector'>
-                                <option selected='selected' value="files">File Path List</option>"
-                                <option value="file_regexp">Regular Expression</option>"
-                            </select>
-                        </p>
-                        <div id="archive_files_restriction"></div>
-                        <div id="archive_regexp_restriction">
-                            <p>
-                                <label></label>
-                                <label for='xml_subm_archive_regexp_files'>Filename Regular Expression: </label>
-                                <input class='mediuminput' id='xml_subm_archive_regexp_files' value="*"/>
-                            </p>
-                        </div>
-                    </div>
                     <input type='file' id='dummy_file_upload_button' style="display: none"/>
 
                     <div id="submission_preview">

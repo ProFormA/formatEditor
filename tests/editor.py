@@ -450,7 +450,7 @@ def set_task_comment(text):
 
 
 def set_filesize(text):
-    set_input_field("xml_subm_regexp_size", text)
+    set_input_field("xml_submission_size", text)
 
 # depricated
 #def set_mimetype(text):

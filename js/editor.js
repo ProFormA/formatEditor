@@ -373,7 +373,7 @@ $(function() {
     }
 
     function switchProgLang() {
-        var progLang = $("#xml_programming-language").val();
+        let progLang = $("#xml_programming-language").val();
         console.log("changing programming language to " + progLang);
 
         // hide all test buttons
@@ -394,6 +394,16 @@ $(function() {
 
         if (!found) {
             window.confirm("Unsupported Programming Language: " + progLang);
+        }
+
+
+        switch(progLang.split("/")[0].toLowerCase()) {
+            case 'java': codeskeleton.setOption("mode", "text/x-java");
+                break;
+            case 'python': codeskeleton.setOption("mode", "text/x-python");
+                break;
+            case 'c': codeskeleton.setOption("mode", "text/x-csrc");
+                break;
         }
     }
 
@@ -657,67 +667,11 @@ $(function() {
 */
     });
 
-    // Restriction selection handling
-    let restriction_files = $("#files_restriction");
-    let restriction_regexp = $("#regexp_restriction");
-    let restriction_archive = $("#archive_restriction");
-
-    $("#restriction_selector").change(function() {
-        let value = $("#restriction_selector").val();
-        switch(value) {
-            case 'files':
-                restriction_regexp.hide();
-                restriction_files.show();
-                restriction_archive.hide();
-                break;
-            case 'file_regexp':
-                restriction_regexp.show();
-                restriction_files.hide();
-                restriction_archive.hide();
-                break;
-            case 'archive':
-                restriction_archive.show();
-                restriction_regexp.hide();
-                restriction_files.hide();
-                break;
-            default:
-                alert('unsupported value for restriction');
-                break;
-        }
-    });
-
-    // initial selection
-    restriction_regexp.show();
-    restriction_files.hide();
-    restriction_archive.hide();
 
     if (!SUBMISSION_TEST)
         $("#submission_preview").hide();
 
 
-
-    let restriction_arch_files = $("#archive_files_restriction");
-    let restriction_arch_regexp = $("#archive_regexp_restriction");
-
-    $("#archive_list_selector").change(function() {
-        let value = $("#archive_list_selector").val();
-        switch(value) {
-            case 'files':
-                restriction_arch_files.show();
-                restriction_arch_regexp.hide();
-                break;
-            case 'file_regexp':
-                restriction_arch_files.hide();
-                restriction_arch_regexp.show();
-                break;
-            default:
-                alert('unsupported value for restriction');
-                break;
-        }
-    });
-
-    restriction_arch_files.show();
-    restriction_arch_regexp.hide();
 
 
 ///////////////////////////////////////////////////////// function: readXML
@@ -778,6 +732,26 @@ $(function() {
 
   // There must be at least one model solution
     ModelSolutionWrapper.create();
+
+    var codeskeleton = CodeMirror.fromTextArea(
+        $("#code_template")[0],{
+            // todo: set mode depending on programming language resp. file extension
+            mode : "text/x-java", indentUnit: 4, lineNumbers: true, matchBrackets: true, tabMode : "shift",
+            styleActiveLine: true, /*viewportMargin: Infinity, */autoCloseBrackets: true, theme: "eclipse",
+            dragDrop: false
+        });
+
+    $(codeskeleton.getWrapperElement()).resizable({
+        handles: 's', // only resize in north-south-direction
+        resize: function() {
+            editor.refresh();
+        }
+    });
+    codeskeleton.on("drop",function(editor,e){
+        //uploadFileWhenDropped(e.originalEvent.dataTransfer.files, e.currentTarget);
+        console.log('codemirror drop: ' + e);
+    });
+
   // show/hide buttons according to programming language
   switchProgLang();
 
@@ -862,20 +836,19 @@ $(function() {
 
     FileReferenceList.init("#multimediadropzone", '#multimediasection', MultimediaFileReference);
     FileReferenceList.init("#downloaddropzone", '#downloadsection', DownloadableFileReference);
-    //FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
 
-
-    /*$("#templatedropzone").hide();
-    $("#multimediadropzone").hide();
-    $("#downloaddropzone").hide();*/
     if (!USE_VISIBLES)
         $("#visiblefiledropzone").hide();
 
 
     $("#files_restriction").append(SubmissionFileList.getInstance().getTableString());
-    $("#archive_files_restriction").append(SubmissionArchiveFileList.getInstance().getTableString());
 
     $("#xml_task_internal_description").append(getInternalDescriptionString(''));
+
+
+
+
+
 
 
     // saving files is realised with an anchor having the download attribute set.

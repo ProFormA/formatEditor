@@ -151,16 +151,14 @@ class SubmissionFileList extends DynamicList {
     }
 
     createRowContent() {
-        return "<td>Filename:</td>" +
-            "<td><input class='restrict_filename " + this.classFilename + "' " +
-            " title='" + this.help + "'></input></td>" +
+        return "<td><input class='xml_restrict_filename " + this.classFilename + "' " +
+            " title='" + this.help + "'></input> </td>" +
 
-            "<td>Size[B]:</td>" +
-            "<td><input class='restrict_size' " +
-            " title='in bytes'></input></td>" +
+            "<td> Reg.Exp.</td>" +
+            "<td><input type='checkbox' class='xml_file_regexp' title='interprete input as regular expression (POSIX extended format)'></td>" +
 
-            "<td>optional:</td>" +
-            "<td><input type='checkbox' class='optional' title='optional file'></td>";
+            "<td> optional:</td>" +
+            "<td><input type='checkbox' class='xml_optional' title='optional file'></td>";
     }
 
     static getInstance() {return submissionFileSingleton;}
@@ -168,22 +166,3 @@ class SubmissionFileList extends DynamicList {
 let submissionFileSingleton = new SubmissionFileList();
 
 
-class SubmissionArchiveFileList extends DynamicList {
-
-    constructor() {
-        super('xml_subm_filename', 'xml_subm_archive', 'SubmissionArchiveFileList', '',
-            'files belonging to the submission archive', false);
-    }
-
-    createRowContent() {
-        return "<td>Path:</td>" +
-            "<td><input class='restrict_filename " + this.classFilename + "' " +
-            " title='" + this.help + "'></input></td>" +
-
-            "<td>optional:</td>" +
-            "<td><input type='checkbox' class='optional' title='optional file'></td>";
-    }
-
-    static getInstance() {return archiveFileSingleton;}
-}
-let archiveFileSingleton = new SubmissionArchiveFileList();

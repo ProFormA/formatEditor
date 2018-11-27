@@ -499,19 +499,21 @@ class TaskClass {
         // version 2.0
 
         function writeCodeSkeleton(task, id) {
-            let fileElem = xmlDoc.createElementNS(xmlns, "file");
-            fileElem.setAttribute("id", id);
-            fileElem.setAttribute("used-by-grader", 'no');
-            fileElem.setAttribute("usage-by-lms", T_LMS_USAGE.EDIT);
-            fileElem.setAttribute("visible", T_VISIBLE.YES);
+            if (task.codeskeleton) {
+                let fileElem = xmlDoc.createElementNS(xmlns, "file");
+                fileElem.setAttribute("id", id);
+                fileElem.setAttribute("used-by-grader", 'no');
+                fileElem.setAttribute("usage-by-lms", T_LMS_USAGE.EDIT);
+                fileElem.setAttribute("visible", T_VISIBLE.YES);
 
-            // fileElem.setAttribute("comment", item.comment);
-            files.appendChild(fileElem);
+                // fileElem.setAttribute("comment", item.comment);
+                files.appendChild(fileElem);
                 let fileContentElem = xmlDoc.createElementNS(xmlns, "embedded-txt-file");
                 fileContentElem.setAttribute("filename", 'code.txt');
                 fileContentElem.appendChild(xmlDoc.createCDATASection(task.codeskeleton));
                 fileElem.appendChild(fileContentElem);
-            xmlWriter.createOptionalTextElement(fileElem, 'internal-description', 'Code Skeleton for Editor');
+                xmlWriter.createOptionalTextElement(fileElem, 'internal-description', 'Code Skeleton for Editor');
+            }
         }
 
         function writeFile(item, index) {

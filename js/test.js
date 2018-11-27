@@ -89,11 +89,7 @@ class TestWrapper {
             //    "<input class='shortinput xml_test_validity'/>"+
             "<p><label for='xml_test_type'>Type: </label>"+
             "<select class='xml_test_type'>"+ testTypes + "</select>"+
-/*
-            " <label for='xml_pr_always'>Always: </label>"+
-            "<select class='xml_pr_always'>"+
-            "<option selected='selected'>True</option><option>False</option></select>" +
-*/
+
             "</p>" +
 
             "<p><label for='xml_test_title'>Title<span class='red'>*</span>: </label>"+
