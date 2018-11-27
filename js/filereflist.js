@@ -244,53 +244,6 @@ class FileReferenceList extends DynamicList {
 
         super.removeItem(element);
 
-
-
-/*
-        // TODO:
-        // if fileclass == library => internal???
-
-        // remove line in file table for test
-        let table_body = tr.parent();
-        let previousRow = tr.prev("tr");
-        if (previousRow.find('td').length === 1) {
-            // only one column => editor visible go to previous row
-            previousRow = previousRow.prev("tr");
-        }
-        let hasNextTr = tr.nextAll("tr");
-        let hasPrevTr = tr.prevAll("tr");
-
-        tr.remove(); // remove row
-
-        if (hasNextTr.length === 0) {
-            // if row to be deleted is last row then add +-button to last row
-            //let tds = previousRow.find("td");
-            //let td = tds.last();
-            $(this.tdAddButton).insertBefore(previousRow.find("td").last());
-        }
-        if (hasPrevTr.length === 0) {
-            // row to be deleted is first row
-            // => add filename label to first column
-            let firstCell = table_body.find("td").first();
-            firstCell.append(this.filenameLabel); // without td
-        }
-        switch (table_body.find("tr").length) {
-            case 1:
-                // table has exactly one row left
-                // => hide all remove file buttons
-                table_body.find("." + this.classRemoveFileref).hide();
-                break;
-            case 2:
-                // check if second row has editor
-                let rows = table_body.find("tr");
-                let row = rows.last();
-                let cols = row.find('td');
-                if (cols.length === 1)
-                    // => hide all remove file buttons
-                    table_body.find("." + this.classRemoveFileref).hide();
-                break;
-        }
-*/
         if (fileid) {
             FileReferenceList.deleteFile(fileid);
         }
@@ -300,11 +253,12 @@ class FileReferenceList extends DynamicList {
     static deleteFile(fileid) {
         // check if there any references
         let ui_file = FileWrapper.constructFromId(fileid);
-        // check if there is still a special kind of reference (display/download)
-        if (!FileReferenceList.getCountSpecialReferences(fileid)) {
-            if (FileReferenceList.getCountFileIdReferenced(fileid) === 0)
-                // no reference at all => delete file
+        if (FileReferenceList.getCountFileIdReferenced(fileid) === 0) {
+            // no reference at all => delete file
+            if (confirm(ui_file.filename + " is no longer referenced.\n" +
+                "Shall it be removed from task?")) {
                 ui_file.delete();
+            }
         }
     }
 
@@ -321,29 +275,6 @@ class FileReferenceList extends DynamicList {
 
         return count;
     }
-
-
-
-    static getCountSpecialReferences(fileId) {
-        let count = 0;
-
-        //multimediaSingleton.doOnAll(function(id) { if (id === fileId) count++; });
-        multimediaSingleton.doOnAll(function(id) { if (id === fileId) count++; });
-        downloadableSingleton.doOnAll(function(id) { if (id === fileId) count++; });
-
-/*
-        $.each($(".xml_multmedia_fileref, .xml_template_fileref, .xml_download_fileref"),
-            function(index, item) {
-                const filerefId = item.value;
-                if (filerefId === fileId) {
-                    count++;
-                }
-        });
-*/
-
-        return count;
-    }
-
 
     checkForExclusiveUse(ui_file, fileid, otherFileRefList, listname) {
         // iterate through all file reference objects to find an 'old' one
@@ -455,9 +386,10 @@ class FileReferenceList extends DynamicList {
                 dummybutton.click();
                 return;
             case emptyFileOption:
+            case emptyFileOption.trim():
                 // delete fileref id
-                alert('empty file option'); // is never called - why???
-                // fall through
+                nextTd.find('.fileref_fileref')[0].value = '';
+                break;
             default:
                 // find file id belonging to the filename
                 if (selectedFilename && selectedFilename.trim().length) {

@@ -208,6 +208,14 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         self.assertTrue('file7.c' == editor.get_download_file(indexFile7))
         editor.delete_download(indexFile7)
 
+        alert = editor.driver.switch_to.alert
+        alert.accept() # dismiss()
+#        if alert.text == 'A value you are looking for':
+#            alert.dismiss
+#        else:
+#            alert.accept
+
+
         self.assertTrue('file6.c' == editor.get_download_file(0)) # still there
         self.assertTrue('file4.c' == editor.get_download_file(indexFile7)) # still there
         #try:
