@@ -308,11 +308,11 @@ class FileReferenceList extends DynamicList {
                     break;
                 case 1:
                     // change to internal
-                    ui_file.class = INTERNAL;
+                    //ui_file.class = INTERNAL;
                     break;
                 default:
                     // change to internal-library
-                    ui_file.class = INTERNAL_LIB;
+                    //ui_file.class = INTERNAL_LIB;
                     break;
             }
         }
@@ -337,8 +337,8 @@ class FileReferenceList extends DynamicList {
     static getCountSpecialReferences(fileId) {
         let count = 0;
 
-        //librarySingleton.doOnAll(function(id) { if (id === fileId) count++; });
-        templSingleton.doOnAll(function(id) { if (id === fileId) count++; });
+        //multimediaSingleton.doOnAll(function(id) { if (id === fileId) count++; });
+        multimediaSingleton.doOnAll(function(id) { if (id === fileId) count++; });
         downloadableSingleton.doOnAll(function(id) { if (id === fileId) count++; });
 
 /*
@@ -773,6 +773,6 @@ class MultimediaFileReference extends FileReferenceList {
             'files belonging to descripton (e.g. images) ' +
             'that should be embedded (if supported by LMS)', false);
     }
-    static getInstance() {return librarySingleton;}
+    static getInstance() {return multimediaSingleton;}
 }
-let librarySingleton = new MultimediaFileReference();
+let multimediaSingleton = new MultimediaFileReference();
