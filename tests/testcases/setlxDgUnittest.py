@@ -52,7 +52,7 @@ class SetlxDgTest(zipFileTest.ZipFileTest):
         # fill filesize
         editor.set_filesize("3333")
         # fill MimeType
-        editor.set_regexp_filename("filename")
+        editor.set_restrict_filename("filename")
         # LON-CAPA path
         editor.set_LON_CAPA_path("input4444/")
         # fill language
@@ -88,7 +88,7 @@ class SetlxDgTest(zipFileTest.ZipFileTest):
         editor.set_file_comment(4, "comment for file file4.stlx")
 
         # set file class
-        editor.set_template_filename("file1.stlx", 0)
+        editor.set_code_skeleton("code skeleton")
         #editor.add_download_file()
         editor.set_download_filename("file2.stlx", 0)
         #editor.add_display_file()

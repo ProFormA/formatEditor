@@ -59,7 +59,7 @@ class PythonTest(zipFileTest.ZipFileTest):
         # fill filesize
         editor.set_filesize(filesize)
         # fill Fielname
-        editor.set_regexp_filename("TestAbc*")
+        editor.set_restrict_filename("TestAbc*")
         # LON-CAPA path
         editor.set_LON_CAPA_path(lon_capa_path)
         # fill language
@@ -95,7 +95,7 @@ class PythonTest(zipFileTest.ZipFileTest):
         editor.set_file_comment(5, "comment for file file5.py")
 
         # set file class
-        editor.set_template_filename("file1.py", 0)
+        editor.set_code_skeleton("code skeleton")
         #editor.add_download_file()
         editor.set_download_filename("file2.py", 0)
         #editor.add_display_file()

@@ -28,7 +28,7 @@ $ausgabe
 
 <externalresponse answerdisplay="$modelsolution" answer="" url="$externalurl" form="%args" id="1">
 <textfield>
-/* dummy file text 1 */
+code skeleton
 </textfield>
 </externalresponse>
 

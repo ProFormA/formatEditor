@@ -234,6 +234,89 @@ var config = (function(testConfigNode) {
     }
 
     // Tests objects
+    class PraktomatTest extends CustomTest {
+        constructor(title, testType, extraFields) {
+            super(title, testType, extraFields);
+        }
+        onCreate(testId) {initPraktomatTest(testId);}
+        onReadXml(test, xmlReader, testConfigNode, testroot) {
+            readPraktomatCompiler(test, xmlReader, testConfigNode, testroot); }
+        onWriteXml() {
+            writePraktomatCompiler(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
+    }
+
+
+    class CCompilerTest extends PraktomatTest {
+        constructor() {
+            super("C Compiler Test", "c-compilation", htmlCComp);
+            this.withFileRef = false;
+        }
+    }
+    class JavaCompilerTest extends PraktomatTest {
+        constructor() {
+            super("Java Compiler Test", "java-compilation", htmlJavaComp);
+            this.withFileRef = false;
+        }
+    }
+    class JUnitTest extends PraktomatTest {
+        constructor() {
+            super(JUnit_Default_Title, "unittest", htmlJavaJunit);
+        }
+        onReadXml(test, xmlReader, testConfigNode, testroot) {
+            readUnitTest(test, xmlReader, testConfigNode, testroot); }
+        onWriteXml() {
+            writeUnitTest(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
+    }
+    class CheckstyleTest extends PraktomatTest {
+        constructor() {
+            super("CheckStyle Test", "java-checkstyle", htmlCheckstyle);
+        }
+        onReadXml(test, xmlReader, testConfigNode, testroot) {
+            readPraktomatCheckStyle(test, xmlReader, testConfigNode, testroot); }
+        onWriteXml() {
+            writePraktomatCheckStyle(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
+    }
+    class PythonTest extends PraktomatTest {
+        constructor() {
+            super("Python Test", "python", htmlPraktomat);
+        }
+    }
+    class DgSetupTest extends PraktomatTest {
+        constructor() {
+            super("DejaGnu Setup", "dejagnu-setup", htmlPraktomat);
+        }
+    }
+    class DgTesterTest extends PraktomatTest {
+        constructor() {
+            super("DejaGnu Tester", "dejagnu-setup", htmlPraktomat);
+        }
+    }
+    class setlXTest extends PraktomatTest {
+        constructor() {
+            super("SetlX Test", "jartest", htmlSetlX);
+        }
+        onWriteXml() {
+            writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
+    }
+    class setlXSyntaxTest extends PraktomatTest {
+        constructor() {
+            super("SetlX Syntax Test", "jartest", htmlSetlX);
+            this.onButtonClicked = function(testId) {
+                initPraktomatTest(testId);
+                // add file for the test
+                const filename = 'setlxsyntaxtest.stlx';
+                createFileWithContent(filename, 'print("");');
+                // add file reference
+                addFileReferenceToTest(testId, filename);
+                // set test title
+                getTestField(testId, ".xml_test_title").val("SetlX-Syntax-Test");
+            }
+        }
+        onWriteXml() {
+            writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
+    }
+
+
     const testCComp       = new TestInfo("C Compiler Test", htmlCComp,
         "c-compilation", false, readPraktomatCompiler, writePraktomatCompiler, initPraktomatTest);
     const testJavaComp    = new TestInfo("Java Compiler Test", htmlJavaComp,
@@ -251,6 +334,7 @@ var config = (function(testConfigNode) {
         "dejagnu-tester", true, readPraktomat, writePraktomat, initPraktomatTest);
     const testSetlX       = new TestInfo("SetlX Test", htmlSetlX,
         "jartest", true, readPraktomat, writePraktomatJar, initPraktomatTest);
+
     const testSetlXSyntax = new TestInfo("SetlX Syntax Test", htmlSetlX,
         "jartest" , true, readPraktomat, writePraktomatJar,
         function(testId) {

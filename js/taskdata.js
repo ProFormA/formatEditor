@@ -319,6 +319,18 @@ class TaskClass {
                 thisNode = iterator.iterateNext();
             }
 
+            // read grading hints
+            let gradingroot = xmlReader.readNodes("dns:grading-hints/dns:root");
+            if (xmlReader.readSingleText("@function", gradingroot) !== 'sum') {
+                setErrorMessage("Grading hints function " + xmlReader.readSingleText("@function", gradingroot) + " is not supported");
+            }
+            iterator = xmlReader.readNodes("dns:grading-hints/dns:root/dns:test-ref");
+            thisNode = iterator.iterateNext();
+            while (thisNode) {
+                const id = xmlReader.readSingleText("@ref", thisNode);
+                this.tests[id].weight = xmlReader.readSingleText("@weight", thisNode);
+                thisNode = iterator.iterateNext();
+            }
         } catch (err){
             //alert (err);
             setErrorMessage("Error while parsing the xml file. The file has not been imported.", err);
@@ -479,6 +491,7 @@ class TaskClass {
         let files = null;
         let modelsolutions = null;
         let tests = null;
+        let gradingRoot = null;
         let xmlWriter = null;
         const xmlns = "urn:proforma:v2.0";
 
@@ -588,12 +601,19 @@ class TaskClass {
                 config.removeChild(filerefs);
             }
 
-
             tests.appendChild(testElem);
             if (item.writeCallback) {
                 item.writeCallback(item, item.uiElement, config, xmlDoc, xmlWriter);
             }
         }
+
+        function writeGradingTest(item, index) {
+            let testElem = xmlDoc.createElementNS(xmlns, "test-ref");
+            testElem.setAttribute("weight", item.weight);
+            testElem.setAttribute("ref", item.id);
+            gradingRoot.appendChild(testElem);
+        }
+
 
         try {
             let task = null;
@@ -639,12 +659,13 @@ class TaskClass {
             task.appendChild(tests);
             this.tests.forEach(writeTest);
 
-            // dummy
+            // grading-hints
             let gradinghints = xmlDoc.createElementNS(xmlns, "grading-hints");
             task.appendChild(gradinghints);
-            // new for 2.0
-            gradinghints.appendChild(xmlDoc.createElementNS(xmlns, "root"));
-
+            gradingRoot = xmlDoc.createElementNS(xmlns, "root");
+            gradingRoot.setAttribute("function", "sum");
+            gradinghints.appendChild(gradingRoot);
+            this.tests.forEach(writeGradingTest);
 
             let metadata = xmlDoc.createElementNS(xmlns, "meta-data");
             task.appendChild(metadata);

@@ -176,6 +176,7 @@ convertToXML = function(topLevelDoc, rootNode) {
         test.testtype = uiTest.testtype;
         test.comment = uiTest.comment;
         test.description = uiTest.description;
+        test.weight = uiTest.weight;
 
         let counter = 0;
         TestFileReference.getInstance().doOnAll(function(id) {
@@ -221,7 +222,7 @@ convertToXML = function(topLevelDoc, rootNode) {
             task.files[id].usageInLms = T_LMS_USAGE.EDIT;
         });
         */
-        task.codeskeleton = $("#code_template").val();
+        task.codeskeleton = codeskeleton.getValue();
     }
 
 

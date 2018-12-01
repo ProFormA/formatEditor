@@ -16,6 +16,30 @@
  */
 
 // classes
+
+class CustomTest {
+
+    constructor(title, testType, extraFields) {
+        this.title = title; // title in html output
+        this.testType = testType; // test type in XML
+        this.htmlExtraFields = extraFields; // html extra input elements
+
+        this.withFileRef = true; // default: with test script(s)
+        this.onButtonClicked = null; // default: no extra processing on creation
+
+        // derived member variables
+        const compactName = title.replace(/ /g, "");
+        this.xmlTemplateName = compactName;
+        this.buttonJQueryId = "add" + compactName;
+    }
+
+    // override
+    onCreate(testId) {}
+    onReadXml(test, xmlReader, testConfigNode, testroot) {}
+    onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {}
+}
+
+
 /**
  * Container for test data in configuration
  *

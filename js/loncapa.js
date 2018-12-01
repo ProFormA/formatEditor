@@ -155,7 +155,7 @@ function getEditorTemplate() {
             }
         });
     } else {
-        returnvalue = $("#code_template").val();
+        returnvalue = codeskeleton.getValue();
 /*        TemplateFileReference.getInstance().doOnNonEmpty(function(id) {
             if (returnvalue === "") {
                 let ui_file = FileWrapper.constructFromId(id);

@@ -33,7 +33,7 @@ const tab_page = {
 
 //////////////////////////////////////////////////////////////////////////////
 //* Global variables
-
+var codeskeleton = null;
 
 // lock
 let readXmlActive = false;
@@ -733,7 +733,7 @@ $(function() {
   // There must be at least one model solution
     ModelSolutionWrapper.create();
 
-    var codeskeleton = CodeMirror.fromTextArea(
+    codeskeleton = CodeMirror.fromTextArea(
         $("#code_template")[0],{
             // todo: set mode depending on programming language resp. file extension
             mode : "text/x-java", indentUnit: 4, lineNumbers: true, matchBrackets: true, tabMode : "shift",

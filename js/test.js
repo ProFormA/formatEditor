@@ -51,14 +51,12 @@ class TestWrapper {
     get comment() { return this.getValue(this._comment,".xml_internal_description"); }
     get description() { return this.getValue(this._description,".xml_description" ); }
     get testtype() { return this.getValue(this._type,".xml_test_type" ); }
+    get weight() { return this.getValue(this._type,".xml_test_weight" ); }
 
     // setter
-    set comment(newComment) {
-        this._root.find(".xml_internal_description").val(newComment);
-    }
-    set description(newDescription) {
-        this._root.find(".xml_description").val(newDescription);
-    }
+    set comment(newComment) { this._root.find(".xml_internal_description").val(newComment); }
+    set description(newDescription) { this._root.find(".xml_description").val(newDescription); }
+    set weight(newWeight) { this._root.find(".xml_test_weight").val(newWeight); }
 
 
 
@@ -99,6 +97,10 @@ class TestWrapper {
 
             MoreText +
             "<p>" + TestFileReference.getInstance().getTableString() + "</p>" +
+
+            "<p><label>Grading Weight<span class='red'>*</span>:</label>"+
+            "<input class='tinyinput xml_test_weight' value='1'/>" +
+            "</p>"+
 
             "</div>");
 

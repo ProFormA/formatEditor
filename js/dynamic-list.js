@@ -151,7 +151,8 @@ class SubmissionFileList extends DynamicList {
     }
 
     createRowContent() {
-        return "<td><input class='xml_restrict_filename " + this.classFilename + "' " +
+//        return "<td><input class='xml_restrict_filename " + this.classFilename + "' " +
+        return "<td><input class='xml_restrict_filename' " +
             " title='" + this.help + "'></input> </td>" +
 
             "<td> Reg.Exp.</td>" +

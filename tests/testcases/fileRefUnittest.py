@@ -50,7 +50,7 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         # fill filesize
         editor.set_filesize("3333")
         # fill MimeType
-        editor.set_regexp_filename("Filename*")
+        editor.set_restrict_filename("Filename*")
         # LON-CAPA path
         editor.set_LON_CAPA_path("input4444/")
         # fill language
@@ -103,11 +103,11 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         # set test2: 10, 12
         # set test3: 11, 12
 
-        editor.set_template_filename("file1.c", 0)
+        editor.set_code_skeleton("code skeleton")
         #editor.add_template_file()
-        #editor.set_template_filename("file2.c", 1)
+        #editor.set_code_skeleton("file2.c", 1)
         #editor.add_template_file()
-        #editor.set_template_filename("file3.c", 2)
+        #editor.set_code_skeleton("file3.c", 2)
 
         #editor.add_display_file()
         editor.set_display_filename("file4.c", 0)
@@ -136,7 +136,7 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         editor.set_test_filename("file12.c", 4) # 4!!
 
         # check precondition
-        self.assertTrue('file1.c' == editor.get_template_file(0))
+#        self.assertTrue('file1.c' == editor.get_template_file(0))
 #        self.assertTrue('file2.c' == editor.get_visible_file(1)) #get_template_file(1))
 #        self.assertTrue('file3.c' == editor.get_visible_file(2)) #get_template_file(2))
 #        self.assertTrue('edit' == editor.get_displaymode('file1.c'))

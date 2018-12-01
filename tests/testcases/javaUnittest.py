@@ -78,7 +78,7 @@ class JavaTest(zipFileTest.ZipFileTest):
         # fill filesize
         editor.set_filesize(filesize)
         # fill regexp filename
-        editor.set_regexp_filename("ABC123*")
+        editor.set_restrict_filename("ABC123*")
         # LON-CAPA path
         editor.set_LON_CAPA_path(lon_capa_path)
         # fill language
@@ -114,7 +114,7 @@ class JavaTest(zipFileTest.ZipFileTest):
         editor.set_file_comment(5, "comment for file file5.java")
 
         # set file class
-        editor.set_template_filename("file1.java", 0)
+        editor.set_code_skeleton("code skeleton")
         #editor.add_download_file()
         editor.set_download_filename("file2.java", 0)
 

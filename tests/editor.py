@@ -456,8 +456,12 @@ def set_filesize(text):
 #def set_mimetype(text):
 #    set_input_field("xml_upload-mime-type", text)
 
-def set_regexp_filename(text):
-    set_input_field("xml_subm_regexp_name", text)
+def set_restrict_filename(text):
+    elems = driver.find_elements_by_class_name("xml_restrict_filename")
+    elem = elems[0]
+    elem.clear()
+    elem.send_keys(text)
+#    set_input_field("xml_restrict_filename", text)
 
 def set_LON_CAPA_path(text):
     set_input_field("lczip", text)
@@ -626,9 +630,13 @@ def load_template_file(filename, index):
 #    set_display_mode(index, 'edit')
 
 
-def set_template_filename(filename, index):
+def set_code_skeleton(text):
     change_tab("main_tab")
-    set_fileref(filename, index, "xml_template_filename")
+    command = 'codeskeleton.setValue("' + text + '")'
+    # print command
+    driver.execute_script(command);
+
+    #set_fileref(filename, index, "xml_template_filename")
     #set_visible_fileref(filename, index, "edit")
 
 

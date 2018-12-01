@@ -29,7 +29,7 @@ $ausgabe
 
 <externalresponse answerdisplay="$modelsolution" answer="" url="$externalurl" form="%args" id="1">
 <textfield>
-
+code skeleton
 </textfield>
 </externalresponse>
 
