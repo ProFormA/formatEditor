@@ -208,12 +208,12 @@ class TaskClass {
         return filename;
     }
 
-    readTestConfig(xmlfile, testid, callback, testroot) {
+    readTestConfig(xmlfile, testid, configItem, testroot) {
         try {
             let xmlReader = new XmlReader(xmlfile);
             xmlReader.setRootNode(xmlReader.readSingleNode("/dns:task/dns:tests/dns:test[@id="+testid+"]"));
             let configNodeNode = xmlReader.readSingleNode("dns:test-configuration");
-            callback(this.tests[testid], xmlReader, configNodeNode, testroot);
+            configItem.onReadXml(this.tests[testid], xmlReader, configNodeNode, testroot);
         } catch (err){
             alert (err);
             setErrorMessage("Error while parsing test configuration in xml file", err);
@@ -602,9 +602,8 @@ class TaskClass {
             }
 
             tests.appendChild(testElem);
-            if (item.writeCallback) {
-                item.writeCallback(item, item.uiElement, config, xmlDoc, xmlWriter);
-            }
+            if (item.configItem)
+                item.configItem.onWriteXml(item, item.uiElement, config, xmlDoc, xmlWriter);
         }
 
         function writeGradingTest(item, index) {

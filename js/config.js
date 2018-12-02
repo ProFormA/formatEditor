@@ -47,111 +47,8 @@ var config = (function(testConfigNode) {
         }
     }
 
-    // xml test writer
-    function writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
-        let root = uiElement.root;
-
-        let metaData = xmlDoc.createElementNS(xmlWriter.ns, "test-meta-data");
-        testConfigNode.appendChild(metaData);
-
-        xmlWriter.createTextElement(metaData, 'praktomat:public', $(root).find(".xml_pr_public")[0].checked?'True':'False', praktomatns);
-        xmlWriter.createTextElement(metaData, 'praktomat:required', $(root).find(".xml_pr_required")[0].checked?'True':'False', praktomatns);
-        xmlWriter.createTextElement(metaData, 'praktomat:always', $(root).find(".xml_pr_always").val(), praktomatns);
-    }
-
-    function writeUnitTest(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
-        let root = uiElement.root;
-
-        let unittestNode = xmlDoc.createElementNS(unittestns, "unit:unittest");
-        testConfigNode.appendChild(unittestNode);
-
-        xmlWriter.createTextElement(unittestNode, 'unit:main-class', $(root).find(".xml_ju_mainclass").val(), unittestns);
-        unittestNode.setAttribute("framework", $(root).find(".xml_ju_framew").val());
-        unittestNode.setAttribute("version", $(root).find(".xml_ju_version").val());
-
-        writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
-        let childs = testConfigNode.getElementsByTagName('test-meta-data');
-
-        // remove description completely ???
-//        xmlWriter.createTextElement(childs[0], 'praktomat:config-testDescription', $(root).find(".xml_pr_configDescription").val(), praktomatns);
-//        xmlWriter.createTextElement(childs[0], 'praktomat:config-testDescription', '', praktomatns);
-    }
-    function writePraktomatCheckStyle(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
-        let root = uiElement.root;
-
-        xmlWriter.createTextElement(testConfigNode, 'praktomat:version', $(root).find(".xml_pr_CS_version").val(), praktomatns);
-
-        writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
-        let childs = testConfigNode.getElementsByTagName('test-meta-data');
-        xmlWriter.createTextElement(childs[0], "praktomat:max-checkstyle-warnings", $(root).find(".xml_pr_CS_warnings").val(), praktomatns);
-    }
-    function writePraktomatCompiler(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
-        let root = uiElement.root;
-
-        writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
-        let childs = testConfigNode.getElementsByTagName('test-meta-data');
-        xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerFlags", $(root).find(".xml_pr_CompilerFlags").val(), praktomatns);
-        xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerOutputFlags", $(root).find(".xml_pr_CompilerOutputFlags").val(), praktomatns);
-        xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerLibs", $(root).find(".xml_pr_CompilerLibs").val(), praktomatns);
-        xmlWriter.createCDataElement(childs[0], "praktomat:config-CompilerFilePattern", $(root).find(".xml_pr_CompilerFPatt").val(), praktomatns);
-    }
-
-    function writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
-        let root = uiElement.root;
-        let jartest = xmlDoc.createElementNS(jartestns, "jartest:jartest");
-        testConfigNode.appendChild(jartest);
-        jartest.setAttribute("framework", $(root).find(".xml_jt_framew").val());
-        jartest.setAttribute("version", $(root).find(".xml_jt_version").val());
-
-        writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
-    }
-
     function writeXmlExtra(metaDataNode, xmlDoc, xmlWriter) {
         xmlWriter.createTextElement(metaDataNode, 'praktomat:allowed-upload-filename-mimetypes', '(text/.*)', praktomatns);
-    }
-
-    // xml test reader
-    function readPraktomat(test, xmlReader, testConfigNode, testroot) {
-        initPraktomatTest(test.id)
-        let praktomatNode = xmlReader.readSingleNode("dns:test-meta-data", testConfigNode);
-
-        $(testroot).find(".xml_pr_always").val(xmlReader.readSingleText("praktomat:always", praktomatNode));
-        $(testroot).find(".xml_pr_public")[0].checked = (xmlReader.readSingleText("praktomat:public", praktomatNode)==='True');
-        $(testroot).find(".xml_pr_required")[0].checked = (xmlReader.readSingleText("praktomat:required", praktomatNode)==='True');
-        // version 1.0.1: read description from praktomat and copy to test description
-        let description = xmlReader.readSingleText("praktomat:config-testDescription", praktomatNode);
-        if (description && !test.description)
-            test.description = description;
-//        $(testroot).find(".xml_pr_configDescription").val(xmlReader.readSingleText("praktomat:config-testDescription", praktomatNode));
-    }
-
-    function readUnitTest(test, xmlReader, testConfigNode, testroot) {
-        let unitNode = xmlReader.readSingleNode("unit:unittest", testConfigNode);
-
-        $(testroot).find(".xml_ju_mainclass").val(xmlReader.readSingleText("unit:main-class", unitNode));
-        $(testroot).find(".xml_ju_version").val(xmlReader.readSingleText("@version", unitNode));
-        $(testroot).find(".xml_ju_framew").val(xmlReader.readSingleText("@framework", unitNode));
-
-        readPraktomat(test, xmlReader, testConfigNode, testroot);
-    }
-
-    function readPraktomatCheckStyle(test, xmlReader, testConfigNode, testroot) {
-        readPraktomat(test, xmlReader, testConfigNode, testroot);
-
-        let praktomatNode = xmlReader.readSingleNode("dns:test-meta-data", testConfigNode);
-        $(testroot).find(".xml_pr_CS_warnings").val(xmlReader.readSingleText("praktomat:max-checkstyle-warnings", praktomatNode));
-        $(testroot).find(".xml_pr_CS_version").val(xmlReader.readSingleText("praktomat:version", testConfigNode));
-    }
-
-    function readPraktomatCompiler(test, xmlReader, testConfigNode, testroot) {
-        readPraktomat(test, xmlReader, testConfigNode, testroot);
-
-        let praktomatNode = xmlReader.readSingleNode("dns:test-meta-data", testConfigNode);
-
-        $(testroot).find(".xml_pr_CompilerFlags").val(xmlReader.readSingleText("praktomat:config-CompilerFlags", praktomatNode));
-        $(testroot).find(".xml_pr_CompilerOutputFlags").val(xmlReader.readSingleText("praktomat:config-CompilerOutputFlags", praktomatNode));
-        $(testroot).find(".xml_pr_CompilerLibs").val(xmlReader.readSingleText("praktomat:config-CompilerLibs", praktomatNode));
-        $(testroot).find(".xml_pr_CompilerFPatt").val(xmlReader.readSingleText("praktomat:config-CompilerFilePattern", praktomatNode));
     }
 
     // -------------------------
@@ -227,22 +124,81 @@ var config = (function(testConfigNode) {
 
     const JUnit_Default_Title = "Java JUnit Test";
 
-    function initPraktomatTest(testId) {
-        let test = TestWrapper.constructFromId(testId);
-        test.root.find(".xml_pr_always").hide();
-        test.root.find("label[for='xml_pr_always']").hide();
-    }
+
 
     // Tests objects
     class PraktomatTest extends CustomTest {
         constructor(title, testType, extraFields) {
             super(title, testType, extraFields);
         }
-        onCreate(testId) {initPraktomatTest(testId);}
+        initPraktomatTest(testId) {
+            let test = TestWrapper.constructFromId(testId);
+            test.root.find(".xml_pr_always").hide();
+            test.root.find("label[for='xml_pr_always']").hide();
+        }
+
+        readPraktomatCompiler(test, xmlReader, testConfigNode, testroot) {
+            this.readPraktomat(test, xmlReader, testConfigNode, testroot);
+
+            let praktomatNode = xmlReader.readSingleNode("dns:test-meta-data", testConfigNode);
+
+            $(testroot).find(".xml_pr_CompilerFlags").val(xmlReader.readSingleText("praktomat:config-CompilerFlags", praktomatNode));
+            $(testroot).find(".xml_pr_CompilerOutputFlags").val(xmlReader.readSingleText("praktomat:config-CompilerOutputFlags", praktomatNode));
+            $(testroot).find(".xml_pr_CompilerLibs").val(xmlReader.readSingleText("praktomat:config-CompilerLibs", praktomatNode));
+            $(testroot).find(".xml_pr_CompilerFPatt").val(xmlReader.readSingleText("praktomat:config-CompilerFilePattern", praktomatNode));
+        }
+
+        readPraktomat(test, xmlReader, testConfigNode, testroot) {
+            this.initPraktomatTest(test.id)
+            let praktomatNode = xmlReader.readSingleNode("dns:test-meta-data", testConfigNode);
+
+            $(testroot).find(".xml_pr_always").val(xmlReader.readSingleText("praktomat:always", praktomatNode));
+            $(testroot).find(".xml_pr_public")[0].checked = (xmlReader.readSingleText("praktomat:public", praktomatNode)==='True');
+            $(testroot).find(".xml_pr_required")[0].checked = (xmlReader.readSingleText("praktomat:required", praktomatNode)==='True');
+            // version 1.0.1: read description from praktomat and copy to test description
+            let description = xmlReader.readSingleText("praktomat:config-testDescription", praktomatNode);
+            if (description && !test.description)
+                test.description = description;
+//        $(testroot).find(".xml_pr_configDescription").val(xmlReader.readSingleText("praktomat:config-testDescription", praktomatNode));
+        }
+
+
+        // xml test writer
+        writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+            let root = uiElement.root;
+
+            let metaData = xmlDoc.createElementNS(xmlWriter.ns, "test-meta-data");
+            testConfigNode.appendChild(metaData);
+
+            xmlWriter.createTextElement(metaData, 'praktomat:public', $(root).find(".xml_pr_public")[0].checked?'True':'False', praktomatns);
+            xmlWriter.createTextElement(metaData, 'praktomat:required', $(root).find(".xml_pr_required")[0].checked?'True':'False', praktomatns);
+            xmlWriter.createTextElement(metaData, 'praktomat:always', $(root).find(".xml_pr_always").val(), praktomatns);
+        }
+        writePraktomatCompiler(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+            let root = uiElement.root;
+
+            this.writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
+            let childs = testConfigNode.getElementsByTagName('test-meta-data');
+            xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerFlags", $(root).find(".xml_pr_CompilerFlags").val(), praktomatns);
+            xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerOutputFlags", $(root).find(".xml_pr_CompilerOutputFlags").val(), praktomatns);
+            xmlWriter.createTextElement(childs[0], "praktomat:config-CompilerLibs", $(root).find(".xml_pr_CompilerLibs").val(), praktomatns);
+            xmlWriter.createCDataElement(childs[0], "praktomat:config-CompilerFilePattern", $(root).find(".xml_pr_CompilerFPatt").val(), praktomatns);
+        }
+        writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+            let root = uiElement.root;
+            let jartest = xmlDoc.createElementNS(jartestns, "jartest:jartest");
+            testConfigNode.appendChild(jartest);
+            jartest.setAttribute("framework", $(root).find(".xml_jt_framew").val());
+            jartest.setAttribute("version", $(root).find(".xml_jt_version").val());
+
+            this.writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
+        }
+
+        onCreate(testId) {this.initPraktomatTest(testId);}
         onReadXml(test, xmlReader, testConfigNode, testroot) {
-            readPraktomatCompiler(test, xmlReader, testConfigNode, testroot); }
-        onWriteXml() {
-            writePraktomatCompiler(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
+            this.readPraktomat(test, xmlReader, testConfigNode, testroot); }
+        onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+            this.writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
     }
 
 
@@ -251,30 +207,75 @@ var config = (function(testConfigNode) {
             super("C Compiler Test", "c-compilation", htmlCComp);
             this.withFileRef = false;
         }
+        onReadXml(test, xmlReader, testConfigNode, testroot) {
+            this.readPraktomatCompiler(test, xmlReader, testConfigNode, testroot); }
+        onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+            this.writePraktomatCompiler(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
     }
     class JavaCompilerTest extends PraktomatTest {
         constructor() {
             super("Java Compiler Test", "java-compilation", htmlJavaComp);
             this.withFileRef = false;
         }
+        onReadXml(test, xmlReader, testConfigNode, testroot) {
+            this.readPraktomatCompiler(test, xmlReader, testConfigNode, testroot); }
+        onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+            this.writePraktomatCompiler(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
     }
+
     class JUnitTest extends PraktomatTest {
         constructor() {
             super(JUnit_Default_Title, "unittest", htmlJavaJunit);
         }
         onReadXml(test, xmlReader, testConfigNode, testroot) {
-            readUnitTest(test, xmlReader, testConfigNode, testroot); }
-        onWriteXml() {
-            writeUnitTest(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
+            let unitNode = xmlReader.readSingleNode("unit:unittest", testConfigNode);
+
+            $(testroot).find(".xml_ju_mainclass").val(xmlReader.readSingleText("unit:main-class", unitNode));
+            $(testroot).find(".xml_ju_version").val(xmlReader.readSingleText("@version", unitNode));
+            $(testroot).find(".xml_ju_framew").val(xmlReader.readSingleText("@framework", unitNode));
+
+            this.readPraktomat(test, xmlReader, testConfigNode, testroot);
+        }
+        onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+            let root = uiElement.root;
+
+            let unittestNode = xmlDoc.createElementNS(unittestns, "unit:unittest");
+            testConfigNode.appendChild(unittestNode);
+
+            xmlWriter.createTextElement(unittestNode, 'unit:main-class', $(root).find(".xml_ju_mainclass").val(), unittestns);
+            unittestNode.setAttribute("framework", $(root).find(".xml_ju_framew").val());
+            unittestNode.setAttribute("version", $(root).find(".xml_ju_version").val());
+
+            this.writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
+            let childs = testConfigNode.getElementsByTagName('test-meta-data');
+
+            // remove description completely ???
+//        xmlWriter.createTextElement(childs[0], 'praktomat:config-testDescription', $(root).find(".xml_pr_configDescription").val(), praktomatns);
+//        xmlWriter.createTextElement(childs[0], 'praktomat:config-testDescription', '', praktomatns);
+        }
     }
     class CheckstyleTest extends PraktomatTest {
         constructor() {
             super("CheckStyle Test", "java-checkstyle", htmlCheckstyle);
         }
+
         onReadXml(test, xmlReader, testConfigNode, testroot) {
-            readPraktomatCheckStyle(test, xmlReader, testConfigNode, testroot); }
-        onWriteXml() {
-            writePraktomatCheckStyle(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
+            this.readPraktomat(test, xmlReader, testConfigNode, testroot);
+
+            let praktomatNode = xmlReader.readSingleNode("dns:test-meta-data", testConfigNode);
+            $(testroot).find(".xml_pr_CS_warnings").val(xmlReader.readSingleText("praktomat:max-checkstyle-warnings", praktomatNode));
+            $(testroot).find(".xml_pr_CS_version").val(xmlReader.readSingleText("praktomat:version", testConfigNode));
+        }
+
+        onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+            let root = uiElement.root;
+
+            xmlWriter.createTextElement(testConfigNode, 'praktomat:version', $(root).find(".xml_pr_CS_version").val(), praktomatns);
+
+            this.writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
+            let childs = testConfigNode.getElementsByTagName('test-meta-data');
+            xmlWriter.createTextElement(childs[0], "praktomat:max-checkstyle-warnings", $(root).find(".xml_pr_CS_warnings").val(), praktomatns);
+        }
     }
     class PythonTest extends PraktomatTest {
         constructor() {
@@ -288,57 +289,22 @@ var config = (function(testConfigNode) {
     }
     class DgTesterTest extends PraktomatTest {
         constructor() {
-            super("DejaGnu Tester", "dejagnu-setup", htmlPraktomat);
+            super("DejaGnu Tester", "dejagnu-tester", htmlPraktomat);
         }
     }
     class setlXTest extends PraktomatTest {
         constructor() {
             super("SetlX Test", "jartest", htmlSetlX);
         }
-        onWriteXml() {
-            writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
+        onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+            this.writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
     }
     class setlXSyntaxTest extends PraktomatTest {
         constructor() {
             super("SetlX Syntax Test", "jartest", htmlSetlX);
-            this.onButtonClicked = function(testId) {
-                initPraktomatTest(testId);
-                // add file for the test
-                const filename = 'setlxsyntaxtest.stlx';
-                createFileWithContent(filename, 'print("");');
-                // add file reference
-                addFileReferenceToTest(testId, filename);
-                // set test title
-                getTestField(testId, ".xml_test_title").val("SetlX-Syntax-Test");
-            }
         }
-        onWriteXml() {
-            writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
-    }
-
-
-    const testCComp       = new TestInfo("C Compiler Test", htmlCComp,
-        "c-compilation", false, readPraktomatCompiler, writePraktomatCompiler, initPraktomatTest);
-    const testJavaComp    = new TestInfo("Java Compiler Test", htmlJavaComp,
-        "java-compilation", false, readPraktomatCompiler, writePraktomatCompiler, initPraktomatTest);
-    const testJavaJUnit   = new TestInfo(JUnit_Default_Title, htmlJavaJunit,
-        "unittest", true, readUnitTest, writeUnitTest, initPraktomatTest);
-    const testCheckStyle  = new TestInfo("CheckStyle Test", htmlCheckstyle,
-        "java-checkstyle", true, readPraktomatCheckStyle,
-        writePraktomatCheckStyle, initPraktomatTest);
-    const testPython      = new TestInfo("Python Test", htmlPraktomat,
-        "python", true, readPraktomat, writePraktomat, initPraktomatTest);
-    const testDgSetup     = new TestInfo("DejaGnu Setup", htmlPraktomat,
-        "dejagnu-setup", true, readPraktomat, writePraktomat, initPraktomatTest);
-    const testDGTester    = new TestInfo("DejaGnu Tester", htmlPraktomat,
-        "dejagnu-tester", true, readPraktomat, writePraktomat, initPraktomatTest);
-    const testSetlX       = new TestInfo("SetlX Test", htmlSetlX,
-        "jartest", true, readPraktomat, writePraktomatJar, initPraktomatTest);
-
-    const testSetlXSyntax = new TestInfo("SetlX Syntax Test", htmlSetlX,
-        "jartest" , true, readPraktomat, writePraktomatJar,
-        function(testId) {
-            initPraktomatTest(testId);
+        onCreate(testId) {
+            this.initPraktomatTest(testId);
             // add file for the test
             const filename = 'setlxsyntaxtest.stlx';
             createFileWithContent(filename, 'print("");');
@@ -347,10 +313,20 @@ var config = (function(testConfigNode) {
             // set test title
             getTestField(testId, ".xml_test_title").val("SetlX-Syntax-Test");
         }
-    );
+        onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+            this.writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
+    }
 
 
-
+    const testCComp       = new CCompilerTest();
+    const testJavaComp    = new JavaCompilerTest();
+    const testJavaJUnit   = new JUnitTest();
+    const testCheckStyle  = new CheckstyleTest();
+    const testPython      = new PythonTest();
+    const testDgSetup     = new DgSetupTest(DgSetupTest);
+    const testDGTester    = new DgTesterTest(DgTesterTest);
+    const testSetlX       = new setlXTest(setlXTest);
+    const testSetlXSyntax = new setlXSyntaxTest();
 
     // -------------------------------
     // SUPPORTED PROGRAMMING LANGUAGES

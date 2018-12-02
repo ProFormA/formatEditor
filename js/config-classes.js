@@ -25,7 +25,6 @@ class CustomTest {
         this.htmlExtraFields = extraFields; // html extra input elements
 
         this.withFileRef = true; // default: with test script(s)
-        this.onButtonClicked = null; // default: no extra processing on creation
 
         // derived member variables
         const compactName = title.replace(/ /g, "");

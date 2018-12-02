@@ -364,9 +364,7 @@ $(function() {
 
                 //var testNo = setcounter(testIDs);    // sets the corresponding fileref, filename and title "SetlX-Syntax-Test"
                 let ui_test = TestWrapper.create(null, item.title, item.htmlExtraFields, item.testType, item.withFileRef);
-                if (item.onCreated) {
-                    item.onCreated(ui_test.id); // testNo);
-                }
+                item.onCreate(ui_test.id);
 
                 $("#tabs").tabs("option", "active", tab_page.TESTS); });
         });

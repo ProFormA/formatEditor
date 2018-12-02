@@ -190,10 +190,8 @@ convertToXML = function(topLevelDoc, rootNode) {
         $.each(config.testInfos, function(index, configItem) {
             // search for appropriate writexml function
             if (configItem.testType === test.testtype) {
-                if (configItem.writeXml) {
-                    test.writeCallback = configItem.writeXml;
-                    test.uiElement = uiTest;
-                }
+                test.configItem = configItem;
+                test.uiElement = uiTest;
             }
         });
 
@@ -264,9 +262,9 @@ readAndDisplayXml = function() {
             if (!ui_test && item.testtype === configItem.testType) {
                 ui_test = TestWrapper.create(item.id, item.title, configItem.htmlExtraFields,
                     configItem.testType, configItem.withFileRef);
-                if (configItem.readXml) {
-                    task.readTestConfig(taskXml, item.id, configItem.readXml, ui_test.root);
-                }
+                //if (configItem.readXml) {
+                    task.readTestConfig(taskXml, item.id, configItem, ui_test.root);
+                //}
                 ui_test.comment = item.comment;
                 ui_test.description = item.description;
             }

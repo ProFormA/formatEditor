@@ -8,9 +8,8 @@ Edge könnte inzwischen auch funktionieren
 
 TODO:
 
-- delete file, wenn keine Referenzen?
 - Dateien mit gleichem Namen in den Filerefs unterstützen
-
+- readJarTest fehlt noch
 
 Folgende Änderungen Kommunizieren:
 - csv als Textdatei werten (anstelle von Binärdatei)
