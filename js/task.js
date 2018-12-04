@@ -200,6 +200,12 @@ convertToXML = function(topLevelDoc, rootNode) {
         task.tests[test.id] = test;
     })
 
+
+    SubmissionFileList.doOnAll(function(filename, regexp, optional) {
+        let restrict = new TaskFileRestriction(filename, !optional, regexp?T_FILERESTRICTION_FORMAT.POSIX:null);
+        task.fileRestrictions.push(restrict);
+    });
+
     if (USE_VISIBLES) {
         VisibleFileReference.getInstance().doOnAll(function(id, displayMode) {
             task.files[id].visible = T_VISIBLE.YES;
@@ -283,6 +289,16 @@ readAndDisplayXml = function() {
         });
     }
 
+    function createFileRestriction(item, index) {
+        if (index > 0) {
+            // create new row
+            SubmissionFileList.getInstance().appendRow();
+        }
+
+        SubmissionFileList.getInstance().setLastRowContent(item.restriction, !item.required,
+            item.format===T_FILERESTRICTION_FORMAT.POSIX);
+    }
+
     if (taskXml.length > 0) {
         // ask user
         if (!window.confirm("All form content will be deleted and replaced.")) {
@@ -345,6 +361,7 @@ readAndDisplayXml = function() {
     task.files.forEach(createFile);
     task.modelsolutions.forEach(createMs);
     task.tests.forEach(createTest);
+    task.fileRestrictions.forEach(createFileRestriction);
 
     // POST PROCESSING
 

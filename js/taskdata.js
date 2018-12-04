@@ -28,6 +28,11 @@ const T_VISIBLE = {
     DELAYED: 'delayed'
 };
 
+const T_FILERESTRICTION_FORMAT = {
+    POSIX: 'posix-ere',
+    NONE: 'none'
+};
+
 
 
 // helper class
@@ -76,12 +81,15 @@ class XmlReader {
     }
 
 
-    readSingleText(xpath, node) {
+    readSingleText(xpath, node, defaultValue) {
         const nodes = this.xmlDoc.evaluate(xpath, node?node:this.rootNode, this.nsResolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
         if (nodes.singleNodeValue)
             return nodes.singleNodeValue.textContent;
-        else
+        else {
+            if (typeof defaultValue !== 'undefined')
+                return defaultValue;
             return null;
+        }
     }
 
     readNodes(xpath, node) {
@@ -141,7 +149,6 @@ class TaskFileRef {
 class TaskFile {
     constructor() {
         this.filename = '';
-//        this.fileclass = '';
         this.usedByGrader = false;
         this.usageInLms = null;
         this.visible = T_VISIBLE.NO;
@@ -152,6 +159,15 @@ class TaskFile {
         this.codeskeleton = null;
     }
 }
+
+class TaskFileRestriction {
+    constructor(filename, required, format) {
+        this.restriction = filename;
+        this.required = required;
+        this.format = format;
+    }
+}
+
 
 class TaskModelSolution {
     constructor() {
@@ -190,6 +206,7 @@ class TaskClass {
         this.sizeSubmission = 0;
         this.filenameRegExpSubmission = '';
 
+        this.fileRestrictions = [];
         this.files = [];
         // this.external-resources ;
         this.modelsolutions = [];
@@ -318,19 +335,6 @@ class TaskClass {
                 this.tests[test.id] = test;
                 thisNode = iterator.iterateNext();
             }
-
-            // read grading hints
-            let gradingroot = xmlReader.readNodes("dns:grading-hints/dns:root");
-            if (xmlReader.readSingleText("@function", gradingroot) !== 'sum') {
-                setErrorMessage("Grading hints function " + xmlReader.readSingleText("@function", gradingroot) + " is not supported");
-            }
-            iterator = xmlReader.readNodes("dns:grading-hints/dns:root/dns:test-ref");
-            thisNode = iterator.iterateNext();
-            while (thisNode) {
-                const id = xmlReader.readSingleText("@ref", thisNode);
-                this.tests[id].weight = xmlReader.readSingleText("@weight", thisNode);
-                thisNode = iterator.iterateNext();
-            }
         } catch (err){
             //alert (err);
             setErrorMessage("Error while parsing the xml file. The file has not been imported.", err);
@@ -363,13 +367,23 @@ class TaskClass {
             this.proglangVersion = xmlReader.readSingleText("dns:proglang/@version");
             this.uuid = xmlReader.readSingleText("@uuid");
             this.lang = xmlReader.readSingleText("@lang");
-            this.sizeSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@max-size");
-            this.filenameRegExpSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction");
+            this.sizeSubmission = xmlReader.readSingleText("dns:submission-restrictions/@max-size");
 
-            // read files
-            let iterator = xmlReader.readNodes("dns:files/dns:file");
+            let iterator = xmlReader.readNodes("dns:submission-restrictions/dns:file-restriction");
             let thisNode = iterator.iterateNext();
             let editCounter = 0;
+            while (thisNode) {
+                const required =
+                this.fileRestrictions[editCounter++] = new TaskFileRestriction(thisNode.textContent,
+                    xmlReader.readSingleText("@required", thisNode, "true")==='true',
+                    xmlReader.readSingleText("@pattern-format", thisNode));
+                thisNode = iterator.iterateNext();
+            }
+
+            // read files
+            iterator = xmlReader.readNodes("dns:files/dns:file");
+            thisNode = iterator.iterateNext();
+            editCounter = 0;
             while (thisNode) {
 
                 let taskfile = new TaskFile();
@@ -469,6 +483,19 @@ class TaskClass {
                 thisNode = iterator.iterateNext();
             }
 
+            // read grading hints
+            const gradingfunction = xmlReader.readSingleText("dns:grading-hints/dns:root/@function");
+            if (gradingfunction && gradingfunction !== 'sum') {
+                setErrorMessage("Grading hints function " + gradingfunction + " is not supported");
+            }
+            iterator = xmlReader.readNodes("dns:grading-hints/dns:root/dns:test-ref");
+            thisNode = iterator.iterateNext();
+            while (thisNode) {
+                const id = xmlReader.readSingleText("@ref", thisNode);
+                this.tests[id].weight = xmlReader.readSingleText("@weight", thisNode);
+                thisNode = iterator.iterateNext();
+            }
+
        } catch (err){
            //alert (err);
            setErrorMessage("Error while parsing the xml file. The file has not been imported.", err);
@@ -489,6 +516,7 @@ class TaskClass {
     writeXml(topLevelDoc, rootNode) {
         let xmlDoc = null;
         let files = null;
+        let fileRestrictions = null;
         let modelsolutions = null;
         let tests = null;
         let gradingRoot = null;
@@ -515,7 +543,7 @@ class TaskClass {
             if (task.codeskeleton) {
                 let fileElem = xmlDoc.createElementNS(xmlns, "file");
                 fileElem.setAttribute("id", id);
-                fileElem.setAttribute("used-by-grader", 'no');
+                fileElem.setAttribute("used-by-grader", 'false');
                 fileElem.setAttribute("usage-by-lms", T_LMS_USAGE.EDIT);
                 fileElem.setAttribute("visible", T_VISIBLE.YES);
 
@@ -533,7 +561,7 @@ class TaskClass {
             let fileElem = xmlDoc.createElementNS(xmlns, "file");
             fileElem.setAttribute("id", item.id);
             //fileElem.setAttribute("class", item.fileclass);
-            fileElem.setAttribute("used-by-grader", item.usedByGrader?'yes':'no');
+            fileElem.setAttribute("used-by-grader", item.usedByGrader);
             if (item.usageInLms) // optional
                 fileElem.setAttribute("usage-by-lms", item.usageInLms);
             fileElem.setAttribute("visible", item.visible);
@@ -549,7 +577,6 @@ class TaskClass {
                 xmlWriter.createTextElement(fileElem, 'attached-bin-file', item.filename);
             }
             xmlWriter.createOptionalTextElement(fileElem, 'internal-description', item.comment);
-
         }
 
         function writeModelSolution(item, index) {
@@ -613,6 +640,23 @@ class TaskClass {
             gradingRoot.appendChild(testElem);
         }
 
+        function writeFileRestriction(item, index) {
+            //let regexp = xmlWriter.createTextElement(submission, "regexp-restriction", this.filenameRegExpSubmission);
+            //submission.appendChild(regexp);
+            // regexp.setAttribute("mime-type-regexp", this.mimeTypeRegExpSubmission);
+
+
+            let fileElem = //xmlDoc.createElementNS(xmlns, "file-restriction");
+            xmlWriter.createOptionalTextElement(fileRestrictions, 'file-restriction', item.restriction, xmlns);
+            if (!item.required) // optional, defaults to true
+                fileElem.setAttribute("required", item.required);
+
+            if (item.format) // optional, defaults to none
+                fileElem.setAttribute("pattern-format", item.format);
+
+            //fileRestrictions.appendChild(fileElem);
+        }
+
 
         try {
             let task = null;
@@ -638,12 +682,10 @@ class TaskClass {
             let proglang = xmlWriter.createTextElement(task, 'proglang', this.proglang);
             proglang.setAttribute("version", this.proglangVersion);
 
-            let submission = xmlDoc.createElementNS(xmlns, "submission-restrictions");
-            task.appendChild(submission);
-            let regexp = xmlWriter.createTextElement(submission, "regexp-restriction", this.filenameRegExpSubmission);
-            submission.appendChild(regexp);
-            regexp.setAttribute("max-size", this.sizeSubmission);
-            // regexp.setAttribute("mime-type-regexp", this.mimeTypeRegExpSubmission);
+            fileRestrictions = xmlDoc.createElementNS(xmlns, "submission-restrictions");
+            fileRestrictions.setAttribute("max-size", this.sizeSubmission);
+            task.appendChild(fileRestrictions);
+            this.fileRestrictions.forEach(writeFileRestriction);
 
             files = xmlDoc.createElementNS(xmlns, "files");
             task.appendChild(files);

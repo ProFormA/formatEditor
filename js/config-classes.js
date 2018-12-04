@@ -51,6 +51,7 @@ class CustomTest {
  * @param onButtonClicked: callback for test creation
  * @constructor
  */
+/*
 function TestInfo(title, extraFields, testType, withFileRef, readXml, writeXml, onButtonClicked) {
     this.title = title; // title in html output
     this.htmlExtraFields = extraFields; // html extra input elements
@@ -70,7 +71,7 @@ function TestInfo(title, extraFields, testType, withFileRef, readXml, writeXml, 
     this.xmlTemplateName = compactName;
     this.buttonJQueryId = "add" + compactName;
 }
-
+*/
 /**
  * information about programming language
  *
@@ -78,9 +79,11 @@ function TestInfo(title, extraFields, testType, withFileRef, readXml, writeXml, 
  * @param tests
  * @constructor
  */
-function ProglangInfo(name, tests) {
-    this.name  = name;
-    this.tests = tests;
+class ProglangInfo{
+    constructor(name, tests) {
+        this.name  = name;
+        this.tests = tests;
+    }
 }
 
 

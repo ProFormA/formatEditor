@@ -162,6 +162,38 @@ class SubmissionFileList extends DynamicList {
             "<td><input type='checkbox' class='xml_optional' title='optional file'></td>";
     }
 
+    appendRow() {
+        this.addItem($("." + this.classAddItem).first());
+    }
+
+    setLastRowContent(filename, optional, regexp) {
+        let lastFilename = $(".xml_restrict_filename").last();
+        lastFilename.val(filename);
+        const row = lastFilename.parent().parent();
+        if (regexp) {
+            const regexp_object = row.find(".xml_file_regexp").first();
+            regexp_object.attr('checked', regexp);
+        }
+        if (optional) {
+            const optional_object = row.find(".xml_optional").first();
+            optional_object.attr('checked', optional);
+        }
+    }
+
+    static doOnAll(callback) {
+        $.each($(".xml_restrict_filename" ), function(index, item) {
+            const filename = item.value;
+            if (filename) {
+                const row = $(item).parent().parent();
+                const regexp_object = row.find(".xml_file_regexp").first();
+                const regexp = regexp_object.is(':checked');
+                const optional_object = row.find(".xml_optional").first();
+                const optional = optional_object.is(':checked');
+                return callback(filename, regexp, optional);
+            }
+        });
+    }
+
     static getInstance() {return submissionFileSingleton;}
 }
 let submissionFileSingleton = new SubmissionFileList();
