@@ -363,7 +363,7 @@ $(function() {
             $("#" + item.buttonJQueryId).click(function() {
 
                 //var testNo = setcounter(testIDs);    // sets the corresponding fileref, filename and title "SetlX-Syntax-Test"
-                let ui_test = TestWrapper.create(null, item.title, item.htmlExtraFields, item.testType, item.withFileRef);
+                let ui_test = TestWrapper.create(null, item.title, item); // item.htmlExtraFields, item.testType, item.withFileRef);
                 item.onCreate(ui_test.id);
 
                 $("#tabs").tabs("option", "active", tab_page.TESTS); });

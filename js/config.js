@@ -27,7 +27,7 @@ const configXsdSchemaFile = version101;   // choose version for output
 */
 
 
-var config = (function(testConfigNode) {
+const config = (function(testConfigNode) {
     const praktomatns = "urn:proforma:praktomat:v0.2";
     const jartestns   = "urn:proforma:tests:jartest:v1";
     const unittestns  = "urn:proforma:tests:unittest:v1";
@@ -51,22 +51,21 @@ var config = (function(testConfigNode) {
         xmlWriter.createTextElement(metaDataNode, 'praktomat:allowed-upload-filename-mimetypes', '(text/.*)', praktomatns);
     }
 
+
     // -------------------------
     // TESTS
     // -------------------------
+    // HTML building blocks for the extra input fields in tests
     const htmlPraktomat =
         "<p>" +
         " Public:<input type='checkbox' class='xml_pr_public' checked title='results are shown to the students'>" +
         " Required:<input type='checkbox' class='xml_pr_required' checked title='test must be passed in order to pass the task'>" +
-
         " <label for='xml_pr_always'>Always: </label>"+
         "<select class='xml_pr_always'>"+
         "<option selected='selected'>True</option><option>False</option></select>" +
-
         "</p>";
 
 
-    // HTML building blocks for the extra input fields in tests
     const htmlJavaComp = htmlPraktomat +
         "<p><label for='xml_pr_CompilerFlags'>Compiler flags: </label>"+
         "<input class='shortinput xml_pr_CompilerFlags'/>"+
@@ -124,6 +123,9 @@ var config = (function(testConfigNode) {
 
     const JUnit_Default_Title = "Java JUnit Test";
 
+    // default grading weights
+    const weightCompilation = 0;
+    const weightStaticTest = 0.2;
 
 
     // Tests objects
@@ -149,7 +151,7 @@ var config = (function(testConfigNode) {
         }
 
         readPraktomat(test, xmlReader, testConfigNode, testroot) {
-            this.initPraktomatTest(test.id)
+            this.initPraktomatTest(test.id);
             let praktomatNode = xmlReader.readSingleNode("dns:test-meta-data", testConfigNode);
 
             $(testroot).find(".xml_pr_always").val(xmlReader.readSingleText("praktomat:always", praktomatNode));
@@ -206,6 +208,7 @@ var config = (function(testConfigNode) {
         constructor() {
             super("C Compiler Test", "c-compilation", htmlCComp);
             this.withFileRef = false;
+            this.gradingWeight = weightCompilation;
         }
         onReadXml(test, xmlReader, testConfigNode, testroot) {
             this.readPraktomatCompiler(test, xmlReader, testConfigNode, testroot); }
@@ -216,6 +219,7 @@ var config = (function(testConfigNode) {
         constructor() {
             super("Java Compiler Test", "java-compilation", htmlJavaComp);
             this.withFileRef = false;
+            this.gradingWeight = weightCompilation;
         }
         onReadXml(test, xmlReader, testConfigNode, testroot) {
             this.readPraktomatCompiler(test, xmlReader, testConfigNode, testroot); }
@@ -247,7 +251,7 @@ var config = (function(testConfigNode) {
             unittestNode.setAttribute("version", $(root).find(".xml_ju_version").val());
 
             this.writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
-            let childs = testConfigNode.getElementsByTagName('test-meta-data');
+//            let childs = testConfigNode.getElementsByTagName('test-meta-data');
 
             // remove description completely ???
 //        xmlWriter.createTextElement(childs[0], 'praktomat:config-testDescription', $(root).find(".xml_pr_configDescription").val(), praktomatns);
@@ -257,6 +261,7 @@ var config = (function(testConfigNode) {
     class CheckstyleTest extends PraktomatTest {
         constructor() {
             super("CheckStyle Test", "java-checkstyle", htmlCheckstyle);
+            this.gradingWeight = weightStaticTest;
         }
 
         onReadXml(test, xmlReader, testConfigNode, testroot) {
@@ -285,6 +290,7 @@ var config = (function(testConfigNode) {
     class DgSetupTest extends PraktomatTest {
         constructor() {
             super("DejaGnu Setup", "dejagnu-setup", htmlPraktomat);
+            this.gradingWeight = weightCompilation;
         }
     }
     class DgTesterTest extends PraktomatTest {
@@ -302,6 +308,7 @@ var config = (function(testConfigNode) {
     class setlXSyntaxTest extends PraktomatTest {
         constructor() {
             super("SetlX Syntax Test", "jartest", htmlSetlX);
+            this.gradingWeight = weightCompilation;
         }
         onCreate(testId) {
             this.initPraktomatTest(testId);
@@ -406,11 +413,11 @@ var config = (function(testConfigNode) {
     function handleFilenameChangeInTest(newFilename, tempSelElem) {
         function setJavaClassname(newFilename) {
             // set classname if file belongs to JUNIT and if exactly one file is assigned
-            var testBox = $(tempSelElem).closest(".xml_test");
-            var ui_classname = $(testBox).find(".xml_ju_mainclass");
+            let testBox = $(tempSelElem).closest(".xml_test");
+            const ui_classname = $(testBox).find(".xml_ju_mainclass");
             if (ui_classname.length === 1) {
                 $.each(ui_classname, function(index, element) {
-                    var currentFilename = $(element).val();
+                    let currentFilename = $(element).val();
                     if (!readXmlActive)
                         $(element).val(javaParser.getFullClassnameFromFilename(newFilename)).change();
                 });
@@ -419,11 +426,11 @@ var config = (function(testConfigNode) {
 
         function setJUnitDefaultTitle(newFilename) {
             // set decsription according to classname
-            var testBox = $(tempSelElem).closest(".xml_test");
-            var ui_title = $(testBox).find(".xml_test_title");
+            let testBox = $(tempSelElem).closest(".xml_test");
+            const ui_title = $(testBox).find(".xml_test_title");
             if (ui_title.length === 1) {
                 $.each(ui_title, function(index, element) {
-                    var currentTitle = $(element).val();
+                    let currentTitle = $(element).val();
                     if (!readXmlActive && currentTitle === JUnit_Default_Title)
                         $(element).val("Junit Test " + javaParser.getPureClassnameFromFilename(newFilename)).change();
                 });

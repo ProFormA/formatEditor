@@ -68,8 +68,12 @@ class TestWrapper {
         });
     }
 
-    static create(id, TestName, MoreText, TestType, WithFileRef) {
+//    static create(id, TestName, MoreText, TestType, WithFileRef) {
     // create a new test HTML form element
+    static create(id, TestName, config, weight) {
+        let theWeight =  config.gradingWeight;
+        if (typeof weight !== 'undefined')
+            theWeight = weight;
 
         let testid = id;
         if (!testid)
@@ -95,18 +99,18 @@ class TestWrapper {
             "</p>"+
             getDescriptionHtmlString('', '') +
 
-            MoreText +
+            config.htmlExtraFields +
             "<p>" + TestFileReference.getInstance().getTableString() + "</p>" +
 
             "<p><label>Grading Weight<span class='red'>*</span>:</label>"+
-            "<input class='tinyinput xml_test_weight' value='1'/>" +
+            "<input class='tinyinput xml_test_weight' value='"+ theWeight +"'/>" +
             "</p>"+
 
             "</div>");
 
         // hide fields that exist only for technical reasons
         var testroot = $(".xml_test_id[value='" + testid + "']").parent().parent();
-        testroot.find(".xml_test_type").val(TestType);
+        testroot.find(".xml_test_type").val(config.testType);
         let test = TestWrapper.constructFromRoot(testroot);
 
         FileReferenceList.init(null, null, TestFileReference, testroot);
@@ -118,7 +122,7 @@ class TestWrapper {
             testroot.find(".xml_test_id").hide();
             testroot.find("label[for='xml_test_id']").hide();
         }
-        if (!WithFileRef) {
+        if (!config.withFileRef) {
             testroot.find("table").hide();
             testroot.find(".drop_zone").hide();
         }

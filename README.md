@@ -18,6 +18,9 @@ Folgende Änderungen Kommunizieren:
 
 
 Ideen für Testfälle:
+- Submission Restrictions
+- veränderte Grading Hints
+
 - Java-Klassen- und Package-Erkennung
 - Programmiersprache C
 

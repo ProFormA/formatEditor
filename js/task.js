@@ -266,11 +266,10 @@ readAndDisplayXml = function() {
         let ui_test = undefined;
         $.each(config.testInfos, function(index, configItem) {
             if (!ui_test && item.testtype === configItem.testType) {
-                ui_test = TestWrapper.create(item.id, item.title, configItem.htmlExtraFields,
-                    configItem.testType, configItem.withFileRef);
-                //if (configItem.readXml) {
-                    task.readTestConfig(taskXml, item.id, configItem, ui_test.root);
-                //}
+                ui_test = TestWrapper.create(item.id, item.title, configItem, item.weight);
+//                ui_test = TestWrapper.create(item.id, item.title, configItem.htmlExtraFields,
+                //                    configItem.testType, configItem.withFileRef);
+                task.readTestConfig(taskXml, item.id, configItem, ui_test.root);
                 ui_test.comment = item.comment;
                 ui_test.description = item.description;
             }
