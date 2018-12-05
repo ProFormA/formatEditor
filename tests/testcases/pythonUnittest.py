@@ -59,7 +59,13 @@ class PythonTest(zipFileTest.ZipFileTest):
         # fill filesize
         editor.set_filesize(filesize)
         # fill Fielname
-        editor.set_restrict_filename("TestAbc*")
+        editor.set_restrict_filename(0, "TestAbc*", False, False)
+        editor.add_restrict_filename()
+        editor.set_restrict_filename(1, "a12*", False, True)
+        editor.add_restrict_filename()
+        editor.set_restrict_filename(2, "\*\w\s", True, False)
+        editor.add_restrict_filename()
+        editor.set_restrict_filename(3, "[1-9]+", True, True)
         # LON-CAPA path
         editor.set_LON_CAPA_path(lon_capa_path)
         # fill language

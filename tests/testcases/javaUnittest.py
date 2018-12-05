@@ -78,7 +78,7 @@ class JavaTest(zipFileTest.ZipFileTest):
         # fill filesize
         editor.set_filesize(filesize)
         # fill regexp filename
-        editor.set_restrict_filename("ABC123*")
+        editor.set_restrict_filename(0, "ABC123*", False, False)
         # LON-CAPA path
         editor.set_LON_CAPA_path(lon_capa_path)
         # fill language

@@ -450,20 +450,35 @@ def set_task_comment(text):
 
 
 def set_filesize(text):
+    change_tab("ms_tab")
     set_input_field("xml_submission_size", text)
 
 # depricated
 #def set_mimetype(text):
 #    set_input_field("xml_upload-mime-type", text)
 
-def set_restrict_filename(text):
+def add_restrict_filename():
+    change_tab("ms_tab")
+    elems = driver.find_elements_by_class_name("add_subm_files")
+    elem = elems[0].click()
+
+def set_restrict_filename(index, text, regexp, optional):
+    change_tab("ms_tab")
     elems = driver.find_elements_by_class_name("xml_restrict_filename")
-    elem = elems[0]
+    elem = elems[index]
     elem.clear()
     elem.send_keys(text)
+
+    elems = driver.find_elements_by_class_name("xml_file_regexp")
+    set_checkbox_value(elems[index], regexp)
+
+    elems = driver.find_elements_by_class_name("xml_optional")
+    set_checkbox_value(elems[index], optional)
+
 #    set_input_field("xml_restrict_filename", text)
 
 def set_LON_CAPA_path(text):
+    change_tab("main_tab")
     set_input_field("lczip", text)
 
 def set_language(text):

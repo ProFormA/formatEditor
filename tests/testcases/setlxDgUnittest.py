@@ -52,7 +52,7 @@ class SetlxDgTest(zipFileTest.ZipFileTest):
         # fill filesize
         editor.set_filesize("3333")
         # fill MimeType
-        editor.set_restrict_filename("filename")
+        editor.set_restrict_filename(0, "filename", False, False)
         # LON-CAPA path
         editor.set_LON_CAPA_path("input4444/")
         # fill language

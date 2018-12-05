@@ -40,8 +40,8 @@
     <div id='task'>
         <div id="tabs">
             <ul>
-                <li id="main_tab"><a href="#tabs-1">Main</a></li>
-                <li id="ms_tab"><a href="#tabs-3">Model Solutions</a></li>
+                <li id="main_tab"><a href="#tabs-1">Task</a></li>
+                <li id="ms_tab"><a href="#tabs-3">Submission</a></li>
                 <li id="test_tab"><a href="#tabs-4">Testsuite</a></li>
                 <li id="file_tab"><a href="#tabs-2">Files</a></li>
                 <!--<li id="debug_output"><a href="#tabs-Debug">Output</a></li>-->
@@ -94,40 +94,8 @@
                          </select></p>
                 </div> -->
 
-                <div class='ui-widget ui-widget-content ui-corner-all'>
-                     <h3 class='ui-widget-header'>Submission</h3>
-
-                    <p><label>Skeleton Code for Editor</label>
-                        <textarea id='code_template' rows='10' cols='80'></textarea>
-                    </p>
 
 
-                    <p><label>Maximum Size [B]</label>
-                        <input class='shortinput' id='xml_submission_size' value="1000"></input>
-                    </p>
-
-                    <div id="files_restriction"></div>
-
-                    <input type='file' id='dummy_file_upload_button' style="display: none"/>
-
-                    <div id="submission_preview">
-                        <p>
-                            EXPERIMENTAL:
-                        </p>
-
-                        <p>
-                            <label for='grader_uri'>Grader URI: </label>
-                            <input class='mediuminput' id='grader_uri' value="http://"/>
-                            <button id='submit_test'>Submit Model Solution #1</button>
-                        </p>
-                        <p>
-                            <label>Result:</label>
-                            <textarea id='submit_response' rows='20' cols='80'></textarea>
-                        </p>
-                    </div>
-
-
-                </div>
                 <span id='otherSoftware1'></span>
                 <span id='gradinghintsection'></span>
             </div>
@@ -140,10 +108,46 @@
                    <span class='drop_zone_text'>Drop Your File(s) Here!</span>
                 </p>
             </div>
+
             <div id="tabs-3">
                 <span id='modelsolutionsection'></span>
                 <p><button id='addModelsol'>New model solution</button></p>
+                <div class='ui-widget ui-widget-content ui-corner-all'>
+                    <h3 class='ui-widget-header'>Submission</h3>
+
+                    <p><label>Skeleton Code for Editor</label>
+                        <textarea id='code_template' rows='10' cols='80'></textarea>
+                    </p>
+
+                    <h3 class='ui-widget-header'>Restrictions</h3>
+
+                    <p><label>Maximum Size [B]</label>
+                        <input class='shortinput' id='xml_submission_size' value="1000"></input>
+                    </p>
+
+                    <p>
+                    <div id="files_restriction"></div>
+
+                    </p>
+
+                    <input type='file' id='dummy_file_upload_button' style="display: none"/>
+                </div>
+                <div id="submission_preview">
+                    <div class='ui-widget ui-widget-content ui-corner-all'>
+                        <h3 class='ui-widget-header'>EXPERIMENTAL: Submission Preview</h3>
+                        <p>
+                            <label for='grader_uri'>Grader URI: </label>
+                            <input class='mediuminput' id='grader_uri' value="http://"/>
+                            <button id='submit_test'>Submit Model Solution #1</button>
+                        </p>
+                        <p>
+                            <label>Result:</label>
+                            <textarea id='submit_response' rows='20' cols='80'></textarea>
+                        </p>
+                    </div>
+                </div>
             </div>
+
             <div id="tabs-4">
                 <span id='testsection'></span>
                 <p>

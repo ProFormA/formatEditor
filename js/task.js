@@ -235,7 +235,29 @@ convertToXML = function(topLevelDoc, rootNode) {
     console.log("Call to convertToXML took " + (t1 - t0) + " milliseconds.")
 };
 
+function resetInputFields() {
+    gradingHintCounter = 1;                            // variable initialisation
 
+    clearErrorMessage();
+    FileWrapper.deleteAllFiles();
+
+    $("#modelsolutionsection")[0].textContent = "";
+    $("#testsection")[0].textContent = "";
+    $("#files_restriction")[0].textContent = "";
+    $("#files_restriction").append(SubmissionFileList.getInstance().getTableString());
+
+    codeskeleton.setValue('');
+
+    // initialise other sections
+    if (USE_VISIBLES) FileReferenceList.init("#visiblefiledropzone", '#visiblesection', VisibleFileReference);
+
+    FileReferenceList.init("#multimediadropzone", '#multimediasection', MultimediaFileReference);
+    FileReferenceList.init("#downloaddropzone", '#downloadsection', DownloadableFileReference);
+    //FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
+
+    modelSolIDs = {};
+    testIDs = {};
+}
 
 readAndDisplayXml = function() {
     let task = new TaskClass();
@@ -309,36 +331,18 @@ readAndDisplayXml = function() {
     }
 
 
-    gradingHintCounter = 1;                            // variable initialisation
-    clearErrorMessage();
-    FileWrapper.deleteAllFiles();
 
-    $("#modelsolutionsection")[0].textContent = "";
-    $("#testsection")[0].textContent = "";
+    resetInputFields();
 
-    // initialise other sections
-    if (USE_VISIBLES) FileReferenceList.init("#visiblefiledropzone", '#visiblesection', VisibleFileReference);
-
-    FileReferenceList.init("#multimediadropzone", '#multimediasection', MultimediaFileReference);
-    FileReferenceList.init("#downloaddropzone", '#downloadsection', DownloadableFileReference);
-    //FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
     const templateroot = $("#templatedropzone");
     const multmediaroot = $("#multimediadropzone");
     const downloadroot = $("#downloaddropzone");
     const visibleroot = $("#visiblefiledropzone");
 
-
-
-    // fileIDs = {};
-    modelSolIDs = {};
-    testIDs = {};
-
-
     // TODO: check version
     // TODO: validate??
     task.readXml(taskXml);
 
-    $("#code_template").val(task.codeskeleton);
 
     descriptionEditor.setValue(task.description);
     $("#xml_title").val(task.title);
@@ -351,6 +355,7 @@ readAndDisplayXml = function() {
     else
         $("#xml_programming-language").val(task.proglang);
     $("#xml_lang").val(task.lang);
+    codeskeleton.setValue(task.codeskeleton);
 
     // check proglang
     if ($("#xml_programming-language").val() === null) {

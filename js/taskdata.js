@@ -156,7 +156,6 @@ class TaskFile {
         this.filetype = null;
         this.comment = null;
         this.content = null;
-        this.codeskeleton = null;
     }
 }
 
@@ -205,6 +204,7 @@ class TaskClass {
         this.lang = 'de';
         this.sizeSubmission = 0;
         this.filenameRegExpSubmission = '';
+        this.codeskeleton = '';
 
         this.fileRestrictions = [];
         this.files = [];

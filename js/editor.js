@@ -354,7 +354,7 @@ $(function() {
         });
     }
 
-///////////////////////////////////////////////////////// Configuration support
+
 
 
     function addTestButtons() {
@@ -501,7 +501,11 @@ $(function() {
         // refresh codemirror editors  -
         // otherwise content is visible only after first click in window
         setTimeout(function () {
-            Object.keys(codemirror).forEach(function(item) {codemirror[item].refresh();});
+            Object.keys(codemirror).forEach(function(item) {
+                codemirror[item].refresh();
+                descriptionEditor.refresh();
+                codeskeleton.refresh();
+            });
         }, 5);
     });
 
