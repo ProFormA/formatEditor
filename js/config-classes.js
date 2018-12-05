@@ -61,7 +61,7 @@ class ProglangInfo{
 
 // helper function for custom test configuration
 createFileWithContent = function(filename, content) {
-    let ui_file = newFile();
+    let ui_file = FileWrapper.create();
     ui_file.filename = filename;
     ui_file.text = content;
     // onFilenameChanged(ui_file);

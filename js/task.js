@@ -272,8 +272,8 @@ readAndDisplayXml = function() {
     }
 
     function createFile(item, index) {
-        newFile(item.id);
-        let ui_file = FileWrapper.constructFromId(item.id);
+        let ui_file = FileWrapper.create(item.id);
+        //let ui_file = FileWrapper.constructFromId(item.id);
         ui_file.filename = item.filename;
         ui_file.class = item.fileclass;
         ui_file.type = item.filetype;

@@ -115,6 +115,15 @@ const LIBRARY      = 'library';
 // => store data in html only in setter
 class FileWrapper {
 
+    static uploadFileWhenDropped(files, fileBox){
+        if (files.length > 1) {
+            alert('You have dragged more than one file. You must drop exactly one file!');
+            return;
+        }
+        const fileId= $(fileBox).find(".xml_file_id").val();
+        readAndCreateFileData(files[0], fileId);
+    }
+
     static constructFromId(id) {
         // this._id = id;
         let file = new FileWrapper();
@@ -164,7 +173,13 @@ class FileWrapper {
     get isBinary() { return fileStorages[this.id].isBinary; }
     get storeAsFile() { return fileStorages[this.id].storeAsFile; }
     get content() { return fileStorages[this.id].content; }
-    get size() { return fileStorages[this.id].size; }
+    get size() {
+        if (this.isBinary)
+            return fileStorages[this.id].size;
+        else {
+            return this.text.length;
+        }
+    }
     get originalFilename() { return fileStorages[this.id].originalFilename; }
 //    get isLibrary() { return this.root.find(".file_library")[0].checked;}
 
@@ -343,7 +358,7 @@ class FileWrapper {
 */
     static onReadAndCreateFile(inputbutton) {             // read a file and create a new file item
         let filenew = inputbutton.files[0];
-        let ui_file = newFile();
+        let ui_file = FileWrapper.create();
         readAndCreateFileData(filenew, ui_file.id);
     }
 
@@ -592,6 +607,31 @@ class FileWrapper {
             ui_file.root.find(".xml_upload_file").click();
         });
 */
+
+        // enable drag & drop
+        ui_file.root.on({
+            dragover: function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                //e.dataTransfer.dropEffect = 'copy';
+            },
+            dragenter: function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            },
+            drop: function(e){
+                if(e.originalEvent.dataTransfer){
+                    if(e.originalEvent.dataTransfer.files.length) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        /*UPLOAD FILES HERE*/
+                        FileWrapper.uploadFileWhenDropped(e.originalEvent.dataTransfer.files, e.currentTarget);
+                    }
+                }
+            }
+        });
+
+
         if (config.useCodemirror) {
             FileWrapper.addCodemirrorElement(fileid);
         }
