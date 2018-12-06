@@ -145,7 +145,7 @@ def openFirefox():
 def openEditorPageFile():
     the_path = os.path.dirname(os.path.abspath(__file__))
     # print the_path
-    editor_path = the_path + "/../proformaEditor101.html"
+    editor_path = the_path + "/../proformaEditor.html"
     # print editor_path
     driver.get("file:///" + editor_path)
     # driver.execute_script('enableTestMode();')
@@ -153,7 +153,7 @@ def openEditorPageFile():
 
 def openEditorPage():
 #    driver.get("https://media.elan-ev.de/proforma/editor/releases/preview/proformaEditor101.html")
-    driver.get("http://127.0.0.1:8000/proformaEditor101.html")
+    driver.get("http://127.0.0.1:8000/proformaEditor.html")
     driver.set_window_size(1024,768)
     # driver.execute_script('enableTestMode();')
 

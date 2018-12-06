@@ -683,7 +683,8 @@ class TaskClass {
             proglang.setAttribute("version", this.proglangVersion);
 
             fileRestrictions = xmlDoc.createElementNS(xmlns, "submission-restrictions");
-            fileRestrictions.setAttribute("max-size", this.sizeSubmission);
+            if (this.sizeSubmission)
+                fileRestrictions.setAttribute("max-size", this.sizeSubmission);
             task.appendChild(fileRestrictions);
             this.fileRestrictions.forEach(writeFileRestriction);
 
