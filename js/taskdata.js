@@ -722,7 +722,7 @@ class TaskClass {
                 // result = "<?xml version='1.0' encoding='UTF-8'?>" + result;
             }
 
-            let xsds = [ 'proforma.xsd' ];
+            let xsds = [ 'xsd/proforma.xsd' ];
             xsds = xsds.concat(config.xsds);
 
 

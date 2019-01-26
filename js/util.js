@@ -25,8 +25,8 @@ const USE_VISIBLES     = false;
 const codeversion   = '3.0.0 beta';                     // current version of this code
 
 
-const version094    = 'taskxml0.9.4.xsd';                // name of schema files
-const version101    = 'taskxml1.0.1.xsd';
+const version094    = 'xsd/taskxml0.9.4.xsd';                // name of schema files
+const version101    = 'xsd/taskxml1.0.1.xsd';
 
 function getInternalDescriptionString(comment) {
     return "<p>" +

@@ -407,7 +407,7 @@ $(function () {
                 // result = "<?xml version='1.0' encoding='UTF-8'?>" + result;
             }
 
-            const xsd_file = 'proforma.xsd';
+            const xsd_file = 'xsd/proforma.xsd';
             // validate output
             $.get(xsd_file, function (data, textStatus, jqXHR) { // read XSD schema
                 const valid = xmllint.validateXML({
