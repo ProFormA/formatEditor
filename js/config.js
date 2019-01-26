@@ -30,17 +30,18 @@ const configXsdSchemaFile = version101;   // choose version for output
 const config = (function(testConfigNode) {
     const praktomatns = "urn:proforma:praktomat:v0.2";
     const jartestns   = "urn:proforma:tests:jartest:v1";
-    const unittestns  = "urn:proforma:tests:unittest:v1";
+    const unittestns_old  = "urn:proforma:tests:unittest:v1";
+    const unittestns_new  = "urn:proforma:tests:unittest:v1.1";
 
     function writeNamespaces(task) {
         task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:jartest', jartestns);
         task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:praktomat', praktomatns);
-        task.setAttributeNS('http://www.w3.org/2000/xmlns/', "xmlns:unit", unittestns);
+        task.setAttributeNS('http://www.w3.org/2000/xmlns/', "xmlns:unit", unittestns_new);
     }
 
     function resolveNamespace(prefix) {
         switch (prefix) {
-            case 'unit':      return unittestns;
+            case 'unit':      return unittestns_old;
             case 'jartest':   return jartestns;
             case 'praktomat': return praktomatns;
             default: return '';
@@ -90,9 +91,10 @@ const config = (function(testConfigNode) {
         "title='Regular expression describing all source files to be passed to the compiler'/></p>";
 
 
-    const htmlJavaJunit = htmlPraktomat +
-        "<p><label for='xml_ju_mainclass'>Test class<span class='red'>*</span>: </label>"+
-        "<input class='mediuminput xml_ju_mainclass' title='normally filename without extension'/>"+
+    const htmlJavaJunit = // htmlPraktomat +
+        "<p><label for='xml_ju_mainclass'>Entry Point<span class='red'>*</span>: </label>"+
+        "<input class='mediuminput xml_ju_mainclass' " +
+        "title='usually name of class containing main method, including full package path (e.g. de.ostfalia.zell.editor)'/>"+
         " <label for='xml_ju_framew'>Framework<span class='red'>*</span>: </label>"+
         "<select class='xml_ju_framew'><option selected='selected' value='JUnit'>JUnit</option></select>"+
         " <label for='xml_ju_version'>Version<span class='red'>*</span>: </label>"+
@@ -121,7 +123,7 @@ const config = (function(testConfigNode) {
         " <label for='xml_pr_CS_warnings'>Maximum warnings allowed<span class='red'>*</span>: </label>"+
         "<input class='tinyinput xml_pr_CS_warnings' value='0'/></p>";
 
-    const JUnit_Default_Title = "Java JUnit Test";
+    const JUnit_Default_Title = "JUnit Test";
 
     // default grading weights
     const weightCompilation = 0;
@@ -227,30 +229,30 @@ const config = (function(testConfigNode) {
             this.writePraktomatCompiler(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
     }
 
-    class JUnitTest extends PraktomatTest {
+    class JUnitTest extends CustomTest  {
         constructor() {
             super(JUnit_Default_Title, "unittest", htmlJavaJunit);
         }
         onReadXml(test, xmlReader, testConfigNode, testroot) {
             let unitNode = xmlReader.readSingleNode("unit:unittest", testConfigNode);
 
-            $(testroot).find(".xml_ju_mainclass").val(xmlReader.readSingleText("unit:main-class", unitNode));
+            $(testroot).find(".xml_ju_mainclass").val(xmlReader.readSingleText("unit:entry-point", unitNode));
             $(testroot).find(".xml_ju_version").val(xmlReader.readSingleText("@version", unitNode));
             $(testroot).find(".xml_ju_framew").val(xmlReader.readSingleText("@framework", unitNode));
 
-            this.readPraktomat(test, xmlReader, testConfigNode, testroot);
+            //this.readPraktomat(test, xmlReader, testConfigNode, testroot);
         }
         onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
             let root = uiElement.root;
 
-            let unittestNode = xmlDoc.createElementNS(unittestns, "unit:unittest");
+            let unittestNode = xmlDoc.createElementNS(unittestns_new, "unit:unittest");
             testConfigNode.appendChild(unittestNode);
 
-            xmlWriter.createTextElement(unittestNode, 'unit:main-class', $(root).find(".xml_ju_mainclass").val(), unittestns);
+            xmlWriter.createTextElement(unittestNode, 'unit:entry-point', $(root).find(".xml_ju_mainclass").val(), unittestns_old);
             unittestNode.setAttribute("framework", $(root).find(".xml_ju_framew").val());
             unittestNode.setAttribute("version", $(root).find(".xml_ju_version").val());
 
-            this.writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
+            //this.writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
 //            let childs = testConfigNode.getElementsByTagName('test-meta-data');
 
             // remove description completely ???
