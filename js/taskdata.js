@@ -65,7 +65,7 @@ class XmlReader {
         this.nsResolver = function (prefix) {
             switch (prefix) {
                 case 'dns': return defaultns; // 'urn:proforma:task:v1.0.1';
-                default:    return config.resolveNamespace(prefix);
+                default:    return config.resolveNamespace(prefix, defaultns);
             }
         };
     }
@@ -84,7 +84,7 @@ class XmlReader {
     readSingleText(xpath, node, defaultValue) {
         const nodes = this.xmlDoc.evaluate(xpath, node?node:this.rootNode, this.nsResolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
         if (nodes.singleNodeValue)
-            return nodes.singleNodeValue.textContent;
+            return nodes.singleNodeValue.textContent.trim();
         else {
             if (typeof defaultValue !== 'undefined')
                 return defaultValue;

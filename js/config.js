@@ -28,35 +28,59 @@ const configXsdSchemaFile = version101;   // choose version for output
 
 
 const config = (function(testConfigNode) {
-    const praktomatns = "urn:proforma:praktomat:v0.2";
-    const jartestns   = "urn:proforma:tests:jartest:v1";
+    const praktomatns     = "urn:proforma:praktomat:v0.2";
+    const jartestns       = "urn:proforma:tests:jartest:v1";
     const unittestns_old  = "urn:proforma:tests:unittest:v1";
     const unittestns_new  = "urn:proforma:tests:unittest:v1.1";
+    const checkstylens    = "urn:proforma:tests:java-checkstyle:v1.1";
 
     function writeNamespaces(task) {
-        task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:jartest', jartestns);
-        task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:praktomat', praktomatns);
+        //task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:jartest', jartestns);
+        //task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:praktomat', praktomatns);
         task.setAttributeNS('http://www.w3.org/2000/xmlns/', "xmlns:unit", unittestns_new);
+        task.setAttributeNS('http://www.w3.org/2000/xmlns/', "xmlns:cs", checkstylens);
     }
 
-    function resolveNamespace(prefix) {
-        switch (prefix) {
-            case 'unit':      return unittestns_old;
-            case 'jartest':   return jartestns;
-            case 'praktomat': return praktomatns;
-            default: return '';
+    function resolveNamespace(prefix, defaultns) {
+        switch (defaultns) {
+            case 'urn:proforma:task:v1.0.1':
+                switch (prefix) {
+                    case 'unit':      return unittestns_old;
+                    case 'jartest':   return jartestns;
+                    case 'praktomat': return praktomatns;
+                }
+                return '';
+            case 'urn:proforma:v2.0':
+                switch (prefix) {
+                    case 'unit':      return unittestns_new;
+                    case 'cs':        return checkstylens;
+                    case 'jartest':   return jartestns;
+                }
+                return '';
+            default:
+                return 'unsupported namespace'
         }
     }
 
     function writeXmlExtra(metaDataNode, xmlDoc, xmlWriter) {
-        xmlWriter.createTextElement(metaDataNode, 'praktomat:allowed-upload-filename-mimetypes', '(text/.*)', praktomatns);
+        //xmlWriter.createTextElement(metaDataNode, 'praktomat:allowed-upload-filename-mimetypes', '(text/.*)', praktomatns);
     }
-
-
+/*
+    readXml(xmlfile) {
+        let xmlReader = new XmlReader(xmlfile);
+        switch (xmlReader.defaultns) {
+            case 'urn:proforma:task:v1.0.1': return this.readXmlVersion101(xmlfile);
+            case 'urn:proforma:v2.0': return this.readXmlVersion2(xmlfile);
+            default:
+                setErrorMessage("Unsupported ProFormA version " + xmlReader.defaultns);
+        }
+    }
+*/
     // -------------------------
     // TESTS
     // -------------------------
     // HTML building blocks for the extra input fields in tests
+/*
     const htmlPraktomat =
         "<p>" +
         " Public:<input type='checkbox' class='xml_pr_public' checked title='results are shown to the students'>" +
@@ -89,7 +113,7 @@ const config = (function(testConfigNode) {
         " <label for='xml_pr_CompilerFPatt'>Compiler file pattern: </label>"+
         "<input class='mediuminput xml_pr_CompilerFPatt' value='^[a-zA-Z0-9_]*\\.[cC]$' " +
         "title='Regular expression describing all source files to be passed to the compiler'/></p>";
-
+*/
 
     const htmlJavaJunit = // htmlPraktomat +
         "<p><label for='xml_ju_mainclass'>Entry Point<span class='red'>*</span>: </label>"+
@@ -107,13 +131,13 @@ const config = (function(testConfigNode) {
 //        "<p><label for='xml_pr_configDescription'>Test description: </label>"+
 //        "<input class='largeinput xml_pr_configDescription'/></p>";
 
-    const htmlSetlX =  htmlPraktomat +
+    const htmlSetlX =  //htmlPraktomat +
         "<p><label for='xml_jt_framew'>Framework<span class='red'>*</span>: </label>"+
         "<select class='xml_jt_framew'><option selected='selected' value='setlX'>setlX</option></select>"+
         " <label for='xml_jt_version'>Version<span class='red'>*</span>: </label>"+
         "<select class='xml_jt_version'><option selected='selected' value='2.40'>2.40</option></select></p>";
 
-    const htmlCheckstyle = htmlPraktomat +
+    const htmlCheckstyle = //htmlPraktomat +
         "<p><label for='xml_pr_CS_version'>Version<span class='red'>*</span>: </label>"+
         "<select class='xml_pr_CS_version'>" +
         "<option value='5.4'>5.4</option>" +
@@ -131,6 +155,7 @@ const config = (function(testConfigNode) {
 
 
     // Tests objects
+/*
     class PraktomatTest extends CustomTest {
         constructor(title, testType, extraFields) {
             super(title, testType, extraFields);
@@ -204,34 +229,36 @@ const config = (function(testConfigNode) {
         onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
             this.writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
     }
+*/
 
-
-    class CCompilerTest extends PraktomatTest {
+    class CCompilerTest extends CustomTest {
         constructor() {
-            super("C Compiler Test", "c-compilation", htmlCComp);
-            this.withFileRef = false;
+            super("C Compiler Test", "c-compilation", '' /*htmlCComp*/);
+            //this.withFileRef = false;
             this.gradingWeight = weightCompilation;
         }
-        onReadXml(test, xmlReader, testConfigNode, testroot) {
+/*        onReadXml(test, xmlReader, testConfigNode, testroot) {
             this.readPraktomatCompiler(test, xmlReader, testConfigNode, testroot); }
         onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
-            this.writePraktomatCompiler(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
+            this.writePraktomatCompiler(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }*/
     }
-    class JavaCompilerTest extends PraktomatTest {
+    class JavaCompilerTest extends CustomTest {
         constructor() {
-            super("Java Compiler Test", "java-compilation", htmlJavaComp);
-            this.withFileRef = false;
+            super("Compiler Test", "java-compilation", '' /*htmlJavaComp*/);
+            //this.withFileRef = false;
             this.gradingWeight = weightCompilation;
+            this.manadatoryFile = false;
         }
-        onReadXml(test, xmlReader, testConfigNode, testroot) {
-            this.readPraktomatCompiler(test, xmlReader, testConfigNode, testroot); }
-        onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
-            this.writePraktomatCompiler(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
+        //onReadXml(test, xmlReader, testConfigNode, testroot) {
+        //    this.readPraktomatCompiler(test, xmlReader, testConfigNode, testroot); }
+        //onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+        //    this.writePraktomatCompiler(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
     }
 
     class JUnitTest extends CustomTest  {
         constructor() {
             super(JUnit_Default_Title, "unittest", htmlJavaJunit);
+            this.fileRefLabel = 'Junit and other File';
         }
         onReadXml(test, xmlReader, testConfigNode, testroot) {
             let unitNode = xmlReader.readSingleNode("unit:unittest", testConfigNode);
@@ -260,14 +287,15 @@ const config = (function(testConfigNode) {
 //        xmlWriter.createTextElement(childs[0], 'praktomat:config-testDescription', '', praktomatns);
         }
     }
-    class CheckstyleTest extends PraktomatTest {
+    class CheckstyleTest extends CustomTest {
         constructor() {
             super("CheckStyle Test", "java-checkstyle", htmlCheckstyle);
             this.gradingWeight = weightStaticTest;
+            this.fileRefLabel = 'Configuration File';
         }
 
         onReadXml(test, xmlReader, testConfigNode, testroot) {
-            this.readPraktomat(test, xmlReader, testConfigNode, testroot);
+            //this.readPraktomat(test, xmlReader, testConfigNode, testroot);
 
             let praktomatNode = xmlReader.readSingleNode("dns:test-meta-data", testConfigNode);
             $(testroot).find(".xml_pr_CS_warnings").val(xmlReader.readSingleText("praktomat:max-checkstyle-warnings", praktomatNode));
@@ -277,43 +305,43 @@ const config = (function(testConfigNode) {
         onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
             let root = uiElement.root;
 
-            xmlWriter.createTextElement(testConfigNode, 'praktomat:version', $(root).find(".xml_pr_CS_version").val(), praktomatns);
+            xmlWriter.createTextElement(testConfigNode, 'cs:version', $(root).find(".xml_pr_CS_version").val(), checkstylens);
 
-            this.writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
+            //this.writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
             let childs = testConfigNode.getElementsByTagName('test-meta-data');
-            xmlWriter.createTextElement(childs[0], "praktomat:max-checkstyle-warnings", $(root).find(".xml_pr_CS_warnings").val(), praktomatns);
+            xmlWriter.createTextElement(childs[0], "cs:max-checkstyle-warnings", $(root).find(".xml_pr_CS_warnings").val(), checkstylens);
         }
     }
-    class PythonTest extends PraktomatTest {
+    class PythonTest extends CustomTest {
         constructor() {
-            super("Python Test", "python", htmlPraktomat);
+            super("Python Test", "python", '' /*htmlPraktomat*/);
         }
     }
-    class DgSetupTest extends PraktomatTest {
+    class DgSetupTest extends CustomTest {
         constructor() {
-            super("DejaGnu Setup", "dejagnu-setup", htmlPraktomat);
+            super("DejaGnu Setup", "dejagnu-setup", '' /*htmlPraktomat*/);
             this.gradingWeight = weightCompilation;
         }
     }
-    class DgTesterTest extends PraktomatTest {
+    class DgTesterTest extends CustomTest {
         constructor() {
-            super("DejaGnu Tester", "dejagnu-tester", htmlPraktomat);
+            super("DejaGnu Tester", "dejagnu-tester", /*htmlPraktomat*/);
         }
     }
-    class setlXTest extends PraktomatTest {
+    class setlXTest extends CustomTest {
         constructor() {
             super("SetlX Test", "jartest", htmlSetlX);
         }
         onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
             this.writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
     }
-    class setlXSyntaxTest extends PraktomatTest {
+    class setlXSyntaxTest extends CustomTest {
         constructor() {
             super("SetlX Syntax Test", "jartest", htmlSetlX);
             this.gradingWeight = weightCompilation;
         }
         onCreate(testId) {
-            this.initPraktomatTest(testId);
+            //this.initPraktomatTest(testId);
             // add file for the test
             const filename = 'setlxsyntaxtest.stlx';
             createFileWithContent(filename, 'print("");');
@@ -366,6 +394,8 @@ const config = (function(testConfigNode) {
 
     // list of XML schema files that shall be used for validation
     const xsds = [
+        "xsd/proforma-unittest.xsd",
+        "xsd/proforma-checkstyle.xsd"
         // configXsdSchemaFile,
         //"praktomat.xsd"
         // .... TODO
@@ -376,7 +406,8 @@ const config = (function(testConfigNode) {
     // overload functions for further activities
     // -------------------------
     function createFurtherUiElements() {
-        insertLCformelements();
+        // LON-Capa weill be no longer supported
+        //insertLCformelements();
     }
 
 

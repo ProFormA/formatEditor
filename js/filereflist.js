@@ -542,8 +542,8 @@ class FileReferenceList extends DynamicList {
 class TestFileReference extends FileReferenceList {
 
     constructor() {
-        super('xml_test_filename', 'xml_test_fileref', 'TestFileReference', 'Testscript',
-            'file containing test cases or test specification', true);
+        super('xml_test_filename', 'xml_test_fileref', 'TestFileReference', 'File',
+            'file containing test cases, test configuration, libraries etc.', true);
     }
 
     static getInstance() {return testFileRefSingleton;}
@@ -630,7 +630,8 @@ class DownloadableFileReference extends FileReferenceList {
     }
 
     onFilerefChanged(ui_file, fileid) {
-        this.checkForExclusiveUse(ui_file, fileid, multimediaSingleton, 'display');
+        // comment in if MultimediaFileReference is used
+        //this.checkForExclusiveUse(ui_file, fileid, multimediaSingleton, 'display');
     }
 
     static getInstance() {return downloadableSingleton;}
@@ -660,7 +661,7 @@ class TemplateFileReference extends FileReferenceList {
 let templSingleton = new TemplateFileReference();
 
 
-
+// currently not used
 class MultimediaFileReference extends FileReferenceList {
     constructor() {
         super('xml_multimedia_filename', 'xml_multimedia_fileref',

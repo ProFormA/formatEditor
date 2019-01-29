@@ -28,6 +28,9 @@ class CustomTest {
 
         this.gradingWeight = 1; // default weight
 
+        this.fileRefLabel = 'File'; // default label
+        this.manadatoryFile = true;
+
         // derived member variables
         const compactName = title.replace(/ /g, "");
         this.xmlTemplateName = compactName;

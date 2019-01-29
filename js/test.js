@@ -79,6 +79,8 @@ class TestWrapper {
         if (!testid)
             testid = setcounter(testIDs);
 
+        TestFileReference.getInstance().createTableString('TestFileReference', config.fileRefLabel,
+            config.manadatoryFile, 'xml_fileref_table');
         $("#testsection").append("<div "+
             "id='test_" + testid + "'" +
             "class='ui-widget ui-widget-content ui-corner-all xml_test'>"+

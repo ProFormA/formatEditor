@@ -812,7 +812,7 @@ $(function () {
     if (USE_VISIBLES)
         FileReferenceList.init("#visiblefiledropzone", '#visiblesection', VisibleFileReference);
 
-    FileReferenceList.init("#multimediadropzone", '#multimediasection', MultimediaFileReference);
+    //FileReferenceList.init("#multimediadropzone", '#multimediasection', MultimediaFileReference);
     FileReferenceList.init("#downloaddropzone", '#downloadsection', DownloadableFileReference);
 
     if (!USE_VISIBLES)

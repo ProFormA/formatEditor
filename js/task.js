@@ -71,8 +71,21 @@ function isInputComplete() {
 
 
     $.each($("." + TestFileReference.getInstance().getClassFilename()), function(index, item) {   // check whether referenced filenames exists
-        if ($(item).is(":visible") && !item.value) {
+        // check if file is optional or mandatory
+        let mandatory = false;
+        if (true) { //$(item).is(":visible") ) {
+            // search label
+            let label = $(item).closest('tr').find('label').first();
+            
+            if (label.find('.red').length > 0)
+                mandatory = true;
+        }
+
+        if (mandatory && !item.value) {
             $("#tabs").tabs("option", "active",  tab_page.TESTS);
+
+            //let title = $(item).closest('h3').first();
+
             setErrorMessage("Filename in test is missing.");
             item.focus();
             returnFromFunction = true;
@@ -216,10 +229,12 @@ convertToXML = function(topLevelDoc, rootNode) {
             task.files[id].visible = T_VISIBLE.YES;
             task.files[id].usageInLms = T_LMS_USAGE.DOWNLOAD;
         });
+        /*
         MultimediaFileReference.getInstance().doOnNonEmpty(function(id) {
             task.files[id].visible = T_VISIBLE.YES;
             task.files[id].usageInLms = T_LMS_USAGE.DISPLAY;
         });
+        */
         /*
         TemplateFileReference.getInstance().doOnNonEmpty(function(id) {
             task.files[id].visible = T_VISIBLE.YES;
@@ -251,7 +266,7 @@ function resetInputFields() {
     // initialise other sections
     if (USE_VISIBLES) FileReferenceList.init("#visiblefiledropzone", '#visiblesection', VisibleFileReference);
 
-    FileReferenceList.init("#multimediadropzone", '#multimediasection', MultimediaFileReference);
+    //FileReferenceList.init("#multimediadropzone", '#multimediasection', MultimediaFileReference);
     FileReferenceList.init("#downloaddropzone", '#downloadsection', DownloadableFileReference);
     //FileReferenceList.init("#templatedropzone", '#templatesection', TemplateFileReference);
 
@@ -354,6 +369,7 @@ readAndDisplayXml = function() {
         $("#xml_programming-language").val(task.proglang + '/' + task.proglangVersion);
     else
         $("#xml_programming-language").val(task.proglang);
+
     $("#xml_lang").val(task.lang);
     codeskeleton.setValue(task.codeskeleton);
 
@@ -383,9 +399,6 @@ readAndDisplayXml = function() {
                 VisibleFileReference.getInstance().setDisplayMode(visibleroot, indexVisible++, item.usageInLms);
             } else {
                 switch (item.usageInLms) {
-                    case T_LMS_USAGE.DISPLAY:
-                        MultimediaFileReference.getInstance().setFilenameOnCreation(multmediaroot, indexMultmedia++, item.filename);
-                        break;
                     case T_LMS_USAGE.EDIT:
                         alert('??? hier sollte man nicht hinkommen');
                         if (indexTemplate === 0)
@@ -394,6 +407,10 @@ readAndDisplayXml = function() {
                             DownloadableFileReference.getInstance().setFilenameOnCreation(downloadroot, indexDownload++, item.filename);
 //                            TemplateFileReference.getInstance().setFilenameOnCreation(templateroot, indexTemplate++, item.filename);
                         break;
+                    case T_LMS_USAGE.DISPLAY:
+                        // create as download file
+//                        MultimediaFileReference.getInstance().setFilenameOnCreation(multmediaroot, indexMultmedia++, item.filename);
+//                        break;
                     case T_LMS_USAGE.DOWNLOAD:
                         DownloadableFileReference.getInstance().setFilenameOnCreation(downloadroot, indexDownload++, item.filename);
                         break;
