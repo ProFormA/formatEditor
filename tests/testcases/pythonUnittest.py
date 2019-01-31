@@ -67,7 +67,7 @@ class PythonTest(zipFileTest.ZipFileTest):
         editor.add_restrict_filename()
         editor.set_restrict_filename(3, "[1-9]+", True, True)
         # LON-CAPA path
-        editor.set_LON_CAPA_path(lon_capa_path)
+        #editor.set_LON_CAPA_path(lon_capa_path)
         # fill language
         editor.set_language(language)
         # fill programming language
@@ -105,7 +105,7 @@ class PythonTest(zipFileTest.ZipFileTest):
         #editor.add_download_file()
         editor.set_download_filename("file2.py", 0)
         #editor.add_display_file()
-        editor.set_display_filename("file4.py", 0)
+#        editor.set_display_filename("file4.py", 0)
 
 
         # editor.set_file_class(0, 0)
@@ -170,8 +170,8 @@ class PythonTest(zipFileTest.ZipFileTest):
         editor.set_test_description(counter_test_index, "Description for Python Test #0")
         editor.set_test_comment(counter_test_index, "Internal description for Python Test #0")
 
-        editor.set_test_public(counter_test_index, "False")
-        editor.set_test_required(counter_test_index, "False")
+#        editor.set_test_public(counter_test_index, "False")
+#        editor.set_test_required(counter_test_index, "False")
         # editor.set_junit_fileref2(counter_test_index, "1")
 
         counter_test_index = counter_test_index + 1
@@ -180,8 +180,8 @@ class PythonTest(zipFileTest.ZipFileTest):
         editor.set_test_title(counter_test_index, "Python Test #1")
         editor.set_test_description(counter_test_index, "Description for Python Test #1")
         editor.set_test_comment(counter_test_index, "Internal description for Python Test #1")
-        editor.set_test_public(counter_test_index, "True")
-        editor.set_test_required(counter_test_index, "True")
+#        editor.set_test_public(counter_test_index, "True")
+#        editor.set_test_required(counter_test_index, "True")
         # editor.set_junit_fileref2(counter_test_index, "2")
 
 
@@ -194,16 +194,16 @@ class PythonTest(zipFileTest.ZipFileTest):
         editor.add_checkstyle()
 
         editor.set_test_title(counter_test_index, "checkstyle test title #0")
-        editor.set_test_public(counter_test_index, "False")
-        editor.set_test_required(counter_test_index, "False")
+#        editor.set_test_public(counter_test_index, "False")
+#        editor.set_test_required(counter_test_index, "False")
         editor.set_cs_version(0, 0)
         editor.set_cs_max_warnings(0, "2")
         editor.set_test_file(counter_test_index, 4)
         counter_test_index = counter_test_index + 1
 
         editor.set_test_title(counter_test_index, "checkstyle test title #1")
-        editor.set_test_public(counter_test_index, "True")
-        editor.set_test_required(counter_test_index, "True")
+#        editor.set_test_public(counter_test_index, "True")
+#        editor.set_test_required(counter_test_index, "True")
         editor.set_cs_version(1, 1)
         editor.set_cs_max_warnings(1, "0")
         editor.set_test_file(counter_test_index, 4)

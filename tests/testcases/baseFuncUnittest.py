@@ -25,7 +25,6 @@ import time
 
 
 
-import editor
 import zipFileTest
 
 title = "base"

@@ -52,7 +52,7 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         # fill MimeType
         editor.set_restrict_filename(0, "Filename*", False, False)
         # LON-CAPA path
-        editor.set_LON_CAPA_path("input4444/")
+        # editor.set_LON_CAPA_path("input4444/")
         # fill language
         editor.set_language("en")
         # fill programming language
@@ -110,9 +110,9 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         #editor.set_code_skeleton("file3.c", 2)
 
         #editor.add_display_file()
-        editor.set_display_filename("file4.c", 0)
-        editor.add_display_file()
-        editor.set_display_filename("file5.c", 1)
+#        editor.set_display_filename("file4.c", 0)
+#        editor.add_display_file()
+#        editor.set_display_filename("file5.c", 1)
 
         #editor.add_download_file()
         editor.set_download_filename("file6.c", 0)
@@ -136,41 +136,28 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         editor.set_test_filename("file12.c", 4) # 4!!
 
         # check precondition
-#        self.assertTrue('file1.c' == editor.get_template_file(0))
-#        self.assertTrue('file2.c' == editor.get_visible_file(1)) #get_template_file(1))
-#        self.assertTrue('file3.c' == editor.get_visible_file(2)) #get_template_file(2))
-#        self.assertTrue('edit' == editor.get_displaymode('file1.c'))
-#        self.assertTrue('edit' == editor.get_displaymode('file2.c'))
-#        self.assertTrue('edit' == editor.get_displaymode('file3.c'))
+#        self.assertTrue('file4.c' == editor.get_display_file(0))
+#        self.assertTrue('file5.c' == editor.get_display_file(1))
 
-        self.assertTrue('file4.c' == editor.get_display_file(0))
-        self.assertTrue('file5.c' == editor.get_display_file(1))
-#        self.assertTrue('display' == editor.get_displaymode('file4.c'))
-#        self.assertTrue('display' == editor.get_displaymode('file5.c'))
 
         self.assertTrue('file6.c' == editor.get_download_file(0))
         self.assertTrue('file7.c' == editor.get_download_file(1))
-#        self.assertTrue('download' == editor.get_displaymode('file6.c'))
-#        self.assertTrue('download' == editor.get_displaymode('file7.c'))
+
 
 
         self.assertTrue('file8.c' == editor.get_ms_file(0))
-        #self.assertTrue('internal' == editor.get_displaymode('file8.c'))
+
 
         self.assertTrue('file9.c' == editor.get_test_file(0))
-        #self.assertTrue('internal' == editor.get_displaymode('file9.c'))
+
 
         self.assertTrue('file10.c' == editor.get_test_file(1))
         self.assertTrue('file12.c' == editor.get_test_file(2))
-        #self.assertTrue('internal' == editor.get_displaymode('file10.c'))
-        #self.assertTrue('internal' == editor.get_displaymode('file12.c'))
 
 
         self.assertTrue('file11.c' == editor.get_test_file(3))
         self.assertTrue('file12.c' == editor.get_test_file(4))
-        #self.assertTrue('internal' == editor.get_displaymode('file11.c'))
-        #self.assertTrue('internal' == editor.get_displaymode('file12.c'))
-        # self.assertTrue('internal-library' == editor.get_displaymode('file12.c'))
+
 
         # ACTIONS
 
@@ -178,24 +165,17 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         # => old display field shall be removed!!
         editor.add_download_file()
         editor.set_download_filename("file4.c", 2)
-        alert = editor.driver.switch_to.alert
-        alert.accept()
+#        alert = editor.driver.switch_to.alert
+#        alert.accept()
 
-#        editor.set_fileref('file2.c', 1, 'xml_download_filename')
-#        editor.set_fileref('file3.c', 2, 'xml_download_filename')
 
-        self.assertTrue('file5.c' == editor.get_display_file(0))
+#        self.assertTrue('file5.c' == editor.get_display_file(0))
 
-        #print 'empty field: "' + editor.get_template_file(0) + '"'
-        #self.assertTrue('' == editor.get_template_file(0))
-#        self.assertTrue('file1.c' == editor.get_visible_file(0))
+
         self.assertTrue('file7.c' == editor.get_download_file(1))
         self.assertTrue('file4.c' == editor.get_download_file(2))
 
-#        self.assertTrue('file2.c' == editor.get_visible_file(1)) # index -1
-#        self.assertTrue('file3.c' == editor.get_visible_file(2)) # index -1
-#        self.assertTrue('download' == editor.get_displaymode('file2.c'))
-#        self.assertTrue('download' == editor.get_displaymode('file3.c'))
+
 
         # todo??
         # test/instruction, test/test, test/model-solution(?), template/library, template/test/test
@@ -210,10 +190,10 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
 
         alert = editor.driver.switch_to.alert
         alert.accept() # dismiss()
-#        if alert.text == 'A value you are looking for':
-#            alert.dismiss
-#        else:
-#            alert.accept
+        #        if alert.text == 'A value you are looking for':
+        #            alert.dismiss
+        #        else:
+        #            alert.accept
 
 
         self.assertTrue('file6.c' == editor.get_download_file(0)) # still there
@@ -229,13 +209,13 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         # add and delete file11.c to display
         #self.assertTrue('internal' == editor.get_displaymode('file11.c'))
         indexDisplay = 1
-        editor.add_display_file()
-        editor.set_display_filename("file11.c", indexDisplay)
-        self.assertTrue('file11.c' == editor.get_display_file(indexDisplay))
+#        editor.add_display_file()
+#        editor.set_display_filename("file11.c", indexDisplay)
+#        self.assertTrue('file11.c' == editor.get_display_file(indexDisplay))
 
         # delete 11
         #self.assertTrue('file11.c' == editor.get_download_file(indexLib))
-        editor.delete_display(indexDisplay)
+#        editor.delete_display(indexDisplay)
         #self.assertTrue('internal' == editor.get_displaymode('file11.c'))
 
 

@@ -80,7 +80,7 @@ class JavaTest(zipFileTest.ZipFileTest):
         # fill regexp filename
         editor.set_restrict_filename(0, "ABC123*", False, False)
         # LON-CAPA path
-        editor.set_LON_CAPA_path(lon_capa_path)
+        # editor.set_LON_CAPA_path(lon_capa_path)
         # fill language
         editor.set_language(language)
         # fill programming language
@@ -192,14 +192,14 @@ class JavaTest(zipFileTest.ZipFileTest):
 
         # fill compiler test #0
         editor.set_test_title(counter_test_index, "java compiler test title #0")
-        editor.set_test_public(0, "False")
-        editor.set_test_required(0, "False")
-        editor.set_jct_flags(0, "flags")
-        editor.set_jct_output_flags(0, "no_output_flags")
-        editor.set_jct_libs(0, "selenium")
+#        editor.set_test_public(0, "False")
+#        editor.set_test_required(0, "False")
+#        editor.set_jct_flags(0, "flags")
+#        editor.set_jct_output_flags(0, "no_output_flags")
+#        editor.set_jct_libs(0, "selenium")
         # editor.set_jct_file_pattern(0, "*.java")
         # test of issue 24
-        editor.set_jct_file_pattern(0, ".*(?<!(Test|lper)\.[jJ][aA][vV][aA])$")
+#        editor.set_jct_file_pattern(0, ".*(?<!(Test|lper)\.[jJ][aA][vV][aA])$")
 
         counter_test_index = counter_test_index + 1
 
@@ -219,8 +219,8 @@ class JavaTest(zipFileTest.ZipFileTest):
         editor.set_test_file(counter_test_index, 1)
         editor.set_test_title(counter_test_index, "JUnit Test #0")
         editor.set_junit_test_class(0, "JUNIT test class #0")
-        editor.set_test_public(counter_test_index, "False")
-        editor.set_test_required(counter_test_index, "False")
+#        editor.set_test_public(counter_test_index, "False")
+#        editor.set_test_required(counter_test_index, "False")
         editor.set_junit_version(0, 1)
         # editor.set_junit_fileref2(counter_test_index, "1")
 
@@ -231,8 +231,8 @@ class JavaTest(zipFileTest.ZipFileTest):
         editor.set_test_file(counter_test_index, 4) # file with package name
         # editor.set_test_title(counter_test_index, "JUnit Test #1")
         # editor.set_junit_test_class(1, "JUNIT test class #1")
-        editor.set_test_public(counter_test_index, "True")
-        editor.set_test_required(counter_test_index, "True")
+#        editor.set_test_public(counter_test_index, "True")
+#        editor.set_test_required(counter_test_index, "True")
         editor.set_junit_version(1, 0)
         # editor.set_junit_fileref2(counter_test_index, "2")
 
@@ -246,16 +246,16 @@ class JavaTest(zipFileTest.ZipFileTest):
         editor.add_checkstyle()
 
         editor.set_test_title(counter_test_index, "checkstyle test title #0")
-        editor.set_test_public(counter_test_index, "False")
-        editor.set_test_required(counter_test_index, "False")
+#        editor.set_test_public(counter_test_index, "False")
+#        editor.set_test_required(counter_test_index, "False")
         editor.set_cs_version(0, 0)
         editor.set_cs_max_warnings(0, "2")
         editor.set_test_file(counter_test_index, 3)
         counter_test_index = counter_test_index + 1
 
         editor.set_test_title(counter_test_index, "checkstyle test title #1")
-        editor.set_test_public(counter_test_index, "True")
-        editor.set_test_required(counter_test_index, "True")
+#        editor.set_test_public(counter_test_index, "True")
+#        editor.set_test_required(counter_test_index, "True")
         editor.set_cs_version(1, 1)
         editor.set_cs_max_warnings(1, "0")
         editor.set_test_file(counter_test_index, 3)

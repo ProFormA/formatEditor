@@ -54,7 +54,7 @@ class SetlxDgTest(zipFileTest.ZipFileTest):
         # fill MimeType
         editor.set_restrict_filename(0, "filename", False, False)
         # LON-CAPA path
-        editor.set_LON_CAPA_path("input4444/")
+        #editor.set_LON_CAPA_path("input4444/")
         # fill language
         editor.set_language("en")
         # fill programming language
@@ -92,7 +92,7 @@ class SetlxDgTest(zipFileTest.ZipFileTest):
         #editor.add_download_file()
         editor.set_download_filename("file2.stlx", 0)
         #editor.add_display_file()
-        editor.set_display_filename("file4.stlx", 0)
+#        editor.set_display_filename("file4.stlx", 0)
 
         # editor.set_file_class(0, 0)
         # editor.set_file_class(1, 1)
@@ -152,8 +152,8 @@ class SetlxDgTest(zipFileTest.ZipFileTest):
 
         editor.set_test_file(counter_test_index, 1)
         editor.set_test_title(counter_test_index, "SETLX Test #0")
-        editor.set_test_public(counter_test_index, "False")
-        editor.set_test_required(counter_test_index, "False")
+#        editor.set_test_public(counter_test_index, "False")
+#        editor.set_test_required(counter_test_index, "False")
 
         # framework and version cannot be changed
         # => no test
@@ -165,8 +165,8 @@ class SetlxDgTest(zipFileTest.ZipFileTest):
 
         editor.set_test_file(counter_test_index, 3)
         editor.set_test_title(counter_test_index, "SETLX Test #1")
-        editor.set_test_public(counter_test_index, "True")
-        editor.set_test_required(counter_test_index, "True")
+#        editor.set_test_public(counter_test_index, "True")
+#        editor.set_test_required(counter_test_index, "True")
         # editor.set_test_fileref2(counter_test_index, "2")
 
 
@@ -181,8 +181,8 @@ class SetlxDgTest(zipFileTest.ZipFileTest):
         # do not set filename and title because these values are set by editor!
 #        editor.set_test_file(counter_test_index, 1)
 #        editor.set_test_title(counter_test_index, "SETLX Syntax check #0")
-        editor.set_test_public(counter_test_index, "False")
-        editor.set_test_required(counter_test_index, "False")
+#        editor.set_test_public(counter_test_index, "False")
+#        editor.set_test_required(counter_test_index, "False")
 
         # framework and version cannot be changed
         # => no test

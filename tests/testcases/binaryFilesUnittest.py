@@ -79,12 +79,12 @@ class BinaryFilesTest(zipFileTest.ZipFileTest):
 
         import filecmp
         self.assertTrue(filecmp.cmp(self.output_folder + "/template.zip", "input/template.zip", 0))
-        self.assertTrue(filecmp.cmp(self.output_folder + "/instruction.zip", "input/instruction.zip", 0))
+        #self.assertTrue(filecmp.cmp(self.output_folder + "/instruction.zip", "input/instruction.zip", 0))
         self.assertTrue(filecmp.cmp(self.output_folder + "/de/myproject/file0.java", "input/file0.java", 0))
 
 
-        for fl in glob.glob(self.output_folder + "/instruction.zip"):
-            os.remove(fl)
+        #for fl in glob.glob(self.output_folder + "/instruction.zip"):
+        #    os.remove(fl)
         for fl in glob.glob(self.output_folder + "/template.zip"):
             os.remove(fl)
         for fl in glob.glob(self.output_folder + "/de/myproject/file0.java"):
@@ -130,9 +130,9 @@ class BinaryFilesTest(zipFileTest.ZipFileTest):
         # Display FILES
         ####################################################################
 
-        editor.load_display_file('input/instruction.txt', 0)
-        editor.add_display_file()
-        editor.load_display_file('input/instruction.zip', 1)
+#        editor.load_display_file('input/instruction.txt', 0)
+#        editor.add_display_file()
+#        editor.load_display_file('input/instruction.zip', 1)
 
         ####################################################################
         # Download FILES
@@ -171,19 +171,19 @@ class BinaryFilesTest(zipFileTest.ZipFileTest):
 
         self.checkForFilesInZip()
 
-        zipFileTest.ZipFileTest.saveLonCapaFile(self, True)
+#        zipFileTest.ZipFileTest.saveLonCapaFile(self, True)
         zipFileTest.ZipFileTest.reimportZipFile(self)
         zipFileTest.ZipFileTest.saveZipFile(self, expectedZipName, False) # True)
         self.checkForFilesInZip()
 
-        zipFileTest.ZipFileTest.saveLonCapaFile(self, True)
+#        zipFileTest.ZipFileTest.saveLonCapaFile(self, True)
 
         # check for visible template and instruction filesD:\users\karin\Code\zell\git\formatEditor\tests\output\java\binary.zip
 
-        self.assertTrue('instruction.txt' == editor.get_display_file(0))
-        #self.assertTrue(editor.get_displaymode('instruction.txt') == 'display')
-        self.assertTrue('instruction.zip' == editor.get_display_file(1))
-        #self.assertTrue(editor.get_displaymode('instruction.zip') == 'display')
+#        self.assertTrue('instruction.txt' == editor.get_display_file(0))
+#        #self.assertTrue(editor.get_displaymode('instruction.txt') == 'display')
+#        self.assertTrue('instruction.zip' == editor.get_display_file(1))
+#        #self.assertTrue(editor.get_displaymode('instruction.zip') == 'display')
 
         self.assertTrue('template.txt' == editor.get_download_file(0))
         #self.assertTrue(editor.get_displaymode('template.txt') == 'edit')

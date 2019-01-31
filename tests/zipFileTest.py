@@ -139,16 +139,16 @@ class ZipFileTest(unittest.TestCase):
 
         return self.TaskFileNo
 
-    def saveLonCapaFile(self, modelSolution_alert):
-        self.ProblemFileNo = self.ProblemFileNo + 1
-        editor.save_lon_capa_problem(self.getProblemFile(self.ProblemFileNo), modelSolution_alert) # self.filename_problem_1)
+#    def saveLonCapaFile(self, modelSolution_alert):
+#        self.ProblemFileNo = self.ProblemFileNo + 1
+#        editor.save_lon_capa_problem(self.getProblemFile(self.ProblemFileNo), modelSolution_alert) # self.filename_problem_1)
 
-        # < !-- generated with ProFormA editor version 2.2.1 -->
+#        # < !-- generated with ProFormA editor version 2.2.1 -->
 
-        self.assertTrue(editor.is_problem_file1_equal_to_file2_except_for_version(self.filename_problem_reference, self.getProblemFile(self.ProblemFileNo)),
-                        "problem file output mismatch " + str(self.ProblemFileNo))
+#        self.assertTrue(editor.is_problem_file1_equal_to_file2_except_for_version(self.filename_problem_reference, self.getProblemFile(self.ProblemFileNo)),
+#                        "problem file output mismatch " + str(self.ProblemFileNo))
 
-        return self.ProblemFileNo
+#        return self.ProblemFileNo
 
 
     def reimportZipFile(self):
@@ -160,12 +160,12 @@ class ZipFileTest(unittest.TestCase):
         # editor.perform_xml_lint_check(filename_task_xml_1);
 
         self.saveZipFile(expectedFilename, modelSolution_alert)
-        self.saveLonCapaFile(modelSolution_alert)
+#        self.saveLonCapaFile(modelSolution_alert)
 
 
         self.reimportZipFile()
         self.saveZipFile(expectedFilename, modelSolution_alert)
-        self.saveLonCapaFile(modelSolution_alert)
+#        self.saveLonCapaFile(modelSolution_alert)
 
     if __name__ == '__main__':
         unittest.main()

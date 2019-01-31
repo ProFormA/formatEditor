@@ -522,6 +522,7 @@ class TaskClass {
         let gradingRoot = null;
         let xmlWriter = null;
         const xmlns = "urn:proforma:v2.0";
+        let task = null;
 
         /* Version 1.0.1
         function writeFile(item, index) {
@@ -630,7 +631,7 @@ class TaskClass {
 
             tests.appendChild(testElem);
             if (item.configItem)
-                item.configItem.onWriteXml(item, item.uiElement, config, xmlDoc, xmlWriter);
+                item.configItem.onWriteXml(item, item.uiElement, config, xmlDoc, xmlWriter, task);
         }
 
         function writeGradingTest(item, index) {
@@ -659,7 +660,7 @@ class TaskClass {
 
 
         try {
-            let task = null;
+
             if (topLevelDoc) {
                 xmlDoc = topLevelDoc;
                 task = xmlDoc.createElementNS(xmlns, "task");
@@ -671,7 +672,7 @@ class TaskClass {
             }
 
             task.setAttribute("lang", this.lang);
-            task.setAttribute("uuid", this.uuid);
+            task.setAttribute("uuid", generateUUID());// this.uuid);
             config.writeNamespaces(task);
 
             xmlWriter = new XmlWriter(xmlDoc, xmlns);
@@ -723,6 +724,8 @@ class TaskClass {
             }
 
             let xsds = [ 'xsd/proforma.xsd' ];
+            // do not add all xsds from configuration because not all of them may be used
+            // resulting in an error message
             xsds = xsds.concat(config.xsds);
 
 
@@ -732,6 +735,7 @@ class TaskClass {
                     $.get(xsd_file, function (data, textStatus, jqXHR) {      // read XSD schema
                         const valid = xmllint.validateXML({xml: result /*xmlString*/, schema: jqXHR.responseText});
                         if (valid.errors !== null) {                                // does not conform to schema
+                            //alert(xsd_file);
                             setErrorMessage("Errors in XSD-Validation " + xsd_file + ":");
                             valid.errors.some(function (error, index) {
                                 setErrorMessage(error);

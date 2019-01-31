@@ -477,14 +477,16 @@ def set_restrict_filename(index, text, regexp, optional):
 
 #    set_input_field("xml_restrict_filename", text)
 
-def set_LON_CAPA_path(text):
-    change_tab("main_tab")
-    set_input_field("lczip", text)
+#def set_LON_CAPA_path(text):
+#    change_tab("main_tab")
+#    set_input_field("lczip", text)
 
 def set_language(text):
+    change_tab("main_tab")
     select_option("xml_lang", text)
 
 def set_prog_language(text):
+    change_tab("main_tab")
     select_option("xml_programming-language", text)
 
 
@@ -517,11 +519,11 @@ def select_chrome_option(elem, select):
     keyboard.release(Key.enter)
 
 
-def add_display_file():
-    change_tab("main_tab")
-    elems = driver.find_elements_by_class_name("add_multimedia_fileref")
-#    elems = driver.find_elements_by_class_name("add_visible_fileref")
-    elem = elems[0].click()
+#def add_display_file():
+#    change_tab("main_tab")
+#    elems = driver.find_elements_by_class_name("add_multimedia_fileref")
+#    #    elems = driver.find_elements_by_class_name("add_visible_fileref")
+#    elem = elems[0].click()
 
 def add_template_file():
     change_tab("main_tab")
@@ -612,16 +614,16 @@ def set_display_mode(index, displaymode):
     time.sleep(timeoutClick)
 
 
-def load_display_file(filename, index):
-    change_tab("main_tab")
-    load_fileref(filename, index, "xml_multimedia_filename")
-#    load_fileref(filename, index, "xml_visible_filename")
-#    set_display_mode(index, 'display')
+#def load_display_file(filename, index):
+#    change_tab("main_tab")
+#    load_fileref(filename, index, "xml_multimedia_filename")
+##    load_fileref(filename, index, "xml_visible_filename")
+##    set_display_mode(index, 'display')
 
-def set_display_filename(filename, index):
-    change_tab("main_tab")
-#    set_visible_fileref(filename, index, "display")
-    set_fileref(filename, index, "xml_multimedia_filename")
+#def set_display_filename(filename, index):
+#    change_tab("main_tab")
+##    set_visible_fileref(filename, index, "display")
+#    set_fileref(filename, index, "xml_multimedia_filename")
 
 
 def load_download_file(filename, index):
@@ -885,12 +887,12 @@ def set_checkbox_value(elem, value):
     if bool_is_checked != value:
         elem.click()
 
-def set_test_public(test_index, public):
-    elem = driver.find_elements_by_class_name('xml_pr_public')
+#def set_test_public(test_index, public):
+#    elem = driver.find_elements_by_class_name('xml_pr_public')
     #select = Select(elem[test_index])
     #select.select_by_visible_text(public)
     ###select.select_by_value(value) # unfortunately does not work
-    set_checkbox_value(elem[test_index], public == 'True')
+#    set_checkbox_value(elem[test_index], public == 'True')
     #is_checked = elem[test_index].get_attribute('checked')
     ## convert
     #bool_is_checked = False
@@ -901,12 +903,12 @@ def set_test_public(test_index, public):
     #    elem[test_index].click()
 
 
-def set_test_required(test_index, required):
-    elem = driver.find_elements_by_class_name('xml_pr_required')
+#def set_test_required(test_index, required):
+#    elem = driver.find_elements_by_class_name('xml_pr_required')
     #select = Select(elem[test_index])
     #####select.select_by_value(value) # unfortunately does not work
     #select.select_by_visible_text(required)
-    set_checkbox_value(elem[test_index], required == 'True')
+#    set_checkbox_value(elem[test_index], required == 'True')
 
     #is_checked = elem[test_index].get_attribute('checked')
     #shall_be_checked = (required == 'True')
@@ -941,31 +943,31 @@ def set_test_file(test_index, file_index):  # 0-based
 ####################################################################
 def add_java_compiler_test():
     change_tab("test_tab")          
-    elem = driver.find_element_by_id("addJavaCompilerTest").click()
+    elem = driver.find_element_by_id("addCompilerTest").click()
 
 
-def set_jct_flags(jct_index, flags): # 0-based
-    elem = driver.find_elements_by_class_name('xml_pr_CompilerFlags')
+#def set_jct_flags(jct_index, flags): # 0-based
+#    elem = driver.find_elements_by_class_name('xml_pr_CompilerFlags')
     # elem[jct_index].clear()
     # elem[jct_index].send_keys(flags)
-    set_input_value(elem[jct_index], flags)
+#    set_input_value(elem[jct_index], flags)
 
-def set_jct_output_flags(jct_index, flags): # 0-based
-    elem = driver.find_elements_by_class_name('xml_pr_CompilerOutputFlags')
-    set_input_value(elem[jct_index], flags)
+#def set_jct_output_flags(jct_index, flags): # 0-based
+#    elem = driver.find_elements_by_class_name('xml_pr_CompilerOutputFlags')
+#    set_input_value(elem[jct_index], flags)
     # elem[jct_index].clear()
     # elem[jct_index].send_keys(flags)
 
-def set_jct_libs(jct_index, libs): # 0-based
-    elem = driver.find_elements_by_class_name('xml_pr_CompilerLibs')
+#def set_jct_libs(jct_index, libs): # 0-based
+#    elem = driver.find_elements_by_class_name('xml_pr_CompilerLibs')
     # elem[jct_index].clear()
     # elem[jct_index].send_keys(libs)
-    set_input_value(elem[jct_index], libs)
+#    set_input_value(elem[jct_index], libs)
 
 
-def set_jct_file_pattern(jct_index, pattern): # 0-based
-    elem = driver.find_elements_by_class_name('xml_pr_CompilerFPatt')
-    set_input_value(elem[jct_index], pattern)
+#def set_jct_file_pattern(jct_index, pattern): # 0-based
+#    elem = driver.find_elements_by_class_name('xml_pr_CompilerFPatt')
+#    set_input_value(elem[jct_index], pattern)
 
 #    elem[jct_index].clear()
 #    elem[jct_index].send_keys(pattern)
@@ -997,7 +999,7 @@ def set_input_value(field, value):
 ####################################################################
 def add_junit_test():
     change_tab("test_tab")              
-    elem = driver.find_element_by_id("addJavaJUnitTest").click()
+    elem = driver.find_element_by_id("addJUnitTest").click()
 
 
 #def set_junit_description(junit_index, text): # 0-based
@@ -1091,6 +1093,7 @@ def add_dejagnu_tester():
 def change_tab(name):
     element = driver.find_element_by_id(name)
     element.click()
+    #time.sleep(2)
 
 
 def export_to(task_xml, lon_capa_problem):
@@ -1196,7 +1199,7 @@ def is_file1_equal_to_file2_except_for_uuid(file1, file2):
     # replace uuid by 'unknown'
     for subelement in dom1.getElementsByTagName("task"):
         if subelement.hasAttribute("uuid"):
-            subelement.setAttribute('uuid', 'unknown')
+            subelement.setAttribute('uuid', 'deleted')
 
 
     # attention! The pretty printer changes the content of the file :-(
@@ -1211,7 +1214,7 @@ def is_file1_equal_to_file2_except_for_uuid(file1, file2):
     # replace uuid by 'unknown'
     for subelement in dom2.getElementsByTagName("task"):
         if subelement.hasAttribute("uuid"):
-            subelement.setAttribute('uuid', 'unknown')
+            subelement.setAttribute('uuid', 'deleted')
 
     f = open(file2 + ".tmp", 'w')
     f.write(dom2.toprettyxml(indent=" "))

@@ -37,8 +37,10 @@ const config = (function(testConfigNode) {
     function writeNamespaces(task) {
         //task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:jartest', jartestns);
         //task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:praktomat', praktomatns);
+/*
         task.setAttributeNS('http://www.w3.org/2000/xmlns/', "xmlns:unit", unittestns_new);
         task.setAttributeNS('http://www.w3.org/2000/xmlns/', "xmlns:cs", checkstylens);
+*/
     }
 
     function resolveNamespace(prefix, defaultns) {
@@ -144,7 +146,7 @@ const config = (function(testConfigNode) {
         "<option selected='selected' value='6.2'>6.2</option>" +
         "<option value='7.6'>7.6</option>" +
         "</select>"+
-        " <label for='xml_pr_CS_warnings'>Maximum warnings allowed<span class='red'>*</span>: </label>"+
+        " <label for='xml_pr_CS_warnings'> Maximum warnings allowed<span class='red'>*</span>: </label>"+
         "<input class='tinyinput xml_pr_CS_warnings' value='0'/></p>";
 
     const JUnit_Default_Title = "JUnit Test";
@@ -263,19 +265,30 @@ const config = (function(testConfigNode) {
         onReadXml(test, xmlReader, testConfigNode, testroot) {
             let unitNode = xmlReader.readSingleNode("unit:unittest", testConfigNode);
 
-            $(testroot).find(".xml_ju_mainclass").val(xmlReader.readSingleText("unit:entry-point", unitNode));
+            switch (unitNode.namespaceURI) {
+                case unittestns_old:
+                    $(testroot).find(".xml_ju_mainclass").val(xmlReader.readSingleText("unit:main-class", unitNode));
+                    break;
+                case unittestns_new:
+                    $(testroot).find(".xml_ju_mainclass").val(xmlReader.readSingleText("unit:entry-point", unitNode));
+                    break;
+                default:
+                    throw new Error('unsupported namespace ' + xmlReader.defaultns + ' in JUnitTest');
+            }
+
             $(testroot).find(".xml_ju_version").val(xmlReader.readSingleText("@version", unitNode));
             $(testroot).find(".xml_ju_framew").val(xmlReader.readSingleText("@framework", unitNode));
 
             //this.readPraktomat(test, xmlReader, testConfigNode, testroot);
         }
-        onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+        onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter, task) {
             let root = uiElement.root;
+            task.setAttributeNS('http://www.w3.org/2000/xmlns/', "xmlns:unit", unittestns_new);
 
             let unittestNode = xmlDoc.createElementNS(unittestns_new, "unit:unittest");
             testConfigNode.appendChild(unittestNode);
 
-            xmlWriter.createTextElement(unittestNode, 'unit:entry-point', $(root).find(".xml_ju_mainclass").val(), unittestns_old);
+            xmlWriter.createTextElement(unittestNode, 'unit:entry-point', $(root).find(".xml_ju_mainclass").val(), unittestns_new);
             unittestNode.setAttribute("framework", $(root).find(".xml_ju_framew").val());
             unittestNode.setAttribute("version", $(root).find(".xml_ju_version").val());
 
@@ -295,21 +308,43 @@ const config = (function(testConfigNode) {
         }
 
         onReadXml(test, xmlReader, testConfigNode, testroot) {
-            //this.readPraktomat(test, xmlReader, testConfigNode, testroot);
-
-            let praktomatNode = xmlReader.readSingleNode("dns:test-meta-data", testConfigNode);
-            $(testroot).find(".xml_pr_CS_warnings").val(xmlReader.readSingleText("praktomat:max-checkstyle-warnings", praktomatNode));
-            $(testroot).find(".xml_pr_CS_version").val(xmlReader.readSingleText("praktomat:version", testConfigNode));
+            let csNode = xmlReader.readSingleNode("cs:java-checkstyle", testConfigNode);
+            if (!csNode) {
+                // task version 1.0.1
+                // todo: check version
+                let praktomatNode = xmlReader.readSingleNode("dns:test-meta-data", testConfigNode);
+                $(testroot).find(".xml_pr_CS_warnings").val(xmlReader.readSingleText("praktomat:max-checkstyle-warnings", praktomatNode));
+                $(testroot).find(".xml_pr_CS_version").val(xmlReader.readSingleText("praktomat:version", testConfigNode));
+            } else {
+                switch (csNode.namespaceURI) {
+                    case checkstylens:
+                        $(testroot).find(".xml_pr_CS_version").val(xmlReader.readSingleText("@version", csNode));
+                        $(testroot).find(".xml_pr_CS_warnings").val(xmlReader.readSingleText("cs:max-checkstyle-warnings", csNode));
+                        break;
+                    default:
+                        throw new Error('unsupported namespace ' + xmlReader.defaultns + ' in JUnitTest');
+                }
+            }
         }
 
-        onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+        onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter, task) {
             let root = uiElement.root;
+            task.setAttributeNS('http://www.w3.org/2000/xmlns/', "xmlns:cs", checkstylens);
+
+            let csNode = xmlDoc.createElementNS(checkstylens, "cs:java-checkstyle");
+            testConfigNode.appendChild(csNode);
+
+            xmlWriter.createTextElement(csNode, 'cs:max-checkstyle-warnings', $(root).find(".xml_pr_CS_warnings").val(), checkstylens);
+            csNode.setAttribute("version", $(root).find(".xml_pr_CS_version").val());
+
+/*
 
             xmlWriter.createTextElement(testConfigNode, 'cs:version', $(root).find(".xml_pr_CS_version").val(), checkstylens);
 
             //this.writePraktomat(test, uiElement, testConfigNode, xmlDoc, xmlWriter);
             let childs = testConfigNode.getElementsByTagName('test-meta-data');
             xmlWriter.createTextElement(childs[0], "cs:max-checkstyle-warnings", $(root).find(".xml_pr_CS_warnings").val(), checkstylens);
+*/
         }
     }
     class PythonTest extends CustomTest {
@@ -332,8 +367,8 @@ const config = (function(testConfigNode) {
         constructor() {
             super("SetlX Test", "jartest", htmlSetlX);
         }
-        onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
-            this.writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
+        //onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+        //    this.writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
     }
     class setlXSyntaxTest extends CustomTest {
         constructor() {
@@ -350,8 +385,8 @@ const config = (function(testConfigNode) {
             // set test title
             getTestField(testId, ".xml_test_title").val("SetlX-Syntax-Test");
         }
-        onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
-            this.writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
+        //onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {
+        //    this.writePraktomatJar(test, uiElement, testConfigNode, xmlDoc, xmlWriter); }
     }
 
 
@@ -394,11 +429,9 @@ const config = (function(testConfigNode) {
 
     // list of XML schema files that shall be used for validation
     const xsds = [
-        "xsd/proforma-unittest.xsd",
-        "xsd/proforma-checkstyle.xsd"
-        // configXsdSchemaFile,
-        //"praktomat.xsd"
-        // .... TODO
+        // "proforma-test.xsd",
+//        "xsd/proforma-unittest.xsd",
+//        "xsd/proforma-checkstyle.xsd"
     ];
 
 
