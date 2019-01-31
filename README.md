@@ -7,19 +7,19 @@ Edge könnte inzwischen auch funktionieren
 
 
 TODO:
-
 - Dateien mit gleichem Namen in den Filerefs unterstützen
-- readJarTest fehlt noch
+- Entfernen der Zwischenschichtklasse beim XML-Schreiben (ggf. auch Lesen)
+- Validieren der erzeugten XML-Datei gegen die Test-XSDs
+- Einklappen der Descriptions
 
-Folgende Änderungen Kommunizieren:
+
+Folgende Änderungen kommunizieren:
 - csv als Textdatei werten (anstelle von Binärdatei)
 - Entscheidung, dass große Dateien automatisch als Binärdateien gewertet werden, rausnehmen
 - codemirror=false setzen (ggf. auch andere Lösung)
 
-
-Ideen für Testfälle:
+Weitere Testfälle:
 - veränderte Grading Hints
-
 - Java-Klassen- und Package-Erkennung
 - Programmiersprache C
 

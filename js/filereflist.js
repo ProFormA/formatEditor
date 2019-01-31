@@ -55,7 +55,6 @@ class FileReferenceList extends DynamicList {
             "<input class='tinyinput fileref_fileref' readonly/></td>";
 
 
-
         const tdExpandButton = "<td><button class='collapse' title='show content' onclick='" +
             this.className + ".getInstance().toggleEditor($(this))'>"+showEditorText+"</button><br></td>";
 
@@ -146,7 +145,7 @@ class FileReferenceList extends DynamicList {
 
     getNumberOfExtraColumns() { return 0;}
 
-    toggleEditor(element, hide) {
+    toggleEditor(element) {
         let td = element.parent();
         let tr = td.parent();
         const fileid = tr.find('.fileref_fileref')[0].value;
@@ -430,6 +429,16 @@ class FileReferenceList extends DynamicList {
             FileReferenceList.deleteFile(oldFileId);
         }
     };
+
+    static updateAllViews() {
+        $.each($(".fileref_viewer"), function(index, item) {
+            let tr = $(item).closest('tr'); // parent().parent();
+            let trPrev = tr.prev(); // parent().parent();
+            const fileid = trPrev.find('.fileref_fileref')[0].value;
+            let ui_file = FileWrapper.constructFromId(fileid);
+            $(item).val(ui_file.text);
+       });
+    }
 
     static updateAllEditorButtons() {
         $.each($(".fileref_fileref"), function(index, item) {

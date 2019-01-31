@@ -438,13 +438,17 @@ $(function () {
 
     ///////////////////////////////////////////////////////// jQuery UI settings
     $("#tabs").tabs(); // hide HTML elements when the manual or FAQ are selected
+    $("#rightPanel").show();
+    $("#button-list").show();
+    $("#end-container").show();
+    $("#xml-output-input").show();
+    $("#otherSoftware2").show();
+
+    //    $('#tabs').on( "tabsactivate", function( event, ui ) {// click(function (e) {
     $('#tabs').click(function (e) {
+        var active = $('#tabs').tabs('option', 'active');
         var curTab = $('.ui-tabs-active');
-        $("#rightPanel").show();
-        $("#button-list").show();
-        $("#end-container").show();
-        $("#xml-output-input").show();
-        $("#otherSoftware2").show();
+
 
         // refresh codemirror editors  -
         // otherwise content is visible only after first click in window
@@ -456,6 +460,12 @@ $(function () {
             });
         }, 5);
     });
+    $('#tabs').on( "tabsactivate", function( event, ui ) {
+        var active = $('#tabs').tabs('option', 'active');
+        FileReferenceList.updateAllViews();
+
+    });
+
 
     // $( "#tabs" ).on( "tabsactivate", function( event, ui ) {alert('tabsactivate');} );
 
