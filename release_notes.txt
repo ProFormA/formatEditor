@@ -1,3 +1,10 @@
+Release Notes for 3.0.0
+
+use new ProFromA format 2.0 
+LON-Capa is no longer supported
+changes in user interface due to new ProFormA format
+code refactured
+
 Release Notes for 2.2.3
 
 Remove DejaGnu test buttons (shall be no longer supported)

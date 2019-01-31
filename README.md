@@ -7,6 +7,7 @@ Edge könnte inzwischen auch funktionieren
 
 
 TODO:
+- Dokumentation aktualisieren
 - Dateien mit gleichem Namen in den Filerefs unterstützen
 - Entfernen der Zwischenschichtklasse beim XML-Schreiben (ggf. auch Lesen)
 - Validieren der erzeugten XML-Datei gegen die Test-XSDs
