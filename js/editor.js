@@ -758,8 +758,11 @@ $(function () {
     enableTestMode = function () {
         // enable support for tests!
         console.log("enable test mode");
-        $("#buttonExport").show();
-        $("#buttonImport").show();
+        //$("#buttonExport").show();
+        //$("#buttonImport").show();
+
+        $("#addFile").show();
+        $("#loadFile").show();
     }
 
     if (TEST_MODE)

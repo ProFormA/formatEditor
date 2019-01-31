@@ -148,14 +148,14 @@ def openEditorPageFile():
     editor_path = the_path + "/../proformaEditor.html"
     # print editor_path
     driver.get("file:///" + editor_path)
-    # driver.execute_script('enableTestMode();')
+    driver.execute_script('enableTestMode();')
 
 
 def openEditorPage():
 #    driver.get("https://media.elan-ev.de/proforma/editor/releases/preview/proformaEditor101.html")
     driver.get("http://127.0.0.1:8000/proformaEditor.html")
     driver.set_window_size(1024,768)
-    # driver.execute_script('enableTestMode();')
+    driver.execute_script('enableTestMode();')
 
 
 def init(the_driver):
@@ -740,6 +740,8 @@ def get_displaymode(filename):
 ####################################################################
 # FILE
 ####################################################################
+# todo: adding files is no longer supported
+# => add file in fileref drop down list
 def add_file():
     change_tab("file_tab")
     elem = driver.find_element_by_id("addFile").click()
