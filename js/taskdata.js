@@ -513,6 +513,7 @@ class TaskClass {
     }
 
 
+    // todo: read data direectly from user input instead of using TaskClass object
     writeXml(topLevelDoc, rootNode) {
         let xmlDoc = null;
         let files = null;
