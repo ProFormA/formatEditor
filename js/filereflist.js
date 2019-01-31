@@ -32,11 +32,17 @@ class FileReferenceList extends DynamicList {
     constructor(classFilename, classFileref, jsClassName, label, help, mandatory) {
         super(classFilename, classFileref, jsClassName, label, help, mandatory, 'xml_fileref_table');
 
-        this.table = this.table +
-            "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>";
+        //this.table = this.table +
+        //    "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>";
 
         filenameClassList.push('.' + this.classFilename);
         filerefClassList.push('.' + classFileref);
+    }
+
+    // override
+    getTableString() {
+        return super.getTableString()  +
+            "<span class='drop_zone_text drop_zone'>Drop Your File(s) Here!</span>";
     }
 
     createExtraContent() { return ''; }
