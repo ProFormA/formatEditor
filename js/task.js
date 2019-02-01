@@ -400,10 +400,12 @@ readAndDisplayXml = function() {
             } else {
                 switch (item.usageInLms) {
                     case T_LMS_USAGE.EDIT:
-                        alert('??? hier sollte man nicht hinkommen');
-                        if (indexTemplate === 0)
-                            $("#code_template").val('Hier kommt der Code rein');
-                        else
+                        //alert('??? hier sollte man nicht hinkommen');
+                        if (indexTemplate === 0) {
+                            codeskeleton.setValue(item.content);
+                            indexTemplate++;
+                            //$("#code_template").val('Hier kommt der Code rein');
+                        } else
                             DownloadableFileReference.getInstance().setFilenameOnCreation(downloadroot, indexDownload++, item.filename);
 //                            TemplateFileReference.getInstance().setFilenameOnCreation(templateroot, indexTemplate++, item.filename);
                         break;

@@ -275,7 +275,7 @@ class TaskClass {
             this.uuid = xmlReader.readSingleText("@uuid");
             this.lang = xmlReader.readSingleText("@lang");
             this.sizeSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@max-size");
-            if (this.sizeSubmission != '')
+            if (this.sizeSubmission !== '')
                 this.sizeSubmission = this.sizeSubmission * 1000; // convert to bytes (or *1024?)
             // mimetype is unsupported
             // this.mimeTypeRegExpSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction");
@@ -292,31 +292,31 @@ class TaskClass {
                     case 'internal-library':
                         taskfile.usedByGrader = true;
                         taskfile.usageInLms = null;
-                        taskfile.visible = false;
+                        taskfile.visible = T_VISIBLE.NO;
                         break;
                     case 'template':
                         if (this.codeskeleton === '') {
                             this.codeskeleton = thisNode.textContent;
                             taskfile.usedByGrader = false;
                             taskfile.usageInLms = T_LMS_USAGE.EDIT;
-                            taskfile.visible = true;
+                            taskfile.visible = T_VISIBLE.YES;
                         }
                         else {
                             taskfile.usedByGrader = false;
                             //taskfile.usageInLms = T_LMS_USAGE.EDIT;
                             taskfile.usageInLms = T_LMS_USAGE.DOWNLOAD;
-                            taskfile.visible = true;
+                            taskfile.visible = T_VISIBLE.YES;
                         }
                         break;
                     case 'instruction':
                         taskfile.usedByGrader = false;
                         taskfile.usageInLms = T_LMS_USAGE.DOWNLOAD;
-                        taskfile.visible = true;
+                        taskfile.visible = T_VISIBLE.YES;
                         break;
                     case 'library':
                         taskfile.usedByGrader = true;
                         taskfile.usageInLms = T_LMS_USAGE.DOWNLOAD;
-                        taskfile.visible = true;
+                        taskfile.visible = T_VISIBLE.YES;
                         break;
                 }
                 taskfile.comment = xmlReader.readSingleText("@comment", thisNode);
