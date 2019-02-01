@@ -131,14 +131,13 @@ const config = (function(testConfigNode) {
     class CCompilerTest extends CustomTest {
         constructor() {
             super("C Compiler Test", "c-compilation", '' /*htmlCComp*/);
-            //this.withFileRef = false;
             this.gradingWeight = weightCompilation;
+            this.manadatoryFile = false;
         }
     }
     class JavaCompilerTest extends CustomTest {
         constructor() {
             super("Compiler Test", "java-compilation", '' /*htmlJavaComp*/);
-            //this.withFileRef = false;
             this.gradingWeight = weightCompilation;
             this.manadatoryFile = false;
         }
@@ -178,12 +177,6 @@ const config = (function(testConfigNode) {
             xmlWriter.createTextElement(unittestNode, 'unit:entry-point', $(root).find(".xml_ju_mainclass").val(), unittestns_new);
             unittestNode.setAttribute("framework", $(root).find(".xml_ju_framew").val());
             unittestNode.setAttribute("version", $(root).find(".xml_ju_version").val());
-
-//            let childs = testConfigNode.getElementsByTagName('test-meta-data');
-
-            // remove description completely ???
-//        xmlWriter.createTextElement(childs[0], 'praktomat:config-testDescription', $(root).find(".xml_pr_configDescription").val(), praktomatns);
-//        xmlWriter.createTextElement(childs[0], 'praktomat:config-testDescription', '', praktomatns);
         }
     }
     class CheckstyleTest extends CustomTest {
