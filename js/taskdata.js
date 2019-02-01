@@ -65,7 +65,7 @@ class XmlReader {
         this.nsResolver = function (prefix) {
             switch (prefix) {
                 case 'dns': return defaultns; // 'urn:proforma:task:v1.0.1';
-                default:    return config.resolveNamespace(prefix, defaultns);
+                default:    return config.resolveNamespace(prefix, defaultns, this.xmlDoc);
             }
         };
     }
@@ -250,8 +250,17 @@ class TaskClass {
                 fileRef.refid = xmlReader.readSingleText("@refid", fileRefNode);
                 element.filerefs[counter++] = fileRef;
                 fileRefNode = fileRefIterator.iterateNext();
-                if (visibility)
-                    task.files[fileRef.refid].visible = visibility;
+                if (visibility != null) {
+                    // increase visibilty
+                    switch (task.files[fileRef.refid].visible) {
+                        case T_VISIBLE.NO:  task.files[fileRef.refid].visible = visibility; break;
+                        case T_VISIBLE.YES:  break;
+                        case T_VISIBLE.DELAYED:
+                            if (visibility === T_VISIBLE.YES)
+                                task.files[fileRef.refid].visible = visibility;
+                            break;
+                    }
+                }
             }
         }
 
@@ -266,6 +275,8 @@ class TaskClass {
             this.uuid = xmlReader.readSingleText("@uuid");
             this.lang = xmlReader.readSingleText("@lang");
             this.sizeSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction/@max-size");
+            if (this.sizeSubmission != '')
+                this.sizeSubmission = this.sizeSubmission * 1000; // convert to bytes (or *1024?)
             // mimetype is unsupported
             // this.mimeTypeRegExpSubmission = xmlReader.readSingleText("dns:submission-restrictions/dns:regexp-restriction");
 
@@ -284,9 +295,18 @@ class TaskClass {
                         taskfile.visible = false;
                         break;
                     case 'template':
-                        taskfile.usedByGrader = false;
-                        taskfile.usageInLms = T_LMS_USAGE.EDIT;
-                        taskfile.visible = true;
+                        if (this.codeskeleton === '') {
+                            this.codeskeleton = thisNode.textContent;
+                            taskfile.usedByGrader = false;
+                            taskfile.usageInLms = T_LMS_USAGE.EDIT;
+                            taskfile.visible = true;
+                        }
+                        else {
+                            taskfile.usedByGrader = false;
+                            //taskfile.usageInLms = T_LMS_USAGE.EDIT;
+                            taskfile.usageInLms = T_LMS_USAGE.DOWNLOAD;
+                            taskfile.visible = true;
+                        }
                         break;
                     case 'instruction':
                         taskfile.usedByGrader = false;

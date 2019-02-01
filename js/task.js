@@ -363,8 +363,8 @@ readAndDisplayXml = function() {
     $("#xml_title").val(task.title);
     $("#xml_task_internal_description").find('.xml_internal_description').val(task.comment);
     $("#xml_uuid").val(task.uuid);
-    $("#xml_subm_regexp_size").val(task.sizeSubmission);
-    $("#xml_subm_regexp_name").val(task.filenameRegExpSubmission);
+    $("#xml_submission_size").val(task.sizeSubmission);
+    $("#xml_restrict_filename").val(task.filenameRegExpSubmission);
     if (task.proglangVersion)
         $("#xml_programming-language").val(task.proglang + '/' + task.proglangVersion);
     else

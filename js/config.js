@@ -28,8 +28,8 @@ const configXsdSchemaFile = version101;   // choose version for output
 
 
 const config = (function(testConfigNode) {
-    const praktomatns     = "urn:proforma:praktomat:v0.2";
-    const jartestns       = "urn:proforma:tests:jartest:v1";
+    const praktomatns     = "urn:proforma:praktomat:v0.2"; // for checkstyle in task 1.0.1
+    //const jartestns       = "urn:proforma:tests:jartest:v1";
     const unittestns_old  = "urn:proforma:tests:unittest:v1";
     const unittestns_new  = "urn:proforma:tests:unittest:v1.1";
     const checkstylens    = "urn:proforma:tests:java-checkstyle:v1.1";
@@ -43,20 +43,24 @@ const config = (function(testConfigNode) {
 */
     }
 
-    function resolveNamespace(prefix, defaultns) {
+    function resolveNamespace(prefix, defaultns, xmldoc) {
+        // todo: find better solution to figure out if namespace is supported
         switch (defaultns) {
             case 'urn:proforma:task:v1.0.1':
                 switch (prefix) {
                     case 'unit':      return unittestns_old;
-                    case 'jartest':   return jartestns;
-                    case 'praktomat': return praktomatns;
+                    // case 'jartest':   return jartestns;
+                    case 'praktomat': return praktomatns; // for checkstyle
                 }
                 return '';
             case 'urn:proforma:v2.0':
                 switch (prefix) {
-                    case 'unit':      return unittestns_new;
+                    case 'unit':
+                        //unitNs = xmldoc.lookupNamespaceURI('unit');
+                        //if (unitNs.toString() !== unittestns_new)
+                        //    alert('unit namespace is not supported in ProFormA version 2.0: ' + xmldoc.lookupNamespaceURI('unit'));
+                        return unittestns_new;
                     case 'cs':        return checkstylens;
-                    case 'jartest':   return jartestns;
                 }
                 return '';
             default:
@@ -147,6 +151,8 @@ const config = (function(testConfigNode) {
         }
         onReadXml(test, xmlReader, testConfigNode, testroot) {
             let unitNode = xmlReader.readSingleNode("unit:unittest", testConfigNode);
+            if (!unitNode)
+                throw new Error('element unit:unittest not found in unittest or unittest namespace invalid');
 
             switch (unitNode.namespaceURI) {
                 case unittestns_old:
@@ -226,28 +232,29 @@ const config = (function(testConfigNode) {
     }
     class PythonTest extends CustomTest {
         constructor() {
-            super("Python Test", "python", '' /*htmlPraktomat*/);
+            super("Python Test", "python", '');
         }
     }
+/*
     class DgSetupTest extends CustomTest {
         constructor() {
-            super("DejaGnu Setup", "dejagnu-setup", '' /*htmlPraktomat*/);
+            super("DejaGnu Setup", "dejagnu-setup", '');
             this.gradingWeight = weightCompilation;
         }
     }
     class DgTesterTest extends CustomTest {
         constructor() {
-            super("DejaGnu Tester", "dejagnu-tester", /*htmlPraktomat*/);
+            super("DejaGnu Tester", "dejagnu-tester", '');
         }
-    }
+    }*/
     class setlXTest extends CustomTest {
         constructor() {
-            super("SetlX Test", "jartest", htmlSetlX);
+            super("SetlX Test", "setlx", htmlSetlX);
         }
     }
     class setlXSyntaxTest extends CustomTest {
         constructor() {
-            super("SetlX Syntax Test", "jartest", htmlSetlX);
+            super("SetlX Syntax Test", "setlx-compilation", htmlSetlX);
             this.gradingWeight = weightCompilation;
         }
         onCreate(testId) {
@@ -268,8 +275,8 @@ const config = (function(testConfigNode) {
     const testJavaJUnit   = new JUnitTest();
     const testCheckStyle  = new CheckstyleTest();
     const testPython      = new PythonTest();
-    const testDgSetup     = new DgSetupTest(DgSetupTest);
-    const testDGTester    = new DgTesterTest(DgTesterTest);
+    //const testDgSetup     = new DgSetupTest(DgSetupTest);
+    //const testDGTester    = new DgTesterTest(DgTesterTest);
     const testSetlX       = new setlXTest(setlXTest);
     const testSetlXSyntax = new setlXSyntaxTest();
 
@@ -282,7 +289,7 @@ const config = (function(testConfigNode) {
         new ProglangInfo("python/2",   [testPython,   testCheckStyle ]),
         new ProglangInfo("setlX/2.40", [testSetlX,    testSetlXSyntax, testCheckStyle]),
         // TODO
-        new ProglangInfo("c",          [testCComp, testDgSetup, testDGTester]),
+        new ProglangInfo("c",          [testCComp /*, testDgSetup, testDGTester*/]),
     ];
 
 
@@ -297,7 +304,7 @@ const config = (function(testConfigNode) {
         testSetlX, testSetlXSyntax,
         testCComp,
         testCheckStyle,
-        testDgSetup, testDGTester
+        //testDgSetup, testDGTester
     ];
 
     // list of XML schema files that shall be used for validation
