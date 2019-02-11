@@ -12,7 +12,7 @@ Why is no output produced?</h4>
 
 These are error messages. They are generated when form elements are missing
 or when an XML file is read that contains missing information or incorrect tags.
-A task should only be uploaded to LON-CAPA if there are no error messages.
+
 
 <h4>How do I reload/start a new task?</h4>
 
@@ -25,8 +25,7 @@ See the explanation for file/class below.
 
 <h4>How do I specify a path for a file to be uploaded?</h4>
 
-The filename can contain a path (in Unix notation using backslashes). <br />
-If a file is needed as a library, it is important that the library flag is set.
+The filename can contain a relative path (in Unix notation using backslashes). <br />
 
 <h4>How do I check static details about the code? How do I prohibit students from using
 (or require them to use) a construct?</h4>
@@ -38,24 +37,13 @@ Examples can be found <a href="beispiel.html" target="new">here</a>.
 
 At least one model solution must be provided. It should be uploaded as a file.
 The reason for requiring a model solution is because it makes it easier to
-reuse a task at a later point. Some tools (but not LON-CAPA) use the model solution
+reuse a task at a later point. Some tools use the model solution
 for comparison with the students' submissions. (If it is really not feasible
 to upload a model solution in exceptional circumstances
 then an empty file could be provided instead.) If the students create their submission via a
 textarea, then the filename of the model solution is used as the filename of the
 student-submitted code.
 
-<h4>Can the students upload a file instead of using copy/paste in LON-CAPA?</h4>
-
-Not at the moment. We are working on that, though.
-<!-- The mimetype for the submission should be: ^(application/.*jar)$ -->
-
-<h4>Why has a task been passed/failed even though not all/all tests have been passed?</h4>
-
-If tests are set to non-public, the result is not shown to students. If a non-public test has
-been failed, the whole task might be failed even though the students cannot see why. On the
-other hand, if a test is set to be "not required", a task can be passed without passing
-this test.
 
 <h4>Does the order of the tests matter? Why does my JUnit test/SetlX syntax test not work?</h4>
 
@@ -66,7 +54,7 @@ down. A compile test/syntax test should come before any other tests, i.e. be mov
 ("The Checker caused an unexpected internal error.")</h4>
 
 Please check whether all required fields of the editor have been filled in. If there
-is an error message showing underneath the 'Export XML file'-button, the error needs
+is an error message showing when pressing 'save zip', the error needs
 to be fixed. A 'Schemas validity error' usually means that some required fields
 have not been filled in. It is recommended to run and test all tests in an IDE before
 using them in the editor. German umlauts can pose a problem (even in comments) because
@@ -79,24 +67,9 @@ task zip file that causes the problem.
 <h4>What about versions?</h4>
 
 The select menus show which software versions are supported by the backend software.<br />
-The exchange format itself is versioned as well. The editor reads xml files in different versions (version 0.9.4 and 1.0.1).
-The version of the editor's output format can be set via the internal xsdSchemaFile variable.
+The exchange format itself is versioned as well.
+The editor reads xml files in different versions (version 2.0 and 1.0.1).
 
-<h4>What do these form elements mean?</h4>
-
-<ul>
-<li><b>Description</b>: what the students will see.
-<li><b>Submission/max filesize</b>: of the file that is uploaded by the students in kilobytes.
-<li><b>Submission/mimetype</b>: what types of files can be uploaded. For Java the exact filename
-could be used.
-<li><b>LON-CAPA/path to zip file</b>: should be the name of the subfolder where the zip file will be located (or an absolute path).
-  For absolute paths use "/res/fhwf/..." and not "/priv/..." because that is where
-it will be after publication. The filename of the zip file is not part of the path. When uploading the
-zip file to LON-CAPA its default name is the task title minus any non-alphanumeric characters.
-
-<li>For tests: <b>public</b>: The students will see the test result.
-<li>For tests: <b>required</b>: This test must be passed in order to pass the whole task.
-</ul>
 
 <h4>What has not yet been implemented/does not work?</h4>
 
@@ -113,39 +86,13 @@ format which is implemented by this editor.)
 <li><b>Special characters (such as German umlauts)</b> may not work properly in all fields.
 It may depend on the encoding of the characters that is used.
 For example, they might not work in JUnit tests, not even in comments.
-<li>Not all fields are always used by the grading tool. For example, currently the title of a
-compile test is not displayed in LON-CAPA.
-<li>This version of the editor is not yet complete with respect to all tools and the exchange format.
-It focuses on LON-CAPA.
 </ul>
 
-<h4>Details about creating a task in LON-CAPA</h4>
-
-<ul>
-<li>The zip file <b>cannot be directly edited in LON-CAPA</b>! Trying to do so might
-lead to a crash. It is possible to edit the files directly via Webdav but only with some
-Webdav-clients. (The LON-CAPA support team can provide more information on how to
-access LON-CAPA via Webdav).
-<li>After changing a zip file, it needs to be <b>uploaded</b> again to LON-CAPA. There is an
-upload button at the top of the relevant LON-CAPA page which needs to be used because
-there is no "edit file" option in the dropdown for the file in LON-CAPA.
-<li>The zip file must be <b>published</b> in LON-CAPA each time after it has been changed.
-<li><b>Changing the description</b> of a task: LON-CAPA reads the description from the
-problem file, not from the zip. Thus the description can be changed in LON-CAPA
-without uploading a new zip file. For archiving purposes it might be useful to change the zip file
-as well, though.
-<li><b>LON-CAPA problem file</b>: the important information in the problem file is
-in the line starting with "$externalurl = &proforma_url". The first 3 arguments of that
-function call should not be changed. The next 3 arguments are:
-the filename of the submitted file, the mimetype of the
-representation within the LON-CAPA textarea (e.g. for the colouring of reserved words) and
-the path to the zip file.
-</ul>
 
 <h4>Can I install and configure the editor myself?</h4>
 
 Look at config.js to change configuration settings. You can remove/add tests or add support for other programming
-languages. You can also switch on/off LON-CAPA support and CodeMirror use.
+languages.
 
 There is more information about
 <a href="installationFAQ.html" target="new">installation and configuration</a>.
@@ -156,4 +103,3 @@ The current version of the editor can be found on
 <h4>My question has not been answered/I found a bug:</h4>
 
 Please send us an email: <code>zell-proforma@ostfalia.de</code>
-

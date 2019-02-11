@@ -11,10 +11,10 @@
 <!-- See the file js/editor.js for the version number of this software, its license etc -->
 <h2>Anleitung für den ProFormA-Editor</h2>
 
-<p>Der ProFormA-Editor ermöglicht es, eine XML-Datei für Programmieraufgaben neu zu erstellen
-(einschließlich einer Problem-Datei für LON-CAPA). Außerdem kann eine XML-Datei
-im entsprechenden Format eingelesen, um gewünschte Tests oder
-zusätzliche Dateien erweitert und wieder exportiert werden.
+<p>Der ProFormA-Editor ermöglicht es, eine XML-Datei für Programmieraufgaben komplett neu zu erstellen.
+Außerdem kann eine existierende XML-Datei
+(ggf. auch in einer abweichenden Formatversion) eingelesen werden, geändert und
+im aktuellen Format 2.0 exportiert werden.
 Das XML-Format entspricht dem <a href="https://github.com/ProFormA/taskxml" target="new">
 Standard für den Austausch von Programmieraufgaben
 entsprechen</a>.</p>
@@ -32,20 +32,21 @@ auch andere Kriterien hinzugezogen werden (Compilierbarkeit, Stil, Robustheit, P
 
 <b style="color:red"> Der Editor nutzt Funktionen, die nicht jeder Browser in
   der benötigten Form unterstützt.
-  Chrome (getestet mit Version 65.0.3325.181 (64-bit)) und Firefox (getestet mit 59.0.1 (64-Bit)) sind hier die Browser der Wahl.
+  Chrome (getestet mit Version 72.0.3626.96 (64-bit)) und Firefox (getestet mit 65.0 (64-Bit)) sind hier die Browser der Wahl.
     </b>
 <br>
-In Internet Explorer, Edge (Version 38.14393) und Safari funktioniert der Export nicht.
+In Internet Explorer und Safari funktioniert der Export nicht. In Edge funktioniert der Export
+vermutlich, ist aber nicht getestet.
 
 
 <h3>Aufbau des Editors</h3>
 Der Editor gliedert sich in mehrere Reiter (auch als Tabs oder Registerkarten bezeichnet), die jeweils unterschiedliche Bestandteile einer Aufgabe beinhalten:
 <ul>
-    <li><b>Main:</b> Beschreibung und wichtige Parameter der Aufgabe</li>
-    <li><b>Model Solutions:</b> enthält eine oder (in Ausnahmefällen auch) mehrere Musterlösungen </li>
-    <li><b>Tests:</b> enthält Angaben zu Tests, mit denen überprüft wird, ob eine Einreichung korrekt oder fehlerhaft ist</li>
+    <li><b>Task:</b> Beschreibung und wichtige Parameter der Aufgabe</li>
+    <li><b>Submission:</b> enthält eine oder (in Ausnahmefällen auch) mehrere Musterlösungen
+      sowie Einschränkungen für die Einreichung. Ferner kann hier eine Codevorlage festgelegt werden.</li>
+    <li><b>Testsuite:</b> enthält Angaben zu Tests, mit denen überprüft wird, ob eine Einreichung korrekt oder fehlerhaft ist</li>
     <li><b>Files:</b> listet alle Dateien auf, die eingesetzt werden</li>
-    <li><b>Output:</b> Anzeige der Ergebnisdatei (nur zu Debugzwecken)</li>
 
 </ul>
 
@@ -67,7 +68,7 @@ Dazu muss weiterhin die Programmiersprache aus einer Liste ausgewählt werden.
 
 <p>
 In einem weiteren Abschnitt kann die studentische Einreichung eingeschränkt werden, um bereits auf Client-Seite
-einige Fehler abfangen zu können (maximale Dateigröße, Dateityp (als MimeType)).
+einige Fehler abfangen zu können (z.B. maximale Dateigröße).
 </p>
 
 <p>
@@ -80,23 +81,6 @@ in die Aufgabe und helfen, lange Schnittstellenbeschreibungen zu vermeiden.
 
     Wird der Filepicker eingesetzt, wird die Code-Vorlage als Download angeboten.<br>
 
-</p><p>
-Bei Nutzung von LON-CAPA muss der Pfad zur Aufgabe relativ zur Problem-Datei angegeben werden.
-</p><p>
-Beispiel: Wenn die LON-CAPA-Problem-Datei in LON-CAP im Ordner
-
-    <code> https://vita.ostfalia.de/res/fhwf/ecult/Java/</code>
-
-    liegt und die Aufgaben-Datei (zip-Datei)
-    in den Unterordner Ordner <code>zip</code> abgelegt werden soll, dann kann der LON-CAPA-Pfad entweder mit
-
-    <code>zip/</code>
-
-    oder aber absolut mit
-
-    <code>/res/fhwf/ecult/Java/zip/</code>
-
-    angegeben werden.
 </p>
 
 <p>Wichtig ist im gesamten Formular: Alle mit einem roten Stern (*) gekennzeichneten
@@ -107,17 +91,15 @@ Felder müssen ausgefüllt sein, damit eine Aufgabe exportiert werden kann.</p>
 in einem externen Editor bzw. einer entsprechenden Entwicklungsumgebung erstellt und vorab getestet wird.
 
 </p><p>
-    Die Datei wird entweder über die &ltload...&gt-Option der Filename-Auswahlliste oder am einfachsten per Drag&Drop
-in den Editor geladen. Alternativ kann auch von Hand in dem Files-Reiter eine Datei erstellt und anschließend mit der
-Musterlösung verknüpft werden.
+    Die Datei wird entweder über die [open...]-Option der Filename-Auswahlliste oder am einfachsten per Drag&Drop
+in den Editor geladen.
 
 </p><p>
     Wichtig: Wenn die studentische Eireichung nur aus Text in einem Editor (im Gegensatz zu einer
     hochgeladenen Datei) besteht, so wird dieser Text im Grader in einer Datei gespeichert, die
     denselben Namen wie die Musterlösung trägt. Es ist daher auf den korrekten Namen der Musterlösung zu achten.
-    (In Planung: eigenes Feld für den Dateinamen)
-
 </p>
+
 <h4>Tests</h4>
 
 <p>
@@ -129,14 +111,8 @@ Musterlösung verknüpft werden.
     Bei Java gibt es z.B. JUnit- oder Compiler-Tests.
 
 
-</p><p>
-    Innerhalb der Tests gibt es unterschiedliche einstellbare Optionen. Es kann festgelegt werden, ob ein
-    Testergebnis für Studierende sichtbar (<code>public</code>) ist oder nicht.
-
-    Die Auswahl <code>required</code> legt fest, ob ein Test bestanden werden muss, um eine Aufgabe zu
-    bestehen oder nicht. Dieser Schalter ist üblicherweise zu setzen.
-
-</p><p>
+</p>
+<p>
     Testskripte werden analog zur Musterlösung hinzugefügt.
 
 </p><p>
@@ -146,7 +122,7 @@ Musterlösung verknüpft werden.
 <h4>Dateien</h4>
 <p>
     Jede Datei muss einen Namen mit einer entsprechende Endung (z.B. <code>.java</code>) erhalten.
-    (Werden die Dateien über die &ltload...&gt-Option oder per
+    (Werden die Dateien über die [open...]-Option oder per
     Drag&Drop geladen, so wird der Original-Dateiname automatisch übernommen.)
 </p><p>
     Eine Besonderheit gibt es für Java-Dateien.
@@ -163,39 +139,33 @@ Musterlösung verknüpft werden.
     <col align="center">
     <col align="center">
 
-    <tr><th>Anzeige (interne Bezeichnung)</th><th>Bedeutung</th><th>Beispiel</th><th>sichtbar für Grader</th><th>sichtbar für Studierende</th></tr>
+    <tr><th>Anzeige (interne Bezeichnung)</th><th>Bedeutung</th><th>Beispiel</th><th>Nutzung durch Grader</th><th>sichtbar für Studierende</th></tr>
 
-    <tr><td><b>Code attachment zu Description</b><br>(library)</td><td>enthält Code, den der Studierende benötigt,
+    <tr><td><b>Downloadable File(s)</b></td><td>enthält enthält weitere Details zur Aufgabenstellung (z.B. pdfs)
+      oder Code, den der Studierende benötigt,
         um seine Lösung zu entwickeln.<br>
         Gleichzeitig kann die Datei auch in einem der Tests beim Compilieren/ Linken eingebunden werden.</td>
-        <td>Java-Interface-Klasse, jar-Datei, c-Header</td>
-        <td>x</td><td>x</td></tr>
+        <td>pdf, Java-Interface-Klasse, jar-Datei, c-Header</td>
+        <td>nur, falls zusätzlich in Test eingebunden</td><td>x</td></tr>
 
-    <tr><td><b>Other attachment zu Description</b><br>(instruction)</td><td>enthält weitere Details zur Aufgabenstellung<br></td>
-        <td>Diagramme, Fotos, Bilder, pdf</td>
-        <td>-</td><td>x</td></tr>
 
-    <tr><td><b>Code-Schablone</b><br>(template)</td><td>
+    <tr><td><b>Code-Schablone</b></td><td>
 
         Code-Schnipsel (skeleton), der vom Studierenden bis zur vollständigen Lösung ergänzt werden soll.
 
-        Sind mehrere Templates angegeben, wird in LON-CAPA das erste genommen, das 'embedded' (Angabe bei der Datei) ist</td>
+        </td>
         <td>Klassenrahmen mit Funktionsrümpfen</td>
         <td>-</td><td>x</td></tr>
 
-    <tr><td><b>Test</b><br>(internal)</td><td>Testskripte, die entsprechend dem Testtyp in der Sandbox oder aber ausgeführt werden</td>
+    <tr><td><b>Test</b></td><td>Testskripte, Bibliotheken u.ä., die entsprechend dem Testtyp in der Sandbox oder aber ausgeführt werden</td>
         <td>JUNIT-Dateien, Checkstyle-Dateien</td>
-        <td>x</td><td>-</td></tr>
+        <td>x</td><td>nur, falls zusätzlich in Liste der Downloadable Files </td></tr>
 
-    <tr><td><b>Musterlösung</b><br>(internal)</td><td>Musterlösung(en)</td>
+    <tr><td><b>Musterlösung</b></td><td>Musterlösung(en)</td>
         <td></td>
-        <td>(x)</td><td>(x)</td></tr>
+        <td>x (i.allg. aber nicht benutzt)</td><td>abhängig vom LMS und dessen Einstellungen</td></tr>
 
-    <tr><td><b>Library-Flag bei Datei gesetzt</b><br>(internal-library)</td>
-        <td>Datei wird grader- und programmiersprachenabhängig als Bibliothek betrachtet und
-            entsprechend den Regeln der Programmiersprache bei der Compilierung/ beim Liniken eingebunden<br></td>
-        <td>jar-Datei</td>
-        <td>x</td><td>-</td></tr>
+
 
 </table>
 </p><p>
@@ -224,11 +194,7 @@ Die Verbindung zwischen der Datei und ihrem Zweck erfolgt über den Dateinamen.<
 <p>Sobald alle gewünschten Dateien und Tests hinzugefügt wurden, kann
 die Aufgabe als Zip-Datei exportiert werden.
 
-    Dazu wird der <code>Save Zip File</code>-Knopf verwendet. Dabei wird die Zip-Datei erzeugt, die
-    direkt in LON-CAPA hochgeladen werden kann.
-    Für LON-CAPA muss <em>zusätzlich</em> noch die Problem-Datei erzeugt werden. Dazu dient der
-    <code>Save LON-CAPA Problem File</code>-Knopf auf der Main-Seite.
-
+    Dazu wird der <code>Save Zip File</code>-Knopf verwendet.
 
 
 <!-- <p><img alt="doku3" src="images/doku3.png" /></p>-->
@@ -240,35 +206,3 @@ auch zu Bearbeitungszwecken eingelesen
 werden. Dazu wird über den <code>Load Task...</code>-Knopf  eine Datei gesucht und geladen.
 Die Aufgabe kann nun wie oben beschrieben verändert und auch wieder exportiert
 werden.</p>
-
-<h3>Einbinden in LON-CAPA</h3>
-
-<p>Um eine Aufgabe in LON-CAPA zu erzeugen, müssen folgende Schritte erfolgen:</p>
-<ol>
-    <li>Die generierte ZIP-Datei muss in LON-CAPA hochgeladen werden.</li>
-    <li>Die hochgeladene Datei muss veröffentlicht werden (auch nach Änderungen).</li>
-    <li>
-        Zusätzlich muss in LON-CAPA eine neue Aufgabe (als eCult-Programmieraufgabe)
-        erstellt werden.
-    </li>
-    <li>
-        Die LON-CAPA-Problem-Datei wird manuell (im XML-Editor von LON-CAPA) in die neue Aufgabe kopiert.
-    </li>
-
-</ol>
-
-<p>
-<b>Wichtig:</b> Der in der LON-CAPA-Problem-Datei angegebene Pfad
-(welcher auf der Main-Seite eingestellt wurde) muss mit dem Ort übereinstimmt,
-an dem die ZIP-Datei in LON-CAPA hochgeladen wurde.
-
-</p>
-<p>
-
-
-<!--Zuletzt ist noch zu beachten, dass die ZIP-Datei
-auch schon beim Testen der Aufgabe veröffentlicht werden muss,
-da diese sonst nicht verarbeitet wird.--!</p>
-
-
-</p>
