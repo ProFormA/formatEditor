@@ -23,6 +23,7 @@ import unittest
 import editor
 import testconfig
 import os
+import time
 import shutil
 
 
@@ -35,8 +36,12 @@ class ZipFileTest(unittest.TestCase):
     default_output_folder = "output"
 
     def setUp(self, testdir, testfile): # testdir e.g. 'xsd_094', testfile e.g. 'task_094'
+        cwd = os.getcwd()
+        if cwd.endswith('testcases'):
+            raise Exception('check working directoy: ' + cwd);
+
         print "----------------------------------------------------"
-        print "starting ZipFileTest " + testdir + "/" + testfile
+        print "starting ZipFileTest " + testdir + "/" + testfile + ': ' + self._testMethodName
         print "----------------------------------------------------"
 
         self.output_folder = self.default_output_folder + "/" + testdir
@@ -153,6 +158,7 @@ class ZipFileTest(unittest.TestCase):
 
     def reimportZipFile(self):
         # reimport
+        #time.sleep(2)
         editor.load_task_file(self.lastSavedZipFile, True) # self.output_folder + "/" + self.filename_task_xml, True)
 
     def saveFilesAndReloadAndSave(self, expectedFilename, modelSolution_alert):

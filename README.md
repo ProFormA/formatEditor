@@ -12,6 +12,8 @@ TODO:
 - Entfernen der Zwischenschichtklasse beim XML-Schreiben (ggf. auch Lesen)
 - Validieren der erzeugten XML-Datei gegen die Test-XSDs
 - Einklappen der Descriptions
+- Encoding unterstützen
+- auch attached Dateien editieren, wenn die Dateiendung vermuten lässt, dass das geht (z.b. java)
 
 
 Folgende Änderungen kommunizieren:

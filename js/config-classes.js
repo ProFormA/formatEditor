@@ -30,6 +30,7 @@ class CustomTest {
 
         this.fileRefLabel = 'File'; // default label
         this.manadatoryFile = true;
+        this.alternativeTesttypes = [];
 
         // derived member variables
         const compactName = title.replace(/ /g, "");

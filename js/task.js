@@ -304,17 +304,31 @@ readAndDisplayXml = function() {
         $.each(config.testInfos, function(index, configItem) {
             if (!ui_test && item.testtype === configItem.testType) {
                 ui_test = TestWrapper.create(item.id, item.title, configItem, item.weight);
-//                ui_test = TestWrapper.create(item.id, item.title, configItem.htmlExtraFields,
-                //                    configItem.testType, configItem.withFileRef);
                 task.readTestConfig(taskXml, item.id, configItem, ui_test.root);
                 ui_test.comment = item.comment;
                 ui_test.description = item.description;
             }
         });
         if (!ui_test) {
-            setErrorMessage("Test "+item.testtype+" not imported");
-            testIDs[item.id] = 0;
-            return; // wrong test-type
+            // try alternative test types
+            $.each(config.testInfos, function(index, configItem) {
+                $.each(configItem.alternativeTesttypes, function(index, alternative) {
+                    if (!ui_test && item.testtype === alternative) {
+                        ui_test = TestWrapper.create(item.id, item.title, configItem, item.weight);
+                        task.readTestConfig(taskXml, item.id, configItem, ui_test.root);
+                        ui_test.comment = item.comment;
+                        ui_test.description = item.description;
+                    }
+
+                });
+            });
+
+
+            if (!ui_test) {
+                setErrorMessage("Test " + item.testtype + " not imported");
+                testIDs[item.id] = 0;
+                return; // wrong test-type
+            }
         }
 
 

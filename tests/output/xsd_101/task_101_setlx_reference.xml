@@ -1,0 +1,13 @@
+<?xml version="1.0"?><task xmlns="urn:proforma:v2.0" lang="en" uuid="a1da7d5d-0c21-4083-9acd-11ccc9067126"><title>setlx 101</title><description><![CDATA[input111]]></description><proglang version="2.40">setlX</proglang><submission-restrictions max-size="3333000"/><files><file id="codeskeleton" used-by-grader="false" usage-by-lms="edit" visible="yes"><embedded-txt-file filename="code.txt"><![CDATA[
+            /* dummy file text 1 */
+        ]]></embedded-txt-file><internal-description>Code Skeleton for Editor</internal-description></file><file id="1" used-by-grader="true" visible="delayed"><embedded-txt-file filename="file0.stlx"><![CDATA[
+            some text in file #0
+        ]]></embedded-txt-file><internal-description>comment for file file0.stlx</internal-description></file><file id="3" used-by-grader="true" usage-by-lms="download" visible="yes"><embedded-txt-file filename="file2.stlx"><![CDATA[
+            /* dummy file text #2 */
+        ]]></embedded-txt-file><internal-description>comment for file file2.stlx</internal-description></file><file id="4" used-by-grader="false" visible="delayed"><embedded-txt-file filename="file3.stlx"><![CDATA[
+            /* TODO: deutsche Umlautein File 3*/
+        ]]></embedded-txt-file><internal-description>comment for file file3.stlx</internal-description></file><file id="5" used-by-grader="false" usage-by-lms="download" visible="yes"><embedded-txt-file filename="file4.stlx"><![CDATA[
+            int i = 0; # in File 4
+        ]]></embedded-txt-file><internal-description>comment for file file4.stlx</internal-description></file><file id="6" used-by-grader="true" visible="no"><embedded-txt-file filename="setlxsyntaxtest.stlx"><![CDATA[
+            print("");
+        ]]></embedded-txt-file></file></files><model-solutions><model-solution id="1"><filerefs><fileref refid="1"/><fileref refid="4"/></filerefs><internal-description>model solution #0</internal-description></model-solution></model-solutions><tests><test id="1"><title>SetlX-Syntax-Test</title><test-type>setlx-compilation</test-type><test-configuration><filerefs><fileref refid="1"/></filerefs></test-configuration></test><test id="2"><title>SETLX Test #1</title><test-type>setlx</test-type><test-configuration><filerefs><fileref refid="3"/></filerefs></test-configuration></test><test id="3"><title>SetlX Syntax Test</title><test-type>setlx-compilation</test-type><test-configuration><filerefs><fileref refid="6"/></filerefs></test-configuration></test></tests><grading-hints><root function="sum"><test-ref weight="0" ref="1"/><test-ref weight="1" ref="2"/><test-ref weight="0" ref="3"/></root></grading-hints><meta-data/></task>

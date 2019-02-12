@@ -121,9 +121,9 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
 
         editor.set_ms_filename("file8.c", 0)
 
-        editor.add_dejagnu_tester()
-        editor.add_dejagnu_tester()
-        editor.add_dejagnu_tester()
+        editor.add_c_compiler_test() #add_dejagnu_tester()
+        editor.add_c_compiler_test()
+        editor.add_c_compiler_test()
 
         editor.set_test_filename("file9.c", 0)
 

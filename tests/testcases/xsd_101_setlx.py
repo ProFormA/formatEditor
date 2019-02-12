@@ -20,21 +20,22 @@
 # @author   Karin Borm <k.borm@ostfalia.de>
 
 
+
 import editor
 import zipFileTest
 
-expectedZipName = "HelloWorld.zip"
 
-class Xsd_0_94_Test(zipFileTest.ZipFileTest):
+class Xsd_setlx_1_0_1_Test(zipFileTest.ZipFileTest):
 
     def setUp(self):
-        print "setup Xsd_0_94_Test"
-        zipFileTest.ZipFileTest.setUp(self, 'xsd_094', '094')
-        editor.delete_old_task_files(expectedZipName, self.output_folder)
+        print "setup Xsd_setlx_1_0_1_Test"
+        zipFileTest.ZipFileTest.setUp(self, 'xsd_101', 'setlx101')
+        editor.delete_old_task_files("setlx101.zip", self.output_folder)
 
+    def test_zipfile_setlx(self):
+        # change reference test file
+        self.filename_task_xml_reference = self.output_folder + "/task_101_setlx_reference.xml"
 
-# conversion from 0.9.4 is not supported
-#    def test_zipfile_0_94(self):
-#        zipFileTest.ZipFileTest.loadZipFile(self, "input/Hello_World_094.zip") # relative to testsuite
-#        zipFileTest.ZipFileTest.saveFilesAndReloadAndSave(self, expectedZipName, False)
+        zipFileTest.ZipFileTest.loadZipFile(self, "input/task_setlx_101.xml") # relative to testsuite
+        zipFileTest.ZipFileTest.saveFilesAndReloadAndSave(self, "setlx101.zip", False)
 

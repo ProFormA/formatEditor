@@ -107,6 +107,7 @@ class BinaryFilesTest(zipFileTest.ZipFileTest):
         # fill programming language
         editor.set_prog_language(prog_lang)
 
+
         # #############################################
         # fill FILES
         ####################################################################
@@ -117,7 +118,7 @@ class BinaryFilesTest(zipFileTest.ZipFileTest):
         editor.set_filename(0, "de/myproject/file0.java")
         # fill file text
         editor.set_file_text(1, "// dummy file text 1")
-        editor.set_file_type(0, "file")
+        editor.set_file_type(0, "file") # attached
 
         ####################################################################
         # fill MODEL SOLUTION
@@ -142,6 +143,9 @@ class BinaryFilesTest(zipFileTest.ZipFileTest):
         editor.load_download_file('input/template.txt', 0)
         editor.add_download_file()
         editor.load_download_file('input/template.zip', 1)
+
+
+
 
         ####################################################################
         # add Java compiler test

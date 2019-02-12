@@ -63,9 +63,10 @@ class XmlReader {
 
         const defaultns = this.defaultns;
         this.nsResolver = function (prefix) {
+
             switch (prefix) {
                 case 'dns': return defaultns; // 'urn:proforma:task:v1.0.1';
-                default:    return config.resolveNamespace(prefix, defaultns, this.xmlDoc);
+                default:    return config.resolveNamespace(prefix, defaultns);
             }
         };
     }
@@ -239,6 +240,8 @@ class TaskClass {
 
     readXmlVersion101(xmlfile) {
 
+        let template_id = null;
+        let template_referenced = false; // is template referenced in test or somewhere else?
 
 
         function readFileRefs(xmlReader, element, thisNode, visibility, task) {
@@ -248,6 +251,9 @@ class TaskClass {
             while (fileRefNode) {
                 let fileRef = new TaskFileRef();
                 fileRef.refid = xmlReader.readSingleText("@refid", fileRefNode);
+                if (template_id && (template_id === fileRef.refid)) {
+                    template_referenced = true;
+                }
                 element.filerefs[counter++] = fileRef;
                 fileRefNode = fileRefIterator.iterateNext();
                 if (visibility != null) {
@@ -283,6 +289,7 @@ class TaskClass {
             // read files
             let iterator = xmlReader.readNodes("dns:files/dns:file");
             let thisNode = iterator.iterateNext();
+
             while (thisNode) {
                 let taskfile = new TaskFile();
                 taskfile.id = xmlReader.readSingleText("@id", thisNode);
@@ -296,6 +303,7 @@ class TaskClass {
                         break;
                     case 'template':
                         if (this.codeskeleton === '') {
+                            template_id = taskfile.id;
                             this.codeskeleton = thisNode.textContent;
                             taskfile.usedByGrader = false;
                             taskfile.usageInLms = T_LMS_USAGE.EDIT;
@@ -355,6 +363,12 @@ class TaskClass {
                 this.tests[test.id] = test;
                 thisNode = iterator.iterateNext();
             }
+
+            // check if template is referenced somewhere. If not then the file can be deleted!
+            if (!template_referenced) {
+                delete this.files[template_id];
+            }
+
         } catch (err){
             //alert (err);
             setErrorMessage("Error while parsing the xml file. The file has not been imported.", err);
@@ -694,7 +708,7 @@ class TaskClass {
 
             task.setAttribute("lang", this.lang);
             task.setAttribute("uuid", generateUUID());// this.uuid);
-            config.writeNamespaces(task);
+            //config.writeNamespaces(task);
 
             xmlWriter = new XmlWriter(xmlDoc, xmlns);
 

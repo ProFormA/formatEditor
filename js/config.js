@@ -29,27 +29,27 @@ const configXsdSchemaFile = version101;   // choose version for output
 
 const config = (function(testConfigNode) {
     const praktomatns     = "urn:proforma:praktomat:v0.2"; // for checkstyle in task 1.0.1
-    //const jartestns       = "urn:proforma:tests:jartest:v1";
+    //const jartestns       = "urn:proforma:tests:jartest:v1"; // for reading 1.0.1
     const unittestns_old  = "urn:proforma:tests:unittest:v1";
     const unittestns_new  = "urn:proforma:tests:unittest:v1.1";
     const checkstylens    = "urn:proforma:tests:java-checkstyle:v1.1";
 
-    function writeNamespaces(task) {
+//    function writeNamespaces(task) {
         //task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:jartest', jartestns);
         //task.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:praktomat', praktomatns);
 /*
         task.setAttributeNS('http://www.w3.org/2000/xmlns/', "xmlns:unit", unittestns_new);
         task.setAttributeNS('http://www.w3.org/2000/xmlns/', "xmlns:cs", checkstylens);
 */
-    }
+//    }
 
-    function resolveNamespace(prefix, defaultns, xmldoc) {
+    function resolveNamespace(prefix, defaultns) {
         // todo: find better solution to figure out if namespace is supported
         switch (defaultns) {
             case 'urn:proforma:task:v1.0.1':
                 switch (prefix) {
                     case 'unit':      return unittestns_old;
-                    // case 'jartest':   return jartestns;
+                    //case 'jartest':   return jartestns;
                     case 'praktomat': return praktomatns; // for checkstyle
                 }
                 return '';
@@ -60,7 +60,7 @@ const config = (function(testConfigNode) {
                         //if (unitNs.toString() !== unittestns_new)
                         //    alert('unit namespace is not supported in ProFormA version 2.0: ' + xmldoc.lookupNamespaceURI('unit'));
                         return unittestns_new;
-                    case 'cs':        return checkstylens;
+                    case 'cs': return checkstylens;
                 }
                 return '';
             default:
@@ -103,11 +103,6 @@ const config = (function(testConfigNode) {
 //        "<p><label for='xml_pr_configDescription'>Test description: </label>"+
 //        "<input class='largeinput xml_pr_configDescription'/></p>";
 
-    const htmlSetlX =  //htmlPraktomat +
-        "<p><label for='xml_jt_framew'>Framework<span class='red'>*</span>: </label>"+
-        "<select class='xml_jt_framew'><option selected='selected' value='setlX'>setlX</option></select>"+
-        " <label for='xml_jt_version'>Version<span class='red'>*</span>: </label>"+
-        "<select class='xml_jt_version'><option selected='selected' value='2.40'>2.40</option></select></p>";
 
     const htmlCheckstyle = //htmlPraktomat +
         "<p><label for='xml_pr_CS_version'>Version<span class='red'>*</span>: </label>"+
@@ -225,7 +220,8 @@ const config = (function(testConfigNode) {
     }
     class PythonTest extends CustomTest {
         constructor() {
-            super("Python Test", "python", '');
+            super("Python Test", "python-doctest", '');
+            this.alternativeTesttypes = ['python'];
         }
     }
 /*
@@ -242,13 +238,16 @@ const config = (function(testConfigNode) {
     }*/
     class setlXTest extends CustomTest {
         constructor() {
-            super("SetlX Test", "setlx", htmlSetlX);
+            super("SetlX Test", "setlx", '' /*htmlSetlX*/);
+            this.alternativeTesttypes = ['jartest'];
+
         }
     }
     class setlXSyntaxTest extends CustomTest {
         constructor() {
-            super("SetlX Syntax Test", "setlx-compilation", htmlSetlX);
+            super("SetlX Syntax Test", "setlx-compilation", '' /*htmlSetlX*/);
             this.gradingWeight = weightCompilation;
+            this.alternativeTesttypes = ['jartest'];
         }
         onCreate(testId) {
             //this.initPraktomatTest(testId);
@@ -390,7 +389,7 @@ const config = (function(testConfigNode) {
         isBinaryFile: isBinaryFile,
         handleFilenameChangeInTest: handleFilenameChangeInTest,
         writeXmlExtra: writeXmlExtra,
-        writeNamespaces: writeNamespaces,
+        //writeNamespaces: writeNamespaces,
         resolveNamespace: resolveNamespace,
         // data
         proglangInfos: proglangInfos,

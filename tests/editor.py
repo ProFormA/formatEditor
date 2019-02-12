@@ -40,6 +40,7 @@ from pynput.keyboard import Key, Controller
 
 codemirror = True
 
+load_option = '<open...>'
 
 # firstTimeDialogs = True
 # needed for Firefox to store the dialog-opened-state
@@ -54,12 +55,12 @@ timeoutLoadFileref = 1.5
 timeoutTypeFilename = 1
 timeoutSetFileref = 0.3
 #timeoutSetFileref = 1.5
-timeoutAddFileToMs = 1
-timeoutSetFileTest = 1
-timeoutOpenLoadDialog = 1.5
-timeoutReadXml = 1.5
-timeoutConfirmSave = 2.5
-timeoutConfirmOpen = 2.5
+timeoutAddFileToMs = 0.6
+timeoutSetFileTest = 0.6
+timeoutOpenLoadDialog = 1.1
+timeoutReadXml = 1.1
+timeoutConfirmSave = 2.0
+timeoutConfirmOpen = 2.0
 timeoutSwitchToSave = 1
 timeoutClickAndAlert = 1
 timeoutClick = 0.2
@@ -499,22 +500,22 @@ def select_chrome_option(elem, select):
     options_list = select.options
     opt_index = 0
     for option in options_list:
-        if option.text == "<load...>":
+        if option.text == load_option:
             break
         opt_index = opt_index + 1
 
-    # print "index of <load...> is " + str(opt_index)
+    print "index of <load...> is " + str(opt_index)
     elem.click()
     time.sleep(timeoutSelectChrome)
     keyboard = Controller()
 
     for i in range (0, opt_index):
-        # print "[down]"
+        print "[down]"
         keyboard.press(Key.down)
         keyboard.release(Key.down)
-        # time.sleep(1)
+        time.sleep(1)
 
-    # print "[enter]"
+    print "[enter]"
     keyboard.press(Key.enter)
     keyboard.release(Key.enter)
 
@@ -585,10 +586,13 @@ def load_fileref(filename, index, xml_class):
     if browser == 'Chrome':
         # does not work with Chrome (maybe because of a bug!)
         select_chrome_option(elem, select)
+        #select.select_by_visible_text('<load...>')
     else:
-        select.select_by_visible_text('<load...>')
+        select.select_by_visible_text(load_option)
 
-    # print "wait for dialog"
+    # pr
+    # int "wait for dialog"
+
 
     time.sleep(timeoutLoadFileref)
 
@@ -939,6 +943,13 @@ def set_test_file(test_index, file_index):  # 0-based
 
     #select.select_by_value(value) # unfortunately does not work
     select.select_by_index(file_index)
+
+####################################################################
+# C COMPILER TEST
+####################################################################
+def add_c_compiler_test():
+    change_tab("test_tab")
+    elem = driver.find_element_by_id("addCCompilerTest").click()
 
 ####################################################################
 # JAVA COMPILER TEST
