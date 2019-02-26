@@ -350,6 +350,7 @@ class TaskClass {
             // read test(s)
             iterator = xmlReader.readNodes("dns:tests/dns:test");
             thisNode = iterator.iterateNext();
+            let counter = 0;
             while (thisNode) {
                 let test = new TaskTest();
                 test.id = xmlReader.readSingleText("@id", thisNode);
@@ -360,7 +361,8 @@ class TaskClass {
                 let configNode = configIterator.iterateNext();
                 readFileRefs(xmlReader, test, configNode);
 
-                this.tests[test.id] = test;
+                this.tests[counter] = test;
+                counter++;
                 thisNode = iterator.iterateNext();
             }
 
@@ -501,6 +503,7 @@ class TaskClass {
             // read test(s)
             iterator = xmlReader.readNodes("dns:tests/dns:test");
             thisNode = iterator.iterateNext();
+            let counter = 0;
             while (thisNode) {
                 let test = new TaskTest();
                 test.id = xmlReader.readSingleText("@id", thisNode);
@@ -513,7 +516,8 @@ class TaskClass {
                 let configNode = configIterator.iterateNext();
                 readFileRefs(xmlReader, test, configNode);
 
-                this.tests[test.id] = test;
+                this.tests[counter] = test;
+                counter++;
                 thisNode = iterator.iterateNext();
             }
 
@@ -526,7 +530,10 @@ class TaskClass {
             thisNode = iterator.iterateNext();
             while (thisNode) {
                 const id = xmlReader.readSingleText("@ref", thisNode);
-                this.tests[id].weight = xmlReader.readSingleText("@weight", thisNode);
+                this.tests.forEach(function(test) {
+                    if (test.id === id)
+                        test.weight = xmlReader.readSingleText("@weight", thisNode);
+                });
                 thisNode = iterator.iterateNext();
             }
 
@@ -647,6 +654,8 @@ class TaskClass {
                     filerefs.appendChild(fileref);
                 }
             }
+            //console.log('writeXml: create ' + item.title);
+
             let testElem = xmlDoc.createElementNS(xmlns, "test");
             testElem.setAttribute("id", item.id);
             xmlWriter.createTextElement(testElem, 'title', item.title);
@@ -735,6 +744,7 @@ class TaskClass {
 
             tests = xmlDoc.createElementNS(xmlns, "tests");
             task.appendChild(tests);
+            const length = this.tests.length;
             this.tests.forEach(writeTest);
 
             // grading-hints

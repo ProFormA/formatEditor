@@ -26,23 +26,6 @@
         </model-solution>
     </model-solutions>
     <tests>
-        <test id="1">
-            <title>java compiler test title #0</title>
-            <test-type>java-compilation</test-type>
-            <test-configuration>
-                <test-meta-data>
-                    <praktomat:public>False</praktomat:public>
-                    <praktomat:required>False</praktomat:required>
-                    <praktomat:always>True</praktomat:always>
-                    <praktomat:config-CompilerFlags>flags</praktomat:config-CompilerFlags>
-                    <praktomat:config-CompilerOutputFlags>no_output_flags</praktomat:config-CompilerOutputFlags>
-                    <praktomat:config-CompilerLibs>selenium</praktomat:config-CompilerLibs>
-                    <praktomat:config-CompilerFilePattern>
-                        <![CDATA[.*(?<!(Test|lper)\.[jJ][aA][vV][aA])$]]>
-                    </praktomat:config-CompilerFilePattern>
-                </test-meta-data>
-            </test-configuration>
-        </test>
         <test id="2">
             <title>compiler test 1</title>
             <test-type>java-compilation</test-type>
@@ -56,6 +39,23 @@
                     <praktomat:config-CompilerLibs>JAVA_LIBS</praktomat:config-CompilerLibs>
                     <praktomat:config-CompilerFilePattern>
                         <![CDATA[^.*\.[jJ][aA][vV][aA]$]]>
+                    </praktomat:config-CompilerFilePattern>
+                </test-meta-data>
+            </test-configuration>
+        </test>    
+        <test id="1">
+            <title>java compiler test title #0</title>
+            <test-type>java-compilation</test-type>
+            <test-configuration>
+                <test-meta-data>
+                    <praktomat:public>False</praktomat:public>
+                    <praktomat:required>False</praktomat:required>
+                    <praktomat:always>True</praktomat:always>
+                    <praktomat:config-CompilerFlags>flags</praktomat:config-CompilerFlags>
+                    <praktomat:config-CompilerOutputFlags>no_output_flags</praktomat:config-CompilerOutputFlags>
+                    <praktomat:config-CompilerLibs>selenium</praktomat:config-CompilerLibs>
+                    <praktomat:config-CompilerFilePattern>
+                        <![CDATA[.*(?<!(Test|lper)\.[jJ][aA][vV][aA])$]]>
                     </praktomat:config-CompilerFilePattern>
                 </test-meta-data>
             </test-configuration>
@@ -96,22 +96,6 @@
                 </test-meta-data>
             </test-configuration>
         </test>
-        <test id="5">
-            <title>checkstyle test title #0</title>
-            <test-type>java-checkstyle</test-type>
-            <test-configuration>
-                <filerefs>
-                    <fileref refid="4"/>
-                </filerefs>
-                <praktomat:version>5.4</praktomat:version>
-                <test-meta-data>
-                    <praktomat:public>False</praktomat:public>
-                    <praktomat:required>False</praktomat:required>
-                    <praktomat:always>True</praktomat:always>
-                    <praktomat:max-checkstyle-warnings>2</praktomat:max-checkstyle-warnings>
-                </test-meta-data>
-            </test-configuration>
-        </test>
         <test id="6">
             <title>checkstyle test title #1</title>
             <test-type>java-checkstyle</test-type>
@@ -125,6 +109,22 @@
                     <praktomat:required>True</praktomat:required>
                     <praktomat:always>True</praktomat:always>
                     <praktomat:max-checkstyle-warnings>0</praktomat:max-checkstyle-warnings>
+                </test-meta-data>
+            </test-configuration>
+        </test>        
+        <test id="5">
+            <title>checkstyle test title #0</title>
+            <test-type>java-checkstyle</test-type>
+            <test-configuration>
+                <filerefs>
+                    <fileref refid="4"/>
+                </filerefs>
+                <praktomat:version>5.4</praktomat:version>
+                <test-meta-data>
+                    <praktomat:public>False</praktomat:public>
+                    <praktomat:required>False</praktomat:required>
+                    <praktomat:always>True</praktomat:always>
+                    <praktomat:max-checkstyle-warnings>2</praktomat:max-checkstyle-warnings>
                 </test-meta-data>
             </test-configuration>
         </test>

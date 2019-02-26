@@ -182,7 +182,7 @@ convertToXML = function(topLevelDoc, rootNode) {
     })
 
     // write tests
-    TestWrapper.doOnAll(function(uiTest) {
+    TestWrapper.doOnAll(function(uiTest, index) {
         let test = new TaskTest();
         test.id = uiTest.id;
         test.title = uiTest.title;
@@ -210,7 +210,10 @@ convertToXML = function(topLevelDoc, rootNode) {
 
 
         //readFileRefs(xmlReader, modelSolution, thisNode);
-        task.tests[test.id] = test;
+        //console.log('convertToXML: create ' + test.title);
+        // note that the test element is stored at the index position not at the test id position
+        // (in order to keep the sort order from user interface)
+        task.tests[index] = test;
     })
 
 

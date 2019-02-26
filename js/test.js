@@ -64,7 +64,7 @@ class TestWrapper {
         // todo: iterate through all tests in variable
         $.each($(".xml_test_id"), function (indexOpt, item) {
             let test = TestWrapper.constructFromId(item.value);
-            callback(test);
+            callback(test, indexOpt);
         });
     }
 
