@@ -208,6 +208,22 @@ unzipme = function (blob, readyCallback) {
 };
 
 
+taskTitleToFilename = function(title) {
+    function camelize(str) {
+        // code from https://stackoverflow.com/questions/2970525/converting-any-string-into-camel-case
+        return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
+            return index === 0 ? letter.toLowerCase() : letter.toUpperCase();
+        }).replace(/\s+/g, '');
+    }
+
+    title = camelize(title);
+    // only allow characters, numbers, '-' and '_'
+    title = title.replace(/[^a-z0-9_\-]/gi, "_");
+    return title;
+
+    //return title.replace(/[^a-z0-9]/gi, "");
+}
+
 /**
  * create zip file
  */
@@ -218,10 +234,10 @@ zipme = function() {
         console.log("zipme called with empty output");
         return;
     }
-    var FILENAME = "task.xml";
+    const FILENAME = "task.xml";
     var blob;
     var zipname = $("#xml_title").val();
-    zipname = zipname.replace(/[^a-z0-9]/gi, "");
+    zipname = taskTitleToFilename(zipname); // zipname.replace(/[^a-z0-9]/gi, "");
     zipname = zipname + '.zip';
 
     // iterate through all files:
