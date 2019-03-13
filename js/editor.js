@@ -375,7 +375,7 @@ $(function () {
             submission.appendChild(files);
             // read model solution files
             ModelSolutionWrapper.doOnAll(function (ms) {
-                FileReferenceList.doOnAll(ms.root, function (id) {
+                FileReferenceList.doOnAllIds(ms.root, function (id) {
                     const ui_file = FileWrapper.constructFromId(id);
                     let fileElem = xmlDoc.createElementNS(xmlns, "file");
                     files.appendChild(fileElem);
@@ -729,7 +729,7 @@ $(function () {
         let size = 0;
         // read model solution files
         ModelSolutionWrapper.doOnAll(function (ms) {
-            FileReferenceList.doOnAll(ms.root, function (id) {
+            FileReferenceList.doOnAllIds(ms.root, function (id) {
                 const ui_file = FileWrapper.constructFromId(id);
                 if (index > 0) {
                     // create new row

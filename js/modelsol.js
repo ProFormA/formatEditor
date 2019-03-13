@@ -17,6 +17,7 @@
 
 var modelSolIDs = {};
 
+// TODO : common base class with TestWrapper
 class ModelSolutionWrapper {
 
     static constructFromRoot(root) {
@@ -29,8 +30,6 @@ class ModelSolutionWrapper {
         // this._id = id;
         let ms = new ModelSolutionWrapper();
         ms._root = $("#modelsolution_" + id);
-
-//        ms._root = $(".xml_model-solution_id[value='" + id + "']").closest(".xml_model-solution");
         if (ms.root.length === 0)
             return undefined; // no element with id found
         return ms;
@@ -64,6 +63,24 @@ class ModelSolutionWrapper {
         });
     }
 
+    delete() {
+        // iterate through all referenced files and remove the references
+        // => checks whether the file can be removed
+        FileReferenceList.doOnAllElements(this.root, function(fileref_element) {
+            let row = $(fileref_element).closest('tr');
+            row.find('.remove_model-solution_fileref').first().click();
+        });
+
+        delete modelSolIDs[this.id];
+        this.root.remove();
+    }
+
+    static delete(button) {
+        let instance = ModelSolutionWrapper.constructFromRoot(button.closest('.xml_model-solution'));
+        // remove instance
+        instance.delete();
+    }
+
     static create(id, description, comment) {
         if (!comment)
             comment = '';
@@ -84,7 +101,7 @@ class ModelSolutionWrapper {
             "id='modelsolution_" + modelsolid + "'" +
             "class='ui-widget ui-widget-content ui-corner-all xml_model-solution'>" +
             "<h3 class='ui-widget-header'>Model solution #" + modelsolid + "<span " +
-            "class='rightButton'><button onclick='remP3($(this));deletecounter(modelSolIDs,$(this));'>x</button></span></h3>" +
+            "class='rightButton'><button onclick='ModelSolutionWrapper.delete($(this));'>x</button></span></h3>" +
             "<p><label for='xml_model-solution_id'>ID<span class='red'>*</span>: </label>" +
             "<input class='tinyinput xml_model-solution_id' value='" + modelsolid + "' readonly/>" +
 

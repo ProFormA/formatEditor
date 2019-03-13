@@ -111,7 +111,7 @@ function createDownloadLinks() {
     let templateCounter = 0;
 
     if (USE_VISIBLES) {
-        VisibleFileReference.getInstance().doOnAll(function (id, displayMode) {
+        VisibleFileReference.getInstance().doOnAllIds(function (id, displayMode) {
             if (displayMode === T_LMS_USAGE.EDIT && templateCounter === 0) {
                 templateCounter++;
                 return true;
@@ -147,7 +147,7 @@ function getEditorTemplate() {
     let returnvalue = '';
 
     if (USE_VISIBLES) {
-        VisibleFileReference.getInstance().doOnAll(function (id, displayMode) {
+        VisibleFileReference.getInstance().doOnAllIds(function (id, displayMode) {
             if (displayMode === T_LMS_USAGE.EDIT && returnvalue === "") {
                 let ui_file = FileWrapper.constructFromId(id);
                 returnvalue = ui_file.text;
@@ -175,7 +175,7 @@ function getEditorTemplate() {
 function getModelSolution() {
     let returnvalue = "";
     ModelSolutionWrapper.doOnAll(function(ms) {
-        FileReferenceList.doOnAll(ms.root, function(id) {
+        FileReferenceList.doOnAllIds(ms.root, function(id) {
             const ui_file = FileWrapper.constructFromId(id);
             if (ui_file.type !== 'embedded') {
                 // file is not embedded
@@ -192,7 +192,7 @@ function getModelSolution() {
 
 /*
 
-    ModelSolutionFileReference.getInstance().doOnAll(function(id) {
+    ModelSolutionFileReference.getInstance().doOnAllIds(function(id) {
         const ui_file = FileWrapper.constructFromId(id);
         if (ui_file.type !== 'embedded') {
             // file is not embedded
@@ -272,7 +272,7 @@ createLONCAPAOutput = function (prgrlang, versionchck) {
 
     // ??? why do we use first Model Solution filename?
     ModelSolutionWrapper.doOnAll(function(ms) {
-        FileReferenceList.doOnAll(ms.root, function(id) {
+        FileReferenceList.doOnAllIds(ms.root, function(id) {
             const ui_file = FileWrapper.constructFromId(id);
             loncapa_filename = ui_file.filename;
             return false;
@@ -281,7 +281,7 @@ createLONCAPAOutput = function (prgrlang, versionchck) {
     });
 
 /*
-    ModelSolutionFileReference.getInstance().doOnAll(function(fileid) {
+    ModelSolutionFileReference.getInstance().doOnAllIds(function(fileid) {
         const ui_file = FileWrapper.constructFromId(fileid);
         loncapa_filename = ui_file.filename;
         return false;

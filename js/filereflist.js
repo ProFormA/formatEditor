@@ -39,6 +39,8 @@ class FileReferenceList extends DynamicList {
         filerefClassList.push('.' + classFileref);
     }
 
+
+
     // override
     getTableString() {
         return super.getTableString()  +
@@ -64,7 +66,7 @@ class FileReferenceList extends DynamicList {
 
     doOnAll(callback, root) {
         if (root)
-            console.log('doOnAll ios deprecated, use static version instead');
+            console.log('doOnAllIds ios deprecated, use static version instead');
         let theRoot = root?root:this.root;
         $.each(theRoot.find(".fileref_fileref"), function(index, item) {
             const filerefId = item.value;
@@ -80,10 +82,16 @@ class FileReferenceList extends DynamicList {
         });
     }
 
-    static doOnAll(root, callback) {
+    static doOnAllIds(root, callback) {
         $.each(root.find(".fileref_fileref"), function(index, item) {
             const filerefId = item.value;
             return callback(filerefId);
+        });
+    }
+
+    static doOnAllElements(root, callback) {
+        $.each(root.find(".fileref_fileref"), function(index, item) {
+            return callback(item);
         });
     }
 
@@ -260,10 +268,10 @@ class FileReferenceList extends DynamicList {
         let ui_file = FileWrapper.constructFromId(fileid);
         if (FileReferenceList.getCountFileIdReferenced(fileid) === 0) {
             // no reference at all => delete file
-            if (confirm(ui_file.filename + " is no longer referenced.\n" +
-                "Shall it be removed from task?")) {
+            //if (confirm(ui_file.filename + " is no longer referenced.\n" +
+            //    "Shall it be removed from task?")) {
                 ui_file.delete();
-            }
+            //}
         }
     }
 

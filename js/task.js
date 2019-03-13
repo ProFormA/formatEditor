@@ -192,6 +192,8 @@ convertToXML = function(topLevelDoc, rootNode) {
         test.weight = uiTest.weight;
 
         let counter = 0;
+        // TODO: geht über alle Test-Filerefs, sollte er nur über die
+        // des entsprechenden Tests gehen?
         TestFileReference.getInstance().doOnAll(function(id) {
             if (id) {
                 test.filerefs[counter++] = new TaskFileRef(id);
@@ -223,7 +225,7 @@ convertToXML = function(topLevelDoc, rootNode) {
     });
 
     if (USE_VISIBLES) {
-        VisibleFileReference.getInstance().doOnAll(function(id, displayMode) {
+        VisibleFileReference.getInstance().doOnAllIds(function(id, displayMode) {
             task.files[id].visible = T_VISIBLE.YES;
             task.files[id].usageInLms = displayMode;
         });

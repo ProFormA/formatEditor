@@ -30,7 +30,6 @@ class TestWrapper {
         // this._id = id;
         let test = new TestWrapper();
         test._root = $("#test_" + id);
-        //test._root = $(".xml_test_id[value='" + id + "']").closest(".xml_test");
         if (test.root.length === 0)
             return undefined; // no element with id found
         return test;
@@ -53,6 +52,8 @@ class TestWrapper {
     get testtype() { return this.getValue(this._type,".xml_test_type" ); }
     get weight() { return this.getValue(this._type,".xml_test_weight" ); }
 
+
+
     // setter
     set comment(newComment) { this._root.find(".xml_internal_description").val(newComment); }
     set description(newDescription) { this._root.find(".xml_description").val(newDescription); }
@@ -66,6 +67,24 @@ class TestWrapper {
             let test = TestWrapper.constructFromId(item.value);
             callback(test, indexOpt);
         });
+    }
+
+    delete() {
+        // iterate through all referenced files and remove the references
+        // => checks whether the file can be removed
+        FileReferenceList.doOnAllElements(this.root, function(fileref_element) {
+            let row = $(fileref_element).closest('tr');
+            row.find('.remove_test_fileref').first().click();
+        });
+
+        delete testIDs[this.id];
+        this.root.remove();
+    }
+
+    static delete(button) {
+        let instance = TestWrapper.constructFromRoot(button.closest('.xml_test'));
+        // remove instance
+        instance.delete();
     }
 
 //    static create(id, TestName, MoreText, TestType, WithFileRef) {
@@ -85,7 +104,7 @@ class TestWrapper {
             "id='test_" + testid + "'" +
             "class='ui-widget ui-widget-content ui-corner-all xml_test'>"+
             "<h3 class='ui-widget-header'>" + TestName + " (Test #"+testid+")<span "+
-            "class='rightButton'><button onclick='remP3($(this));deletecounter(testIDs,$(this));'>x</button></span></h3>"+
+            "class='rightButton'><button onclick='TestWrapper.delete($(this));'>x</button></span></h3>"+
 
             "<p><label for='xml_test_id'>ID<span class='red'>*</span>: </label>"+
             "<input class='tinyinput xml_test_id' value='" + testid + "' readonly/>"+

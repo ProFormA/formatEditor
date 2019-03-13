@@ -96,8 +96,8 @@ function setcounter(temphash) {
     temphash[tempcnter] = 1;
     return tempcnter;
 }
-function deletecounter(temphash,tempelement) {         // for modelSolIDs, testIDs
+//function deletecounter(temphash,tempelement) {         // for modelSolIDs, testIDs
 
     // todo: do not use parent...
-    delete temphash[tempelement.parent().parent().parent().find('.tinyinput')[0].value];
-}
+//    delete temphash[tempelement.parent().parent().parent().find('.tinyinput')[0].value];
+//}

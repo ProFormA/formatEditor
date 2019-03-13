@@ -752,11 +752,12 @@ def add_file():
     time.sleep(timeoutClick);
 
 # does not work! only first element is found :-(
-#def remove_file(index): # 0-based
+def remove_file(index): # 0-based
 #    elem = driver.find_element_by_class_name('xml_file')
-#    elem[index].find_element_by_tag_name('button').click()
-#    alert = driver.switch_to.alert
-#    alert.accept()
+    elem = driver.find_element_by_css_selector('#file_' + str(index) + ' .rightButton')
+    elem.click()
+    #alert = driver.switch_to.alert
+    #alert.accept()
 
 
 def remove_first_file():
@@ -771,6 +772,17 @@ def set_filename(file_index, filename): # 0-based
     change_tab("file_tab")
     elem = driver.find_elements_by_class_name('xml_file_filename')
     elem[file_index].send_keys(filename)
+
+
+def change_filename(file_index, new_filename): # 0-based
+    change_tab("file_tab")
+    elem = driver.find_element_by_css_selector('#file_' + str(file_index) + ' .xml_file_filename')
+    elem.clear()
+    elem.send_keys(new_filename)
+    keyboard = Controller()
+    keyboard.press(Key.enter)
+    keyboard.release(Key.enter)
+
 
 def set_file_comment(file_index, text): # 0-based
     # change_tab("file_tab")
@@ -866,6 +878,17 @@ def set_model_solution_fileref2(ms_index, filefer_number):
     elem[(ms_index * 2) + fileref_index].send_keys(filefer_number)
 
 
+def remove_model_solution(ms_index): # 1-based???
+    change_tab("ms_tab")
+    elem = driver.find_element_by_css_selector('#modelsolution_' + str(ms_index) + ' .rightButton')
+    elem.click()
+    #elem = driver.find_element_by_class_name('xml_file')
+    #elem.find_element_by_tag_name('button').click()
+    time.sleep(timeoutClickAndAlert);
+    #alert = driver.switch_to.alert
+    #alert.accept()
+
+
 ####################################################################
 # common TEST functions
 ####################################################################
@@ -882,6 +905,17 @@ def set_test_description(test_index, text): # 0-based
 def set_test_comment(test_index, text): # 0-based
     elem = driver.find_element_by_css_selector('#test_' + str(test_index+1) + ' .xml_internal_description')
     elem.send_keys(text)
+
+def remove_test(test_index): # 1-based???
+    change_tab("test_tab")
+    elem = driver.find_element_by_css_selector('#test_' + str(test_index) + ' .rightButton')
+    elem.click()
+    #elem = driver.find_element_by_class_name('xml_file')
+    #elem.find_element_by_tag_name('button').click()
+    time.sleep(timeoutClickAndAlert);
+    #alert = driver.switch_to.alert
+    #alert.accept()
+
 
 
 def set_checkbox_value(elem, value):
