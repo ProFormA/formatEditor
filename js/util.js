@@ -22,7 +22,7 @@ const SUBMISSION_TEST  = false;
 const USE_VISIBLES     = false;
 
 
-const codeversion   = '3.0.1 RC1 [190305]';                     // current version of this code
+const codeversion   = '3.0.1 RC1 [190305] in Arbeit';                     // current version of this code
 
 
 const version094    = 'xsd/taskxml0.9.4.xsd';                // name of schema files
@@ -96,8 +96,3 @@ function setcounter(temphash) {
     temphash[tempcnter] = 1;
     return tempcnter;
 }
-//function deletecounter(temphash,tempelement) {         // for modelSolIDs, testIDs
-
-    // todo: do not use parent...
-//    delete temphash[tempelement.parent().parent().parent().find('.tinyinput')[0].value];
-//}

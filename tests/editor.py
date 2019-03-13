@@ -756,8 +756,11 @@ def remove_file(index): # 0-based
 #    elem = driver.find_element_by_class_name('xml_file')
     elem = driver.find_element_by_css_selector('#file_' + str(index) + ' .rightButton')
     elem.click()
-    #alert = driver.switch_to.alert
-    #alert.accept()
+    try:
+        alert = driver.switch_to.alert
+        alert.accept()
+    except:
+        pass
 
 
 def remove_first_file():

@@ -213,7 +213,7 @@ class FileWrapper {
         fileStorages[this.id].filename = name;
         // FileWrapper.onFilenameChanged(); // this); // TODO check for endless recursion!!
         // update filenames in all file references
-        FileReferenceList.updateAllFilenameLists();
+        FileReferenceList.updateAllFilenameLists(this.id, name);
     }
 
     set filenameHeader(name) {
@@ -286,7 +286,7 @@ class FileWrapper {
     delete() {
         this.root.remove();
         delete fileIDs[this.id];
-        FileReferenceList.updateAllFilenameLists();
+        FileReferenceList.updateAllFilenameLists(this.id);
     }
 
     getCodemirrorMode() {
@@ -308,6 +308,7 @@ class FileWrapper {
         console.log('onFilenameChanged');
         // after change of filename update all filelists
 
+        let changedId;
         if (ui_file) {
             // (the user has changed the filename in the filename input field)
             //ui_file.filenameHeader = ui_file.filename;
@@ -330,10 +331,11 @@ class FileWrapper {
                 }
             }
             ui_file.filenameHeader = ui_file.filename;
+            changedId = ui_file.id;
         }
 
         // update filenames in all file references
-        FileReferenceList.updateAllFilenameLists();
+        FileReferenceList.updateAllFilenameLists(changedId, ui_file.filename);
     };
 
 

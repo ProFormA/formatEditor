@@ -29,7 +29,7 @@ class SpecialTest(zipFileTest.ZipFileTest):
     def setUp(self):
         print "setup special_Test"
 
-        zipFileTest.ZipFileTest.setUp(self, 'user_interface', 'special')
+        zipFileTest.ZipFileTest.setUp(self, 'user_interface', 'files')
 
 
 
@@ -57,22 +57,31 @@ class SpecialTest(zipFileTest.ZipFileTest):
         editor.remove_model_solution(2)
         # => expect associated file is missing
 
-
+        # save zipfile and compare with reference
         zipFileTest.ZipFileTest.saveZipFile(self, "input222.zip", False)
 
-#    def test_change_filename(self):
+
+    def test_change_file(self):
+        # initialise
+        self.filename_task_xml_reference = self.output_folder + "/file_reference.xml"
+        zipFileTest.ZipFileTest.loadZipFile(self, "input/task_java.xml") # relative to testsuite
+
         # change filename
-#        editor.change_filename(3, 'download.txt')
+        editor.change_filename(3, 'download.txt')
         # => expect 'referenced' filenames to be changed, too
 
 
         # delete file and re-add file with same name
-#        editor.remove_file(4)
-#        editor.add_file() # only possible in test!!!
-#        editor.set_filename(4, 'file3.java')
-#        editor.set_ms_filename('file3.java', 0)
+        editor.remove_file(6)
+        editor.add_file()
+        # should have id=1
+        editor.set_filename(4, 'file5.java') # 0-based index counting in display (not ids)
+        editor.set_test_filename('file5.java', 3)
 
-#        zipFileTest.ZipFileTest.saveZipFile(self, "input222.zip", False)
+        # ERROR: weil dbei gelöschten Dateien die leeren Referenzen nicht entfernt werden.
+        # Daher wird beim Schreiben der zip erkannt, dass Filenamen leer sind
+        zipFileTest.ZipFileTest.saveZipFile(self, "input222.zip", False)
+
 
 
 

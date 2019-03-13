@@ -14,6 +14,8 @@ TODO:
 - Einklappen der Descriptions
 - Encoding unterstützen
 - auch attached Dateien editieren, wenn die Dateiendung vermuten lässt, dass das geht (z.b. java)
+- Code aufräumen
+- Testumgebung aufräumen (insbesondere die Indizierung ist verwirrend, weil mal die internen Indizes mal die aus der Oberfläche verwendet werden)
 
 
 Folgende Änderungen kommunizieren:
@@ -25,4 +27,3 @@ Weitere Testfälle:
 - veränderte Grading Hints
 - Java-Klassen- und Package-Erkennung
 - Programmiersprache C
-

@@ -40,7 +40,6 @@ class FileReferenceList extends DynamicList {
     }
 
 
-
     // override
     getTableString() {
         return super.getTableString()  +
@@ -275,6 +274,20 @@ class FileReferenceList extends DynamicList {
         }
     }
 
+    static removeContent(filenameItem) {
+        $(filenameItem).val(emptyFileOption); // do not call change!
+        let tr = $(filenameItem).closest('tr');
+        tr.find('.fileref_fileref').first().val('');
+        let button = tr.find('.collapse');
+        if (button.html() === hideEditorText) {
+            // remove editor
+            button.html(showEditorText);
+            tr.next().remove();
+        }
+        // row has a
+        let removeButton = tr.find('.collapse');
+    }
+
     // checks if a given file id is used somewhere
     // (needed when file shall be deleted)
     static getCountFileIdReferenced(fileId) {
@@ -295,16 +308,20 @@ class FileReferenceList extends DynamicList {
             if (item.value === fileid) {
                 alert("file class for file '" + ui_file.filename + "' will be no longer a " + listname + " file");
 
-                const filenameobject = $(item).closest('tr').find('.fileref_filename');
+                //const filenameobject = $(item).closest('tr').find('.fileref_filename');
 
                 // file id matches
                 // remove old fileref object
-                filenameobject.val(emptyFileOption).change();
-                item.value = '';
+
+                //filenameobject.val(emptyFileOption).change();
                 // FileReferenceList.updateAllFilenameLists();
                 // remove actual numeric fileref value
-                let tr = $(item).parent().parent();
-                tr.find('.fileref_fileref').first().val('');
+                FileReferenceList.removeContent(item);
+
+                //item.value = '';
+                let tr = $(item).closest('tr');
+                //tr.find('.fileref_fileref').first().val('');
+
                 // check if complete row can be deleted
                 const table_body = tr.parent();
                 if (table_body.find('tr').length > 1) {
@@ -372,7 +389,8 @@ class FileReferenceList extends DynamicList {
             case loadFileOption:
                 // read new file
                 // reset selection in case choosing a file fails
-                $(tempSelElem).val(emptyFileOption); // do not call change!
+                //$(tempSelElem).val(emptyFileOption); // do not call change!
+                FileReferenceList.removeContent(tempSelElem);
                 // change callback
                 let dummybutton = $("#dummy_file_upload_button").first();
                 dummybutton.unbind("change");
@@ -411,7 +429,8 @@ class FileReferenceList extends DynamicList {
                         const fileid = ui_file.id;
                         if (isDuplicateId(fileid)) {
                             // clean input field
-                            $(tempSelElem).val(emptyFileOption).change();
+                            //$(tempSelElem).val(emptyFileOption).change();
+                            FileReferenceList.removeContent(tempSelElem);
                             return;
                         }
 
@@ -455,46 +474,68 @@ class FileReferenceList extends DynamicList {
         });
     }
 
-    // update all filename lists
-    static updateAllFilenameLists() {
+    // - update all filename lists
+    // - update selection index
+    // - update selection text
+    static updateAllFilenameLists(changedId, newFilename) {
+        //console.log('updateAllFilenameLists for ' + changedId + ', new filename: ' + newFilename);
+
         $.each($(filenameClassList.join(',')), function(index, item) {
             //console.log("update filelist in test ");
-            // store name of currently selected file
-            const text = $("option:selected", item).text(); // selected text
+            // store name of currently selected filename
+            const text = $("option:selected", item).text();
             //console.log("selected is " + text);
             FileReferenceList.updateFilenameList(item); // update filename list
-            let indexFound = -1;
-            if (text.trim().length > 0) {  // always true!
-                // check if previously selected filename is still in list
-                // (ich weiß im Moment nicht, wie man die Einträge aus
-                // der Liste rauszieht...TODO)
-                // TODO einfacher: einfach setzen und schauen, ob leer???
 
-                $.each($(".xml_file_filename"), function (indexOpt, item) {
-                    if (item.value.length > 0 && item.value === text) {
-                        indexFound = indexOpt;
-                        return false;
-                    }
-                });
-            }
-
-            if (indexFound >= 0) {
-                //console.log("selektiere " + indexFound);
-                item.selectedIndex = indexFound + 1; // +1:weil am Anfang noch ein Leerstring ist
-            } else {
-/*
-                // das ist kein guter Ort für so was!!
-                // remove actual numeric fileref value
-                let td = $(item).parent();
-                let tr = td.parent();
-                tr.find('.fileref_fileref').first().val('');
-                // check if complete row can be deleted
-                const table_body = tr.parent();
-                if (table_body.find('tr').length > 1) {
-                    // more than one row => delete row
-                    modelSolutionFileRefSingleton.removeFileRef($(item));
+            // check if filename is changed
+            const refid = $(item).closest('tr').find('.fileref_fileref').first().val();
+            if (refid === changedId && changedId !== undefined) {
+                // changed filename is currectly selected
+                if (newFilename !== undefined) {
+                    // change filename
+                    console.log('change selection value');
+                    $(item).val(newFilename);
+                } else {
+                    // file is deleted => select 0
+                    FileReferenceList.removeContent(item);
+                    //item.selectedIndex = 0;
+                    //$(item).closest('tr').find('.fileref_fileref').first().val('');
                 }
-*/
+            } else {
+                let indexFound = -1;
+                if (text !== emptyFileOption) {
+                    // check if previously selected filename is still in list
+                    $.each($(".xml_file_filename"), function (indexOpt, item) {
+                        if (item.value.length > 0 && item.value === text) {
+                            indexFound = indexOpt;
+                            return false;
+                        }
+                    });
+                }
+
+                if (indexFound >= 0) {
+                    //console.log("selektiere " + indexFound);
+                    item.selectedIndex = indexFound + 1; // +1:weil am Anfang noch ein Leerstring ist
+                } else {
+                    // previously seelected text is not in the list
+                    // => expect filename to be deleted
+                    if (newFilename === undefined && text !== emptyFileOption) {
+                        console.error('could not find filename: <' + text + '>');
+                    }
+                    /*
+                                    // das ist kein guter Ort für so was!!
+                                    // remove actual numeric fileref value
+                                    let td = $(item).parent();
+                                    let tr = td.parent();
+                                    tr.find('.fileref_fileref').first().val('');
+                                    // check if complete row can be deleted
+                                    const table_body = tr.parent();
+                                    if (table_body.find('tr').length > 1) {
+                                        // more than one row => delete row
+                                        modelSolutionFileRefSingleton.removeFileRef($(item));
+                                    }
+                    */
+                }
             }
         });
     }
