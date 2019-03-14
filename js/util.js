@@ -22,7 +22,7 @@ const SUBMISSION_TEST  = false;
 const USE_VISIBLES     = false;
 
 
-const codeversion   = '3.0.1 RC1 [190305] in Arbeit';                     // current version of this code
+const codeversion   = '3.0.1 [190314]';    // current version of this code
 
 
 const version094    = 'xsd/taskxml0.9.4.xsd';                // name of schema files
@@ -95,4 +95,76 @@ function setcounter(temphash) {
     }
     temphash[tempcnter] = 1;
     return tempcnter;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// configuration support
+//////////////////////////////////////////////////////////////////////////////
+
+// classes
+
+class CustomTest {
+
+    constructor(title, testType, extraFields) {
+        this.title = title; // title in html output
+        this.testType = testType; // test type in XML
+        this.htmlExtraFields = extraFields; // html extra input elements
+
+        this.withFileRef = true; // default: with test script(s)
+
+        this.gradingWeight = 1; // default weight
+
+        this.fileRefLabel = 'File'; // default label
+        this.manadatoryFile = true;
+        this.alternativeTesttypes = [];
+
+        // derived member variables
+        const compactName = title.replace(/ /g, "");
+        this.xmlTemplateName = compactName;
+        this.buttonJQueryId = "add" + compactName;
+    }
+
+    // override
+    onCreate(testId) {}
+    onReadXml(test, xmlReader, testConfigNode, testroot) {}
+    onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {}
+}
+
+
+/**
+ * information about programming language
+ *
+ * @param name
+ * @param tests
+ * @constructor
+ */
+class ProglangInfo{
+    constructor(name, tests) {
+        this.name  = name;
+        this.tests = tests;
+    }
+}
+
+
+// -------------------------------------------------------------
+
+
+// helper function for custom test configuration
+createFileWithContent = function(filename, content) {
+    let ui_file = FileWrapper.create();
+    ui_file.filename = filename;
+    ui_file.text = content;
+    // onFilenameChanged(ui_file);
+    return ui_file.id;
+}
+
+addFileReferenceToTest = function(testId, filename) {
+    let xml_test_root = $(".xml_test_id[value='"+testId+"']").parent().parent();
+    let element = xml_test_root.find(".xml_test_filename").last();
+    element.val(filename).change();
+};
+
+getTestField = function(testId, fieldClass) {
+    let xml_test_root = $(".xml_test_id[value='"+testId+"']").parent().parent();
+    return xml_test_root.parent().find(fieldClass).first();
 }

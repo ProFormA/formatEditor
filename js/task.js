@@ -94,10 +94,11 @@ function isInputComplete() {
     if (returnFromFunction)
         return false;
 
+    // todo: this should be part of the configuration
     $.each($(".xml_ju_mainclass"), function(index, item) {   // check whether main-class exists
         if (!item.value) {
             $("#tabs").tabs("option", "active",  tab_page.TESTS);
-            setErrorMessage("Class name is missing.");
+            setErrorMessage("Entry point is missing.");
             item.focus();
             returnFromFunction = true;
         }

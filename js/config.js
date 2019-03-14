@@ -95,9 +95,9 @@ const config = (function(testConfigNode) {
         "<select class='xml_ju_framew'><option selected='selected' value='JUnit'>JUnit</option></select>"+
         " <label for='xml_ju_version'>Version<span class='red'>*</span>: </label>"+
         "<select class='xml_ju_version'>" +
-        "<option value='4.12'>4.12</option>" +
+        "<option selected='selected' value='4.12'>4.12</option>" +
         "<option value='4.12-gruendel'>4.12-gruendel</option>" +
-        "<option selected='selected' value='4.10'>4.10</option>"+
+        "<option value='4.10'>4.10</option>"+
         "<option value='3'>3</option>" +
         "</select></p>";
 //        "<p><label for='xml_pr_configDescription'>Test description: </label>"+
@@ -353,12 +353,15 @@ const config = (function(testConfigNode) {
             // set classname if file belongs to JUNIT and if exactly one file is assigned
             let testBox = $(tempSelElem).closest(".xml_test");
             const ui_classname = $(testBox).find(".xml_ju_mainclass");
-            if (ui_classname.length === 1) {
-                $.each(ui_classname, function(index, element) {
-                    let currentFilename = $(element).val();
-                    if (!readXmlActive)
-                        $(element).val(javaParser.getFullClassnameFromFilename(newFilename)).change();
-                });
+            if (ui_classname.length === 1 // JUNIT box
+                && ui_classname.first().val().trim() === '') { // and entry point not set
+                ui_classname.first().val(javaParser.getFullClassnameFromFilename(newFilename));
+
+                // $.each(ui_classname, function(index, element) {
+                //     //let currentFilename = $(element).val();
+                //     if (!readXmlActive)
+                //         $(element).val(javaParser.getFullClassnameFromFilename(newFilename)).change();
+                // });
             }
         }
 

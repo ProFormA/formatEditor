@@ -346,7 +346,7 @@ class FileReferenceList extends DynamicList {
             if (done)
                 return false;
             const currentFilename = $(element).val();
-            if (currentFilename === "") {
+            if (!currentFilename || 0 === currentFilename.length) {
                 $(element).val(filename).change();
                 // FileReferenceList.rowEnableEditorButton($(element).parent(), true);
                 done = true;
@@ -620,20 +620,21 @@ class TestFileReference extends FileReferenceList {
     }
 
     static getInstance() {return testFileRefSingleton;}
-
+/*
     onFileUpload(filename, uploadBox) {
         super.onFileUpload(filename, uploadBox);
         // set classname if exactly one file is assigned
-        const ui_classname = $(uploadBox).find(".xml_ju_mainclass");
-        if (ui_classname.length === 1) {
-            $.each(ui_classname, function(index, element) {
-                const currentFilename = $(element).val();
-                if (currentFilename === "" && !readXmlActive) {
-                    $(element).val(javaParser.getFullClassnameFromFilename(filename)).change();
-                }
-            });
-        }
-    }
+        // todo: this should be part of the configuration
+        // const ui_classname = $(uploadBox).find(".xml_ju_mainclass");
+        // if (ui_classname.length === 1) {
+        //     $.each(ui_classname, function(index, element) {
+        //         const currentFilename = $(element).val();
+        //         if (currentFilename === "" && !readXmlActive) {
+        //             $(element).val(javaParser.getFullClassnameFromFilename(filename)).change();
+        //         }
+        //     });
+        // }
+    }*/
 }
 let testFileRefSingleton = new TestFileReference();
 
