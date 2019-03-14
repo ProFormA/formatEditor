@@ -25,7 +25,7 @@ class DynamicList {
     constructor(classFilename, css_classname, jsClassName, label, help, mandatory, extra_css_class) {
         this.classFilename = classFilename;
         this.classAddItem = css_classname.replace('xml_', 'add_'); // classAddItem;
-        this.classRemoveItem = css_classname.replace('xml_', 'remove_'); // classRemoveItem;
+        this.classRemoveItem = 'remove_item'; // css_classname.replace('xml_', 'remove_'); // classRemoveItem;
         this.help = help;
 
         this.createTableString(jsClassName, label, mandatory, extra_css_class);

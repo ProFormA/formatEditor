@@ -74,7 +74,7 @@ class TestWrapper {
         // => checks whether the file can be removed
         FileReferenceList.doOnAllElements(this.root, function(fileref_element) {
             let row = $(fileref_element).closest('tr');
-            row.find('.remove_test_fileref').first().click();
+            row.find('.remove_item').first().click();
         });
 
         delete testIDs[this.id];

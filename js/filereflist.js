@@ -274,7 +274,7 @@ class FileReferenceList extends DynamicList {
         }
     }
 
-    static removeContent(filenameItem) {
+    static removeContent(filenameItem, removeItemIfPossible) {
         $(filenameItem).val(emptyFileOption); // do not call change!
         let tr = $(filenameItem).closest('tr');
         tr.find('.fileref_fileref').first().val('');
@@ -285,7 +285,12 @@ class FileReferenceList extends DynamicList {
             tr.next().remove();
         }
         // row has a
-        let removeButton = tr.find('.collapse');
+        if (removeItemIfPossible) {
+            let removeButton = tr.find('.remove_item').first();
+            const isHidden = removeButton.css("display") === "none";
+            if (!isHidden)
+                removeButton.click();
+        }
     }
 
     // checks if a given file id is used somewhere
@@ -316,8 +321,8 @@ class FileReferenceList extends DynamicList {
                 //filenameobject.val(emptyFileOption).change();
                 // FileReferenceList.updateAllFilenameLists();
                 // remove actual numeric fileref value
-                FileReferenceList.removeContent(item);
-
+                FileReferenceList.removeContent(item, true);
+/*
                 //item.value = '';
                 let tr = $(item).closest('tr');
                 //tr.find('.fileref_fileref').first().val('');
@@ -329,6 +334,7 @@ class FileReferenceList extends DynamicList {
                     // (object does not matter)
                     otherFileRefList.removeItem($(item));
                 }
+*/
             }
         });
     }
@@ -390,7 +396,7 @@ class FileReferenceList extends DynamicList {
                 // read new file
                 // reset selection in case choosing a file fails
                 //$(tempSelElem).val(emptyFileOption); // do not call change!
-                FileReferenceList.removeContent(tempSelElem);
+                FileReferenceList.removeContent(tempSelElem, false);
                 // change callback
                 let dummybutton = $("#dummy_file_upload_button").first();
                 dummybutton.unbind("change");
@@ -430,7 +436,7 @@ class FileReferenceList extends DynamicList {
                         if (isDuplicateId(fileid)) {
                             // clean input field
                             //$(tempSelElem).val(emptyFileOption).change();
-                            FileReferenceList.removeContent(tempSelElem);
+                            FileReferenceList.removeContent(tempSelElem, false);
                             return;
                         }
 
@@ -485,57 +491,60 @@ class FileReferenceList extends DynamicList {
             // store name of currently selected filename
             const text = $("option:selected", item).text();
             //console.log("selected is " + text);
-            FileReferenceList.updateFilenameList(item); // update filename list
+            FileReferenceList.updateFilenameList(item); // update filename list in item
 
-            // check if filename is changed
+            // is selected filename in item changed?
             const refid = $(item).closest('tr').find('.fileref_fileref').first().val();
             if (refid === changedId && changedId !== undefined) {
-                // changed filename is currectly selected
+                // yes =>
                 if (newFilename !== undefined) {
-                    // change filename
+                    // update selected filename if not deleted
                     console.log('change selection value');
                     $(item).val(newFilename);
                 } else {
-                    // file is deleted => select 0
-                    FileReferenceList.removeContent(item);
-                    //item.selectedIndex = 0;
-                    //$(item).closest('tr').find('.fileref_fileref').first().val('');
+                    // file is deleted => remove content
+                    FileReferenceList.removeContent(item, true);
                 }
             } else {
-                let indexFound = -1;
-                if (text !== emptyFileOption) {
-                    // check if previously selected filename is still in list
-                    $.each($(".xml_file_filename"), function (indexOpt, item) {
-                        if (item.value.length > 0 && item.value === text) {
-                            indexFound = indexOpt;
-                            return false;
-                        }
-                    });
-                }
+                // no =>
+                $(item).val(text);
 
-                if (indexFound >= 0) {
-                    //console.log("selektiere " + indexFound);
-                    item.selectedIndex = indexFound + 1; // +1:weil am Anfang noch ein Leerstring ist
-                } else {
-                    // previously seelected text is not in the list
-                    // => expect filename to be deleted
-                    if (newFilename === undefined && text !== emptyFileOption) {
-                        console.error('could not find filename: <' + text + '>');
-                    }
-                    /*
-                                    // das ist kein guter Ort für so was!!
-                                    // remove actual numeric fileref value
-                                    let td = $(item).parent();
-                                    let tr = td.parent();
-                                    tr.find('.fileref_fileref').first().val('');
-                                    // check if complete row can be deleted
-                                    const table_body = tr.parent();
-                                    if (table_body.find('tr').length > 1) {
-                                        // more than one row => delete row
-                                        modelSolutionFileRefSingleton.removeFileRef($(item));
-                                    }
-                    */
-                }
+                // let indexFound = -1;
+                // if (text !== emptyFileOption) {
+                //
+                //     // check if previously selected filename is still in list
+                //     $.each($(".xml_file_filename"), function (indexOpt, item) {
+                //         if (item.value.length > 0 && item.value === text) {
+                //             indexFound = indexOpt;
+                //             return false;
+                //         }
+                //     });
+                // }
+                //
+                // if (indexFound >= 0) {
+                //     //console.log("selektiere " + indexFound);
+                //     item.selectedIndex = indexFound + 1; // +1:weil am Anfang noch ein Leerstring ist
+                // } else {
+                //     // previously seelected text is not in the list
+                //     // => expect filename to be deleted
+                //     if (newFilename === undefined && text !== emptyFileOption) {
+                //         console.error('could not find filename: <' + text + '>');
+                //     }
+                //     /*
+                //                     // das ist kein guter Ort für so was!!
+                //                     // remove actual numeric fileref value
+                //                     let td = $(item).parent();
+                //                     let tr = td.parent();
+                //                     tr.find('.fileref_fileref').first().val('');
+                //                     // check if complete row can be deleted
+                //                     const table_body = tr.parent();
+                //                     if (table_body.find('tr').length > 1) {
+                //                         // more than one row => delete row
+                //                         modelSolutionFileRefSingleton.removeFileRef($(item));
+                //                     }
+                //     */
+                // }
+
             }
         });
     }

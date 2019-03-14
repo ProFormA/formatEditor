@@ -68,7 +68,7 @@ class ModelSolutionWrapper {
         // => checks whether the file can be removed
         FileReferenceList.doOnAllElements(this.root, function(fileref_element) {
             let row = $(fileref_element).closest('tr');
-            row.find('.remove_model-solution_fileref').first().click();
+            row.find('.remove_item').first().click();
         });
 
         delete modelSolIDs[this.id];

@@ -582,13 +582,13 @@ def load_fileref(filename, index, xml_class):
     elem = elems[index]
     select = Select(elem)
 
-    # select <load...>
-    if browser == 'Chrome':
+    # open file dialog
+    #if browser == 'Chrome':
         # does not work with Chrome (maybe because of a bug!)
-        select_chrome_option(elem, select)
-        #select.select_by_visible_text('<load...>')
-    else:
-        select.select_by_visible_text(load_option)
+        #select_chrome_option(elem, select)
+    select.select_by_visible_text(load_option)
+    #else:
+    #    select.select_by_visible_text(load_option)
 
     # pr
     # int "wait for dialog"
@@ -681,7 +681,7 @@ def delete_template(index):
 
 def delete_download(index):
     change_tab("main_tab")
-    elem = driver.find_elements_by_class_name("remove_download_fileref")
+    elem = driver.find_elements_by_css_selector("#downloadsection .remove_item")
     elem[index].click()
 
 def delete_display(index):
@@ -751,10 +751,9 @@ def add_file():
     elem = driver.find_element_by_id("addFile").click()
     time.sleep(timeoutClick);
 
-# does not work! only first element is found :-(
-def remove_file(index): # 0-based
+def remove_file_by_file_id(id):
 #    elem = driver.find_element_by_class_name('xml_file')
-    elem = driver.find_element_by_css_selector('#file_' + str(index) + ' .rightButton')
+    elem = driver.find_element_by_css_selector('#file_' + str(id) + ' .rightButton')
     elem.click()
     try:
         alert = driver.switch_to.alert
@@ -782,6 +781,11 @@ def change_filename(file_index, new_filename): # 0-based
     elem = driver.find_element_by_css_selector('#file_' + str(file_index) + ' .xml_file_filename')
     elem.clear()
     elem.send_keys(new_filename)
+    keyboard = Controller()
+    keyboard.press(Key.enter)
+    keyboard.release(Key.enter)
+
+def press_enter():
     keyboard = Controller()
     keyboard.press(Key.enter)
     keyboard.release(Key.enter)

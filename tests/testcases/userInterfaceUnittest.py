@@ -41,12 +41,12 @@ class SpecialTest(zipFileTest.ZipFileTest):
 
         # remove download
         #editor.set_download_filename('', 1)
-        editor.delete_download(1)
+        editor.delete_download(1) # file2.java
         # => expect associated file is missing
 
         # remove tests
-        editor.remove_test(3)
-        editor.remove_test(4)
+        editor.remove_test(3) # file1.java
+        editor.remove_test(4) # MyClass.java
         # => expect associated file is missing
 
         # add new test
@@ -54,7 +54,7 @@ class SpecialTest(zipFileTest.ZipFileTest):
         # => expect new test to have ID 3
 
         # remove model solution
-        editor.remove_model_solution(2)
+        editor.remove_model_solution(2) # file1.java, file3.java
         # => expect associated file is missing
 
         # save zipfile and compare with reference
@@ -72,11 +72,11 @@ class SpecialTest(zipFileTest.ZipFileTest):
 
 
         # delete file and re-add file with same name
-        editor.remove_file(6)
+        editor.remove_file_by_file_id(4)
         editor.add_file()
         # should have id=1
-        editor.set_filename(4, 'file5.java') # 0-based index counting in display (not ids)
-        editor.set_test_filename('file5.java', 3)
+        editor.set_filename(4, 'file3.java') # 0-based index counting in display (not ids)
+        editor.set_test_filename('file3.java', 4)
 
         # ERROR: weil dbei gelöschten Dateien die leeren Referenzen nicht entfernt werden.
         # Daher wird beim Schreiben der zip erkannt, dass Filenamen leer sind

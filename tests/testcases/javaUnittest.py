@@ -143,9 +143,11 @@ class JavaTest(zipFileTest.ZipFileTest):
         # Dadurch wird ein Test ausgelöst, der feststellt, dass in der Datei ein Klassenname und
         # ein Packagename vorhanden sind. Daraufhin wird der Dateiname geändert.
         # Die eigentliche Eingabe geht daher verloren.
-        editor.set_file_comment(4, "")
+        editor.press_enter()
         time.sleep(1);
         editor.confirmPopup()
+
+        editor.set_file_comment(4, "")
         #alert = driver.switch_to.alert
         #alert.accept()
         editor.set_file_comment(4, "comment for file file4.java")
