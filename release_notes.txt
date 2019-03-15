@@ -1,8 +1,13 @@
 Release Notes for 3.0.1
 
+config: set JUNIT 4.12 as default 
+set JUNIT entry point only if input field is empty 
+bugfix: file upload always created a new fileref item
+bugfix: renaming file 
+remove files is they are not referenced anymore
 create zip filename in camel case (allow - and _)
 set java 1.8 as default programming language
-bugfix: change order of tests
+bugfix: changing order of tests
 xml-test-name: python->python-doctest, bugfix import setlx, bugfix import Firefox, pass tests (except for binary in Chrome which is caused by test environment)
 update documentation
 bugfix when importing 1.0.1
