@@ -1,3 +1,8 @@
+Release Notes for 3.0.2
+
+support for Checkstyle version 8.23
+migrate tests files from Python 2 to Python 3
+
 Release Notes for 3.0.1
 
 config: set JUNIT 4.12 as default 
