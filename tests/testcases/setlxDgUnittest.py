@@ -35,7 +35,7 @@ expectedZipName = "input222.zip"
 class SetlxDgTest(zipFileTest.ZipFileTest):
 
     def setUp(self):
-        print "setup Setlx Test"
+        print("setup Setlx Test")
         zipFileTest.ZipFileTest.setUp(self, 'setlx_dg', 'setlx_dg')
         editor.delete_old_task_files(expectedZipName, self.output_folder)
 

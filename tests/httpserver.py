@@ -23,8 +23,8 @@
 ####################################################################
 # start HHTP server
 ####################################################################
-import SimpleHTTPServer
-import SocketServer
+import http.server
+import socketserver
 import runpy
 import os
 
@@ -33,15 +33,15 @@ PORT = 8000
 
 def startHttpServer():
 
-    Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
-    httpd = SocketServer.TCPServer(("", PORT), Handler)
+    Handler = http.server.SimpleHTTPRequestHandler
+    httpd = socketserver.TCPServer(("", PORT), Handler)
 
     # change working directory so that
     # the editor files are served
     os.chdir("..")
     
     # start the server
-    print "serving at port", PORT
+    print("serving at port", PORT)
     httpd.serve_forever()
 
 

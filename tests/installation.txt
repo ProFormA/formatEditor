@@ -1,7 +1,6 @@
 Installation 
 ------------
-- install Python 2.x 
-
+- install Python 3.x 
 
 - install selenium for python (https://pypi.python.org/pypi/selenium):
 
@@ -9,7 +8,7 @@ Installation
   newer version of python already contain pip.
   It is located in a subdirectory (scripts).
  
-  cmd -> cd c:\....\Python\scripts
+  cmd -> cd path\to\Python3\Scripts
          pip install selenium
 
   upgrade:
@@ -43,13 +42,13 @@ Running Tests
 -------------
 For Running the tests the editor must be served by a HTTP server!
 This is very important because the tests start the editor with 'http://127.0.0.1:8000/proformaEditor101.html'. 
-In order to run a simple HTTP server you can start httpserver.py with the 'tests' working directory (e.g. double click in Windows). 
+In order to run a simple HTTP server you can start httpserver.py in the 'tests' working directory (e.g. double click in Windows). 
 
 Testsuite
 ---------
 
-start testsuite.py in *working* directory tests
+start testsuite.py in *working* directory 'tests'
 
-If you want to debug a test script set the working directory to the 'tests' directory (not testcases where the actual test script is located).
+If you want to debug a test script set the working directory to the 'tests' directory (not testcases where the actual test scripts are located).
 
 

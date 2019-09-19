@@ -41,7 +41,7 @@ prog_lang = "java/1.8"
 class BinaryFilesTest(zipFileTest.ZipFileTest):
 
     def setUp(self):
-        print "setup BinaryTest"
+        print("setup BinaryTest")
         zipFileTest.ZipFileTest.setUp(self, 'java', 'binary')
         editor.delete_old_task_files(expectedZipName, self.output_folder)
 

@@ -40,9 +40,9 @@ class ZipFileTest(unittest.TestCase):
         if cwd.endswith('testcases'):
             raise Exception('check working directoy: ' + cwd);
 
-        print "----------------------------------------------------"
-        print "starting ZipFileTest " + testdir + "/" + testfile + ': ' + self._testMethodName
-        print "----------------------------------------------------"
+        print("----------------------------------------------------")
+        print("starting ZipFileTest " + testdir + "/" + testfile + ': ' + self._testMethodName)
+        print("----------------------------------------------------")
 
         self.output_folder = self.default_output_folder + "/" + testdir
         self.testfile = testfile
@@ -73,7 +73,7 @@ class ZipFileTest(unittest.TestCase):
     def tearDown(self):
         editor.closeBrowser()
         self.driver = None
-        print "test finished"
+        print("test finished")
 
 
     def loadZipFile(self, task_filename):

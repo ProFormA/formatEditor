@@ -27,7 +27,7 @@ import os
 username = os.environ['USERNAME']
 download_path = "c:/Users/" + username + "/Downloads"
 
-print "using '" + download_path + "' as download path"
+print("using '" + download_path + "' as download path")
 
 # preferred browser
 #browser = "Firefox"

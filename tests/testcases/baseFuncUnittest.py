@@ -39,7 +39,7 @@ prog_lang = "java/1.8"
 class BaseFunctionalityTest(zipFileTest.ZipFileTest):
 
     def setUp(self):
-        print "setup BaseTest"
+        print("setup BaseTest")
         zipFileTest.ZipFileTest.setUp(self, 'java', 'base')
         editor.delete_old_task_files(expectedZipName, self.output_folder)
 

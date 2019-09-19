@@ -25,7 +25,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
-import thread
+import _thread
 
 import os.path
 import shutil
@@ -94,7 +94,7 @@ def openBrowser():
 
 
 def openChrome():
-    print "Starting Chrome"
+    print("Starting Chrome")
     # chromedriver = "/Users/adam/Downloads/chromedriver"
     # os.environ["webdriver.chrome.driver"] = chromedriver
     # driver = webdriver.Chrome(chromedriver)
@@ -103,20 +103,20 @@ def openChrome():
 
 
 def openEdge():
-    print "Starting Edge"
+    print("Starting Edge")
 
     driver = webdriver.Edge()
     return driver
 
 
 def openPhantomJs():
-    print "Starting PhantomJS"
+    print("Starting PhantomJS")
 
     driver = webdriver.PhantomJS()
     return driver
 
 def openFirefox():
-    print "Starting Firefox"
+    print("Starting Firefox")
 
     driver = webdriver.Firefox()
 
@@ -129,10 +129,10 @@ def openFirefox():
     if len(testconfig.firefox_executable) <= 0:
         if os.path.isfile(usr_bin_firefox):
             testconfig.firefox_executable = usr_bin_firefox
-            print usr_bin_firefox + " exists"
+            print(usr_bin_firefox + " exists")
         elif os.path.isfile(c_program_x86_firefox):
             testconfig.firefox_executable = c_program_x86_firefox
-            print c_program_x86_firefox + " exists"
+            print(c_program_x86_firefox + " exists")
 
     if len(testconfig.firefox_executable) > 0:
         driver = webdriver.Firefox(firefox_binary=testconfig.firefox_executable, capabilities=d)
@@ -200,7 +200,7 @@ def load_task_file(task_file, content_will_be_deleted):
         global thread_started
         thread_started = False
         # .... Edge kommt erst wieder, wenn man den Dialog beendet hat :-(
-        thread.start_new_thread(fillOpenFileDialog, (filename,))
+        _thread.start_new_thread(fillOpenFileDialog, (filename,))
         while not thread_started:
             pass
     elem.click()
@@ -316,7 +316,7 @@ def save_task_file(expected_file_name, move_to_folder, move_to_filename_xml):
         # print filename
 
     if lastname == None:
-        print testconfig.download_path + "/" + filename_with_wildcards + ' does not exist'
+        print(testconfig.download_path + "/" + filename_with_wildcards + ' does not exist')
 
     # könnte man auch direkt auspacken... (TODO)
     # print "rename " + lastname + " to " + move_to_folder + "/" + expected_file_name
@@ -375,7 +375,7 @@ pass_counter = 0
 failed_counter = 0
 def PASS(message):
     global pass_counter
-    print "PASSED: " + message
+    print("PASSED: " + message)
     pass_counter = pass_counter + 1
     
 
@@ -387,11 +387,11 @@ def FAILED(message):
 def TEST_SUMMARY():
     global pass_counter
     global failed_counter
-    print str(pass_counter) + " tests passed"
+    print(str(pass_counter) + " tests passed")
     if failed_counter > 0:
         sys.stderr.write (str(failed_counter) + " tests failed\n")
     else:
-        print str(failed_counter) + " tests failed"
+        print(str(failed_counter) + " tests failed")
         
 
 ####################################################################
@@ -504,18 +504,18 @@ def select_chrome_option(elem, select):
             break
         opt_index = opt_index + 1
 
-    print "index of <load...> is " + str(opt_index)
+    print("index of <load...> is " + str(opt_index))
     elem.click()
     time.sleep(timeoutSelectChrome)
     keyboard = Controller()
 
     for i in range (0, opt_index):
-        print "[down]"
+        print("[down]")
         keyboard.press(Key.down)
         keyboard.release(Key.down)
         time.sleep(1)
 
-    print "[enter]"
+    print("[enter]")
     keyboard.press(Key.enter)
     keyboard.release(Key.enter)
 
@@ -1042,9 +1042,9 @@ def set_input_value(field, value):
 
     actual_value = field.get_attribute('value')
     if actual_value != value:
-        print 'field is not set properly'
-        print 'expected = ' + value
-        print 'actual   = ' + actual_value
+        print('field is not set properly')
+        print('expected = ' + value)
+        print('actual   = ' + actual_value)
         raise Exception('field is not set properly: ' + value)
 
 
@@ -1306,9 +1306,9 @@ def is_problem_file1_equal_to_file2_except_for_version(file1, file2):
         if line1.startswith('<!-- generated with ProFormA editor version'):
             continue
         if line1 != line2:
-            print 'problem file line diff'
-            print line1
-            print line2
+            print('problem file line diff')
+            print(line1)
+            print(line2)
             f1.close()
             f2.close()
             return False

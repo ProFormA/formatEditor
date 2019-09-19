@@ -27,7 +27,7 @@ import zipFileTest
 class Xsd_1_0_1_Test(zipFileTest.ZipFileTest):
 
     def setUp(self):
-        print "setup Xsd_1_0_1_Test"
+        print("setup Xsd_1_0_1_Test")
 
         zipFileTest.ZipFileTest.setUp(self, 'xsd_101', '101')
         editor.delete_old_task_files("input222.zip", self.output_folder)

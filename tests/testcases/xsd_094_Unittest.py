@@ -28,7 +28,7 @@ expectedZipName = "HelloWorld.zip"
 class Xsd_0_94_Test(zipFileTest.ZipFileTest):
 
     def setUp(self):
-        print "setup Xsd_0_94_Test"
+        print("setup Xsd_0_94_Test")
         zipFileTest.ZipFileTest.setUp(self, 'xsd_094', '094')
         editor.delete_old_task_files(expectedZipName, self.output_folder)
 

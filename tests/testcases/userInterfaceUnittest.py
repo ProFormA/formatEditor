@@ -27,7 +27,7 @@ import zipFileTest
 class SpecialTest(zipFileTest.ZipFileTest):
 
     def setUp(self):
-        print "setup special_Test"
+        print("setup special_Test")
 
         zipFileTest.ZipFileTest.setUp(self, 'user_interface', 'files')
 

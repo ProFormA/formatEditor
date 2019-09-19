@@ -28,9 +28,9 @@ class JavascriptUnitTest(unittest.TestCase):
     error_counter = 0
     def setUp(self):
 
-        print "----------------------------------------------------"
-        print "starting Unit Test: " + self._testMethodName
-        print "----------------------------------------------------"
+        print("----------------------------------------------------")
+        print("starting Unit Test: " + self._testMethodName)
+        print("----------------------------------------------------")
 
         self.driver = editor.openBrowser()
         editor.init(self.driver)
@@ -40,9 +40,9 @@ class JavascriptUnitTest(unittest.TestCase):
         result = editor.driver.execute_script('return taskTitleToFilename("' + test_input + '");')
         try:
             self.assertEqual(expected_result, result, result)
-            print ("PASSED: " + test_input + " => " + expected_result)
+            print(("PASSED: " + test_input + " => " + expected_result))
         except:
-            print ("x FAILED: " + test_input + " => " + result + " expected was: " + expected_result )
+            print(("x FAILED: " + test_input + " => " + result + " expected was: " + expected_result ))
             self.error_counter = self.error_counter + 1
 
     def test_zipfilename(self):

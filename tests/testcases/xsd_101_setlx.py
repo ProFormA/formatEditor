@@ -28,7 +28,7 @@ import zipFileTest
 class Xsd_setlx_1_0_1_Test(zipFileTest.ZipFileTest):
 
     def setUp(self):
-        print "setup Xsd_setlx_1_0_1_Test"
+        print("setup Xsd_setlx_1_0_1_Test")
         zipFileTest.ZipFileTest.setUp(self, 'xsd_101', 'setlx101')
         editor.delete_old_task_files("setlx101.zip", self.output_folder)
 

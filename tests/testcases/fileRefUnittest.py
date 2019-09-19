@@ -31,7 +31,7 @@ expectedZipName = title + ".zip"
 class FileRefAndCTest(zipFileTest.ZipFileTest):
 
     def setUp(self):
-        print "setup CTest"
+        print("setup CTest")
         zipFileTest.ZipFileTest.setUp(self, 'c', 'fileUsage')
         editor.delete_old_task_files(expectedZipName, self.output_folder)
 

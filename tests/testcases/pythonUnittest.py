@@ -42,7 +42,7 @@ expectedZipName = "input222.zip"
 class PythonTest(zipFileTest.ZipFileTest):
 
     def setUp(self):
-        print "setup Python Test"
+        print("setup Python Test")
         zipFileTest.ZipFileTest.setUp(self, 'python', 'python')
         editor.delete_old_task_files(expectedZipName, self.output_folder)
 
