@@ -1,21 +1,21 @@
 # formatEditor
 
-A Javascript editor for the exchange format for programming exercises
+A Javascript editor for ProFormA programming tasks (exchange format for programming exercises, https://github.com/ProFormA/proformaxml).
 
 Needs Firefox or Chrome
-Edge könnte inzwischen auch funktionieren
 
+Testsuite does not start with Chrome 77.
 
 TODO:
-- Dokumentation aktualisieren
-- Dateien mit gleichem Namen in den Filerefs unterstützen
+- update documentation
+- support Dateien mit gleichem Namen in den Filerefs unterstützen
 - Entfernen der Zwischenschichtklasse beim XML-Schreiben (ggf. auch Lesen)
 - Validieren der erzeugten XML-Datei gegen die Test-XSDs
 - Einklappen der Descriptions
-- Encoding unterstützen
 - auch attached Dateien editieren, wenn die Dateiendung vermuten lässt, dass das geht (z.b. java)
 - Code aufräumen
 - Testumgebung aufräumen (insbesondere die Indizierung ist verwirrend, weil mal die internen Indizes mal die aus der Oberfläche verwendet werden)
+- Programmiersprache C
 
 
 Folgende Änderungen kommunizieren:
@@ -23,7 +23,6 @@ Folgende Änderungen kommunizieren:
 - Entscheidung, dass große Dateien automatisch als Binärdateien gewertet werden, rausnehmen
 - codemirror=false setzen (ggf. auch andere Lösung)
 
-Weitere Testfälle:
-- veränderte Grading Hints
+More testcases:
+- change grading hints
 - Java-Klassen- und Package-Erkennung
-- Programmiersprache C

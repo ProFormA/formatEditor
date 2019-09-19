@@ -108,8 +108,9 @@ const config = (function(testConfigNode) {
         "<p><label for='xml_pr_CS_version'>Version<span class='red'>*</span>: </label>"+
         "<select class='xml_pr_CS_version'>" +
         "<option value='5.4'>5.4</option>" +
-        "<option selected='selected' value='6.2'>6.2</option>" +
+        "<option value='6.2'>6.2</option>" +
         "<option value='7.6'>7.6</option>" +
+        "<option selected='selected' value='8.23'>8.23</option>" +
         "</select>"+
         " <label for='xml_pr_CS_warnings'> Maximum warnings allowed<span class='red'>*</span>: </label>"+
         "<input class='tinyinput xml_pr_CS_warnings' value='0'/></p>";
