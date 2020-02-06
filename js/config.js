@@ -95,6 +95,7 @@ const config = (function(testConfigNode) {
         "<select class='xml_ju_framew'><option selected='selected' value='JUnit'>JUnit</option></select>"+
         " <label for='xml_ju_version'>Version<span class='red'>*</span>: </label>"+
         "<select class='xml_ju_version'>" +
+        "<option value='5'>5</option>"+
         "<option selected='selected' value='4.12'>4.12</option>" +
         "<option value='4.12-gruendel'>4.12-gruendel</option>" +
         "<option value='4.10'>4.10</option>"+

@@ -1,3 +1,7 @@
+Release Notes for 3.0.3
+
+support for JUnit 5
+
 Release Notes for 3.0.2
 
 support for Checkstyle version 8.23
