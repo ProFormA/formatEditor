@@ -1,3 +1,8 @@
+Release Notes for 3.0.4
+
+support for Checkstyle version 8.28
+set 4 max. checkstyle warnings as default
+
 Release Notes for 3.0.3
 
 support for JUnit 5
