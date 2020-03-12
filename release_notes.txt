@@ -1,3 +1,7 @@
+Release Notes for 3.0.5
+
+bugfix filename guessing for generic Java classes
+
 Release Notes for 3.0.4
 
 support for Checkstyle version 8.28
