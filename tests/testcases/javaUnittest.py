@@ -223,7 +223,7 @@ class JavaTest(zipFileTest.ZipFileTest):
         editor.set_junit_test_class(0, "JUNIT test class #0")
 #        editor.set_test_public(counter_test_index, "False")
 #        editor.set_test_required(counter_test_index, "False")
-        editor.set_junit_version(0, 1)
+        editor.set_junit_version(0, '4.12-gruendel') # 1
         # editor.set_junit_fileref2(counter_test_index, "1")
 
         counter_test_index = counter_test_index + 1
@@ -235,7 +235,7 @@ class JavaTest(zipFileTest.ZipFileTest):
         # editor.set_junit_test_class(1, "JUNIT test class #1")
 #        editor.set_test_public(counter_test_index, "True")
 #        editor.set_test_required(counter_test_index, "True")
-        editor.set_junit_version(1, 0)
+        editor.set_junit_version(1, '4.12') # 0
         # editor.set_junit_fileref2(counter_test_index, "2")
 
 

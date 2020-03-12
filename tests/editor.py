@@ -1072,7 +1072,8 @@ def set_junit_test_class(junit_index, classtext):
 def set_junit_version(junit_index, version):
     elem = driver.find_elements_by_class_name('xml_ju_version')
     select = Select(elem[junit_index])
-    select.select_by_index(version)
+    select.select_by_visible_text(version)
+    # select.select_by_index(version)
 
 
 # Attention! The input field is read-only! So you cannot

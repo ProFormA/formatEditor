@@ -20,6 +20,8 @@
             //$("#class").val(javaParser.getClasseName(pureCode));
             $("#package").val(java_data.package);
             $("#class").val(java_data.class);
+            const java_filename = javaParser.getFilenameWithPackage(text);
+            $("#filename").val(java_filename);
         }
 
 $(function() {    
@@ -47,6 +49,13 @@ Package
     Class
     <textarea rows='1' cols='80' id='class'></textarea>
 </p>
+
+
+<p>
+    Filename
+    <textarea rows='1' cols='80' id='filename'></textarea>
+</p>
+
 
  <button onclick="myFunction()">Parse Code</button>
 </body>

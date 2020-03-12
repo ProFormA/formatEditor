@@ -65,7 +65,7 @@ var javaParser = (function() {
 
             //const className = code.match(/\s*(|public|private)\s+class([\s\S]*?)(\{|extends|implements)/);
             //const className = code.match(/\s*(public|private)\s+class([\s\S]*?)(\{|extends|implements)/);
-            const className = code.match(/class\s+([\S]+?)\s*(\{|extends|implements)/);
+            const className = code.match(/class\s+([\S]+?)\s*(\{|extends|implements)/); //interface??
             if (!className) return "";
             switch (className.length) {
                 case 0:  return ""; // no className found???
@@ -90,7 +90,11 @@ var javaParser = (function() {
         const javapackage = out.package.replace(/\./g, "/");
 
         if (out.class.length > 0) {
-            filename = out.class + ".java";
+            classname = out.class.trim();
+            if (classname.endsWith('>')) {
+                classname = classname.substr(0, classname.indexOf('<'))
+            }
+            filename = classname + ".java";
         } else {
             // no class name found (e.g. enum, interface ...)
             // if filename starts with package then remove package

@@ -11,6 +11,8 @@ Installation
   cmd -> cd path\to\Python3\Scripts
          pip install selenium
 
+  (maybe you must replace pip by pip3)
+
   upgrade:
          pip install selenium --upgrade
 
@@ -41,7 +43,7 @@ Installation
 Running Tests
 -------------
 For Running the tests the editor must be served by a HTTP server!
-This is very important because the tests start the editor with 'http://127.0.0.1:8000/proformaEditor101.html'. 
+This is very important because the tests start the editor with 'http://127.0.0.1:8000/proformaEditor.html'.
 In order to run a simple HTTP server you can start httpserver.py in the 'tests' working directory (e.g. double click in Windows). 
 
 Testsuite
