@@ -2,6 +2,8 @@
 
 A Javascript editor for ProFormA programming tasks (exchange format for programming exercises, https://github.com/ProFormA/proformaxml).
 
+Can be executed from this website: proforma.github.io/formatEditor/proformaEditor.html
+
 Needs Firefox or Chrome
 
 Testsuite does not start with Chrome 77.
