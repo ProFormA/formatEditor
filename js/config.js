@@ -279,6 +279,7 @@ const config = (function(testConfigNode) {
     // SUPPORTED PROGRAMMING LANGUAGES
     // -------------------------------
     const proglangInfos = [
+        new ProglangInfo("java/11",    [testJavaComp, testJavaJUnit,   testCheckStyle]),
         new ProglangInfo("java/1.8",   [testJavaComp, testJavaJUnit,   testCheckStyle]),
         new ProglangInfo("java/1.6",   [testJavaComp, testJavaJUnit,   testCheckStyle]),
         new ProglangInfo("python/2",   [testPython,   testCheckStyle ]),

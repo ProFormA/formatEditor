@@ -21,11 +21,24 @@
 
 
 import os
+import platform
 
 # default download path for windows
 # path to downloaded files
-username = os.environ['USERNAME']
-download_path = "c:/Users/" + username + "/Downloads"
+if platform.system() == 'Windows':
+    username = os.environ['USERNAME']
+    download_path = "c:/Users/" + username + "/Downloads"
+elif platform.system() == 'Linux':
+    os.system('mkdir /downloads')
+    download_path = "/downloads"
+
+    # pynput:
+    # An X server must be running.
+    # The environment variable $DISPLAY must be set.
+
+    
+else:
+    print ('unknown OS: ' + platform.system())
 
 print("using '" + download_path + "' as download path")
 

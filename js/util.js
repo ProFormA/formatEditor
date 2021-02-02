@@ -22,7 +22,7 @@ const SUBMISSION_TEST  = false;
 const USE_VISIBLES     = false;
 
 
-const codeversion   = '3.0.5 [200312]';    // current version of this code
+const codeversion   = '3.0.6 [210202]';    // current version of this code
 
 
 const version094    = 'xsd/taskxml0.9.4.xsd';                // name of schema files
