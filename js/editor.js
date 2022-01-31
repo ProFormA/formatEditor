@@ -642,6 +642,9 @@ $(function () {
         readXmlActive = true; // lock automatic input field update
         try {
             readAndDisplayXml();
+            // show/hide buttons according to new programming language
+            switchProgLang();
+
         } catch (err) {
             setErrorMessage("uncaught exception", err);
         }
