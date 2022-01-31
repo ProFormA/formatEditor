@@ -85,49 +85,6 @@ const config = (function(testConfigNode) {
     // -------------------------
     // TESTS
     // -------------------------
-    // HTML building blocks for the extra input fields in tests
-
-    const htmlJavaJunit = // htmlPraktomat +
-        "<p><label for='xml_ju_mainclass'>Entry Point<span class='red'>*</span>: </label>"+
-        "<input class='mediuminput xml_ju_mainclass' " +
-        "title='usually name of class containing main method, including full package path (e.g. de.ostfalia.zell.editor)'/>"+
-        " <label for='xml_ju_framew'>Framework<span class='red'>*</span>: </label>"+
-        "<select class='xml_ju_framew'><option selected='selected' value='JUnit'>JUnit</option></select>"+
-        " <label for='xml_ju_version'>Version<span class='red'>*</span>: </label>"+
-        "<select class='xml_ju_version'>" +
-        "<option value='5'>5</option>"+
-        "<option selected='selected' value='4.12'>4.12</option>" +
-        "<option value='4.12-gruendel'>4.12-gruendel</option>" +
-        "<option value='4.10'>4.10</option>"+
-        "<option value='3'>3</option>" +
-        "</select></p>";
-//        "<p><label for='xml_pr_configDescription'>Test description: </label>"+
-//        "<input class='largeinput xml_pr_configDescription'/></p>";
-
-
-
-    const htmlCCunit = // htmlPraktomat +
-        "<p><label for='xml_ju_mainclass'>Run Command<span class='red'>*</span>: </label>"+
-        "<input class='mediuminput xml_ju_mainclass' " +
-        "title='command for running the test, depends on Makefile (e.g. ./run_test)'/>"+
-        " <label for='xml_ju_framew'>Framework<span class='red'>*</span>: </label>"+
-        "<select class='xml_ju_framew'><option selected='selected' value='CUnit'>CUnit</option></select>"+
-        "</p>";
-//        "<p><label for='xml_pr_configDescription'>Test description: </label>"+
-//        "<input class='largeinput xml_pr_configDescription'/></p>";
-
-
-    const htmlCheckstyle = //htmlPraktomat +
-        "<p><label for='xml_pr_CS_version'>Version<span class='red'>*</span>: </label>"+
-        "<select class='xml_pr_CS_version'>" +
-        "<option value='5.4'>5.4</option>" +
-        "<option value='6.2'>6.2</option>" +
-        "<option value='7.6'>7.6</option>" +
-        "<option value='8.23'>8.23</option>" +
-        "<option selected='selected' value='8.29'>8.29</option>" +
-        "</select>"+
-        " <label for='xml_pr_CS_warnings'> Maximum warnings allowed<span class='red'>*</span>: </label>"+
-        "<input class='tinyinput xml_pr_CS_warnings' value='4'/></p>";
 
     const JUnit_Default_Title = "JUnit Test";
     const CUnit_Default_Title = "CUnit Test";
@@ -157,8 +114,24 @@ const config = (function(testConfigNode) {
 
     class JUnitTest extends CustomTest  {
         constructor() {
-            super(JUnit_Default_Title, "unittest", htmlJavaJunit, ['java']);
+            super(JUnit_Default_Title, "unittest", "", ['java']);
             this.fileRefLabel = 'Junit and other File';
+        }
+
+        getExtraHtmlField() {
+            return "<p><label for='xml_ju_mainclass'>Entry Point<span class='red'>*</span>: </label>"+
+                "<input class='mediuminput xml_ju_mainclass' " +
+                "title='usually name of class containing main method, including full package path (e.g. de.ostfalia.zell.editor)'/>"+
+                " <label for='xml_ju_framew'>Framework<span class='red'>*</span>: </label>"+
+                "<select class='xml_ju_framew'><option selected='selected' value='JUnit'>JUnit</option></select>"+
+                " <label for='xml_ju_version'>Version<span class='red'>*</span>: </label>"+
+                "<select class='xml_ju_version'>" +
+                "<option value='5'>5</option>"+
+                "<option selected='selected' value='4.12'>4.12</option>" +
+                "<option value='4.12-gruendel'>4.12-gruendel</option>" +
+                "<option value='4.10'>4.10</option>"+
+                "<option value='3'>3</option>" +
+                "</select></p>";
         }
         onReadXml(test, xmlReader, testConfigNode, testroot) {
             let unitNode = xmlReader.readSingleNode("unit:unittest", testConfigNode);
@@ -200,20 +173,13 @@ const config = (function(testConfigNode) {
         }
 
         getExtraHtmlField() {
-            // console.log('HTML: Framework from XML (converted): ' + this.framework);
-            // alert();
-            const htmlText = // htmlPraktomat +
-                "<p><label for='xml_ju_mainclass'>Run Command<span class='red'>*</span>: </label>"+
+            return "<p><label for='xml_u_mainclass'>Run Command<span class='red'>*</span>: </label>"+
                 "<input class='mediuminput xml_ju_mainclass' " +
                 "title='command for running the test, depends on Makefile (e.g. ./run_test)'/>"+
-                " <label for='xml_ju_framew'>Framework<span class='red'>*</span>: </label>"+
-                "<select class='xml_ju_framew'><option selected='selected' value='" + this.framework +
+                " <label for='xml_u_framew'>Framework<span class='red'>*</span>: </label>"+
+                "<select class='xml_u_framew'><option selected='selected' value='" + this.framework +
                     "'>" + this.framework + "</option></select>"+
                 "</p>";
-//        "<p><label for='xml_pr_configDescription'>Test description: </label>"+
-//        "<input class='largeinput xml_pr_configDescription'/></p>";
-            // console.log('HTML: Framework from XML (converted): ' + this.framework);
-            return htmlText;
         }
 
         onReadXml(test, xmlReader, testConfigNode, testroot) {
@@ -224,11 +190,9 @@ const config = (function(testConfigNode) {
             if (unitNode.namespaceURI !== unittestns_new) {
                 throw new Error('unsupported namespace ' + xmlReader.defaultns + ' in CUnitTest');
             }
-            $(testroot).find(".xml_ju_mainclass").val(xmlReader.readSingleText("unit:entry-point", unitNode));
+            $(testroot).find(".xml_u_mainclass").val(xmlReader.readSingleText("unit:entry-point", unitNode));
 
             this.framework = xmlReader.readSingleText("@framework", unitNode);
-            // console.log('Framework from XML: ' + this.framework);
-            // alert(this.framework );
             switch(this.framework) {
                 case 'GoogleTest':
                     this.framework = 'GoogleTest';
@@ -243,20 +207,12 @@ const config = (function(testConfigNode) {
                     this.proglang = ['c'];
                     break;
             }
-            // alert(this.framework );
-            // console.log('Framework from XML (converted): ' + this.framework);
-            $(testroot).find(".xml_ju_version").val(xmlReader.readSingleText("@version", unitNode));
-            this.updateFramework(testroot);
-            $(testroot).find(".xml_ju_framew").val(this.framework);
-        }
-
-        updateFramework(testroot) {
-            $(testroot).find(".xml_ju_framew").html("<option selected='selected' value='" + this.framework +
+            $(testroot).find(".xml_u_version").val(xmlReader.readSingleText("@version", unitNode));
+            // Update framework value
+            $(testroot).find(".xml_u_framew").html("<option selected='selected' value='" + this.framework +
                 "'>" + this.framework + "</option>");
-
+            $(testroot).find(".xml_u_framew").val(this.framework);
         }
-//            "<select class='xml_ju_framew'><option selected='selected' value='" + this.framework +
-//            "'>" + this.framework + "</option></select>"+
 
         onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter, task) {
             let root = uiElement.root;
@@ -265,9 +221,9 @@ const config = (function(testConfigNode) {
             let unittestNode = xmlDoc.createElementNS(unittestns_new, "unit:unittest");
             testConfigNode.appendChild(unittestNode);
 
-            xmlWriter.createTextElement(unittestNode, 'unit:entry-point', $(root).find(".xml_ju_mainclass").val(), unittestns_new);
-            unittestNode.setAttribute("framework", $(root).find(".xml_ju_framew").val());
-            unittestNode.setAttribute("version", $(root).find(".xml_ju_version").val());
+            xmlWriter.createTextElement(unittestNode, 'unit:entry-point', $(root).find(".xml_u_mainclass").val(), unittestns_new);
+            unittestNode.setAttribute("framework", $(root).find(".xml_u_framew").val());
+            unittestNode.setAttribute("version", $(root).find(".xml_u_version").val());
         }
     }
 
@@ -285,9 +241,22 @@ const config = (function(testConfigNode) {
 
     class CheckstyleTest extends CustomTest {
         constructor() {
-            super("CheckStyle Test", "java-checkstyle", htmlCheckstyle);
+            super("CheckStyle Test", "java-checkstyle", "");
             this.gradingWeight = weightStaticTest;
             this.fileRefLabel = 'Configuration File';
+        }
+
+        getExtraHtmlField() {
+            return "<p><label for='xml_pr_CS_version'>Version<span class='red'>*</span>: </label>"+
+                "<select class='xml_pr_CS_version'>" +
+                "<option value='5.4'>5.4</option>" +
+                "<option value='6.2'>6.2</option>" +
+                "<option value='7.6'>7.6</option>" +
+                "<option value='8.23'>8.23</option>" +
+                "<option selected='selected' value='8.29'>8.29</option>" +
+                "</select>"+
+                " <label for='xml_pr_CS_warnings'> Maximum warnings allowed<span class='red'>*</span>: </label>"+
+                "<input class='tinyinput xml_pr_CS_warnings' value='4'/></p>";
         }
 
         onReadXml(test, xmlReader, testConfigNode, testroot) {
@@ -452,6 +421,7 @@ const config = (function(testConfigNode) {
             case 'c' :
             case 'h' :
             case 'cpp' :
+            case 'cxx' :
             case 'java' :
             case 'log' :
             case 'txt' :
