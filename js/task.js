@@ -206,6 +206,13 @@ convertToXML = function(topLevelDoc, rootNode) {
         $.each(config.testInfos, function(index, configItem) {
             // search for appropriate writexml function
             if (configItem.testType === test.testtype) {
+                if (configItem.proglang !== undefined) {
+                    if (!configItem.proglang.includes(task.proglang)) {
+                        // Language does not match
+                        return;
+                    }
+                }
+
                 test.configItem = configItem;
                 test.uiElement = uiTest;
             }
