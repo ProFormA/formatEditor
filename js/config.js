@@ -198,15 +198,9 @@ const config = (function(testConfigNode) {
             this.fileRefLabel = 'CMakeLists.txt,  Makefile, main.c, CUnit ... (or zipped as archive)';
             this.framework = framework;
         }
-/*
-        "<p><label for='xml_ju_mainclass'>Run Command<span class='red'>*</span>: </label>"+
-        "<input class='mediuminput xml_ju_mainclass' " +
-        "title='command for running the test, depends on Makefile (e.g. ./run_test)'/>"+
-        " <label for='xml_ju_framew'>Framework<span class='red'>*</span>: </label>"+
-        "<select class='xml_ju_framew'><option selected='selected' value='CUnit'>CUnit</option></select>"+
-        "</p>";
-*/
+
         getExtraHtmlField() {
+            // console.log('HTML: Framework from XML (converted): ' + this.framework);
             // alert();
             const htmlText = // htmlPraktomat +
                 "<p><label for='xml_ju_mainclass'>Run Command<span class='red'>*</span>: </label>"+
@@ -218,7 +212,7 @@ const config = (function(testConfigNode) {
                 "</p>";
 //        "<p><label for='xml_pr_configDescription'>Test description: </label>"+
 //        "<input class='largeinput xml_pr_configDescription'/></p>";
-
+            // console.log('HTML: Framework from XML (converted): ' + this.framework);
             return htmlText;
         }
 
@@ -233,11 +227,14 @@ const config = (function(testConfigNode) {
             $(testroot).find(".xml_ju_mainclass").val(xmlReader.readSingleText("unit:entry-point", unitNode));
 
             this.framework = xmlReader.readSingleText("@framework", unitNode);
+            // console.log('Framework from XML: ' + this.framework);
+            // alert(this.framework );
             switch(this.framework) {
                 case 'GoogleTest':
                     this.framework = 'GoogleTest';
                     this.proglang = ['c', 'cpp'];
                     break;
+                default:
                 case undefined:
                 case '':
                 // Fall through
@@ -246,9 +243,21 @@ const config = (function(testConfigNode) {
                     this.proglang = ['c'];
                     break;
             }
-            $(testroot).find(".xml_ju_framew").val(this.framework);
+            // alert(this.framework );
+            // console.log('Framework from XML (converted): ' + this.framework);
             $(testroot).find(".xml_ju_version").val(xmlReader.readSingleText("@version", unitNode));
+            this.updateFramework(testroot);
+            $(testroot).find(".xml_ju_framew").val(this.framework);
         }
+
+        updateFramework(testroot) {
+            $(testroot).find(".xml_ju_framew").html("<option selected='selected' value='" + this.framework +
+                "'>" + this.framework + "</option>");
+
+        }
+//            "<select class='xml_ju_framew'><option selected='selected' value='" + this.framework +
+//            "'>" + this.framework + "</option></select>"+
+
         onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter, task) {
             let root = uiElement.root;
             task.setAttributeNS('http://www.w3.org/2000/xmlns/', "xmlns:unit", unittestns_new);
