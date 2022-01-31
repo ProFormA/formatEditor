@@ -105,6 +105,18 @@ const config = (function(testConfigNode) {
 //        "<input class='largeinput xml_pr_configDescription'/></p>";
 
 
+
+    const htmlCCunit = // htmlPraktomat +
+        "<p><label for='xml_ju_mainclass'>Run Command<span class='red'>*</span>: </label>"+
+        "<input class='mediuminput xml_ju_mainclass' " +
+        "title='command for running the test, depends on Makefile (e.g. ./run_test)'/>"+
+        " <label for='xml_ju_framew'>Framework<span class='red'>*</span>: </label>"+
+        "<select class='xml_ju_framew'><option selected='selected' value='CUnit'>CUnit</option></select>"+
+        "</p>";
+//        "<p><label for='xml_pr_configDescription'>Test description: </label>"+
+//        "<input class='largeinput xml_pr_configDescription'/></p>";
+
+
     const htmlCheckstyle = //htmlPraktomat +
         "<p><label for='xml_pr_CS_version'>Version<span class='red'>*</span>: </label>"+
         "<select class='xml_pr_CS_version'>" +
@@ -118,6 +130,8 @@ const config = (function(testConfigNode) {
         "<input class='tinyinput xml_pr_CS_warnings' value='4'/></p>";
 
     const JUnit_Default_Title = "JUnit Test";
+    const CUnit_Default_Title = "CUnit Test";
+    const GoogleTest_Default_Title = "Google Test";
 
     // default grading weights
     const weightCompilation = 0;
@@ -143,7 +157,7 @@ const config = (function(testConfigNode) {
 
     class JUnitTest extends CustomTest  {
         constructor() {
-            super(JUnit_Default_Title, "unittest", htmlJavaJunit);
+            super(JUnit_Default_Title, "unittest", htmlJavaJunit, ['java']);
             this.fileRefLabel = 'Junit and other File';
         }
         onReadXml(test, xmlReader, testConfigNode, testroot) {
@@ -177,6 +191,89 @@ const config = (function(testConfigNode) {
             unittestNode.setAttribute("version", $(root).find(".xml_ju_version").val());
         }
     }
+
+    class GeneralUnitTest extends CustomTest  {
+        constructor(title, proglang, framework) {
+            super(title, "unittest", "", proglang);
+            this.fileRefLabel = 'CMakeLists.txt,  Makefile, main.c, CUnit ... (or zipped as archive)';
+            this.framework = framework;
+        }
+/*
+        "<p><label for='xml_ju_mainclass'>Run Command<span class='red'>*</span>: </label>"+
+        "<input class='mediuminput xml_ju_mainclass' " +
+        "title='command for running the test, depends on Makefile (e.g. ./run_test)'/>"+
+        " <label for='xml_ju_framew'>Framework<span class='red'>*</span>: </label>"+
+        "<select class='xml_ju_framew'><option selected='selected' value='CUnit'>CUnit</option></select>"+
+        "</p>";
+*/
+        getExtraHtmlField() {
+            // alert();
+            const htmlText = // htmlPraktomat +
+                "<p><label for='xml_ju_mainclass'>Run Command<span class='red'>*</span>: </label>"+
+                "<input class='mediuminput xml_ju_mainclass' " +
+                "title='command for running the test, depends on Makefile (e.g. ./run_test)'/>"+
+                " <label for='xml_ju_framew'>Framework<span class='red'>*</span>: </label>"+
+                "<select class='xml_ju_framew'><option selected='selected' value='" + this.framework +
+                    "'>" + this.framework + "</option></select>"+
+                "</p>";
+//        "<p><label for='xml_pr_configDescription'>Test description: </label>"+
+//        "<input class='largeinput xml_pr_configDescription'/></p>";
+
+            return htmlText;
+        }
+
+        onReadXml(test, xmlReader, testConfigNode, testroot) {
+            let unitNode = xmlReader.readSingleNode("unit:unittest", testConfigNode);
+            if (!unitNode)
+                throw new Error('element unit:unittest not found in unittest or unittest namespace invalid');
+
+            if (unitNode.namespaceURI !== unittestns_new) {
+                throw new Error('unsupported namespace ' + xmlReader.defaultns + ' in CUnitTest');
+            }
+            $(testroot).find(".xml_ju_mainclass").val(xmlReader.readSingleText("unit:entry-point", unitNode));
+
+            this.framework = xmlReader.readSingleText("@framework", unitNode);
+            switch(this.framework) {
+                case 'GoogleTest':
+                    this.framework = 'GoogleTest';
+                    this.proglang = ['c', 'cpp'];
+                    break;
+                case undefined:
+                case '':
+                // Fall through
+                case 'CUnit':
+                    this.framework = 'CUnit';
+                    this.proglang = ['c'];
+                    break;
+            }
+            $(testroot).find(".xml_ju_framew").val(this.framework);
+            $(testroot).find(".xml_ju_version").val(xmlReader.readSingleText("@version", unitNode));
+        }
+        onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter, task) {
+            let root = uiElement.root;
+            task.setAttributeNS('http://www.w3.org/2000/xmlns/', "xmlns:unit", unittestns_new);
+
+            let unittestNode = xmlDoc.createElementNS(unittestns_new, "unit:unittest");
+            testConfigNode.appendChild(unittestNode);
+
+            xmlWriter.createTextElement(unittestNode, 'unit:entry-point', $(root).find(".xml_ju_mainclass").val(), unittestns_new);
+            unittestNode.setAttribute("framework", $(root).find(".xml_ju_framew").val());
+            unittestNode.setAttribute("version", $(root).find(".xml_ju_version").val());
+        }
+    }
+
+    class GoogleTest extends GeneralUnitTest {
+        constructor() {
+            super(GoogleTest_Default_Title, ['c', 'cpp'], 'GoogleTest');
+        }
+    }
+
+    class CUnitTest extends GeneralUnitTest {
+        constructor() {
+            super(CUnit_Default_Title, ['c'], 'CUnit');
+        }
+    }
+
     class CheckstyleTest extends CustomTest {
         constructor() {
             super("CheckStyle Test", "java-checkstyle", htmlCheckstyle);
@@ -268,6 +365,8 @@ const config = (function(testConfigNode) {
     const testCComp       = new CCompilerTest();
     const testJavaComp    = new JavaCompilerTest();
     const testJavaJUnit   = new JUnitTest();
+    const testCUnit       = new CUnitTest();
+    const testGoogleTest  = new GoogleTest();
     const testCheckStyle  = new CheckstyleTest();
     const testPython      = new PythonTest();
     //const testDgSetup     = new DgSetupTest(DgSetupTest);
@@ -279,13 +378,14 @@ const config = (function(testConfigNode) {
     // SUPPORTED PROGRAMMING LANGUAGES
     // -------------------------------
     const proglangInfos = [
+        new ProglangInfo("java/17",    [testJavaComp, testJavaJUnit,   testCheckStyle]),
         new ProglangInfo("java/11",    [testJavaComp, testJavaJUnit,   testCheckStyle]),
         new ProglangInfo("java/1.8",   [testJavaComp, testJavaJUnit,   testCheckStyle]),
         new ProglangInfo("java/1.6",   [testJavaComp, testJavaJUnit,   testCheckStyle]),
         new ProglangInfo("python/2",   [testPython,   testCheckStyle ]),
         new ProglangInfo("setlX/2.40", [testSetlX,    testSetlXSyntax, testCheckStyle]),
-        // TODO
-        new ProglangInfo("c",          [testCComp /*, testDgSetup, testDGTester*/]),
+        new ProglangInfo("cpp",        [testGoogleTest]),
+        new ProglangInfo("c",          [testGoogleTest, testCUnit]),
     ];
 
 
@@ -296,6 +396,8 @@ const config = (function(testConfigNode) {
     // beachten, das bei gleichen XML-Testtypen derjenige zuerst eingetragen wird, der ein Einlesen einer Datei erzeugt werden soll.
     const testInfos = [
         testJavaComp, testJavaJUnit,
+        testGoogleTest,
+        testCUnit,
         testPython,
         testSetlX, testSetlXSyntax,
         testCComp,

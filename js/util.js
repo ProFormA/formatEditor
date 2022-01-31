@@ -22,7 +22,7 @@ const SUBMISSION_TEST  = false;
 const USE_VISIBLES     = false;
 
 
-const codeversion   = '3.0.6 [210202]';    // current version of this code
+const codeversion   = '3.1.0 [220131]';    // current version of this code
 
 
 const version094    = 'xsd/taskxml0.9.4.xsd';                // name of schema files
@@ -105,10 +105,11 @@ function setcounter(temphash) {
 
 class CustomTest {
 
-    constructor(title, testType, extraFields) {
+    constructor(title, testType, extraFields, proglang) {
         this.title = title; // title in html output
         this.testType = testType; // test type in XML
         this.htmlExtraFields = extraFields; // html extra input elements
+        this.proglang = proglang; // array of programming languages that the test can be used with
 
         this.withFileRef = true; // default: with test script(s)
 
@@ -128,6 +129,8 @@ class CustomTest {
     onCreate(testId) {}
     onReadXml(test, xmlReader, testConfigNode, testroot) {}
     onWriteXml(test, uiElement, testConfigNode, xmlDoc, xmlWriter) {}
+    getFramework() {return undefined;}
+    getExtraHtmlField() { return this.htmlExtraFields; }
 }
 
 

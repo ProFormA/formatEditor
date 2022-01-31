@@ -120,7 +120,7 @@ class TestWrapper {
             "</p>"+
             getDescriptionHtmlString('', '') +
 
-            config.htmlExtraFields +
+            config.getExtraHtmlField() +
             "<p>" + TestFileReference.getInstance().getTableString() + "</p>" +
 
             "<p><label>Grading Weight<span class='red'>*</span>:</label>"+

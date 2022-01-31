@@ -309,6 +309,23 @@ readAndDisplayXml = function() {
         let ui_test = undefined;
         $.each(config.testInfos, function(index, configItem) {
             if (!ui_test && item.testtype === configItem.testType) {
+                // Check if proglang is set in configured test. If true then compare
+                // Check Programming language
+                if (configItem.proglang !== undefined) {
+                    if (!configItem.proglang.includes(task.proglang)) {
+                        // Language does not match
+                        return;
+                    }
+                }
+                /*
+                if (configItem.getFramework() !== undefined) {
+                    if (!configItem.getFramework() == ) {
+                        // Language does not match
+                        return;
+                    }
+                }
+                */
+                console.log('found ' + configItem.title);
                 ui_test = TestWrapper.create(item.id, item.title, configItem, item.weight);
                 task.readTestConfig(taskXml, item.id, configItem, ui_test.root);
                 ui_test.comment = item.comment;
