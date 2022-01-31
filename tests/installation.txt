@@ -2,55 +2,74 @@ Installation
 ------------
 - install Python 3.x 
 
-- install selenium for python (https://pypi.python.org/pypi/selenium):
+- create virtual python environment
 
-  Windows: 
-  newer version of python already contain pip.
-  It is located in a subdirectory (scripts).
- 
-  cmd -> cd path\to\Python3\Scripts
-         pip install selenium
+	cd /path/to/editor
+	python -m venv tests
+	
+- Activate your environment (depending on your operation system)
 
-  (maybe you must replace pip by pip3)
+	cd tests
+	Scripts\activate (on Windows)
+	
+- install requirements
 
-  upgrade:
-         pip install selenium --upgrade
+	pip install -r requirements.txt	
 
-  show installed modules:
-         pip list
-         or
-         pip show selenium
+- install selenium driver for your browsers (COPY DRIVER FILES TO Scripts folder)
+
+    - for CHROME: install chromedriver (https://sites.google.com/chromium.org/driver/)
+      and add path to PATH variable
+      (you can also copy the chromedriver into the python directory without modifying PATH variable)
 
     - for FIREFOX: install geckodriver (https://github.com/mozilla/geckodriver/releases) and add path to PATH variable
       (you can also copy the geckodriver into the python directory without modifying PATH variable)
-
-    - for CHROME: install chromedriver (https://sites.google.com/a/chromium.org/chromedriver/downloads)
-      and add path to PATH variable
-      (you can also copy the chromedriver into the python directory without modifying PATH variable)
 
     - for EDGE:  	https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
       Determine which OS version you have.
       Then download the appropriate driver (MicrosoftWebDriver.exe) and continue (see above).
       Note that you need to turn off 'Always ask me what to do with each download' in advanced settings of Edge!
 
-    - for PHANTOMJS: http://phantomjs.org/download.html
-
-- install pynput (monitors and controls user input devices)
-
-    pip install pynput
-
 
 Running Tests
 -------------
-For Running the tests the editor must be served by a HTTP server!
-This is very important because the tests start the editor with 'http://127.0.0.1:8000/proformaEditor.html'.
-In order to run a simple HTTP server you can start httpserver.py in the 'tests' working directory (e.g. double click in Windows). 
+An HTTP server is required to run the tests. 
+The tests open the editor on 'http://127.0.0.1:8000/proformaEditor.html'.
+In order to run a simple HTTP server you can simply start httpserver.py in the 'tests' working directory (e.g. double click in Windows). 
 
 Testsuite
 ---------
 
 start testsuite.py in *working* directory 'tests'
 
+	cd cd /path/to/editor/tests
+	python testsuite.py
+
+
 If you want to debug a test script set the working directory to the 'tests' directory (not testcases where the actual test scripts are located).
 
 
+# DEPRECATED INSTALLATION
+#
+#- install selenium for python (https://pypi.python.org/pypi/selenium):
+#
+# Windows: 
+#  newer version of python already contain pip.
+#  It is located in a subdirectory (scripts).
+# 
+#  cmd -> cd path\to\Python3\Scripts
+#         pip install selenium
+#
+#  (maybe you must replace pip by pip3)
+#
+#  upgrade:
+#         pip install selenium --upgrade
+#
+#  show installed modules:
+#         pip list
+#         or
+#         pip show selenium
+#
+#- install pynput (monitors and controls user input devices)
+#
+#    pip install pynput

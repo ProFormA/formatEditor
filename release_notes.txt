@@ -1,3 +1,10 @@
+Release Notes for 3.1.0
+
+support for Java version 17
+support for CUnit and c
+support for GoogleTest and C++
+
+
 Release Notes for 3.0.6
 
 support for Java version 11
