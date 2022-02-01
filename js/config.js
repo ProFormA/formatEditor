@@ -71,6 +71,14 @@ const config = (function(testConfigNode) {
     function writeXmlExtra(metaDataNode, xmlDoc, xmlWriter) {
         //xmlWriter.createTextElement(metaDataNode, 'praktomat:allowed-upload-filename-mimetypes', '(text/.*)', praktomatns);
     }
+
+    function onProglangChanged(newProglang) {
+        if (newProglang == 'cpp') {
+            // Add GoogleTest
+            $(".xml_u_framew option[value='GoogleTest']").remove();
+            $(".xml_u_framew").append(`<option value="GoogleTest">GoogleTest</option>`);
+        }
+    }
 /*
     readXml(xmlfile) {
         let xmlReader = new XmlReader(xmlfile);
@@ -177,8 +185,10 @@ const config = (function(testConfigNode) {
                 "<input class='mediuminput xml_ju_mainclass' " +
                 "title='command for running the test, depends on Makefile (e.g. ./run_test)'/>"+
                 " <label for='xml_u_framew'>Framework<span class='red'>*</span>: </label>"+
-                "<select class='xml_u_framew'><option selected='selected' value='" + this.framework +
-                    "'>" + this.framework + "</option></select>"+
+                "<select class='xml_u_framew'>" +
+                "   <option selected='selected' value='" + this.framework +
+                    "'>" + this.framework + "</option>" +
+                "</select>"+
                 "</p>";
         }
 
@@ -477,6 +487,8 @@ const config = (function(testConfigNode) {
         isBinaryFile: isBinaryFile,
         handleFilenameChangeInTest: handleFilenameChangeInTest,
         writeXmlExtra: writeXmlExtra,
+        onProglangChanged: onProglangChanged,
+
         //writeNamespaces: writeNamespaces,
         resolveNamespace: resolveNamespace,
         // data

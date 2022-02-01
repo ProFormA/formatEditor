@@ -353,6 +353,10 @@ $(function () {
         case 'c':
             codeskeleton.setOption("mode", "text/x-csrc");
             break;
+        case 'cpp':
+            codeskeleton.setOption("mode", "text/x-c++src");
+            config.onProglangChanged('cpp');
+            break;
         }
     }
 
