@@ -182,7 +182,7 @@ const config = (function(testConfigNode) {
 
         getExtraHtmlField() {
             return "<p><label for='xml_u_mainclass'>Run Command<span class='red'>*</span>: </label>"+
-                "<input class='mediuminput xml_ju_mainclass' " +
+                "<input class='mediuminput xml_u_mainclass' " +
                 "title='command for running the test, depends on Makefile (e.g. ./run_test)'/>"+
                 " <label for='xml_u_framew'>Framework<span class='red'>*</span>: </label>"+
                 "<select class='xml_u_framew'>" +
