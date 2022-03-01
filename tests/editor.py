@@ -48,7 +48,7 @@ firstTimeDialogs = {'zip': True, 'loncapa': True}
 
 
 
-timeoutSave = 3.5
+timeoutSave = 4
 timeoutSaveLonCapa = 3.5
 timeoutSelectChrome = 1
 timeoutLoadFileref = 1.5
@@ -57,10 +57,10 @@ timeoutSetFileref = 0.3
 #timeoutSetFileref = 1.5
 timeoutAddFileToMs = 0.6
 timeoutSetFileTest = 0.6
-timeoutOpenLoadDialog = 1.1
+timeoutOpenLoadDialog = 3
 timeoutReadXml = 1.1
 timeoutConfirmSave = 2.0
-timeoutConfirmOpen = 2.0
+timeoutConfirmOpen = 3.0
 timeoutSwitchToSave = 1
 timeoutClickAndAlert = 1
 timeoutClick = 0.2
@@ -173,7 +173,7 @@ thread_started = False
 def fillOpenFileDialog(filename):
     global thread_started
     thread_started = True
-    # print "thread started"
+    print ("thread started")
     time.sleep(timeoutOpenLoadDialog)
 
     # print "type text into dialog"
