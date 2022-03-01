@@ -1048,6 +1048,25 @@ def set_input_value(field, value):
         print('actual   = ' + actual_value)
         raise Exception('field is not set properly: ' + value)
 
+
+
+def set_unittest_command(index, command):
+    elem = driver.find_elements_by_class_name('xml_u_mainclass')
+    elem[index].send_keys(command)
+
+
+def set_test_weight(index, weight):
+    elem = driver.find_elements_by_class_name('xml_test_weight')
+    elem[index].send_keys('\b' + weight)
+
+####################################################################
+# CUNITTEST
+####################################################################
+def add_cunittest():
+    change_tab("test_tab")
+    elem = driver.find_element_by_id("addCUnitTest").click()
+
+
 ####################################################################
 # GOOGLETEST
 ####################################################################
@@ -1059,14 +1078,6 @@ def add_googletest():
 #    elem = driver.find_elements_by_class_name('xml_pr_configDescription')
 #    set_input_value(elem[junit_index], text)
 
-def set_googletest_command(index, command):
-    elem = driver.find_elements_by_class_name('xml_u_mainclass')
-    elem[index].send_keys(command)
-
-
-def set_test_weight(index, weight):
-    elem = driver.find_elements_by_class_name('xml_test_weight')
-    elem[index].send_keys('\b' + weight)
 
 ####################################################################
 # JUNIT TEST
