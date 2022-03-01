@@ -22,7 +22,7 @@
 
 import editor
 import zipFileTest
-
+import unittest
 
 class Xsd_1_0_1_Test(zipFileTest.ZipFileTest):
 
@@ -35,7 +35,7 @@ class Xsd_1_0_1_Test(zipFileTest.ZipFileTest):
         editor.delete_old_task_files("python101.zip", self.output_folder)
 
 
-
+    @unittest.skip("Doctest is currently not supported => SKIP")
     def test_zipfile_python(self):
 #        # change reference test file
         self.filename_task_xml_reference = self.output_folder + "/task_101_python_reference.xml"

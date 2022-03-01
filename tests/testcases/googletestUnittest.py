@@ -149,7 +149,7 @@ class GoogletestUnittest(zipFileTest.ZipFileTest):
         editor.set_test_title(counter_test_index, "Googletest Test #0")
         editor.set_test_description(counter_test_index, "googletest description # 0")
         editor.set_test_file(counter_test_index, 1) # file1.cpp
-        editor.set_googletest_command(counter_test_index, "run1")
+        editor.set_unittest_command(counter_test_index, "run1")
 
         counter_test_index = counter_test_index + 1
 
@@ -160,7 +160,7 @@ class GoogletestUnittest(zipFileTest.ZipFileTest):
         editor.set_test_weight(counter_test_index, '4')
         editor.set_test_file(counter_test_index, 4) # file4.cpp
         editor.set_test_file(counter_test_index + 1, 3) # Makefile
-        editor.set_googletest_command(counter_test_index, "run2")
+        editor.set_unittest_command(counter_test_index, "run2")
 
         counter_test_index = counter_test_index + 1
 

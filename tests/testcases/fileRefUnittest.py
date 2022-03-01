@@ -121,9 +121,9 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
 
         editor.set_ms_filename("file8.c", 0)
 
-        editor.add_c_compiler_test() #add_dejagnu_tester()
-        editor.add_c_compiler_test()
-        editor.add_c_compiler_test()
+        editor.add_cunittest()
+        editor.add_cunittest()
+        editor.add_cunittest()
 
         editor.set_test_filename("file9.c", 0)
 
@@ -134,6 +134,11 @@ class FileRefAndCTest(zipFileTest.ZipFileTest):
         editor.set_test_filename("file11.c", 3) # 3!!
         editor.add_test_file(2)
         editor.set_test_filename("file12.c", 4) # 4!!
+
+        editor.set_unittest_command(0, "run1")
+        editor.set_unittest_command(1, "run2")
+        editor.set_unittest_command(2, "run3")
+
 
         # check precondition
 #        self.assertTrue('file4.c' == editor.get_display_file(0))

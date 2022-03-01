@@ -23,9 +23,9 @@ import editor
 import time
 
 
-
 import editor
 import zipFileTest
+import unittest
 
 description = "input111"
 title = "python Doctest"
@@ -47,6 +47,7 @@ class PythonDocTest(zipFileTest.ZipFileTest):
         editor.delete_old_task_files(expectedZipName, self.output_folder)
 
 
+    @unittest.skip("Doctest is currently not supported => SKIP")
     def test_input(self):
         ####################################################################
         ## fill MAIN page

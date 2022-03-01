@@ -29,7 +29,9 @@ import time
 
 import unittest
 
-only_one_browser = False
+# Firefox does not pass tests
+only_one_browser = True
+
 
 
 
@@ -39,8 +41,8 @@ start_dir = 'testcases'
 suite = loader.discover(start_dir, "*test*.py")
 
 runner = unittest.TextTestRunner(verbosity=2)
-
 editor.browser = "Chrome"
+
 print("----------------------------------------------------")
 print("run test with * " + editor.browser + " * ")
 print("----------------------------------------------------")

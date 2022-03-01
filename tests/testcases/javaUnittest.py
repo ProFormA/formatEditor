@@ -54,10 +54,10 @@ prog_lang = "java/1.8"
 # editor.delete_temporary_files()
 
 
-class JavaTest(zipFileTest.ZipFileTest):
+class JavaUnittest(zipFileTest.ZipFileTest):
 
     def setUp(self):
-        print("setup JavaTest")
+        print("setup JavaUnittest")
         zipFileTest.ZipFileTest.setUp(self, 'java', 'java')
         editor.delete_old_task_files(expectedZipName, self.output_folder)
 
