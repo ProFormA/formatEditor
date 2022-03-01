@@ -431,6 +431,7 @@ def confirmPopup():
 # MAIN
 ####################################################################
 def set_task_description(text):
+    # elem = driver.find_elements(By.ID, 'xml_description')
     elem = driver.find_elements_by_id('xml_description')
     if codemirror:
         command = 'descriptionEditor.setValue("' + text + '")'
@@ -1126,9 +1127,14 @@ def set_cs_max_warnings(cs_index, max_warnings):
 ####################################################################
 # PYTHON TEST
 ####################################################################
-def add_python_test():
+def add_python_unittest():
     change_tab("test_tab")                  
-    elem = driver.find_element_by_id("addPythonTest").click()
+    elem = driver.find_element_by_id("addPythonUnittest").click()
+
+def add_python_doctest():
+    change_tab("test_tab")
+    elem = driver.find_element_by_id("addPythonDocTest").click()
+
 
 
 ####################################################################

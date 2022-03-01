@@ -28,18 +28,18 @@ import editor
 import zipFileTest
 
 description = "input111"
-title = "input222"
+title = "python Doctest"
 filesize = "3333"
 
 lon_capa_path = "input4444/"
 language = "en"
 prog_lang = "python/2"
 
-expectedZipName = "input222.zip"
+expectedZipName = "pythonDoctest.zip"
 
 
 
-class PythonTest(zipFileTest.ZipFileTest):
+class PythonDocTest(zipFileTest.ZipFileTest):
 
     def setUp(self):
         print("setup Python Test")
