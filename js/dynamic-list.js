@@ -54,7 +54,7 @@ class DynamicList {
 
     getLabelString(label) {
         if (label.length > 0) {
-            label = label + '(s)';
+            // label = label + '(s)';
             return "<label for='" + this.classFilename +
                 "'>" + label + (this.mandatory?"<span class='red'>*</span>":"") + ": </label>";
         } else {

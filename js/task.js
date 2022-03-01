@@ -103,6 +103,14 @@ function isInputComplete() {
             returnFromFunction = true;
         }
     });
+    $.each($(".xml_u_mainclass"), function(index, item) {   // check whether main-class exists
+        if (!item.value) {
+            $("#tabs").tabs("option", "active",  tab_page.TESTS);
+            setErrorMessage("Run command is missing.");
+            item.focus();
+            returnFromFunction = true;
+        }
+    });
 
     if (returnFromFunction)
         return false;

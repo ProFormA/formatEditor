@@ -674,8 +674,10 @@ class TaskClass {
             }
 
             tests.appendChild(testElem);
-            if (item.configItem)
+            if (item.configItem) {
+                // alert('config write xml');
                 item.configItem.onWriteXml(item, item.uiElement, config, xmlDoc, xmlWriter, task);
+            }
         }
 
         function writeGradingTest(item, index) {

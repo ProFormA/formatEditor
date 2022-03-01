@@ -355,7 +355,9 @@ $(function () {
             break;
         case 'cpp':
             codeskeleton.setOption("mode", "text/x-c++src");
-            config.onProglangChanged('cpp');
+            // This does not work properly:
+            // The unittest element is missing in task.xml output
+            // config.onProglangChanged('cpp');
             break;
         }
     }

@@ -97,6 +97,7 @@ const config = (function(testConfigNode) {
     const JUnit_Default_Title = "JUnit Test";
     const CUnit_Default_Title = "CUnit Test";
     const GoogleTest_Default_Title = "Google Test";
+    const PythonUnittest_Default_Title = "Python Unittest";
 
     // default grading weights
     const weightCompilation = 0;
@@ -123,7 +124,7 @@ const config = (function(testConfigNode) {
     class JUnitTest extends CustomTest  {
         constructor() {
             super(JUnit_Default_Title, "unittest", "", ['java']);
-            this.fileRefLabel = 'Junit and other File';
+            this.fileRefLabel = 'Junit and other file(s)';
         }
 
         getExtraHtmlField() {
@@ -174,16 +175,23 @@ const config = (function(testConfigNode) {
     }
 
     class GeneralUnitTest extends CustomTest  {
-        constructor(title, proglang, framework) {
+        withRunCommand = true;
+        constructor(title, proglang, framework, withRunCommand = true) {
             super(title, "unittest", "", proglang);
-            this.fileRefLabel = 'CMakeLists.txt,  Makefile, main.c, CUnit ... (or zipped as archive)';
+            this.fileRefLabel = 'Testfile(s) and CMakeLists.txt/Makefile';
             this.framework = framework;
+            this.withRunCommand = withRunCommand;
         }
 
         getExtraHtmlField() {
-            return "<p><label for='xml_u_mainclass'>Run Command<span class='red'>*</span>: </label>"+
+            let output = '';
+            if (this.withRunCommand) {
+                output += "<p><label for='xml_u_mainclass'>Run Command<span class='red'>*</span>: </label>"+
                 "<input class='mediuminput xml_u_mainclass' " +
-                "title='command for running the test, depends on Makefile (e.g. ./run_test)'/>"+
+                "title='command for running the test, depends on Makefile (e.g. ./run_test)'/>";
+            }
+
+            return output +
                 " <label for='xml_u_framew'>Framework<span class='red'>*</span>: </label>"+
                 "<select class='xml_u_framew'>" +
                 "   <option selected='selected' value='" + this.framework +
@@ -200,13 +208,19 @@ const config = (function(testConfigNode) {
             if (unitNode.namespaceURI !== unittestns_new) {
                 throw new Error('unsupported namespace ' + xmlReader.defaultns + ' in CUnitTest');
             }
-            $(testroot).find(".xml_u_mainclass").val(xmlReader.readSingleText("unit:entry-point", unitNode));
+            if (this.withRunCommand) {
+                $(testroot).find(".xml_u_mainclass").val(xmlReader.readSingleText("unit:entry-point", unitNode));
+            }
 
             this.framework = xmlReader.readSingleText("@framework", unitNode);
             switch(this.framework) {
                 case 'GoogleTest':
                     this.framework = 'GoogleTest';
                     this.proglang = ['c', 'cpp'];
+                    break;
+                case 'PythonUnittest':
+                    this.framework = 'PythonUnittest';
+                    this.proglang = ['python'];
                     break;
                 default:
                 case undefined:
@@ -231,7 +245,9 @@ const config = (function(testConfigNode) {
             let unittestNode = xmlDoc.createElementNS(unittestns_new, "unit:unittest");
             testConfigNode.appendChild(unittestNode);
 
-            xmlWriter.createTextElement(unittestNode, 'unit:entry-point', $(root).find(".xml_u_mainclass").val(), unittestns_new);
+            if (this.withRunCommand) {
+                xmlWriter.createTextElement(unittestNode, 'unit:entry-point', $(root).find(".xml_u_mainclass").val(), unittestns_new);
+            }
             unittestNode.setAttribute("framework", $(root).find(".xml_u_framew").val());
             unittestNode.setAttribute("version", $(root).find(".xml_u_version").val());
         }
@@ -246,6 +262,14 @@ const config = (function(testConfigNode) {
     class CUnitTest extends GeneralUnitTest {
         constructor() {
             super(CUnit_Default_Title, ['c'], 'CUnit');
+        }
+    }
+
+    class PythonUnittest extends GeneralUnitTest {
+        constructor() {
+            super(PythonUnittest_Default_Title, ['python'], 'PythonUnittest', false);
+            this.fileRefLabel = 'Python unittest file(s)';
+
         }
     }
 
@@ -306,12 +330,13 @@ const config = (function(testConfigNode) {
 */
         }
     }
+/*
     class PythonTest extends CustomTest {
         constructor() {
             super("Python Test", "python-doctest", '');
             this.alternativeTesttypes = ['python'];
         }
-    }
+    } */
 /*
     class DgSetupTest extends CustomTest {
         constructor() {
@@ -356,7 +381,7 @@ const config = (function(testConfigNode) {
     const testCUnit       = new CUnitTest();
     const testGoogleTest  = new GoogleTest();
     const testCheckStyle  = new CheckstyleTest();
-    const testPython      = new PythonTest();
+    const testPython      = new PythonUnittest();
     //const testDgSetup     = new DgSetupTest(DgSetupTest);
     //const testDGTester    = new DgTesterTest(DgTesterTest);
     const testSetlX       = new setlXTest(setlXTest);
@@ -367,13 +392,13 @@ const config = (function(testConfigNode) {
     // -------------------------------
     const proglangInfos = [
         new ProglangInfo("java/17",    [testJavaComp, testJavaJUnit,   testCheckStyle]),
+        new ProglangInfo("python/3",   [testPython]),
+        new ProglangInfo("cpp",        [testGoogleTest]),
+        new ProglangInfo("c",          [testGoogleTest, testCUnit]),
+        new ProglangInfo("setlX/2.40", [testSetlX,    testSetlXSyntax, testCheckStyle]),
         new ProglangInfo("java/11",    [testJavaComp, testJavaJUnit,   testCheckStyle]),
         new ProglangInfo("java/1.8",   [testJavaComp, testJavaJUnit,   testCheckStyle]),
         new ProglangInfo("java/1.6",   [testJavaComp, testJavaJUnit,   testCheckStyle]),
-        new ProglangInfo("python/2",   [testPython,   testCheckStyle ]),
-        new ProglangInfo("setlX/2.40", [testSetlX,    testSetlXSyntax, testCheckStyle]),
-        new ProglangInfo("cpp",        [testGoogleTest]),
-        new ProglangInfo("c",          [testGoogleTest, testCUnit]),
     ];
 
 
@@ -431,9 +456,12 @@ const config = (function(testConfigNode) {
             case 'c' :
             case 'h' :
             case 'cpp' :
+            case 'hpp' :
+            case 'hxx' :            
             case 'cxx' :
             case 'java' :
             case 'log' :
+            case 'py' :
             case 'txt' :
             case 'xml' :
             case 'csv' :
