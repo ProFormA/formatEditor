@@ -139,8 +139,10 @@ class ZipFileTest(unittest.TestCase):
 
         # todo: auspacken der der Zip-Datei und auswerten
         # print 'compare files: ' + self.filename_task_xml_reference + ' <-> ' + self.getTaskFile(self.TaskFileNo)
+        message = 'task.xml output mismatch ' + str(self.TaskFileNo) + \
+                  ' (' + self.filename_task_xml_reference + ' <-> ' +  self.getTaskFile(self.TaskFileNo) + ')'
         self.assertTrue(editor.is_file1_equal_to_file2_except_for_uuid(self.filename_task_xml_reference, self.getTaskFile(self.TaskFileNo)),
-                        'task.xml output mismatch ' + str(self.TaskFileNo))
+                        message)
 
         return self.TaskFileNo
 

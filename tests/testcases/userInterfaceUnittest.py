@@ -78,7 +78,7 @@ class SpecialTest(zipFileTest.ZipFileTest):
         editor.set_filename(4, 'file3.java') # 0-based index counting in display (not ids)
         editor.set_test_filename('file3.java', 4)
 
-        # ERROR: weil dbei gelöschten Dateien die leeren Referenzen nicht entfernt werden.
+        # ERROR: weil bei gelöschten Dateien die leeren Referenzen nicht entfernt werden.
         # Daher wird beim Schreiben der zip erkannt, dass Filenamen leer sind
         zipFileTest.ZipFileTest.saveZipFile(self, "input222.zip", False)
 

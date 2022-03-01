@@ -42,7 +42,7 @@ Testsuite
 
 start testsuite.py in *working* directory 'tests'
 
-	cd cd /path/to/editor/tests
+	cd /path/to/editor/tests
 	python testsuite.py
 
 
