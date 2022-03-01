@@ -4,9 +4,7 @@ A Javascript editor for ProFormA programming tasks (exchange format for programm
 
 Can be executed from this website: https://proforma.github.io/formatEditor/proformaEditor.html
 
-Needs Firefox or Chrome
-
-Testsuite does not start with Chrome 77.
+Testsuite runs with Chrome 98.
 
 TODO:
 - update documentation
@@ -17,8 +15,8 @@ TODO:
 - auch attached Dateien editieren, wenn die Dateiendung vermuten lässt, dass das geht (z.b. java)
 - Code aufräumen
 - Testumgebung aufräumen (insbesondere die Indizierung ist verwirrend, weil mal die internen Indizes mal die aus der Oberfläche verwendet werden)
-- Programmiersprache C
-
+- Treeview für Dateien
+- Datei neu anlegen und editieren ermöglichen 
 
 Folgende Änderungen kommunizieren:
 - csv als Textdatei werten (anstelle von Binärdatei)
