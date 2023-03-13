@@ -331,13 +331,13 @@ const config = (function(testConfigNode) {
 */
         }
     }
-/*
-    class PythonTest extends CustomTest {
+
+    class PythonDocTest extends CustomTest {
         constructor() {
-            super("Python Test", "python-doctest", '');
-            this.alternativeTesttypes = ['python'];
+            super("Python DocTest", "python-doctest", '');
+            // this.alternativeTesttypes = ['python'];
         }
-    } */
+    }
 /*
     class DgSetupTest extends CustomTest {
         constructor() {
@@ -383,6 +383,7 @@ const config = (function(testConfigNode) {
     const testGoogleTest  = new GoogleTest();
     const testCheckStyle  = new CheckstyleTest();
     const testPython      = new PythonUnittest();
+    const testPythonDoctest = new PythonDocTest();
     //const testDgSetup     = new DgSetupTest(DgSetupTest);
     //const testDGTester    = new DgTesterTest(DgTesterTest);
     const testSetlX       = new setlXTest(setlXTest);
@@ -393,7 +394,7 @@ const config = (function(testConfigNode) {
     // -------------------------------
     const proglangInfos = [
         new ProglangInfo("java/17",    [testJavaComp, testJavaJUnit,   testCheckStyle]),
-        new ProglangInfo("python/3",   [testPython]),
+        new ProglangInfo("python/3",   [testPython, testPythonDoctest]),
         new ProglangInfo("cpp",        [testGoogleTest]),
         new ProglangInfo("c",          [testGoogleTest, testCUnit]),
         new ProglangInfo("setlX/2.40", [testSetlX,    testSetlXSyntax, testCheckStyle]),
@@ -412,7 +413,7 @@ const config = (function(testConfigNode) {
         testJavaComp, testJavaJUnit,
         testGoogleTest,
         testCUnit,
-        testPython,
+        testPython, testPythonDoctest,
         testSetlX, testSetlXSyntax,
         testCComp,
         testCheckStyle,
