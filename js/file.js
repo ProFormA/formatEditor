@@ -592,7 +592,9 @@ class FileWrapper {
         //const fileroot = $(".xml_file_id[value='" + fileid + "']").closest(".xml_file");
 
         let ui_file = FileWrapper.constructFromId(fileid); // constructFromRoot(fileroot);
-        fileStorages[fileid] = new FileStorage(false, '', '', '');
+        if (fileStorages[fileid] === undefined) {
+            fileStorages[fileid] = new FileStorage(false, '', '', '');
+        }
 
         // hide fields that exist only for technical reasons
         ui_file.root.find(".xml_file_binary").hide(); // hide binary text

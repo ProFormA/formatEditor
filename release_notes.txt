@@ -1,3 +1,8 @@
+Release Notes for 3.2.0
+
+read embedded-bin-file
+support for reading xml with missing programming language version
+
 Release Notes for 3.1.1
 
 support for Checkstyle version 10.1
