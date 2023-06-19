@@ -157,6 +157,7 @@ class TaskFile {
         this.filetype = null;
         this.comment = null;
         this.content = null;
+        this.binary = null;
     }
 }
 
@@ -437,10 +438,26 @@ class TaskClass {
                             taskfile.filetype = 'embedded';
                             taskfile.filename = xmlReader.readSingleText("@filename", content);
                             taskfile.content = content.textContent;
+                            taskfile.binary = false;
+                            break;
+                        case "embedded-bin-file":
+                            // taskfile.filetype = 'embedded';
+                            taskfile.filetype = 'file';
+                            taskfile.filename = xmlReader.readSingleText("@filename", content);
+                            // taskfile.content = atob(content.textContent);
+                            taskfile.binary = true;
+                            console.log(content.textContent);
+                            const filecontent = atob(content.textContent);
+                            console.log(taskfile.id + ' is embedded-bin-file');
+                            const mimetype = getMimeType('', taskfile.filename); //get mime type
+                            let fileObject = new FileStorage(true, mimetype, filecontent, taskfile.filename);
+                            fileObject.setSize(filecontent.length);
+                            fileStorages[taskfile.id] = fileObject;
                             break;
                         case "attached-bin-file":
                             taskfile.filetype = 'file';
                             taskfile.filename = content.textContent;
+                            taskfile.binary = true;
                             break;
                         default:
                             setErrorMessage("Unknown file type for file #". taskfile.id);
@@ -451,7 +468,7 @@ class TaskClass {
 
                 // post processing:
                 // copy file content for editor in associated text area
-                const displaymode = xmlReader.readSingleText("@usage-by-lms", thisNode);
+                // const displaymode = xmlReader.readSingleText("@usage-by-lms", thisNode);
                 if (taskfile.usageInLms === T_LMS_USAGE.EDIT) {
                     if (editCounter === 0) {
                         // do not store as file

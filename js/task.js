@@ -419,8 +419,17 @@ readAndDisplayXml = function() {
     $("#xml_restrict_filename").val(task.filenameRegExpSubmission);
     if (task.proglangVersion)
         $("#xml_programming-language").val(task.proglang + '/' + task.proglangVersion);
-    else
-        $("#xml_programming-language").val(task.proglang);
+    else {
+        // No Version given => set first matching programming language
+        $("#xml_programming-language > option").each(function () {
+            if (this.text.split("/")[0].toLowerCase() == task.proglang.toLowerCase()) {
+                    console.log('found ' + this.text + ' as matching programming language');
+                    $("#xml_programming-language").val(this.text);
+                    alert('No programming language version set => switch to ' + this.text);
+                    return;
+            }
+        });
+    }
 
     $("#xml_lang").val(task.lang);
     codeskeleton.setValue(task.codeskeleton);
