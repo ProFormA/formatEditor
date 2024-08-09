@@ -288,7 +288,8 @@ const config = (function(testConfigNode) {
                 "<option value='7.6'>7.6</option>" +
                 "<option value='8.23'>8.23</option>" +
                 "<option value='8.29'>8.29</option>" +
-                "<option selected='selected' value='10.1'>10.1</option>" +
+                "<option value='10.1'>10.1</option>" +
+                "<option selected='selected' value='10.17'>10.17</option>" +
                 "</select>"+
                 " <label for='xml_pr_CS_warnings'> Maximum warnings allowed<span class='red'>*</span>: </label>"+
                 "<input class='tinyinput xml_pr_CS_warnings' value='4'/></p>";
@@ -393,6 +394,7 @@ const config = (function(testConfigNode) {
     // SUPPORTED PROGRAMMING LANGUAGES
     // -------------------------------
     const proglangInfos = [
+        new ProglangInfo("java/21",    [testJavaComp, testJavaJUnit,   testCheckStyle]),
         new ProglangInfo("java/17",    [testJavaComp, testJavaJUnit,   testCheckStyle]),
         new ProglangInfo("python/3",   [testPython, testPythonDoctest]),
         new ProglangInfo("cpp",        [testGoogleTest]),

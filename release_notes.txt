@@ -1,3 +1,7 @@
+Release Notes for 3.2.1
+
+support for Checkstyle version 10.17 and Java 21
+
 Release Notes for 3.2.0
 
 read embedded-bin-file
